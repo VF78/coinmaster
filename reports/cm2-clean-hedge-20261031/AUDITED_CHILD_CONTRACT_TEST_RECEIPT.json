@@ -1,0 +1,19 @@
+{
+  "actual_native_economic_engine_constructions": 0,
+  "actual_native_fills": 0,
+  "command": "PYTHONPATH=runtime /root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/bin/python -B -s -m unittest discover -s runtime/tests -p 'test_cm2*.py' -q",
+  "elapsed_seconds": "7.008",
+  "full_pipeline_API_probe": "NOT_RUN",
+  "normal_SOL_release_regressions": "ACTUAL_DECIDE_MIRRORED_SOL_ONLY_SCOPE_NATIVE_TESTCLOCK_DEADLINE_ZERO_NET_OWNED_PENDING_AND_CHECKPOINT_FIRST_DEADLINE",
+  "not_proven": [
+    "new-source financial trajectory",
+    "full native timer/OMS/fill lifecycle",
+    "wire MARKET price/backend IOC cap classification",
+    "real reduce-only dust exception",
+    "OS cold recovery"
+  ],
+  "physical_research_attempts_added": 0,
+  "result": "PASS",
+  "scope": "CONSTRUCTOR_FREE_CM2_UNITTESTS_AND_NATIVE_ORDER_CLOCK_OBJECTS_ONLY",
+  "tests": 130
+}

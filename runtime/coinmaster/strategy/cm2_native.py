@@ -19,11 +19,13 @@ from nautilus_trader.model.identifiers import InstrumentId, ClientId, ClientOrde
 from nautilus_trader.trading.strategy import Strategy
 from coinmaster.strategy.cm2_policy import (
     Config, State, Snapshot, Features, Hour, PairedHourBuilder, features, decide, D, ZERO,
-    reconcile_btc_intent, actual_harvest_geometry)
+    reconcile_btc_intent, actual_harvest_geometry, btc_child_permission, HOUR_NS)
 from coinmaster.strategy.cm2_execution import ExecutionLimits, order_plan, stage_targets
 from coinmaster.strategy.cm2_checkpoint import KEY, SCHEMA, canonical, decode
 from coinmaster.venues.margin_policy import MarginMark
 from coinmaster.venues.marks import VenueMark
+from coinmaster.strategy.cm2_order_contract import (MODEL_ID, FRESH_NS, DRAIN_NS, REDUCE_FLOOR_POLICY,
+    request_terms, validate_request, bbo_status, risk_only_target, drain_update, validate_drain)
 
 class MinuteTurnover(Data):
     def __init__(self,instrument_id,turnover,ts_event):
@@ -98,11 +100,13 @@ class CM2Strategy(Strategy):
         self.child_permission_audit = []
         self._retained_audit_chain = "0"*64
         self._admission_sources = {name:sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
-            for name in ("cm2_native.py","cm2_policy.py","cm2_execution.py","cm2_checkpoint.py")}
+            for name in ("cm2_native.py","cm2_policy.py","cm2_execution.py","cm2_checkpoint.py","cm2_order_contract.py")}
         self._seed_hours_sha256=sha256(canonical(config.seed_hours)).hexdigest()
         self._checkpoint_revision = 0
         self._checkpoint_loaded = False
         self._restore_failed = False
+        self._drain = None
+        self.drain_audit = []
 
     def on_start(self):
         # Fresh research only. Refuse populated-cache startup; no cold restore.
@@ -137,11 +141,13 @@ class CM2Strategy(Strategy):
                 rows.append((mark.ts_event,mark.turnover))
             return
         if isinstance(mark,VenueMark):
+            previous=self._latest_marks.get(mark.instrument_id)
+            if previous is not None and mark.ts_event<previous.ts_event:return
             self._latest_marks[mark.instrument_id] = mark
             self.config.margin_policy.update_mark(MarginMark(mark.instrument_id,D(str(mark.price)),mark.ts_event))
             if all(self._latest_marks.get(i) is not None and self._latest_marks[i].ts_event==mark.ts_event
                    for i in (self.config.btc_id,self.config.sol_id)):
-                self._check_liquidation(mark.ts_event)
+                self._check_liquidation(self.clock.timestamp_ns())
 
     def _orders(self, instrument_id):
         found = {}
@@ -172,13 +178,13 @@ class CM2Strategy(Strategy):
             if mark is None or now-mark.ts_event > 120_000_000_000 or mark.ts_event > now:
                 known = False
             price = D(str(mark.price)) if mark is not None else ZERO
-            if price <= 0:
-                quote = self._quotes.get(iid)
-                price = (quote.bid_price.as_decimal()+quote.ask_price.as_decimal())/2 if quote else D("1")
+            if not price.is_finite() or price <= 0:
+                known = False
+                price = ZERO
             marks[iid] = price
             pos = self._position(iid)
             qtys[iid] = (pos.quantity.as_decimal()*(D(1) if pos.is_long else D(-1))) if pos is not None else ZERO
-            if pos is not None:
+            if pos is not None and price > 0:
                 equity += pos.unrealized_pnl(self.cache.instrument(iid).make_price(price)).as_decimal()
             leaves = ZERO
             live = self._orders(iid)
@@ -209,8 +215,20 @@ class CM2Strategy(Strategy):
                         self.config.limits.max_gross_notional,self.config.limits.max_gross_notional)
 
     def on_quote_tick(self, tick):
+        now = self.clock.timestamp_ns()
+        prior_quote = self._quotes.get(tick.instrument_id)
+        fresh_bbo, bbo_reason = bbo_status(tick,now)
+        if prior_quote is not None and tick.ts_event < prior_quote.ts_event:
+            fresh_bbo,bbo_reason=False,"BBO_OLDER_THAN_RETAINED_QUOTE"
+        if not fresh_bbo:
+            self.pre_submit_gate_blocks.append({"timestamp":str(now),"instrument":str(tick.instrument_id),
+                "reason":bbo_reason})
+            for order in self._orders(tick.instrument_id):
+                context=self._order_audit.get(str(order.client_order_id),{})
+                if not order.is_reduce_only or context.get("admission",{}).get("intent")=="POSITIVE_HARVEST":
+                    self.cancel_order(order)
+            return
         self._quotes[tick.instrument_id] = tick
-        now = tick.ts_event
         if now < self.config.trading_start_open_ns:
             return
         terminal = now >= self.config.terminal_close_at_ns or self._restore_failed
@@ -236,6 +254,16 @@ class CM2Strategy(Strategy):
         prior_intent_state=self.policy_state
         decision = decide(self.config.policy,f,s,self.policy_state,terminal=terminal or self._liquidating,now_ns=now)
         self.policy_state = decision.state
+        CM2Strategy._update_drain(self,now,s,decision)
+        if getattr(self,"_drain",None) and self._drain["reconcile_required"]:
+            bt=risk_only_target(s.btc_qty,decision.btc_target)
+            so=risk_only_target(s.sol_qty,decision.sol_target)
+            if str(self.config.btc_id) in self._drain["scoped_zero_ids"]:bt=ZERO
+            if str(self.config.sol_id) in self._drain["scoped_zero_ids"]:so=ZERO
+            self.policy_state=replace(self.policy_state,btc_target=bt,sol_target=so,
+                btc_intent="RISK_TRIM",intent_hour=0,harvest_target=None,harvest_start_qty=None)
+            decision=replace(decision,btc_target=bt,sol_target=so,state=self.policy_state,
+                cancel_increases=True,reason="DRAIN_DEADLINE_RECONCILE_REQUIRED")
         if decision.cancel_increases:
             revoked=[]
             for order in self._orders(self.config.btc_id):
@@ -248,7 +276,7 @@ class CM2Strategy(Strategy):
                     decision.reason),"cancel_requested_order_ids":revoked})
         if not (terminal or self._liquidating or decision.state.draining):
             quote=self._quotes.get(self.config.btc_id)
-            quote_known=quote is not None and 0 <= now-quote.ts_event <= 120_000_000_000
+            quote_known=bbo_status(quote,now)[0]
             delta=decision.btc_target-s.btc_qty
             executable=(quote.ask_price.as_decimal() if delta > 0 else quote.bid_price.as_decimal()) if quote_known else ZERO
             before=self.policy_state
@@ -285,11 +313,35 @@ class CM2Strategy(Strategy):
         emergency = terminal or decision.state.draining
         instrument = self.cache.instrument(tick.instrument_id)
         price = tick.ask_price.as_decimal() if target > actual else tick.bid_price.as_decimal()
+        reducing_target = actual*(target-actual) < 0
+        harvest = (tick.instrument_id == self.config.btc_id and reducing_target
+            and self.policy_state.btc_intent == "POSITIVE_HARVEST" and not self.policy_state.draining)
+        intent = "LIMIT" if harvest else "MARKET"
+        side = "BUY" if target > actual else "SELL"
+        if pending or s.unknown_orders:
+            pending_plan=order_plan(actual=actual,target=target,pending=pending,unknown=s.unknown_orders,
+                price=price,step=D(str(instrument.size_increment)),
+                min_qty=D(str(instrument.min_quantity or instrument.size_increment)),max_child=ZERO)
+            if pending_plan.action=="CANCEL":
+                for order in self._orders(tick.instrument_id):self.cancel_order(order)
+            return
+        terms = None
+        spec = None
+        if target != actual:
+            try:
+                spec = CM2Strategy._contract_spec(self,tick.instrument_id,instrument)
+                terms = request_terms(spec,price,side,intent,"IOC")
+            except (ValueError,AttributeError,KeyError) as error:
+                self.pre_submit_gate_blocks.append({"timestamp":str(now),"instrument":str(tick.instrument_id),
+                    "reason":"REQUEST_PROFILE_OR_PRICE_UNKNOWN:"+str(error)})
+                return
         plan = order_plan(actual=actual,target=target,pending=pending,unknown=s.unknown_orders,
-            price=price,step=D(str(instrument.size_increment)),
+            price=terms.minimum_reference_price if terms is not None else price,step=D(str(instrument.size_increment)),
             min_qty=D(str(instrument.min_quantity or instrument.size_increment)),
             max_child=self._child_capacity(tick.instrument_id,now),emergency=emergency,
-            min_notional=instrument.min_notional.as_decimal() if instrument.min_notional is not None else ZERO)
+            min_notional=instrument.min_notional.as_decimal() if instrument.min_notional is not None else ZERO,
+            venue_max_child_notional=terms.cap if terms is not None else None,
+            venue_reference_price=terms.cap_reference_price if terms is not None else None)
         if plan.action == "CANCEL":
             for order in self._orders(tick.instrument_id):
                 self.cancel_order(order)
@@ -301,7 +353,8 @@ class CM2Strategy(Strategy):
                 self.target_blockers[key]={"reason":plan.reason,"actual":str(actual),"target":str(target),
                     "first_ns":previous.get("first_ns",str(now)),"last_ns":str(now),
                     "observations":previous.get("observations",0)+1,"guard_staged":staged,
-                    "emergency":emergency,"status":"MODEL_OR_VENUE_MINIMUM_BLOCKED_NOT_FILLED"}
+                    "emergency":emergency,"status":"MODEL_OR_VENUE_MINIMUM_BLOCKED_NOT_FILLED",
+                    "reduce_floor_authority":REDUCE_FLOOR_POLICY,"request_execution_model_id":MODEL_ID}
             return
         if not emergency and now-self._last_child.get(tick.instrument_id,0) < self.config.limits.child_interval_ns:
             return
@@ -309,19 +362,50 @@ class CM2Strategy(Strategy):
         reducing = actual*q < 0
         if decision.cancel_increases and not reducing:
             return
-        if not reducing and not self._admit(tick.instrument_id,q,price,s,now):
+        normalized_price = terms.limit_price if harvest else price
+        if not reducing and (not s.data_known or not f.valid
+                or not (f.available_ns < now and 0 <= now-f.closed_ns <= HOUR_NS)):
+            self.pre_submit_gate_blocks.append({"timestamp":str(now),"reason":"INCREASE_MARK_OR_FEATURE_UNKNOWN"})
+            return
+        if harvest:
+            allowed,why=btc_child_permission(self.config.policy,f,s,self.policy_state,
+                now_ns=now,executable_price=normalized_price)
+            if not allowed:
+                self.pre_submit_gate_blocks.append({"timestamp":str(now),"reason":"PROTECTIVE_LIMIT_RIGHT_OR_COST:"+why})
+                return
+        quantity=instrument.make_qty(abs(q))
+        valid,why=validate_request(spec,quantity.as_decimal(),terms,intent,"IOC")
+        if quantity.as_decimal()!=abs(q) or not valid:
+            self.pre_submit_gate_blocks.append({"timestamp":str(now),"reason":why if not valid else "NATIVE_QUANTITY_COERCION"})
+            return
+        if not reducing and not self._admit(tick.instrument_id,q,terms.cap_reference_price,s,now):
             return
         order = self._make_order(tick.instrument_id,OrderSide.BUY if q > 0 else OrderSide.SELL,
-                                 instrument.make_qty(abs(q)),reducing,price)
+                                 quantity,reducing,normalized_price)
         if order is None:
             self.pre_submit_gate_blocks.append({"timestamp":str(now),"instrument":str(tick.instrument_id),
                 "reason":"ORDINARY_HARVEST_NATIVE_PRICE_COERCION_BLOCKED"})
+            return
+        actual_kind=getattr(order.order_type,"name",str(order.order_type))
+        actual_tif=getattr(order.time_in_force,"name",str(order.time_in_force))
+        actual_price=order.price.as_decimal() if getattr(order,"price",None) is not None else None
+        valid,why=validate_request(spec,order.quantity.as_decimal(),terms,intent,"IOC")
+        if (not valid or order.quantity.as_decimal()!=abs(q) or actual_kind!=intent
+                or actual_tif!="IOC" or actual_price!=terms.limit_price or order.is_reduce_only!=reducing):
+            self.pre_submit_gate_blocks.append({"timestamp":str(now),"reason":"FINAL_NATIVE_REQUEST_MISMATCH:"+why})
             return
         oid = str(order.client_order_id)
         self._owned[oid] = {"instrument_id":tick.instrument_id,"client_order_id":order.client_order_id,
                             "submit_ns":now,"terminal":False,"acked":False}
         provenance=self._permission_context(now,f,s,self.policy_state,
             price if tick.instrument_id == self.config.btc_id else None,True,"SUBMITTED_AFTER_CURRENT_GATES")
+        provenance.update({"execution_model_id":MODEL_ID,"original_executable_quote":str(price),
+            "normalized_protective_limit":str(terms.limit_price) if terms.limit_price is not None else None,
+            "protected_limit_is_executable_quote":False,
+            "request_cap":str(terms.cap),"cap_classification":terms.classification,
+            "market_wire_price_and_backend_classification":"UNKNOWN" if intent=="MARKET" else "BACKEND_IOC_CLASSIFICATION_UNKNOWN",
+            "reduce_floor_policy":REDUCE_FLOOR_POLICY if reducing else "OFFICIAL_OPENING_MINIMUM",
+            "mark_risk_measurement":"KNOWN" if s.data_known else "UNKNOWN_REDUCTION_ON_FRESH_BBO"})
         self._order_audit[oid] = {"admission":provenance,"client_order_id":oid,"instrument":str(tick.instrument_id),
             "action":"BTC" if tick.instrument_id == self.config.btc_id else "SOL",
             "reason":decision.reason,"submit_ns":str(now),"decision_ns":str(f.available_ns),
@@ -337,7 +421,9 @@ class CM2Strategy(Strategy):
         self._audit(now,decision.reason)
 
     def _permission_context(self,now,f,s,st,price,allowed,permission_reason):
+        contract=CM2Strategy._request_contract_identity(self)
         return {"model":"CM2_CURRENT_CHILD_ADMISSION_V1","source_modules_sha256":self._admission_sources,
+            "request_execution_model_id":MODEL_ID,"request_contract_sha256":sha256(canonical(contract)).hexdigest(),
             "execution_policy_hash":self.config.execution_policy_hash,"policy":asdict(self.config.policy),
             "candidate_ns":str(now),"feature_closed_ns":str(f.closed_ns),"feature_available_ns":str(f.available_ns),
             "feature_valid":f.valid,"hedge_valid":f.hedge_valid,"feature_close":str(f.close),
@@ -352,6 +438,114 @@ class CM2Strategy(Strategy):
             "btc_tick":str(s.btc_tick),"harvested":st.harvested,
             "harvest_pending_target":str(st.harvest_target) if st.harvest_target is not None else None,
             "allowed":allowed,"permission_reason":permission_reason}
+
+
+    def _request_contract_identity(self):
+        profile=getattr(getattr(self.config,"margin_policy",None),"_profile",None)
+        evidence=getattr(profile,"evidence",None)
+        return {"model_id":MODEL_ID,"implementation_sources":dict(getattr(self,"_admission_sources",{})),"bbo_and_mark_max_age_ns":FRESH_NS,"drain_interval_ns":DRAIN_NS,
+            "operational_intervals_authority":"OWN_RESEARCH_CHOICES_NOT_HL_PARAMETERS",
+            "ambiguous_IOC_cap":"MIN_OFFICIAL_MARKET_LIMIT_OWN_CONSERVATIVE_MODEL_RULE_BACKEND_UNKNOWN",
+            "reduce_only_floor":REDUCE_FLOOR_POLICY,"opening_minimum_authority":"OFFICIAL_MINIMUM",
+            "protective_rounding":"SELL_FLOOR_BUY_CEIL_THEN_POSITIVE_GEOMETRY_AND_OWN_ONE_FORMATTING_TICK_BAND",
+            "market_factory":"UNCHANGED_NATIVE_MARKET_WIRE_PRICE_AND_BACKEND_CLASSIFICATION_UNKNOWN",
+            "profile_evidence":asdict(evidence) if evidence is not None else None,
+            "profile_status":"FROZEN_PUBLIC_NOT_CURRENT_ACCOUNT" if evidence is not None else "UNKNOWN_SEND_BLOCKED",
+            "instruments":{key:{"quantity_increment":str(spec.quantity_increment),
+                "min_quantity":str(spec.min_quantity),"min_notional":str(spec.min_notional),
+                "max_market_notional":str(spec.max_market_notional),"max_limit_notional":str(spec.max_limit_notional),
+                "max_price_decimals":spec.max_price_decimals,"max_price_significant_figures":spec.max_price_significant_figures,
+                "instrument_first_tier_max_leverage":str(spec.margin_tiers[0].max_leverage)}
+                for key,spec in sorted(getattr(profile,"instruments",{}).items())}}
+
+    def _contract_spec(self,iid,instrument):
+        profile=getattr(self.config.margin_policy,"_profile",None)
+        if profile is None or str(getattr(profile,"environment",""))!="mainnet":
+            raise ValueError("EVIDENCE_BOUND_MAINNET_PROFILE_REQUIRED")
+        spec=profile.instruments[str(iid)]
+        if (instrument.size_increment.as_decimal()!=spec.quantity_increment
+                or instrument.size_precision != -spec.quantity_increment.as_tuple().exponent
+                or instrument.min_notional is None or instrument.min_notional.as_decimal()!=spec.min_notional):
+            raise ValueError("NATIVE_REQUEST_PROFILE_MISMATCH")
+        return spec
+
+    def _drain_event(self,now,kind):
+        if not hasattr(self,"drain_audit"):self.drain_audit=[]
+        row={"native_clock_ns":str(now),"kind":kind,"state":dict(self._drain) if self._drain else None,
+             "scope":"OWN_120S_OPERATIONAL_RESEARCH_DEADLINE_NOT_HL_RULE"}
+        self.drain_audit.append(row)
+        self._chain_audit("DRAIN_LIFECYCLE",row)
+
+    def _begin_drain(self,now,scope):
+        previous=getattr(self,"_drain",None)
+        self._drain=drain_update(previous,now,scope)
+        if (previous is not None and not previous["reconcile_required"]
+                and self._drain["reconcile_required"]):
+            self._drain={**self._drain,"reconcile_required":False}
+            CM2Strategy._on_drain_deadline(self,None)
+            return
+        if self._drain!=previous:
+            CM2Strategy._drain_event(self,now,"FIRST_START_OR_SCOPE_UNION")
+            self._persist_checkpoint()
+        CM2Strategy._arm_drain_alert(self)
+
+    def _drain_timer_name(self):
+        return "CM2_DRAIN_"+str(self.id)
+
+    def _arm_drain_alert(self):
+        drain=getattr(self,"_drain",None)
+        if drain is None or drain["reconcile_required"]:return
+        name=CM2Strategy._drain_timer_name(self)
+        if name in self.clock.timer_names:return
+        if self.clock.timestamp_ns() >= drain["deadline_ns"]:
+            CM2Strategy._on_drain_deadline(self,None)
+        else:
+            self.clock.set_time_alert_ns(name,drain["deadline_ns"],
+                callback=lambda event:CM2Strategy._on_drain_deadline(self,event))
+
+    def _on_drain_deadline(self,event):
+        drain=getattr(self,"_drain",None)
+        if drain is None or self.clock.timestamp_ns()<drain["deadline_ns"] or drain["reconcile_required"]:return
+        self._drain={**drain,"reconcile_required":True}
+        for iid in (self.config.btc_id,self.config.sol_id):
+            for order in self._orders(iid):
+                context=self._order_audit.get(str(order.client_order_id),{})
+                if (not order.is_reduce_only or context.get("admission",{}).get("intent") in
+                        ("INITIAL_ENTRY","FAVORABLE_ADD","POSITIVE_HARVEST")):
+                    self.cancel_order(order)
+        CM2Strategy._drain_event(self,self.clock.timestamp_ns(),"DEADLINE_RECONCILE_REQUIRED")
+        self._persist_checkpoint()
+
+    def _update_drain(self,now,s,decision):
+        scope=[]
+        if decision.state.draining or self._liquidating or now>=self.config.terminal_close_at_ns:
+            scope=[str(self.config.btc_id),str(self.config.sol_id)]
+        elif decision.sol_target==0 and (s.sol_qty or s.sol_pending or self._orders(self.config.sol_id)):
+            scope=[str(self.config.sol_id)]
+        previous=getattr(self,"_drain",None)
+        current=drain_update(previous,now,scope)
+        if current is None:return
+        qty={str(self.config.btc_id):s.btc_qty,str(self.config.sol_id):s.sol_qty}
+        ids={str(self.config.btc_id):self.config.btc_id,str(self.config.sol_id):self.config.sol_id}
+        complete=(not s.unknown_orders and all(qty[i]==0 and not self._orders(ids[i])
+                                             for i in current["scoped_zero_ids"]))
+        self._drain=current
+        if complete:
+            name=CM2Strategy._drain_timer_name(self)
+            if name in self.clock.timer_names:self.clock.cancel_timer(name)
+            CM2Strategy._drain_event(self,now,"NATIVE_SCOPED_FLAT_AND_TERMINAL_ACK")
+            self._drain=None
+            self._persist_checkpoint()
+            return
+        if previous is not None and not previous["reconcile_required"] and current["reconcile_required"]:
+            self._drain={**current,"reconcile_required":False}
+            CM2Strategy._on_drain_deadline(self,None)
+            return
+        if current!=previous:
+            CM2Strategy._drain_event(self,now,"FIRST_START_OR_SCOPE_UNION" if previous is None
+                or current["scoped_zero_ids"]!=previous["scoped_zero_ids"] else "DEADLINE_RECONCILE_REQUIRED")
+            self._persist_checkpoint()
+        CM2Strategy._arm_drain_alert(self)
 
     def _make_order(self,iid,side,quantity,reducing,price):
         if iid == self.config.btc_id and reducing and self.policy_state.btc_intent == "POSITIVE_HARVEST" and not self.policy_state.draining:
@@ -383,6 +577,7 @@ class CM2Strategy(Strategy):
         if not self.cache.positions_open() or s.equity > maintenance:
             return
         self._liquidating=True
+        CM2Strategy._begin_drain(self,self.clock.timestamp_ns(),[str(self.config.btc_id),str(self.config.sol_id)])
         self.liquidation_audit.append({"trigger_ts":str(now),"marked_equity":str(s.equity),
             "tier_maintenance_margin":str(maintenance),"status":"ARMED","close_fills":[],
             "close_value":"0","lockout":"true"})
@@ -499,6 +694,8 @@ class CM2Strategy(Strategy):
                     self._parent_funding=ZERO
                 self._entry_fees += fee
                 self._btc_cost_qty += q
+        if self.policy_state.draining:
+            CM2Strategy._begin_drain(self,self.clock.timestamp_ns(),[str(self.config.btc_id),str(self.config.sol_id)])
         self._chain_audit("NATIVE_FILL",self.fill_audit[-1])
         if self._liquidating and self.liquidation_audit:
             row=self.liquidation_audit[-1]
@@ -549,6 +746,8 @@ class CM2Strategy(Strategy):
             "environment":str(getattr(profile,"environment",None))}
         return {"schema":SCHEMA,"sources":self._admission_sources,"policy":asdict(self.config.policy),
             "execution_policy_hash":self.config.execution_policy_hash,"strategy_id":str(self.id),
+            "request_model_id":MODEL_ID,"drain_interval_ns":DRAIN_NS,
+            "request_contract":CM2Strategy._request_contract_identity(self),
             "seed_hours_sha256":self._seed_hours_sha256,"exit_fee_rate":self.config.exit_fee_rate,
             "execution_limits":asdict(self.config.limits),"margin_configuration_sha256":sha256(canonical(margin_identity)).hexdigest(),
             "instruments":[str(self.config.btc_id),str(self.config.sol_id)],
@@ -596,7 +795,7 @@ class CM2Strategy(Strategy):
                 "parent_funding":self._parent_funding,"funding_last":self._funding_last,
                 "parent_cost_known":self._parent_cost_known,"liquidating":self._liquidating,
                 "risk_unknown":self._risk_unknown,"restore_failed":self._restore_failed,
-                "orphan_started_ns":self.orphan_started_ns}}
+                "orphan_started_ns":self.orphan_started_ns,"drain":getattr(self,"_drain",None)}}
 
     def on_save(self):
         body=canonical(self._checkpoint_document())
@@ -639,6 +838,7 @@ class CM2Strategy(Strategy):
         if store is None or latest is None or latest[1]!=body:
             raise ValueError("CM2_CHECKPOINT_DURABLE_LATEST_REQUIRED")
         domain=document["domain"]
+        restored_drain=validate_drain(domain["drain"],(str(self.config.btc_id),str(self.config.sol_id)))
         restored_state=State(**domain["policy_state"])
         restored_features=Features(**domain["features"])
         restored_hours=deque((Hour(**h) for h in domain["hours"]),maxlen=170)
@@ -667,6 +867,8 @@ class CM2Strategy(Strategy):
         self._loaded_native_binding=canonical(document["native"])
         self._loaded_observer_binding=canonical(document["observer"])
         self._checkpoint_loaded=True;self._restore_failed=domain["restore_failed"]
+        self._drain=restored_drain
+        CM2Strategy._arm_drain_alert(self)
 
     def on_stop(self):
         self._persist_checkpoint()
@@ -695,7 +897,15 @@ class CM2Strategy(Strategy):
                 "pre_submit_tier_margin_gate_blocks":self.pre_submit_gate_blocks,
                 "marked_equity_checkpoints":[],"fill_audit":self.fill_audit,
                 "entry_sizing_audit":self.entry_sizing_audit,
-                "cm2":{"policy":asdict(self.config.policy),"audit":self.cm2_audit,
+                "cm2":{"policy":asdict(self.config.policy),
+                    "request_execution_model_id":MODEL_ID,
+                    "request_contract":CM2Strategy._request_contract_identity(self),
+                    "request_contract_sha256":sha256(canonical(CM2Strategy._request_contract_identity(self))).hexdigest(),
+                    "execution_comparability":"NEW_REQUEST_GUARDS_AND_OPERATIONAL_DEADLINE_NOT_EQUIVALENT_TO_004e_OR_b21a",
+                    "market_wire_price_and_IOC_backend_classification":"UNKNOWN",
+                    "reduce_only_minimum_policy":REDUCE_FLOOR_POLICY,
+                    "drain_deadline_scope":"OWN_OPERATIONAL_120S_NOT_HL_PARAMETER",
+                    "drain_state":getattr(self,"_drain",None),"drain_lifecycle":getattr(self,"drain_audit",[]),"audit":self.cm2_audit,
                        "child_permission_audit":self.child_permission_audit,
                        "order_admission_audit":list(self._order_audit.values()),
                        "target_blockers":self.target_blockers,"orphan_intervals":self.orphan_intervals,"open_orphan_since_ns":self.orphan_started_ns,

@@ -79,6 +79,10 @@ class HarvestExecutionTests(unittest.TestCase):
             event=NS(trade_id='actual-event-like-id',client_order_id='harvest',instrument_id=btc,position_id='native-position',
                 commission=NS(as_decimal=lambda:D('4.6224'),currency='USDC'),order_side=OrderSide.SELL,
                 last_qty=NS(as_decimal=lambda:D(10)),last_px=NS(as_decimal=lambda:D(1070)),liquidity_side='TAKER',ts_event=1)
+            from test_cm2_order_contract import Clock
+            fake.clock=Clock(event.ts_event);fake.id='PURE_CALLBACK'
+            fake._orders=lambda iid:[]
+            if not hasattr(fake.config,'sol_id'):fake.config.sol_id='SOL'
             CM2Strategy.on_order_filled(fake,event)
             self.assertEqual(fake.fill_audit[0]['actual_harvest_geometry']['status'],expected)
             self.assertEqual(fake._restore_failed,expected!='PASS')

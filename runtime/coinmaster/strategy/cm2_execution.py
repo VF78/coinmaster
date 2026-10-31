@@ -48,7 +48,7 @@ def stage_targets(decision: Decision, s: Snapshot, f: Features, *, sol_step=ZERO
             if held > amount and s.sol_qty*D(sign) > 0:
                 minimum=max(sol_step,sol_min_qty,sol_min_notional/s.sol_mark)
                 minimum=(minimum/sol_step).to_integral_value(rounding=ROUND_CEILING)*sol_step
-                # Native1.231 min_notional also applies to reduce-only orders.
+                # Conservative research floor for reductions; real dust exceptions UNKNOWN.
                 # Enlarge a necessary guard trim only toward flat, never risk up.
                 if held-amount < minimum:
                     amount=max(ZERO,held-minimum)
@@ -59,7 +59,9 @@ def stage_targets(decision: Decision, s: Snapshot, f: Features, *, sol_step=ZERO
             return s.btc_qty, sol, True
     return btc, sol, False
 
-def order_plan(*,actual,target,pending,unknown,price,step,min_qty,max_child,emergency=False,min_notional=ZERO):
+def order_plan(*,actual,target,pending,unknown,price,step,min_qty,max_child,emergency=False,min_notional=ZERO,venue_max_child_notional=None,venue_reference_price=None):
+    # min_notional on reductions is an explicit conservative research policy,
+    # not proof of the venue's full-close/dust exception.
     if unknown:
         return OrderPlan("CANCEL" if pending else "HOLD",reason="UNKNOWN_ACK_RECONCILE")
     delta = target-actual
@@ -75,10 +77,22 @@ def order_plan(*,actual,target,pending,unknown,price,step,min_qty,max_child,emer
         delta = (D(1) if delta > 0 else D(-1))*min(abs(delta),abs(actual))
     q = abs(delta)
     if not emergency:
-        q = min(q,max_child/price)
+        q = min(q,max_child/(venue_reference_price or price))
+    if venue_max_child_notional is not None:
+        q = min(q,venue_max_child_notional/(venue_reference_price or price))
     q = (q/step).to_integral_value(rounding=ROUND_DOWN)*step
     if q < min_qty or q == 0:
         return OrderPlan("HOLD",reason="VENUE_MINIMUM")
     if q*price < min_notional:
         return OrderPlan("HOLD",reason="VENUE_MIN_NOTIONAL_INCLUDING_REDUCE_ONLY")
+    if actual*delta < 0:
+        minimum_remainder = max(step,min_qty,min_notional/price)
+        minimum_remainder = (minimum_remainder/step).to_integral_value(rounding=ROUND_CEILING)*step
+        remainder = abs(actual)-q
+        if ZERO < remainder < minimum_remainder:
+            # Shrink only: preserve the original target/cap and leave a legal lot.
+            safe_q = ((abs(actual)-minimum_remainder)/step).to_integral_value(rounding=ROUND_DOWN)*step
+            q = min(q,max(ZERO,safe_q))
+            if q == 0 or q < min_qty or q*price < min_notional:
+                return OrderPlan("HOLD",reason="VENUE_RESIDUAL_DUST_PREVENTION")
     return OrderPlan("SUBMIT",(D(1) if delta > 0 else D(-1))*q,"EMERGENCY" if emergency else "TARGET_CHILD")

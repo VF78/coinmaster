@@ -153,6 +153,7 @@ class ChildAdmissionTests(unittest.TestCase):
         fake._permission_context=lambda *args:CM2Strategy._permission_context(fake,*args)
         fake._persist_checkpoint=lambda:None
         tick=NS(instrument_id="SOL",ts_event=f.closed_ns+1,bid_price=Price(),ask_price=Price())
+        fake.clock=NS(timestamp_ns=lambda:tick.ts_event)
         CM2Strategy.on_quote_tick(fake,tick)
         self.assertEqual(canceled,[order])
         self.assertEqual(fake.policy_state.btc_target,D(1))
@@ -162,6 +163,7 @@ class ChildAdmissionTests(unittest.TestCase):
         next_f=feat(t=201*HOUR_NS,close=1020)
         fake.current_features=next_f
         canceled.clear()
+        fake.clock=NS(timestamp_ns=lambda:next_f.available_ns)
         CM2Strategy.on_quote_tick(fake,NS(instrument_id="SOL",ts_event=next_f.available_ns,
             bid_price=Price(),ask_price=Price()))
         self.assertEqual(canceled,[order])
@@ -231,6 +233,10 @@ class ChildAdmissionTests(unittest.TestCase):
             instrument=NS(settlement_currency="USDC",price_increment=NS(as_decimal=lambda:D('.1')))
             fake.cache=NS(position=lambda pid:position,instrument=lambda iid:instrument)
             fake._actual_harvest_fill_geometry=lambda event,foreign:CM2Strategy._actual_harvest_fill_geometry(fake,event,foreign)
+            from test_cm2_order_contract import Clock
+            fake.clock=Clock(200*HOUR_NS+1);fake.id='PURE_CALLBACK'
+            fake._orders=lambda iid:[]
+            if not hasattr(fake.config,'sol_id'):fake.config.sol_id='SOL'
             CM2Strategy.on_order_filled(fake,event("actual-native-like-id"))
             self.assertEqual(fake.policy_state.harvested,original_parent==1)
             self.assertTrue(fake.policy_state.draining)
@@ -252,7 +258,10 @@ class ChildAdmissionTests(unittest.TestCase):
                 fake._snapshot=lambda now:snap(btc_qty=D(0))
                 with patch("coinmaster.strategy.cm2_native.decide",side_effect=RuntimeError("AT_POLICY_GATE")) as gate:
                     with self.assertRaisesRegex(RuntimeError,"AT_POLICY_GATE"):
-                        CM2Strategy.on_quote_tick(fake,NS(instrument_id=btc,ts_event=200*HOUR_NS+1))
+                        now=200*HOUR_NS+1
+                        fake.clock=NS(timestamp_ns=lambda:now)
+                        price=NS(as_decimal=lambda:D(1000))
+                        CM2Strategy.on_quote_tick(fake,NS(instrument_id=btc,ts_event=now,bid_price=price,ask_price=price))
                 self.assertIs(gate.call_args.kwargs["terminal"],True)
             once=(fake._entry_fees,fake._parent_funding,fake._btc_cost_qty,len(fake.fill_audit),fake.policy_state)
             CM2Strategy.on_order_filled(fake,event("actual-native-like-id"))

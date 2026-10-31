@@ -82,13 +82,17 @@ def complete_report(result,strategy,engine,journal,seed,coherent):
     result["cm2"]=strategy.reporting_state()["cm2"]
     result["config"].pop("candidate",None)
     result["config"]["cm2"]=result["cm2"]["policy"]
+    result["config"]["cm2_request_contract"]=result["cm2"]["request_contract"]
+    result["request_execution_model_id"]=result["cm2"]["request_execution_model_id"]
+    result["request_contract_sha256"]=result["cm2"]["request_contract_sha256"]
     result["cm2"]["capacity_model"]={"participation":"0.01","source":"PREVIOUS_COMPLETED_MINUTE_TURNOVER",
         "cadence":"ONE_CHILD_PER_MINUTE_PER_SYMBOL","emergency_reductions":"EXEMPT",
         "historical_queue":"UNKNOWN_M1_FULL_FILL_ZERO_IMPACT_PROXY"}
     result["cm2"]["structural_diagnostics"]="UNKNOWN_PENDING_NATIVE_ACCEPTANCE"
     result["source_hashes"]={str(path.relative_to(Path(__file__).parents[1])):hashlib.sha256(path.read_bytes()).hexdigest()
         for path in (Path(__file__),Path(__file__).parents[1]/"strategy/cm2_policy.py",
-                     Path(__file__).parents[1]/"strategy/cm2_execution.py",Path(__file__).parents[1]/"strategy/cm2_native.py",Path(__file__).with_name("cm2_funding_reader.py"),Path(__file__).with_name("cm2_committed_validation.py"))}
+                     Path(__file__).parents[1]/"strategy/cm2_execution.py",Path(__file__).parents[1]/"strategy/cm2_native.py",
+                     Path(__file__).parents[1]/"strategy/cm2_order_contract.py",Path(__file__).parents[1]/"strategy/cm2_checkpoint.py",Path(__file__).with_name("cm2_funding_reader.py"),Path(__file__).with_name("cm2_committed_validation.py"))}
     # The config hash includes the new economic policy, unlike the legacy wrapper.
     result["config_hash"]=hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
 
@@ -128,7 +132,8 @@ def preflight(request,receipt):
 def engineering_fixture_module(request):
     import importlib
     modules={"cm2-connected-native-v1":"coinmaster.research.cm2_fixture",
-             "cm2-current-child-native-v2":"coinmaster.research.cm2_fixture_e04"}
+             "cm2-current-child-native-v2":"coinmaster.research.cm2_fixture_e04",
+             "cm2-residual-dust-native-v1":"coinmaster.research.cm2_fixture_dust"}
     name=modules.get(request.get("fixture_id"))
     if name is None: raise ValueError("CM2_UNKNOWN_ENGINEERING_FIXTURE")
     return importlib.import_module(name)
@@ -425,7 +430,7 @@ def main(argv=None):
         raise SystemExit("CM2_NATIVE_HOLD_NO_RESOURCE_RECEIPT")
     receipt=json.loads(args.resource_receipt.read_text())
     preflight(request,receipt)
-    if request["stage"]!="engineering" or request.get("fixture_id")=="cm2-current-child-native-v2":
+    if request["stage"]!="engineering" or request.get("fixture_id") in ("cm2-current-child-native-v2","cm2-residual-dust-native-v1"):
         import uuid,subprocess
         probe=Path(request.get("api_probe_root",str(Path(request["artifact_dir"]).parent/"api-probes")))/str(uuid.uuid4())
         command,env,cwd=worker_process_spec(

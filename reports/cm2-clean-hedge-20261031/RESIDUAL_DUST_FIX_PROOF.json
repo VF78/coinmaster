@@ -1,0 +1,21 @@
+{
+  "all_AST_outside_order_plan_equal": true,
+  "base_source_commit": "004eecf4b1f0da1b20dc50a3c691d24e3d2928da",
+  "changed_product_function": "cm2_execution.order_plan",
+  "limitations": [
+    "Current executable quote invariant only; cannot prevent later price collapse or partial-fill dust.",
+    "No fullclose beyond original target or capacity; impossible legal partial remains explicit HOLD.",
+    "Existing dust, actual venue fills, cash, fees and funding are not changed."
+  ],
+  "native_execution": "NOT_RUN",
+  "new_module_sha256": "c48b5432b757560087152cdaa34510fac04c43c6b9bd2595da6c80fda7cf8065",
+  "old_module_sha256": "4226c5acd055d6bb273574060ec51d5153491cf5426310e6566b979deff82f7b",
+  "scope": "SOURCE_ONLY_NOT_NATIVE_OR_BATCH_GO",
+  "stage_targets_unchanged": true,
+  "tests": {
+    "constructor_free_CM2_unittest_count": 105,
+    "elapsed_seconds": "5.525",
+    "new_residual_tests": 8,
+    "result": "PASS"
+  }
+}

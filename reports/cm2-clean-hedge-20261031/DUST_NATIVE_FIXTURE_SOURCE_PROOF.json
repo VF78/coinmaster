@@ -1,0 +1,35 @@
+{
+  "base_commit": "418f2edeeafce8a105edbe8a31e40051f35dc021",
+  "existing_E04_v2_byte_identical": true,
+  "fixture_id": "cm2-residual-dust-native-v1",
+  "not_claimed": [
+    "Native or API0 execution",
+    "Funding coverage (zero postings only)",
+    "Production quote-callback alpha/hedge/intent admission",
+    "Old37 scenario replacement or equivalence",
+    "OS/live recovery",
+    "Repair of future-price-collapse or arbitrary exchange partial-fill dust"
+  ],
+  "only_runner_selector_addition": "cm2-residual-dust-native-v1 -> coinmaster.research.cm2_fixture_dust",
+  "production_planner_418f_byte_identical": true,
+  "real_native_checks_pending": [
+    "Both native SOL sides open8.48, planned child8.40 fullfills, remaining0.08, fullcloseflat",
+    "Separate stock-native LIMITIOC actualpartial and CANCELED leaves; actual remaining inventory legal; fullcloseflat",
+    "Preexisting0.08 at100 after legalopen150 HOLD/noorder; recover150/legalfullclose",
+    "Native fill/order identities, native fees/cash exact, zero fixed roundtrip gross, coherent HWM and minute samples, terminalflat"
+  ],
+  "runner_AST_outside_fixture_selector_equal": true,
+  "scope": "ENGINEERING_TESTONLY_SOL_DRIVER_NOT_ALPHA_HEDGE_STRUCTURAL_OR_WINNER",
+  "source_hashes": {
+    "runtime/coinmaster/research/cm2_fixture_dust.py": "4b57c818701524922e6ca7d5cde78083d9a9e12960d0aaf1f2e60725f7cd0fd0",
+    "runtime/coinmaster/research/cm2_runner.py": "97aa496db8305afd396623ade252185b3734ebedc86c546823dd8992a849e4ed",
+    "runtime/tests/test_cm2_fixture_dust.py": "6825975430c695c94c169333cc50f81576b6b45439eefd2bd2d2b7eb564f7c6e"
+  },
+  "status": "SOURCE_ONLY_NATIVE_NOT_RUN_API_PROBE_NOT_RUN",
+  "tests": {
+    "CM2_constructor_free_unittests": 109,
+    "PASS": true,
+    "elapsed_seconds": "5.153",
+    "new_fixture_contract_tests": 4
+  }
+}

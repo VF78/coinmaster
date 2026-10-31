@@ -46,6 +46,10 @@ class StopPurposeTests(unittest.TestCase):
                     commission=N(as_decimal=lambda:price*D('.000432'),currency='USDC'),
                     order_side=OrderSide.SELL if d>0 else OrderSide.BUY,
                     last_qty=N(as_decimal=lambda:D(1)),last_px=N(as_decimal=lambda:price),liquidity_side='TAKER',ts_event=f.available_ns+1)
+                from test_cm2_order_contract import Clock
+                fake.clock=Clock(event.ts_event);fake.id='PURE_CALLBACK'
+                fake._orders=lambda iid:[]
+                if not hasattr(fake.config,'sol_id'):fake.config.sol_id='SOL'
                 CM2Strategy.on_order_filled(fake,event)
                 self.assertFalse(fake._restore_failed)
                 self.assertNotIn('actual_harvest_geometry',fake.fill_audit[0])

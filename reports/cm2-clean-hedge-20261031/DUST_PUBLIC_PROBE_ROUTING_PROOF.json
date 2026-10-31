@@ -1,0 +1,19 @@
+{
+  "actual_API_probe": "NOT_RUN",
+  "actual_native_engine": "NOT_RUN",
+  "all_other_runner_bytes_equal": true,
+  "base_commit": "dbbc159cc4476f15084cc88f526a4961e3f1a30a",
+  "constructor_free_tests": {
+    "attempt_lease_worker": "GUARDED_NOT_CALLED",
+    "count": 110,
+    "elapsed_seconds": "4.817",
+    "native_constructor": "MOCK_GUARD_NOT_CALLED",
+    "probe_process": "MOCKED_NOT_ACTUAL",
+    "public_dispatch_subcases": 4,
+    "result": "PASS"
+  },
+  "only_product_change": "Extend existing v2 fixture preflight condition to tuple membership including dust-v1",
+  "previous_DUST_NATIVE_FIXTURE_SOURCE_PROOF": "Historical dbbc checkpoint only; current runner additionally has this public condition correction.",
+  "runner_sha256": "9a65f65d2d1ee0d558f240ef56fda4c629ac6d876a14f9b85d052738f016d101",
+  "scope": "SOURCE_ONLY_PUBLIC_NO_RUN_ROUTING"
+}

@@ -1,0 +1,46 @@
+{
+  "FROZEN64_sha256": "aa70cf321a2854c26c4aa3f8a295f9af7c4fb53015c08999498f9bafd913028b",
+  "active_audit": "Active004e remains unfixed. Proposed source tests are not source adoption or full implementation acceptance.",
+  "alpha_parameter_space_data_fee_funding_margin_money_matcher_unchanged": true,
+  "base_commit": "b21a518b7413b37bae5ed5a04f38b54f0f6a45ff",
+  "changed_production_files": [
+    "runtime/coinmaster/strategy/cm2_order_contract.py",
+    "runtime/coinmaster/strategy/cm2_native.py",
+    "runtime/coinmaster/strategy/cm2_execution.py",
+    "runtime/coinmaster/research/cm2_runner.py"
+  ],
+  "execution_model_comparability": "NEW_GUARDS_AND_OPERATIONAL_CLOCK_DEADLINE_CAN_CHANGE_ORDERS_NO_OLD_ECONOMIC_EQUIVALENCE_CLAIM",
+  "old_default_WaveOverlay_source_byte_identical": true,
+  "request_execution_model_id": "CM2_AUDITED_CHILD_REQUEST_V1",
+  "scope": "PROPOSED_NOT_ADOPTED_ACTIVE_004e_AND_OLD_RESULTS_UNCHANGED",
+  "scoped_review_followup": {
+    "only_production_change": "Start SOL zero-target deadline on actual SOL quantity OR net pending OR any owned SOL live order, independent cancel_increases; preserve BTC core.",
+    "parent_source": "e8a2a74b189c573b3a6163ba4de76ad7e9d135a9"
+  },
+  "test_receipt_sha256": "0cf6a47acc963738da7d8f474250338e2c51a03fb15d6046809dfab2657291f5",
+  "unchanged_byte_hashes": {
+    "runtime/coinmaster/research/cm2_committed_validation.py": "7d37f12e152915a176fa7091c00d1244ff1a76b7cfb2dd494c40735b0f6978d2",
+    "runtime/coinmaster/research/cm2_fixture_dust.py": "4b57c818701524922e6ca7d5cde78083d9a9e12960d0aaf1f2e60725f7cd0fd0",
+    "runtime/coinmaster/research/cm2_fixture_e04.py": "7d70840e68750f5df57b859629a7bc94d9077a331f4847db3103d34ef9b9993d",
+    "runtime/coinmaster/research/cm2_funding_reader.py": "d4963d3f95c695ce61aee3342c272e18c0883912ccb989590737250af75c0214",
+    "runtime/coinmaster/research/current_hl_profile.py": "b6b0fb4ad45060477bb1dfb62004087a6fb25b0bf126da1789e5fbffbbf058be",
+    "runtime/coinmaster/research/minute_risk.py": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad",
+    "runtime/coinmaster/research/native_baseline.py": "c19671cfc147226e04cc6475035cbefa4670a914f20503e212478ca167157cc8",
+    "runtime/coinmaster/research/native_fixture.py": "f65a4505d5230cbd1dee421c6e61b47e757497beb3b2b08d9d9efa1bd609b8ab",
+    "runtime/coinmaster/research/native_full_fill.py": "ecd23593316b55e428de909e1168a2cbe3f1cc121b3ca85f0e9ae21ac5147dd8",
+    "runtime/coinmaster/research/paired_observer.py": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42",
+    "runtime/coinmaster/strategy/cm2_checkpoint.py": "7b0db384b263e1cc74dc53b4568fb81c7ce99faf574c0904e457623ec8791069",
+    "runtime/coinmaster/strategy/cm2_policy.py": "b3c0f1cf7a3aa533c766cdaa52c0da6321ca1e462126efa4cd4f2f21a605bd7b",
+    "runtime/coinmaster/venues/effective_fees.py": "f0c54aab2781af7f575b986ddcfab55c8b9b0d5f9fef21c2adcd0f0403d4a2e0",
+    "runtime/coinmaster/venues/hyperliquid_profile.py": "0d56401ba02de4ca7032c3480f1bdb2be2eac3ee36a6c7260786e496dd084bc1",
+    "runtime/coinmaster/venues/margin_policy.py": "ca855858ff19791544bb17930721e591e35acb2d33adb257db85bf6b175c1e15",
+    "runtime/coinmaster/venues/production_preflight.py": "a5c00a40fa109d2ec60fdd474591c6e255a914be4894b6dfb326f63e3f4cdfa1"
+  },
+  "unchanged_native_adapter_method_AST": [
+    "_make_order",
+    "_admit",
+    "_actual_harvest_fill_geometry",
+    "_sync_funding",
+    "_child_capacity"
+  ]
+}

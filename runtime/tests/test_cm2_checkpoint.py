@@ -46,6 +46,58 @@ class CheckpointTests(unittest.TestCase):
         for name in ('_checkpoint_identity','_native_checkpoint_binding','_feed_checkpoint_binding','_checkpoint_document','on_save','on_load'):
             setattr(obj,name,lambda *args,_name=name:getattr(CM2Strategy,_name)(obj,*args))
         return obj
+    def test_drain_checkpoint_retains_first_deadline_and_arms_original_alert(self):
+        from test_cm2_order_contract import Clock
+        from coinmaster.strategy.cm2_order_contract import drain_update
+        obj=self.fake();obj.clock=Clock(10)
+        obj._drain=drain_update(None,10,[str(obj.config.btc_id)])
+        saved=obj.on_save();deadline=obj._drain["deadline_ns"];revision=obj._checkpoint_revision
+        obj._drain=None
+        obj.on_load(saved)
+        self.assertEqual(obj._drain["first_ns"],10)
+        self.assertEqual(obj._drain["deadline_ns"],deadline)
+        self.assertEqual(len(obj.clock.timer_names),1)
+        self.assertEqual(next(iter(obj.clock.alerts.values()))[0],deadline)
+        obj.on_load(saved)
+        self.assertEqual(len(obj.clock.timer_names),1)
+        self.assertEqual(obj._checkpoint_revision,revision)
+
+    def test_invalid_drain_document_fails_before_domain_restore(self):
+        import json
+        from coinmaster.strategy.cm2_checkpoint import decode
+        from coinmaster.strategy.cm2_order_contract import drain_update
+        obj=self.fake();obj._drain=drain_update(None,10,[str(obj.config.btc_id)])
+        saved=obj.on_save();old=dict(obj._drain)
+        document=decode(json.loads(saved[KEY]))
+        document["domain"]["drain"]["deadline_ns"]+=1
+        body=canonical(document);obj._checkpoint_revision=self.store.persist(body,obj._checkpoint_revision)
+        with self.assertRaisesRegex(ValueError,"DRAIN_CHECKPOINT_INVALID"):obj.on_load({KEY:body})
+        self.assertEqual(obj._drain,old)
+        self.assertTrue(obj._restore_failed)
+
+    def test_normal_sol_release_checkpoint_keeps_sol_scope_and_first_deadline(self):
+        from test_cm2_order_contract import Clock
+        from runtime.tests.test_cm2_policy import state
+        for sign in (D(1),D(-1)):
+            obj=self.fake();obj.clock=Clock(201*3_600_000_000_000+1)
+            f=feat(t=201*3_600_000_000_000,close=1000,residual_z=0,btc_return6=float(sign)*.01)
+            snapshot=snap(btc_qty=sign*D(20),sol_qty=-sign*D(100),btc_mark=D(1000),sol_mark=D(100))
+            st=state(direction=int(sign),btc_target=sign*D(20),unhedged_btc_target=sign*D(20),
+                sol_target=-sign*D(100),hedge_active=True,release_count=1,last_hour=200*3_600_000_000_000,
+                stop=800 if sign>0 else 1200)
+            decision=decide(Config(),f,snapshot,st,now_ns=obj.clock.now)
+            obj.config.terminal_close_at_ns=10**25;obj._orders=lambda iid:[]
+            obj.drain_audit=[];obj._persist_checkpoint=lambda:obj.on_save()
+            obj._chain_audit=lambda *a:None
+            CM2Strategy._update_drain(obj,obj.clock.now,snapshot,decision)
+            first=dict(obj._drain);saved=obj.on_save();obj._drain=None
+            obj.on_load(saved)
+            self.assertEqual(obj._drain,first)
+            self.assertEqual(obj._drain["scoped_zero_ids"],[str(obj.config.sol_id)])
+            CM2Strategy._update_drain(obj,obj.clock.now,snapshot,decision)
+            self.assertEqual(obj._drain["deadline_ns"],first["deadline_ns"])
+            self.assertEqual(decision.btc_target,snapshot.btc_qty)
+
     def test_cas_idempotent_and_conflict(self):
         self.assertEqual(self.store.persist(b'one',0),1)
         changes=self.db.total_changes

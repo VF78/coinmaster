@@ -19,9 +19,13 @@ class AdapterBoundaryTests(unittest.TestCase):
                     config=N(trading_start_open_ns=0,terminal_close_at_ns=1000),
                     current_features=Features(100,100,True))
         self_fake._snapshot=lambda now: (_ for _ in ()).throw(RuntimeError("EXECUTION_BOUNDARY_ENTERED"))
-        CM2Strategy.on_quote_tick(self_fake,N(instrument_id="BTC",ts_event=100))
+        native_now=[100]
+        self_fake.clock=N(timestamp_ns=lambda:native_now[0])
+        price=N(as_decimal=lambda:D(100))
+        CM2Strategy.on_quote_tick(self_fake,N(instrument_id="BTC",ts_event=100,bid_price=price,ask_price=price))
+        native_now[0]=101
         with self.assertRaisesRegex(RuntimeError,"EXECUTION_BOUNDARY_ENTERED"):
-            CM2Strategy.on_quote_tick(self_fake,N(instrument_id="BTC",ts_event=101))
+            CM2Strategy.on_quote_tick(self_fake,N(instrument_id="BTC",ts_event=101,bid_price=price,ask_price=price))
     def test_previous_turnover_only(self):
         fake=N(_turnover={"BTC":deque(((100,D(1000)),(200,D(2000))),maxlen=2)},
                config=N(limits=ExecutionLimits(D("1e100"))))
