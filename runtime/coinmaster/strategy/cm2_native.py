@@ -457,7 +457,7 @@ class CM2Strategy(Strategy):
             self._restore_failed=True  # ownership quarantine survives reaching flat
             self._parent_cost_known=False
             self.policy_state=replace(self.policy_state,draining=True,btc_target=ZERO,sol_target=ZERO,
-                                      btc_intent="RISK_TRIM",harvest_target=None,harvest_start_qty=None)
+                                      btc_intent="RISK_TRIM",intent_hour=0,harvest_target=None,harvest_start_qty=None)
         elif (event.instrument_id==self.config.btc_id and context.get("reduce_only")
               and admission.get("intent")=="POSITIVE_HARVEST"):
             # Consume on actual deduplicated fill, including cancel/late-fill race.
@@ -487,7 +487,7 @@ class CM2Strategy(Strategy):
                 if geometry["status"]!="PASS":
                     self._restore_failed=True
                     self.policy_state=replace(self.policy_state,draining=True,btc_target=ZERO,sol_target=ZERO,
-                                      btc_intent="RISK_TRIM",harvest_target=None,harvest_start_qty=None)
+                                      btc_intent="RISK_TRIM",intent_hour=0,harvest_target=None,harvest_start_qty=None)
             if context.get("reduce_only"):
                 keep=max(ZERO,self._btc_cost_qty-q)/self._btc_cost_qty if self._btc_cost_qty else ZERO
                 self._entry_fees *= keep
@@ -683,7 +683,10 @@ class CM2Strategy(Strategy):
         open_orders=[*self.cache.orders_open(),*self.cache.orders_inflight()]
         terminal=self.clock.timestamp_ns() >= self.config.terminal_close_at_ns
         ordinary=[f.get("actual_harvest_geometry",{}).get("status","UNKNOWN") for f in self.fill_audit
-                  if (f.get("admission") or {}).get("intent")=="POSITIVE_HARVEST"]
+                  if f.get("instrument")==str(self.config.btc_id)
+                  and (f.get("admission") or {}).get("intent")=="POSITIVE_HARVEST"]
+        sol_context=sum(f.get("instrument")==str(self.config.sol_id)
+            and (f.get("admission") or {}).get("intent")=="POSITIVE_HARVEST" for f in self.fill_audit)
         geometry_status="FAIL" if "FAIL" in ordinary else "UNKNOWN" if not ordinary or "UNKNOWN" in ordinary else "PASS"
         lifecycle={"reason":"TERMINAL_BOUNDARY_SETTLEMENT" if terminal else "NOT_REACHED",
                    "status":"FLAT" if terminal and not positions and not open_orders else "OPEN"}
@@ -699,9 +702,11 @@ class CM2Strategy(Strategy):
                        "parent_cost_attribution":"NATIVE_FILL_FEES_PRO_RATA_AND_SIGNED_NATIVE_POSTINGS" if self._parent_cost_known else "UNKNOWN_HARVEST_BLOCKED",
                        "restart_recovery":"BOUNDED_NATIVE_CONTINUITY_JOURNAL_REPLAY_ONLY_OS_COLD_RESTORE_NOT_IMPLEMENTED",
                        "checkpoint_revision":self._checkpoint_revision,
-                       "ordinary_harvest_actual_geometry":{"status":geometry_status,"fills":len(ordinary),
+                       "ordinary_harvest_actual_geometry":{"classification_model_id":"CM2_BTC_HARVEST_GEOMETRY_SUMMARY_V2",
+                           "status":geometry_status,"fills":len(ordinary),
                            "pass":ordinary.count("PASS"),"fail":ordinary.count("FAIL"),"unknown":ordinary.count("UNKNOWN"),
                            "quarantined":self._restore_failed,"authority":"NATIVE_POSITION_BASIS_ACTUAL_COMMISSION_SIGNED_FUNDING_COST_GEOMETRY"},
+                       "sol_staging_harvest_context":{"status":"NOT_APPLICABLE_BTC_NET_GEOMETRY","fills":sol_context},
                        "liquidation_measurement":{"contract":"NATIVE_MARK_FIRST_PUBLIC_TIER_MAINTENANCE",
                            "checks":self._liquidation_checks,"unknown_checks":self._liquidation_unknown,
                            "acceptance":"UNKNOWN_PENDING_NATIVE_FIXTURE"},

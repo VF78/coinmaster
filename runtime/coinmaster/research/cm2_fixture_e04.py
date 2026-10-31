@@ -16,8 +16,9 @@ END_NS=START_NS+18*HOUR_NS
 CAPACITY_NOTIONAL=D(40000)
 FUNDING_EXPECTED=(D('-.495'),D('.48'))
 QUEUED_LATENCY_NS=240_000_000_000
-QUEUE_PULSE_MINUTES=(504,1034)
+QUEUE_PULSE_MINUTES=(1026,1034)
 TIMING_MODEL_ID='CM2_E04_SYNTHETIC_ZERO_BASE_240S_INSERT_ONLY'
+DENIED_QUANTITY_TEXT='0.001'
 
 
 def fixed_feature(hour):
@@ -57,6 +58,22 @@ def btc_turnover(minute):
     return D(4000000) if minute==1 else D(3800000) if minute==540 else D('1e9')
 
 
+def write_partial_failure_evidence(output,request,error,*,native_clock_ns,evidence):
+    """Exclusive forensic export only; aborted prefix is never a full PASS."""
+    packet={"status":"FAILED_PARTIAL_NATIVE_EVIDENCE","fixture_id":FIXTURE_ID,
+        "run_id":request.get("run_id"),"declared_interval":{"start_ns":START_NS,"end_ns":END_NS},
+        "native_clock_ns":str(native_clock_ns) if native_clock_ns is not None else None,
+        "original_error":{"type":type(error).__name__,"message":str(error)},
+        "checks":"UNKNOWN_NOT_FINALIZED","financial_qualification":"UNKNOWN_ABORTED_PREFIX",
+        "coherence":"UNFINALIZED_ENGINE_CALLBACK_STATE_NOT_A_SETTLED_RECEIPT",
+        "native_evidence":evidence,"ranking_eligible":False,
+        "terminal_close_or_synthetic_fill_performed_by_export":False,
+        "original_failure_and_budget_spend_preserved":True}
+    path=Path(output)/"engineering-partial-failure.json"
+    with path.open("x") as stream:stream.write(json.dumps(packet,indent=2,sort_keys=True,default=str)+"\n")
+    return path
+
+
 def run_fixture(request):
     if (request.get('fixture_id'),request.get('start_ns'),request.get('end_ns'))!=(FIXTURE_ID,START_NS,END_NS):
         raise ValueError('CM2_EXPLICIT_E04_18H_CONTRACT_REQUIRED')
@@ -69,7 +86,7 @@ def run_fixture(request):
     from nautilus_trader.model.data import CustomData,DataType,BarType,BarSpecification
     from nautilus_trader.model.enums import AccountType,OmsType,OrderType,OrderSide,OrderStatus,TimeInForce,BarAggregation,PriceType,AggregationSource
     from nautilus_trader.model.identifiers import ClientId
-    from nautilus_trader.model.objects import Money
+    from nautilus_trader.model.objects import Money,Quantity
     from coinmaster.strategy.cm2_native import CM2Strategy,CM2StrategyConfig,minute_turnover
     from coinmaster.strategy.cm2_execution import ExecutionLimits,stage_targets,order_plan
     from coinmaster.strategy.cm2_policy import decide,Snapshot,positive_harvest
@@ -191,7 +208,8 @@ def run_fixture(request):
             if tag=='LATE_BTC':order=self.order_factory.market(instrument_id=inst.id,order_side=OrderSide.BUY,
                 quantity=inst.make_qty('1'),time_in_force=TimeInForce.IOC)
             elif tag=='DENIED':order=self.order_factory.market(instrument_id=inst.id,order_side=OrderSide.BUY,
-                quantity=inst.make_qty('.01'),time_in_force=TimeInForce.IOC)
+                # Deliberately raw precision3 > verified SOLprecision2; make_qty would normalize.
+                quantity=Quantity.from_str(DENIED_QUANTITY_TEXT),time_in_force=TimeInForce.IOC)
             else:order=self.order_factory.limit(instrument_id=inst.id,order_side=OrderSide.BUY,
                 quantity=inst.make_qty('1' if tag=='REJECTED' else '10'),
                 price=inst.make_price('100' if tag=='REJECTED' else '1'),post_only=tag=='REJECTED',time_in_force=TimeInForce.GTC)
@@ -243,6 +261,7 @@ def run_fixture(request):
     modules=[PerpetualFundingModule(funding,journal),BybitTierMarginModule((),tuple(profile.selected_leverage),
         120_000_000_000,margin_policy=profile.margin_policy(120_000_000_000),settlement_currency=btc.settlement_currency),observer,faults]
     ObservedFixture=observed_neutral_strategy_type(FixtureStrategy,recorder)
+    strategy=None
     engine=BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level='ERROR'),run_analysis=False))
     try:
         engine.add_venue(venue=btc.id.venue,oms_type=OmsType.NETTING,account_type=AccountType.MARGIN,
@@ -260,14 +279,14 @@ def run_fixture(request):
             checkpoint_store=store,continuity_reader=lambda:observer_continuity(recorder,observer)))
         engine.add_strategy(strategy)
         inputs=[CustomData(input_type,InputEvent(START_NS+h*HOUR_NS,feature=fixed_feature(h))) for h in range(18) if h not in (1,10)]
-        samples={2,3,61,121,181,241,270,301,302,303,304,361,362,421,481,492,493,500,503,505,541,542,601,661,721,781,810,841,842,843,844,901,902,961,1021,1030,1033,1035,1079}
+        samples={2,3,61,121,181,241,270,301,302,303,304,361,362,421,481,492,493,1022,1025,1027,541,542,601,661,721,781,810,841,842,843,844,901,902,961,1021,1030,1033,1035,1079}
         for m in samples:
             actions=['SNAPSHOT']
             if m in (361,901):actions.append('REPLAY')
             if m==492:actions.append('DENIED')
             if m==493:actions.append('REJECTED')
-            if m==500:actions.append('DELAYED_ACK')
-            if m==503:actions.append('UNKNOWN_ACK')
+            if m==1022:actions.append('DELAYED_ACK')
+            if m==1025:actions.append('UNKNOWN_ACK')
             if m==1030:actions.append('LATE_BTC')
             if m==1033:actions.append('UNKNOWN_LATE_BTC')
             inputs.append(CustomData(input_type,InputEvent(START_NS+m*MINUTE_NS+1,actions=actions)))
@@ -371,7 +390,7 @@ def run_fixture(request):
             'native_denied_and_rejected':all(tag in sentinel_orders and sentinel_orders[tag].status==status and event(tag,sentinel_orders[tag].client_order_id) for tag,status in (('DENIED',OrderStatus.DENIED),('REJECTED',OrderStatus.REJECTED))),
             'actual_queued_unknown_ack_freeze':snap.get('unknown_ack',{}).get('unknown') is True and snap['unknown_ack']['acked'] is False,
             'late_ack_native_accept_cancel_resolution':'DELAYED_ACK' in sentinel_orders and sentinel_orders['DELAYED_ACK'].status==OrderStatus.CANCELED and bool(event('ACCEPTED',strategy.fixture_ids['DELAYED_ACK'])) and bool(event('CANCELED',strategy.fixture_ids['DELAYED_ACK'])),
-            'fault_sol_sentinels_no_native_fills':len(sentinel_orders)==4 and all(sentinel_orders[k].filled_qty.as_decimal()==0 for k in ('DENIED','REJECTED','DELAYED_ACK')) and qty(505)==0 and qty(505,'sol')==0,
+            'fault_sol_sentinels_no_native_fills':len(sentinel_orders)==4 and all(sentinel_orders[k].filled_qty.as_decimal()==0 for k in ('DENIED','REJECTED','DELAYED_ACK')) and qty(1021)==0 and qty(1021,'sol')==0 and qty(1027)==0 and qty(1027,'sol')==0,
             'late_foreign_BTC_native_fill_zero_quarantine_drain':len(late_buys)==1 and len(late_sells)==1 and all(D(f['qty'])==1 and D(f['px'])==980 for f in late_pair)
                 and late_buys[0].get('foreign_parent_quarantine') is True and qty(1034)==1 and qty(1035)==0
                 and zero_cap(1033) and snap.get('unknown_late_btc',{}).get('unknown') is True
@@ -401,5 +420,44 @@ def run_fixture(request):
         (output/'engineering-report.json').write_text(json.dumps(report,sort_keys=True,default=str)+'\n')
         if not all(checks.values()):raise ValueError('CM2_E04_NATIVE_ENGINEERING_CHECKS_FAILED')
         return report
+    except BaseException as error:
+        # Read/cache-export BEFORE disposal; no flatten, fabricated fill, end(),
+        # tracker.summary(), or completed receipt is introduced on an abort.
+        try:
+            evidence={}
+            readers={"native_orders":lambda:[{"client_order_id":str(o.client_order_id),"instrument":str(o.instrument_id),
+                "order_type":o.order_type.name,"time_in_force":o.time_in_force.name,
+                "status_name":o.status.name,"status_value":o.status.value,"side":o.side.name,
+                "quantity":str(o.quantity),"filled_quantity":str(o.filled_qty),"leaves_quantity":str(o.leaves_qty),
+                "limit_price":str(o.price) if getattr(o,"price",None) is not None else None,
+                "reduce_only":o.is_reduce_only} for o in engine.cache.orders()],
+                "native_position_lifecycles":lambda:native_position_lifecycles(engine.cache),
+                "native_funding_cash_audit":journal.funding_cash_audit,
+                "retained_observer_state":lambda:observer_continuity(recorder,observer)}
+            if strategy is not None:
+                readers.update(native_cache_snapshot=strategy._native_checkpoint_binding,
+                    native_adapter=strategy.reporting_state,
+                    native_domain_checkpoint_observation=strategy._checkpoint_document,
+                    latest_durable_checkpoint=lambda:{"revision":store.read()[0],
+                        "document":json.loads(store.read()[1])} if store.read() is not None else None,
+                    v2_native_event_ids=lambda:strategy.fixture_events,
+                    v2_script_snapshots=lambda:strategy.fixture_snapshots,
+                    v2_domain_replay=lambda:strategy.fixture_replays,
+                    v2_testonly_order_shapes=lambda:strategy.fixture_shapes,
+                    v2_fault_sentinel_ids=lambda:{k:str(v) for k,v in strategy.fixture_ids.items()})
+            for name,reader in readers.items():
+                try:evidence[name]=reader()
+                except Exception as field_error:
+                    evidence[name]={"status":"UNKNOWN_EXPORT_FIELD_FAILED","error_type":type(field_error).__name__,"error":str(field_error)}
+            write_partial_failure_evidence(output,request,error,
+                native_clock_ns=strategy.clock.timestamp_ns() if strategy is not None else None,evidence=evidence)
+        except Exception as export_error:
+            # Never replace the original native/fixture failure with exporter failure.
+            try:
+                with (output/'partial-export-error.json').open('x') as stream:
+                    stream.write(json.dumps({'original_error_type':type(error).__name__,
+                        'export_error_type':type(export_error).__name__,'export_error':str(export_error)})+'\n')
+            except Exception:pass
+        raise
     finally:
         engine.dispose();observer.file.close();recorder.close_writers();journal.close()

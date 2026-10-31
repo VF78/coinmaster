@@ -284,7 +284,7 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
                      stop=entry-d*r,extreme=entry)
     if d and d != st.direction:
         return Decision(ZERO,ZERO,"UNEXPECTED_FACTOR_FLIP",replace(st,draining=True,btc_target=ZERO,sol_target=ZERO,unhedged_btc_target=ZERO,
-                            btc_intent="RISK_TRIM",harvest_target=None,harvest_start_qty=None),True)
+                            btc_intent="RISK_TRIM",intent_hour=0,harvest_target=None,harvest_start_qty=None),True)
     unknown = (not f.valid or not s.data_known or s.unknown_orders
                or not (0 <= now_ns-f.closed_ns <= HOUR_NS)
                or (cfg.mode != "btc_only" and not f.hedge_valid))
@@ -331,7 +331,8 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
     st = replace(st,extreme=extreme,stop=stop)
     if d*(f.close-stop) <= 0:
         name = "TRAIL_PROFIT" if positive_harvest(s) else "PROTECTIVE_STOP"
-        return Decision(ZERO,ZERO,name,replace(st,btc_target=ZERO,sol_target=ZERO,draining=True),True)
+        return Decision(ZERO,ZERO,name,replace(st,btc_target=ZERO,sol_target=ZERO,draining=True,
+            btc_intent="RISK_TRIM",intent_hour=0,harvest_target=None,harvest_start_qty=None),True)
     btc = st.btc_target
     reason = "CORE_HOLD"
     if st.harvest_target is not None:

@@ -1,0 +1,41 @@
+{
+  "AST_proof": {
+    "runtime/coinmaster/strategy/cm2_native.py": {
+      "AST_equal_after_removing_only_reporting_method_and_explicit_draining_purpose_keywords": {
+        "3b654410de84a226c27b0ded6aa11c31ce0d2c12": true,
+        "5fd675d622ef10b7f38b5aa890df15b915c83c64": true,
+        "f063129a9335a5272e2aa89fc63d66d7496f86e7": true
+      },
+      "current_sha256": "41682d1ef15a41ada0ab92c8ca048146a83557421f28bcc3d67946136db9fe6b"
+    },
+    "runtime/coinmaster/strategy/cm2_policy.py": {
+      "AST_equal_after_removing_only_reporting_method_and_explicit_draining_purpose_keywords": {
+        "3b654410de84a226c27b0ded6aa11c31ce0d2c12": true,
+        "5fd675d622ef10b7f38b5aa890df15b915c83c64": true,
+        "f063129a9335a5272e2aa89fc63d66d7496f86e7": true
+      },
+      "current_sha256": "b3c0f1cf7a3aa533c766cdaa52c0da6321ca1e462126efa4cd4f2f21a605bd7b"
+    }
+  },
+  "changed_semantics": "Allowed protective market exit no longer masquerades as ordinary harvest or causes false permanent quarantine. No signal/threshold/price/factory/cash/funding change.",
+  "existing_control_native_replay_not_claimed": true,
+  "fields_only_on_explicit_draining_replacements": true,
+  "genuine_late_harvest_FAIL_or_UNKNOWN_still_quarantines": true,
+  "harvested_actual_consumption_preserved": true,
+  "native_engine_constructions": 0,
+  "next_native_scope": "Root-approved-cap0-preparation-only; unchanged existing18H v2/37check scenario; no thirdparent/newfixture/engine until exactRootGO",
+  "not_behaviorally_identical_to_old_buggy_source": true,
+  "original_submitted_order_admission_and_parent_preserved": true,
+  "purpose_fields": [
+    "btc_intent",
+    "harvest_start_qty",
+    "harvest_target",
+    "intent_hour"
+  ],
+  "scope": "PROVEN_STOP_DRAIN_PURPOSE_P1_CORRECTION",
+  "tests": {
+    "command": "PYTHONPATH=runtime <venv-python> -B -m pytest -q runtime/tests/test_cm2_stop_purpose.py runtime/tests/test_cm2_child_admission.py runtime/tests/test_cm2_harvest_execution.py runtime/tests/test_cm2_policy.py runtime/tests/test_cm2_harvest_reporting.py",
+    "passed": 54,
+    "seconds": 2.87
+  }
+}

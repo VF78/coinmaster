@@ -1,0 +1,28 @@
+{
+  "comparisons": {
+    "3b654410de84a226c27b0ded6aa11c31ce0d2c12": {
+      "all_AST_except_reporting_state_equal": true,
+      "old_file_sha256": "a1a255fa6fe551e8c3990d98d5d706b17080a15ce5a3ca880c705d01f092a879"
+    },
+    "f063129a9335a5272e2aa89fc63d66d7496f86e7": {
+      "all_AST_except_reporting_state_equal": true,
+      "old_file_sha256": "a1a255fa6fe551e8c3990d98d5d706b17080a15ce5a3ca880c705d01f092a879"
+    }
+  },
+  "current_file_sha256": "a1daa123e4cc02f97af22d56beb2a63ed69d0116b3a7cb016811183f4d4b238b",
+  "decision_order_fill_cost_funding_liquidation_persistence_logic_changed": false,
+  "derived_E04_path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/var/research-jobs/cm2-clean-hedge-20261031/proposals/CM2_E04_CHILD_ADMISSION_REPLAY_R1_VPS-f063129a/E04_REPORTING_V2_RECLASSIFICATION.json",
+  "derived_E04_sha256": "f6c7e7cf569b0893bb7ff0decbce2ea9d59bb8c705f2bb26b316b091586db28c",
+  "native_engine_constructions": 0,
+  "native_money_and_original_raw_model_ids_preserved": true,
+  "not_whole_native_replay_or_same_source_hash": true,
+  "other_production_modules_byte_unchanged": true,
+  "scope": "REPORTING_STATE_METHOD_ONLY",
+  "source_ids_audit_chain_checkpoint_identity_hashes_intentionally_differ": true,
+  "strict_financial_qualifier_consumes_old_summary": false,
+  "tests": {
+    "passed": 22,
+    "seconds": 2.23
+  },
+  "unchanged_AST_sha256": "4690ba21d792b92c30f895fd89dff918979bb2eae1afc8eb7a26a4c33cbe4534"
+}

@@ -1,0 +1,32 @@
+{
+  "actual_corrected_native_proof": "NOT_RUN",
+  "changed_product_module": "runtime/coinmaster/research/cm2_fixture_e04.py",
+  "corrected_delayed_ack_minutes": {
+    "deadline_pulse": 1026,
+    "flat_after": 1027,
+    "submit": 1022,
+    "unknown": 1025
+  },
+  "engineering_budget": "4_OF_4_SPENT_UNCHANGED",
+  "fixture_sha256": "7d70840e68750f5df57b859629a7bc94d9077a331f4847db3103d34ef9b9993d",
+  "focused_tests": {
+    "passed": 14,
+    "seconds": 2.36
+  },
+  "late_BTC_submit_unchanged": 1030,
+  "native_engine_constructions": 0,
+  "native_retry_authorized": false,
+  "no_new_state_or_account_reset": true,
+  "old_sufficient_state_chain": {
+    "503": "UNKNOWN_CAP0",
+    "505": "HOLD_CAP0",
+    "541": "RECOVERY_WAIT1",
+    "601": "STALE_UNKNOWN_RESET0",
+    "661": "RECOVERY_WAIT1",
+    "721": "NO_BREAKOUT_CAP_CLEARED",
+    "961": "LATE_ENTRY"
+  },
+  "parent_source": "2d6c70b9c94508d80d49f2c8b973f0965baad292",
+  "production_byte_unchanged_from": "3b654410de84a226c27b0ded6aa11c31ce0d2c12",
+  "trusted_short_flat_before": 1021
+}

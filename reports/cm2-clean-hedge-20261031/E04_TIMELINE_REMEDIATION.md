@@ -1,0 +1,9 @@
+# Delayed ACK fault phase isolation
+
+Pure replay of the original v2 schedule confirms a fixture-only cross-phase defect. AtM503, an owned unknown ACK while flat correctly latches safety_cap0. M505 cannot clear it without a new hour. M541/H9 is only the first valid recovery close, so it returns VALIDITY_RECOVERY_WAIT and blocks the intended short breakout. The deliberately missing H10 feature makesM601 stale and resets recovery; M661/H11 waits again, and M721/H12 clears the cap but has no breakout. The next entry would occur atH16. This is intended production safety behavior; the controller must not be weakened or reset to accommodate the fixture.
+
+The minimal fixture correction moves the queued ACK fault after the trusted short stop/drain: submissionM1022, unknown observationM1025, native deadline pulseM1026+1ns and observation+2ns, flat observationM1027. The separately tagged late BTC fault remainsM1030/M1033/M1034. All events remain inside the same18H interval. Native flat is explicitly required atM1021 andM1027. No account/domain reset is added; the only reset remains the already declared same-clock bounded replay test.
+
+A focused regression reproduces the old503→541→601→661→721 failure and confirms the uncontaminated H9 entry, adverse residual revocation, H10 finite half trim and H11/H12 recovery with held short20. AST scheduling checks prove no delayed/unknown ACK fault is intentionally injected before the short phase. Fourteen targeted tests PASS2.36s, engine0. Actual corrected native denial/timing/final checks remain NOT_RUN. Original E04 failure and4/4 engineering spend are unchanged.
+
+The already prepared2d6 read-only proposal snapshot is preserved as obsolete source history. Its API probe was never invoked and no request, budget, ledger or physical attempt was created. A new immutable source/proposal and constructor-free boundary proof are required; no physical budget amendment or root GO exists yet.

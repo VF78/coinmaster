@@ -40,7 +40,7 @@ class E04PureTests(unittest.TestCase):
         self.assertEqual((first,second),fixture.FUNDING_EXPECTED)
         self.assertEqual(first+second,D('-.015'))
         self.assertEqual(fixture.QUEUED_LATENCY_NS,240*1_000_000_000)
-        self.assertEqual(fixture.QUEUE_PULSE_MINUTES,(504,1034))
+        self.assertEqual(fixture.QUEUE_PULSE_MINUTES,(1026,1034))
         self.assertEqual(D(2)*D(980)*D('.000432'),D('.84672'))
     def snapshot(self,qty=40,price=990,sol=0):
         return Snapshot(D(10000),D(qty),D(sol),D(price),D(100),btc_vwap=D(1000),

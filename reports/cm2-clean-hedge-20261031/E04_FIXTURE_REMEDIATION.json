@@ -1,0 +1,33 @@
+{
+  "actual_E04_final_checks": "UNKNOWN_ABORTED",
+  "actual_corrected_DENIED_event": "NOT_RUN",
+  "actual_profile": {
+    "instrument": "SOL-USD-PERP.HYPERLIQUID",
+    "min_notional": "10.00000000 USDC",
+    "min_quantity": null,
+    "size_precision": 2,
+    "step": "0.01"
+  },
+  "change_scope": "FIXTURE_ONLY_RAW_QUANTITY_DENIAL_AND_PARTIAL_FAILURE_EXPORT",
+  "changed_product_module": "runtime/coinmaster/research/cm2_fixture_e04.py",
+  "ledger_or_budget_mutated": false,
+  "native_engine_constructions_by_author": 0,
+  "native_factory_raw_precision": 3,
+  "native_factory_raw_quantity": "0.001",
+  "native_retry_authorized": false,
+  "native_risk_source_sha256": "bf51d0d886d98c4e95c1ef1aa74e4dd24a236a9fc149fb646a1f038d7dfb8d84",
+  "new_fixture_sha256": "3abab59d805efe9ecf74b0f7df12bc15ef13fe04f86e6fb7c7a0925b18dbf819",
+  "no_new_production_P0_P1_established_by_this_failure": true,
+  "original_E04_status": "FAILED_PRESERVED",
+  "original_engineering_budget_cap": 4,
+  "original_engineering_budget_spent": 4,
+  "parent_source": "3b654410de84a226c27b0ded6aa11c31ce0d2c12",
+  "production_runtime_files_byte_unchanged": true,
+  "risk_bypass": false,
+  "source_pre_margin_quantity_violation": true,
+  "tests": {
+    "command": "PYTHONPATH=runtime <venv-python> -B -m pytest -q runtime/tests/test_cm2_fixture_e04.py runtime/tests/test_cm2_fixture_e04_failure.py runtime/tests/test_cm2_fixture_boundary.py",
+    "elapsed_seconds": 3.01,
+    "passed": 13
+  }
+}
