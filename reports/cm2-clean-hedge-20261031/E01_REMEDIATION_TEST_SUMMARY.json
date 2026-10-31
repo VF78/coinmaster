@@ -1,0 +1,19 @@
+{
+  "scope": "E01 guarded-reduction liveness and native enum/report classification remediation",
+  "command": "PYTHONPATH=runtime <pinned-python> -m pytest runtime/tests/test_cm2_policy.py runtime/tests/test_cm2_boundary.py runtime/tests/test_cm2_fixture_validation.py runtime/tests/test_cm2_report_precision.py -q",
+  "result": "47 passed in3.31s",
+  "native_engine_constructions": 0,
+  "physical_engineering_spent": 1,
+  "engineering_remaining": 3,
+  "original_E01_report_sha256": "3b2a1216f7112ac911cfa5df2690e12086b5b1e9e2cc624b511c9366bfa30592",
+  "no_original_report_or_ledger_mutation": true,
+  "source_sha256": {
+    "runtime/coinmaster/strategy/cm2_execution.py": "4226c5acd055d6bb273574060ec51d5153491cf5426310e6566b979deff82f7b",
+    "runtime/coinmaster/strategy/cm2_native.py": "ab032b709488587d32b5feef083d79c35dcecb51ec5a7147f9f86267c7b92e1c",
+    "runtime/coinmaster/research/cm2_fixture.py": "76f48e5fcf09a2f643838763d2071809be0c988a29f10c67f370a03e84cdc339",
+    "runtime/coinmaster/research/cm2_fixture_validation.py": "697135461c6d3247f13ab3b826884ca7cbbb322a6793423e22e9f69079e77789",
+    "runtime/tests/test_cm2_policy.py": "4926d8382827d60dcc0274673c027944f28cf86bd51e8ff77c09f2e221106346",
+    "runtime/tests/test_cm2_fixture_validation.py": "8c550b1a73e071d8bac0a751279e87a9d8481010d2697ae0718f346afb864502"
+  },
+  "remaining": "new source requires independent focused review and rootGO before E02; enum-only derivative is NOT engineering acceptance"
+}

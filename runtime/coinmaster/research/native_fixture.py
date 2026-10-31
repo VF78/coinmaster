@@ -287,8 +287,10 @@ class PerpetualFundingModule(SimulationModule):
                 notional = position.quantity.as_decimal() * mark
                 # Positive funding: longs pay and shorts receive; negative reverses it.
                 sign = Decimal("-1") if position.is_long else Decimal("1")
-                self.exchange.adjust_account(Money(sign * notional * event.rate, instrument.quote_currency))
-                account_total = self.exchange.get_account().balance_total(USDT).as_decimal()
+                before_total = self.exchange.get_account().balance_total(instrument.settlement_currency).as_decimal()
+                self.exchange.adjust_account(Money(sign * notional * event.rate, instrument.settlement_currency))
+                account_total = self.exchange.get_account().balance_total(instrument.settlement_currency).as_decimal()
+                self._journal.record_funding_cash(event.event_id,str(event.instrument_id),event.ts_event,before_total,account_total)
                 self._journal.record_funding(
                     event.event_id,
                     str(event.instrument_id),
@@ -406,9 +408,12 @@ class BybitTierMarginModule(SimulationModule):
         marks: tuple["MarkPriceUpdate", ...],
         selected_leverage: tuple[tuple[InstrumentId, Decimal], ...],
         max_mark_age_ns: int,
+        *, margin_policy=None, settlement_currency=USDT,
     ) -> None:
         super().__init__(SimulationModuleConfig())
-        self._policy = TierMarginPolicy(marks, dict(selected_leverage), max_mark_age_ns)
+        self._policy = margin_policy or TierMarginPolicy(marks, dict(selected_leverage), max_mark_age_ns)
+        self._injected_policy = margin_policy
+        self._settlement_currency = settlement_currency
         self._static_marks = marks
         self._selected_leverage = dict(selected_leverage)
         self._max_mark_age_ns = max_mark_age_ns
@@ -418,13 +423,13 @@ class BybitTierMarginModule(SimulationModule):
     def process(self, ts_now: int) -> None:
         account = self.exchange.get_account()
         open_ids = {position.instrument_id for position in self.exchange.cache.positions_open()}
-        for instrument_id in (BTC_PERP.id, SOL_PERP.id):
+        for instrument_id in self._selected_leverage:
             if instrument_id not in open_ids:
                 account.clear_margin_init(instrument_id)
                 account.clear_margin_maint(instrument_id)
         for position in self.exchange.cache.positions_open():
             try:
-                policy = TierMarginPolicy(
+                policy = self._injected_policy if self._injected_policy is not None else TierMarginPolicy(
                     tuple(self._dynamic_marks.values()) if self._dynamic_marks else self._static_marks,
                     self._selected_leverage,
                     self._max_mark_age_ns,
@@ -439,8 +444,8 @@ class BybitTierMarginModule(SimulationModule):
                 account.clear_margin_init(position.instrument_id)
                 account.clear_margin_maint(position.instrument_id)
                 continue
-            account.update_margin_init(position.instrument_id, Money(initial, USDT))
-            account.update_margin_maint(position.instrument_id, Money(maintenance, USDT))
+            account.update_margin_init(position.instrument_id, Money(initial, self._settlement_currency))
+            account.update_margin_maint(position.instrument_id, Money(maintenance, self._settlement_currency))
             self.observed.append((ts_now, mark, initial, maintenance))
             if len(self.observed) > 128:
                 del self.observed[:-128]
@@ -454,6 +459,8 @@ class BybitTierMarginModule(SimulationModule):
         mark = data.data if isinstance(data, CustomData) else data
         if isinstance(mark, VenueMark):
             self._dynamic_marks[mark.instrument_id] = MarkPriceUpdate(mark.instrument_id, mark.price, mark.ts_event)
+            if self._injected_policy is not None:
+                self._injected_policy.update_mark(mark)
 
     def log_diagnostics(self, logger) -> None:
         logger.info("Bybit tier margin module active")
@@ -469,12 +476,30 @@ class MarkPriceUpdate:
     ts_event: int
 
 
-def quote(instrument_id: InstrumentId, bid: str, ask: str, ts: int) -> QuoteTick:
-    size = "1000.0" if instrument_id == SOL_PERP.id else "1000.000"
+def quote(instrument_id: InstrumentId, bid: str, ask: str, ts: int, *, size_precision: int | None = None) -> QuoteTick:
+    if size_precision is None:
+        size = "1000.0" if instrument_id == SOL_PERP.id else "1000.000"
+    else:
+        if not isinstance(size_precision, int) or isinstance(size_precision, bool) or size_precision < 0:
+            raise ValueError("size_precision must be a nonnegative integer")
+        size = format(Decimal("1000"), f".{size_precision}f")
     return QuoteTick(
         instrument_id, Price.from_str(bid), Price.from_str(ask),
         Quantity.from_str(size), Quantity.from_str(size), ts, ts,
     )
+
+
+def instrument_quote(instrument, bid, ask, ts: int, *, size="1000") -> QuoteTick:
+    """Build both sides and sizes through this actual native instrument.
+
+    The nominal displayed size is not historical depth; the explicit full-fill
+    diagnostic model independently supplies this order's native leaves.
+    """
+    quantity=instrument.make_qty(Decimal(str(size)))
+    return QuoteTick(instrument.id,
+        instrument.make_price(Decimal(str(bid))),
+        instrument.make_price(Decimal(str(ask))),
+        quantity,quantity,ts,ts)
 
 
 def build_engine(

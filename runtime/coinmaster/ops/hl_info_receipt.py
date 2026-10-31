@@ -19,6 +19,54 @@ class IncompleteInfoReport(ValueError):
     """The venue evidence cannot certify even a conditional report batch."""
 
 
+def validated_dex_names(names):
+    if (not isinstance(names,(tuple,list)) or not 1<=len(names)<=32
+        or any(not isinstance(name,str) for name in names) or len(set(names))!=len(names)
+        or '' not in names):
+        raise IncompleteInfoReport('UNIFIED_DEX_CATALOG_MALFORMED')
+    return tuple(names)
+
+
+def parse_perp_dex_directory(raw):
+    if not isinstance(raw,list) or not 1<=len(raw)<=32:
+        raise IncompleteInfoReport('UNIFIED_DEX_DISCOVERY_BOUND_UNKNOWN')
+    return validated_dex_names(['' if item is None else item.get('name') if isinstance(item,dict) else None for item in raw])
+
+
+async def bounded_info_requests(info,bodies,*,width=8):
+    """Independent prepaid requests only; all dispatched calls finish before fail."""
+    import asyncio,time
+    if type(width) is not int or not 1<=width<=8:
+        raise IncompleteInfoReport('INFO_PARALLELISM_INVALID')
+    results=[];provenance=[]
+    async def measured(body):
+        started=time.monotonic_ns()
+        try:return await info(body)
+        finally:provenance.append((body.get('type'),body.get('dex'),started,time.monotonic_ns()))
+    for offset in range(0,len(bodies),width):
+        pending=asyncio.gather(*(measured(body) for body in bodies[offset:offset+width]),return_exceptions=True)
+        try:batch=await asyncio.shield(pending)
+        except asyncio.CancelledError:
+            await pending
+            raise
+        failures=[value for value in batch if isinstance(value,BaseException)]
+        if failures:
+            error=IncompleteInfoReport('INFO_PARALLEL_BATCH_INCOMPLETE')
+            error.request_provenance=tuple(provenance)
+            raise error from failures[0]
+        results.extend(batch)
+    return tuple(results),tuple(provenance)
+
+
+async def collect_per_dex_states(info,*,account,dex_names):
+    names=validated_dex_names(dex_names)
+    values,provenance=await bounded_info_requests(info,[dict(type='clearinghouseState',user=account,dex=name) for name in names])
+    for value in values:
+        if not isinstance(value,dict) or not isinstance(value.get('assetPositions'),list):
+            raise IncompleteInfoReport('UNIFIED_DEX_POSITION_SET_UNKNOWN')
+    return tuple(zip(names,values)),provenance
+
+
 @dataclass(frozen=True)
 class InfoReceipt:
     account: str
@@ -38,6 +86,18 @@ class InfoReceipt:
     account_role: str = ""
     abstraction: str = ""
     dex_abstraction: bool | None = None
+    cached_terminal_cloids: tuple[str, ...] = ()
+    query_start_ms: int | None = None
+    query_anchor_tid: int | None = None
+    account_mode: str = "disabled"
+    spot_balances: tuple[dict,...] = ()
+    all_dex_states: tuple = ()
+    equity_basis: str = "HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1"
+    context_verified_at_ns: int | None = None
+    mode_observed_at_ns: int | None = None
+    fill_anchor_ms: int | None = None
+    fill_anchor_fingerprint: str | None = None
+    dex_state_provenance: tuple = ()
 
 
 def _number(value: Any, name: str) -> Decimal:
@@ -110,6 +170,11 @@ async def collect_info_receipt(
     expected_orders: dict[str, int | None],
     owned_coins: frozenset[str],
     require_money_scope: bool = False,
+    cached_terminal_statuses: dict | None = None, archived_fills: tuple = (),
+    query_anchor_ms: int | None = None, query_anchor_tid: int | None = None,
+    allow_fill_subdivision: bool = True,
+    account_mode: str = "disabled",account_context: dict | None = None,
+    fill_anchor_ms: int | None = None,fill_anchor_fingerprint: str | None = None,
 ) -> InfoReceipt:
     """Collect a validated, bounded batch; raises on uncertainty.
 
@@ -135,6 +200,16 @@ async def collect_info_receipt(
         raise IncompleteInfoReport("BAD_OWNERSHIP")
     if anchor_tid is not None and not expected_orders:
         raise IncompleteInfoReport("ANCHOR_WITHOUT_DURABLE_ORDER")
+    if ((fill_anchor_ms is None)!=(fill_anchor_fingerprint is None)
+        or (fill_anchor_ms is not None and (anchor_tid is None or type(fill_anchor_ms) is not int
+            or not anchor_ms<=fill_anchor_ms<=end_ms or not isinstance(fill_anchor_fingerprint,str)
+            or len(fill_anchor_fingerprint)!=64 or any(c not in '0123456789abcdef' for c in fill_anchor_fingerprint)))):
+        raise IncompleteInfoReport('APPLIED_ANCHOR_BINDING_INVALID')
+    cached_terminal_statuses=cached_terminal_statuses or {}
+    if set(cached_terminal_statuses)-set(expected_orders):raise IncompleteInfoReport('CACHED_TERMINAL_SCOPE_UNKNOWN')
+    query_start=anchor_ms if query_anchor_ms is None else query_anchor_ms
+    if type(query_start) is not int or not anchor_ms<=query_start<=end_ms:raise IncompleteInfoReport('QUERY_ANCHOR_INVALID')
+    if (query_anchor_ms is None)!=(query_anchor_tid is None):raise IncompleteInfoReport('QUERY_ANCHOR_INCOMPLETE')
     known_oids = set()
     for cloid, oid in expected_orders.items():
         if not isinstance(cloid, str) or len(cloid) != 34 or not cloid.startswith("0x"):
@@ -158,14 +233,24 @@ async def collect_info_receipt(
             raise IncompleteInfoReport("INFO_TRANSPORT_FAILED") from exc
 
     open_orders = await request({"type": "frontendOpenOrders", "user": account, "dex": dex})
-    state = await request({"type": "clearinghouseState", "user": account, "dex": dex})
+    if account_mode not in ('disabled','unifiedAccount'):raise IncompleteInfoReport('UNSUPPORTED_ACCOUNT_ABSTRACTION')
+    spot_rows=();all_dex_rows=();dex_provenance=()
+    if account_mode=='unifiedAccount':
+        from coinmaster.ops.hl_unified_account import default_dex_state,spot_usdc
+        if dex!='':raise IncompleteInfoReport('UNIFIED_DEFAULT_DEX_REQUIRED')
+        if account_context is None:raise IncompleteInfoReport('UNIFIED_VERIFIED_DEX_DIRECTORY_REQUIRED')
+        all_dex,dex_provenance=await collect_per_dex_states(request,account=account,dex_names=account_context.get('dex_names'))
+        state=default_dex_state(all_dex)
+        spot=await request({'type':'spotClearinghouseState','user':account})
+        spot_usdc(spot);spot_rows=tuple(spot['balances']);all_dex_rows=tuple((item[0],item[1]) for item in all_dex)
+    else:state = await request({"type": "clearinghouseState", "user": account, "dex": dex})
     if not isinstance(open_orders, list) or not isinstance(state, dict) or not isinstance(state.get("assetPositions"), list):
         raise IncompleteInfoReport("MALFORMED_ACCOUNT_OR_ORDERS")
     summary = state.get("marginSummary")
     if not isinstance(summary, dict):
         raise IncompleteInfoReport("MALFORMED_ACCOUNT_SUMMARY")
     account_value = _number(summary.get("accountValue"), "ACCOUNT_VALUE")
-    if account_value < 0:
+    if account_value < 0 and account_mode=="disabled":
         raise IncompleteInfoReport("BAD_ACCOUNT_VALUE")
     totals = []
     for field in ("totalRawUsd", "totalMarginUsed", "totalNtlPos"):
@@ -174,7 +259,7 @@ async def collect_info_receipt(
             raise IncompleteInfoReport(f"BAD_{field}")
         totals.append(str(value))
     withdrawable = _number(state.get("withdrawable"), "WITHDRAWABLE")
-    if withdrawable < 0:
+    if withdrawable < 0 and account_mode=="disabled":
         raise IncompleteInfoReport("BAD_WITHDRAWABLE")
     cross_values: tuple[str, str, str, str] = ()
     role = abstraction = ""
@@ -187,22 +272,30 @@ async def collect_info_receipt(
             _number(cross.get(field), "CROSS_" + field)
             for field in ("accountValue", "totalRawUsd", "totalMarginUsed", "totalNtlPos")
         )
-        if cross_numbers[0] < 0 or cross_numbers[2] < 0 or cross_numbers[3] < 0:
+        if (cross_numbers[0] < 0 and account_mode=="disabled") or cross_numbers[2] < 0 or cross_numbers[3] < 0:
             raise IncompleteInfoReport("BAD_CROSS_MARGIN_SUMMARY")
         cross_values = tuple(str(value) for value in cross_numbers)
-        raw_role = await request({"type": "userRole", "user": account})
-        raw_abstraction = await request({"type": "userAbstraction", "user": account})
-        dex_abstraction = await request({"type": "userDexAbstraction", "user": account})
-        role = raw_role.get("role") if isinstance(raw_role, dict) else ""
-        abstraction = raw_abstraction if isinstance(raw_abstraction, str) else ""
-        if role != "user" or abstraction != "disabled" or dex_abstraction is not False:
+        if account_mode=='unifiedAccount' and account_context is not None:
+            role=account_context['master_role'];abstraction=account_context['mode'];dex_abstraction=account_context['dex_abstraction']
+        else:
+            raw_role=await request({'type':'userRole','user':account})
+            raw_abstraction=await request({'type':'userAbstraction','user':account})
+            dex_abstraction=await request({'type':'userDexAbstraction','user':account})
+            role=raw_role.get('role') if isinstance(raw_role,dict) else ''
+            abstraction=raw_abstraction if isinstance(raw_abstraction,str) else ''
+        if role != "user" or abstraction != account_mode or dex_abstraction is not False:
             raise IncompleteInfoReport("UNSUPPORTED_ACCOUNT_ABSTRACTION")
 
     statuses = []
     resolved_oids = set()
     oid_coin: dict[int, str] = {}
     for cloid, expected_oid in expected_orders.items():
-        status = await request({"type": "orderStatus", "user": account, "oid": cloid})
+        if cloid in cached_terminal_statuses:
+            status=cached_terminal_statuses[cloid]
+            if status.get('order',{}).get('status') not in ('filled','canceled'):
+                raise IncompleteInfoReport('CACHED_STATUS_NOT_TERMINAL')
+        else:
+            status = await request({"type": "orderStatus", "user": account, "oid": cloid})
         if not isinstance(status, dict) or status.get("status") != "order" or not isinstance(status.get("order"), dict):
             raise IncompleteInfoReport("ORDER_STATUS_UNKNOWN")
         item = status["order"]
@@ -290,6 +383,8 @@ async def collect_info_receipt(
         })
         if not isinstance(rows, list) or len(rows) > MAX_FILLS:
             raise IncompleteInfoReport("MALFORMED_OR_OVERSIZE_FILLS")
+        if not allow_fill_subdivision and len(rows)>=MAX_FILLS:
+            raise IncompleteInfoReport('LIVE_FILL_RESPONSE_SATURATED')
         for row in rows:
             time, tid, oid = _fill(row, start, end)
             if row["coin"] not in owned_coins or oid not in known_oids:
@@ -307,9 +402,16 @@ async def collect_info_receipt(
             await window(start, mid)
             await window(mid + 1, end)
 
-    await window(anchor_ms, end_ms)
+    await window(query_start, end_ms)
+    if query_anchor_tid is not None and (query_anchor_tid not in fills_by_tid or fills_by_tid[query_anchor_tid]['time']!=query_start):
+        raise IncompleteInfoReport('QUERY_ANCHOR_NOT_RETAINED')
+    for raw in archived_fills:
+        _,tid,oid=_fill(raw,anchor_ms,query_start)
+        if oid not in known_oids or raw['coin']!=oid_coin[oid]:raise IncompleteInfoReport('ARCHIVED_FILL_SCOPE_UNKNOWN')
+        if tid in fills_by_tid and fills_by_tid[tid]!=raw:raise IncompleteInfoReport('CONFLICTING_ARCHIVED_FILL')
+        fills_by_tid[tid]=raw
     if anchor_tid is not None and (
-        anchor_tid not in fills_by_tid or fills_by_tid[anchor_tid]["time"] != anchor_ms
+        anchor_tid not in fills_by_tid or fills_by_tid[anchor_tid]["time"] != (anchor_ms if fill_anchor_ms is None else fill_anchor_ms)
     ):
         raise IncompleteInfoReport("ANCHOR_NOT_RETAINED")
     fills = tuple(sorted(fills_by_tid.values(), key=lambda item: (item["time"], item["tid"])))
@@ -317,7 +419,14 @@ async def collect_info_receipt(
         account, dex, anchor_ms, end_ms, tuple(open_orders), tuple(positions),
         fills, tuple(statuses), fill_anchor_proven=anchor_tid is not None,
         account_value=str(account_value), anchor_tid=anchor_tid,
+        fill_anchor_ms=fill_anchor_ms,fill_anchor_fingerprint=fill_anchor_fingerprint,
         account_summary=(str(account_value), *totals, str(withdrawable)),
         cross_account_summary=cross_values, account_role=role,
         abstraction=abstraction, dex_abstraction=dex_abstraction,
+        cached_terminal_cloids=tuple(sorted(cached_terminal_statuses)),query_start_ms=query_anchor_ms,query_anchor_tid=query_anchor_tid,
+        account_mode=account_mode,spot_balances=spot_rows,all_dex_states=all_dex_rows,
+        equity_basis=('HYPERLIQUID_UNIFIED_SPOT_USDC_REPORTED_TOTAL_V1' if account_mode=='unifiedAccount' else 'HYPERLIQUID_CLASSIC_PERPS_ACCOUNT_VALUE_V1'),
+        context_verified_at_ns=account_context.get('verified_at_ns') if account_context else None,
+        mode_observed_at_ns=account_context.get('mode_observed_at_ns') if account_context else None,
+        dex_state_provenance=dex_provenance,
     )

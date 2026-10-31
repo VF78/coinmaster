@@ -1,0 +1,50 @@
+{
+  "marginTables": [
+    [
+      54,
+      {
+        "description": "tiered 20x (2)",
+        "marginTiers": [
+          {
+            "lowerBound": "0.0",
+            "maxLeverage": 20
+          },
+          {
+            "lowerBound": "70000000.0",
+            "maxLeverage": 10
+          }
+        ]
+      }
+    ],
+    [
+      56,
+      {
+        "description": "tiered 40x",
+        "marginTiers": [
+          {
+            "lowerBound": "0.0",
+            "maxLeverage": 40
+          },
+          {
+            "lowerBound": "150000000.0",
+            "maxLeverage": 20
+          }
+        ]
+      }
+    ]
+  ],
+  "universe": [
+    {
+      "marginTableId": 56,
+      "maxLeverage": 40,
+      "name": "BTC",
+      "szDecimals": 5
+    },
+    {
+      "marginTableId": 54,
+      "maxLeverage": 20,
+      "name": "SOL",
+      "szDecimals": 2
+    }
+  ]
+}

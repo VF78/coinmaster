@@ -1,0 +1,19 @@
+{
+  "command": "PYTHONPATH=runtime <pinned-python> -m pytest runtime/tests/test_cm2_policy.py runtime/tests/test_cm2_boundary.py runtime/tests/test_cm2_fixture_validation.py runtime/tests/test_cm2_report_precision.py runtime/tests/test_cm2_full_api_probe.py -q",
+  "returncode": 0,
+  "result": "55 passed in 2.57s",
+  "native_engine_constructions": 0,
+  "actual_full_public_data_pipeline": "PENDING_FROZEN_MAC_API_PREFLIGHT",
+  "new_tests_scope": "guard-compliant sharedkwargs; onlyartifactdir differs; safeprobechild flags/env; mocked boundary protocol/finally; preboundaryfailure rejects; exactPID wait4 RSS and Popen returncode; exclusive safePID record",
+  "original_failed_anchor_preserved": true,
+  "native_retries_by_author": 0,
+  "physical_total_spent": 3,
+  "engineering_spent": 2,
+  "anchor_spent": 1,
+  "remaining_anchors": [
+    "repaired_nominal",
+    "btc_only",
+    "btc_trim"
+  ],
+  "load6_anchor": "DROPPED"
+}

@@ -1,0 +1,9 @@
+{
+  "command": "PYTHONPATH=runtime <pinned-python> -m pytest runtime/tests/test_cm2_policy.py runtime/tests/test_cm2_boundary.py runtime/tests/test_cm2_report_precision.py -q",
+  "returncode": 0,
+  "native_engine_constructions": 0,
+  "scope": "pure features/policy/planning; native class methods on fakes; lease child ordinary Python only; qualified606 report precision",
+  "result": "35 passed in 3.23s",
+  "correction": "Removed duplicate localcontext introduced while copying already-present606 fix; unchanged1e-24 tolerance",
+  "initial_failure_preserved": true
+}

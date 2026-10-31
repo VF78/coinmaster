@@ -1,0 +1,251 @@
+{
+  "status": "EXACT_FEATURES_PARITY_PASS",
+  "reference_source": "b2fd9c818631f072dd5c9ca36378b355b19945f3",
+  "new_policy_file_sha256": "b7d9ee58b9c13caaa2df72c2ed138503f4726b73fbf5284f215b67fab46997ce",
+  "native_engine_constructions": 0,
+  "parity_cases": 30,
+  "cases": [
+    {
+      "trend_hours": 24,
+      "prefix_hours": 0,
+      "available_ns": 0,
+      "all_fields_exact": true,
+      "valid": false
+    },
+    {
+      "trend_hours": 24,
+      "prefix_hours": 1,
+      "available_ns": 1717203600000000000,
+      "all_fields_exact": true,
+      "valid": false
+    },
+    {
+      "trend_hours": 24,
+      "prefix_hours": 168,
+      "available_ns": 1717804800000000000,
+      "all_fields_exact": true,
+      "valid": false
+    },
+    {
+      "trend_hours": 24,
+      "prefix_hours": 169,
+      "available_ns": 1717808400000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 24,
+      "prefix_hours": 170,
+      "available_ns": 1717812000000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 24,
+      "prefix_hours": 171,
+      "available_ns": 1717815600000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 24,
+      "prefix_hours": 200,
+      "available_ns": 1717920000000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 24,
+      "prefix_hours": 500,
+      "available_ns": 1719000000000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 24,
+      "prefix_hours": 1000,
+      "available_ns": 1720800000000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 24,
+      "prefix_hours": 2208,
+      "available_ns": 1725148800000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 72,
+      "prefix_hours": 0,
+      "available_ns": 0,
+      "all_fields_exact": true,
+      "valid": false
+    },
+    {
+      "trend_hours": 72,
+      "prefix_hours": 1,
+      "available_ns": 1717203600000000000,
+      "all_fields_exact": true,
+      "valid": false
+    },
+    {
+      "trend_hours": 72,
+      "prefix_hours": 168,
+      "available_ns": 1717804800000000000,
+      "all_fields_exact": true,
+      "valid": false
+    },
+    {
+      "trend_hours": 72,
+      "prefix_hours": 169,
+      "available_ns": 1717808400000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 72,
+      "prefix_hours": 170,
+      "available_ns": 1717812000000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 72,
+      "prefix_hours": 171,
+      "available_ns": 1717815600000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 72,
+      "prefix_hours": 200,
+      "available_ns": 1717920000000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 72,
+      "prefix_hours": 500,
+      "available_ns": 1719000000000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 72,
+      "prefix_hours": 1000,
+      "available_ns": 1720800000000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 72,
+      "prefix_hours": 2208,
+      "available_ns": 1725148800000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 168,
+      "prefix_hours": 0,
+      "available_ns": 0,
+      "all_fields_exact": true,
+      "valid": false
+    },
+    {
+      "trend_hours": 168,
+      "prefix_hours": 1,
+      "available_ns": 1717203600000000000,
+      "all_fields_exact": true,
+      "valid": false
+    },
+    {
+      "trend_hours": 168,
+      "prefix_hours": 168,
+      "available_ns": 1717804800000000000,
+      "all_fields_exact": true,
+      "valid": false
+    },
+    {
+      "trend_hours": 168,
+      "prefix_hours": 169,
+      "available_ns": 1717808400000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 168,
+      "prefix_hours": 170,
+      "available_ns": 1717812000000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 168,
+      "prefix_hours": 171,
+      "available_ns": 1717815600000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 168,
+      "prefix_hours": 200,
+      "available_ns": 1717920000000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 168,
+      "prefix_hours": 500,
+      "available_ns": 1719000000000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 168,
+      "prefix_hours": 1000,
+      "available_ns": 1720800000000000000,
+      "all_fields_exact": true,
+      "valid": true
+    },
+    {
+      "trend_hours": 168,
+      "prefix_hours": 2208,
+      "available_ns": 1725148800000000000,
+      "all_fields_exact": true,
+      "valid": true
+    }
+  ],
+  "warmup_sha256": {
+    "BTCUSDT": "04c00080fc0f6ec9e0499896da2b009f61bd15925d6ce3663e0cf81ac0ee97de",
+    "SOLUSDT": "3a040f6f4ca3aec99ea4802f9dcb9b27a3fe24c91a7edcf820434dfc5d9a9506"
+  },
+  "host_system": "Linux",
+  "host_machine": "x86_64",
+  "timing_method": "INTERLEAVED3x30_COMPLETED169_HOUR_WINDOW_SAME_PROCESS",
+  "old_median_ms": 100.54890519628921,
+  "new_median_ms": 3.8165204226970673,
+  "old_samples_ms": [
+    104.33723206321397,
+    94.26132055620353,
+    100.54890519628921
+  ],
+  "new_samples_ms": [
+    4.131766967475414,
+    3.80812706425786,
+    3.8165204226970673
+  ],
+  "speedup": 26.345700811220365,
+  "per_full_17520_hour_estimated_feature_seconds_before": 1761.6168190389872,
+  "per_full_17520_hour_estimated_feature_seconds_after": 66.86543780565262,
+  "operation_change": "mean(btc),mean(sol) computed once; inner float subtract/multiply unchanged",
+  "not_changed": [
+    "variance",
+    "quantile",
+    "feature_horizons",
+    "parameters",
+    "policy_version",
+    "native_fill_money",
+    "sampling"
+  ]
+}

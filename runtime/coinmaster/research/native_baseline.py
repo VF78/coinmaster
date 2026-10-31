@@ -13,7 +13,7 @@ import os
 import platform
 import resource
 from dataclasses import asdict, dataclass, replace
-from decimal import Decimal
+from decimal import Decimal, localcontext
 from pathlib import Path
 from typing import Iterator
 from uuid import uuid4
@@ -73,7 +73,7 @@ class ExecutionPolicy:
     fees: str = "NATIVE_INSTRUMENT_FIXED_BASE_NON_VIP_BYBIT_MAKER_0.00020_TAKER_0.00055"
     fee_historical_applicability: str = "UNKNOWN"
     spread_slippage_liquidity: str = "UNKNOWN_NO_L2_OR_TRADE_TAPE"
-    liquidation: str = "MARK_FIRST_UNVALIDATED_NO_LIQUIDATION_MODEL"
+    liquidation: str = "MARK_FIRST_NATIVE_TIER_LIQUIDATION_HISTORICAL_APPLICABILITY_UNVALIDATED"
     execution_delay_minutes: int = 1
     symmetric_adverse_spread_bps: str = "0"
     fee_multiplier: str = "1"
@@ -306,12 +306,15 @@ def _fill_timestamp_ns(value) -> int:
 
 
 def _reporting_checkpoints(start: datetime, end: datetime) -> tuple[int, ...]:
-    """True UTC month boundaries; the last one is the post-boundary mark."""
-    cursor = start.replace(day=1)
+    """UTC month boundaries inside the interval, plus its actual end boundary."""
+    if start>=end:raise ValueError("INVALID_REPORT_INTERVAL")
+    cursor = start.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
     result: list[int] = []
-    while cursor < end:
+    while True:
         cursor = cursor.replace(year=cursor.year + (cursor.month == 12), month=1 if cursor.month == 12 else cursor.month + 1)
+        if cursor>=end:break
         result.append(int(cursor.timestamp() * 1_000_000_000))
+    result.append(int(end.timestamp() * 1_000_000_000))
     return tuple(result)
 
 
@@ -321,19 +324,31 @@ def assert_report_boundaries(report: dict) -> None:
     months = summary["monthly_returns"]
     start = datetime.fromisoformat(report["run_interval"]["start"])
     end = datetime.fromisoformat(report["run_interval"]["end_exclusive"])
-    expected_months = max(1, (end.year - start.year) * 12 + end.month - start.month)
+    if start.tzinfo is None or end.tzinfo is None or start.utcoffset()!=timedelta(0) or end.utcoffset()!=timedelta(0) or start>=end:
+        raise ValueError("INVALID_REPORT_INTERVAL")
+    cursor=start.replace(day=1,hour=0,minute=0,second=0,microsecond=0)
+    expected_labels=[]
+    while cursor<end:
+        expected_labels.append(cursor.strftime("%Y-%m"))
+        cursor=cursor.replace(year=cursor.year+(cursor.month==12),month=1 if cursor.month==12 else cursor.month+1)
+    expected_months=len(expected_labels)
     liquidated_early_lockout = bool(report.get("liquidation_count")) and bool(report.get("liquidation_lockout"))
     if (not liquidated_early_lockout and len(months) != expected_months) or not months:
         raise ValueError(f"MONTHLY_ROW_COUNT:{len(months)}")
+    labels=[month.get("month") for month in months]
+    if labels!=(expected_labels[:len(months)] if liquidated_early_lockout else expected_labels):
+        raise ValueError("MONTHLY_INTERVAL_COVERAGE_MISMATCH")
     interval_terminal = Decimal(summary["interval_cash_terminal_total"])
     if Decimal(months[-1]["total"]) != interval_terminal:
         raise ValueError("MONTHLY_INTERVAL_CASH_MISMATCH")
-    compounded = Decimal("1")
-    for month in months:
-        compounded *= Decimal("1") + Decimal(month["return"])
-    ratio = interval_terminal / Decimal(report["run_interval"]["initial_active_seed"])
-    if abs(compounded - ratio) > Decimal("1e-24"):
-        raise ValueError("MONTHLY_COMPOUNDING_MISMATCH")
+    with localcontext() as context:
+        context.prec = 80
+        compounded = Decimal("1")
+        for month in months:
+            compounded *= Decimal("1") + Decimal(month["return"])
+        ratio = interval_terminal / Decimal(report["run_interval"]["initial_active_seed"])
+        if abs(compounded - ratio) > Decimal("1e-24"):
+            raise ValueError("MONTHLY_COMPOUNDING_MISMATCH")
     for timestamp in (summary["drawdown_start"], summary["drawdown_trough"]):
         point = datetime.fromisoformat(timestamp)
         if not start <= point < end:
@@ -350,6 +365,38 @@ def assert_report_boundaries(report: dict) -> None:
         raise ValueError("POST_BOUNDARY_FILL_COUNT_MISMATCH")
     if any(timestamp == boundary_ns for timestamp in fills) != bool(settlement["fill_count"]):
         raise ValueError("POST_BOUNDARY_FILL_CONVENTION_MISMATCH")
+
+
+def _finalize_native_resources(*,audit_archive,risk_recorder,coherent_observer,engine,journal,
+                               successful_run,journal_attempt_path,journal_path,primary_error=None):
+    """Flush every report stream; retain the original failure and funding quarantine."""
+    errors=[]
+    for resource in (audit_archive,risk_recorder,coherent_observer):
+        if resource is None:continue
+        try:
+            close=getattr(resource,"close_writers",None) or resource.close
+            close()
+        except BaseException as error:errors.append(error)
+    try:engine.dispose()
+    except BaseException as error:errors.append(error)
+    if journal is not None:
+        if successful_run and primary_error is None and not errors:
+            try:_publish_clean_funding_attempt(journal,journal_attempt_path,journal_path)
+            except BaseException as error:
+                errors.append(error)
+                try:journal.close()
+                except BaseException as close_error:errors.append(close_error)
+                try:_quarantine_funding_attempt(journal_attempt_path)
+                except BaseException as quarantine_error:errors.append(quarantine_error)
+        else:
+            try:journal.close()
+            except BaseException as error:errors.append(error)
+            try:_quarantine_funding_attempt(journal_attempt_path)
+            except BaseException as error:errors.append(error)
+    if primary_error is not None:
+        for error in errors:primary_error.add_note("Native report cleanup: "+repr(error))
+    elif errors:
+        raise errors[0]
 
 
 def save_native_artifact(frame, path: Path) -> dict[str, str | int]:
@@ -541,7 +588,7 @@ def run_sparse_native_diagnostic_legacy(
             spread = Decimal(policy.symmetric_adverse_spread_bps) / Decimal("10000")
             def stressed_quote(instrument, close, precision):
                 mid = Decimal(str(close))
-                return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", (execution_minute + 60_000) * 1_000_000)
+                return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", (execution_minute + 60_000) * 1_000_000, size_precision=instrument.size_precision)
             quote_data += [stressed_quote(btc_instrument, be["close"], 1), stressed_quote(sol_instrument, se["close"], 2)]
     engine.add_data(signal_data, client_id=ClientId("BYBIT_SIGNAL"), sort=False)
     engine.add_data(quote_data, sort=False)
@@ -688,10 +735,20 @@ def run_native_diagnostic(
     research_btc_split_planref_v1: bool = False,
     research_btc_split_tp_ioc: bool = False,
     research_btc_split_discount: str = "0.0025",
+    research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_c1_first_fresh_h4: bool = False, research_c1_btc_postcut_d1: bool = False, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False,
     research_sol_cover: str | None = None,
     research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False,
     research_btc_episode_loss_20: bool = False,
     research_sol_remaining_btc_hedge: bool = False,
+    qualification_mode: str = "legacy_reference",
+    qualification_quantity_model: str = "legacy_bybit",
+    qualification_instrument_metadata: dict | None = None,
+    qualification_deposit_runtime=None,
+    qualification_deposit_equity_reader=None,
+    qualification_deposit_account_id: str = "",
+    current_hl_execution_inputs: Path | None = None,
+    research_sol_capital_staging_a: bool = False,
+    research_cm2=None,
 ) -> dict:
     """Run the canonical bounded-memory 1m diagnostic in weekly batches.
 
@@ -699,6 +756,17 @@ def run_native_diagnostic(
     non-matching daily signals, then executable quotes are added as separate
     homogeneous lists so identical timestamps preserve their causal order.
     """
+    from coinmaster.strategy.execution_config import validate_zero_tp_modes
+    if research_cm2 is not None and any((research_residual_recovery,research_h4_ema,
+        research_h1_b1,research_sol_cover,research_conditional_sol,research_immediate_sol,
+        research_alpha_cushion,research_chop_pair,research_v3_risk,research_sol_risk_first,
+        research_btc_split50,research_v0_execution_repairs,research_sol_capital_staging_a)):
+        raise ValueError("CM2_REQUIRES_INDEPENDENT_CLEAN_POLICY")
+    if research_cm2 is not None and (not observe_minute_risk or not include_funding or current_hl_execution_inputs is None):
+        raise ValueError("CM2_REQUIRES_FUNDED_CURRENT_HL_NATIVE_OBSERVERS")
+    from coinmaster.research.cm2_runner import auxiliary_audits
+    validate_zero_tp_modes(deferred_selective_zero_tp=research_v0_deferred_selective_zero_tp,
+        zero_tp_netting=research_v0_zero_tp_netting)
     from nautilus_trader.backtest.config import BacktestEngineConfig
     from nautilus_trader.backtest.engine import BacktestEngine
     from nautilus_trader.backtest.models import MakerTakerFeeModel
@@ -706,12 +774,12 @@ def run_native_diagnostic(
     from nautilus_trader.cache.config import CacheConfig
     from nautilus_trader.data.config import DataEngineConfig
     from nautilus_trader.model.data import Bar, BarSpecification, BarType
-    from nautilus_trader.model.enums import AccountType, AggregationSource, BarAggregation, OmsType, PriceType
+    from nautilus_trader.model.enums import AccountType, AggregationSource, BarAggregation, OmsType, PriceType, TimeInForce
     from nautilus_trader.model.objects import Money
     from nautilus_trader.model.identifiers import ClientId
     from coinmaster.domain.wave_overlay import Candidate
     from coinmaster.ledger.journal import NativeEventJournal
-    from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, BybitTierMarginModule, PerpetualFundingModule, TierMarginPolicy, quote
+    from coinmaster.research.native_fixture import BTC_PERP, SIM, SOL_PERP, BybitTierMarginModule, PerpetualFundingModule, TierMarginPolicy, quote, instrument_quote
     from coinmaster.strategy.wave_overlay import WaveOverlayStrategy, WaveOverlayStrategyConfig
     from coinmaster.venues.marks import venue_mark, venue_mark_data_type
     from coinmaster.venues.signals import daily_signal, daily_signal_data_type
@@ -730,12 +798,44 @@ def run_native_diagnostic(
         raise ValueError("RISK_FIRST_REQUIRES_SELECTED_BTC_AND_EXCLUSIVE_SOL_POLICY")
     if (research_portfolio_protect_45 or research_btc_episode_loss_20 or research_sol_remaining_btc_hedge or research_btc_drawdown_sizing or research_v3_risk or research_h1_b1) and not observe_minute_risk:
         raise ValueError("PORTFOLIO_PROTECTION_REQUIRES_PRE_ACTION_MINUTE_OBSERVER")
-    candidate = candidate or Candidate()
+    if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
+        if candidate is None or candidate.ema_period != 34 or candidate.beta_days != 270:
+            raise ValueError("HEDGE_BAND_REQUIRES_RESOLVED_S0_EMA34_BETA270_CANDIDATE")
+        if not all((research_v0_execution_repairs, research_v0_deferred_selective_zero_tp,
+                    research_v0_selective_lifecycle_repairs, research_btc_split50,
+                    research_btc_split_planref_v1, research_btc_split_tp_ioc,
+                    research_btc_direction_sizing, observe_minute_risk)):
+            raise ValueError("HEDGE_BAND_REQUIRES_UNCHANGED_SELECTED_S0_EXECUTOR")
+    from coinmaster.research.effective_config import effective_research_candidate
+    if research_sol_capital_staging_a and current_hl_execution_inputs is None:
+        raise ValueError("STAGING_A_REQUIRES_EXPLICIT_CURRENT_HL_PROFILE")
+    candidate = effective_research_candidate(candidate, selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs,
+        capital_staging_seed=initial_active_seed if research_sol_capital_staging_a else None)
     if research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
         candidate = replace(candidate, sol_overlay_enabled=False)
+    if research_c1_btc_postcut_d1 and not research_c1_first_fresh_h4:raise ValueError("BTC_POSTCUT_D1_REQUIRES_FIRST_FRESH_COMBO")
+    if research_c1_first_fresh_h4 and (not research_residual_recovery or research_c1_btc_cut_divisor!=4 or research_c1_restore_dd!="0.40"):
+        raise ValueError("FIRST_FRESH_REQUIRES_SELECTED_C1_COMBO")
+    from coinmaster.research.qualification_policy import research_qualification
+    qualification_kwargs, lot_constraints = research_qualification(qualification_mode, qualification_quantity_model,
+        qualification_instrument_metadata, qualification_deposit_runtime, qualification_deposit_equity_reader, qualification_deposit_account_id)
+    if qualification_kwargs:qualification_kwargs["market_exit_time_in_force"]=TimeInForce.IOC
+    current_hl = None
+    if current_hl_execution_inputs is not None:
+        if qualification_mode != "execution_diagnostic":
+            raise ValueError("CURRENT_HL_REQUIRES_EXPLICIT_EXECUTION_DIAGNOSTIC")
+        from coinmaster.research.current_hl_profile import load_current_hl_diagnostic
+        from coinmaster.venues.effective_fees import CURRENT_HL_FEES
+        current_hl=load_current_hl_diagnostic(current_hl_execution_inputs)
+        if fixed_base_fee_policy is not None or execution_policy is not None:
+            raise ValueError("CURRENT_HL_USES_SINGLE_FROZEN_FEE_AND_EXECUTION_POLICY")
+        fixed_base_fee_policy=FixedBaseFeePolicy(venue="hyperliquid",hyperliquid_maker=str(CURRENT_HL_FEES.maker),hyperliquid_taker=str(CURRENT_HL_FEES.taker))
+        execution_policy=ExecutionPolicy(version="current-hl-usdc-full-fill-diagnostic-v1",fees="OWNER_EFFECTIVE_HL_MAKER_0.000144_TAKER_0.000432_REFERRAL_ALREADY_APPLIED",spread_slippage_liquidity="ZERO_MARKET_IMPACT_FULL_FILL_DIAGNOSTIC_NOT_OBSERVED_CAPACITY",liquidation="CURRENT_PUBLIC_HL_TIERS_NATIVE_USDC_ON_HISTORICAL_PROXY_MARKS")
+    elif qualification_mode == "execution_diagnostic":
+        raise ValueError("CURRENT_HL_FROZEN_INPUTS_REQUIRED")
     policy = execution_policy or ExecutionPolicy()
     fee_policy = fixed_base_fee_policy or FixedBaseFeePolicy()
-    if fee_policy.venue != "bybit":
+    if fee_policy.venue != "bybit" and current_hl is None:
         raise ValueError("HYPERLIQUID_HISTORICAL_EXECUTION_BLOCKED")
     if trading_end_ms <= trading_start_ms or trading_start_ms - warmup_start_ms < 730 * DAY_MS:
         raise ValueError("INVALID_TRADING_INTERVAL_OR_INSUFFICIENT_730D_WARMUP")
@@ -765,31 +865,70 @@ def run_native_diagnostic(
     # prior canonical journal, whose durable IDs are only valid for genuine
     # process restart of the same account/engine, never for a fresh engine.
     journal = NativeEventJournal(str(journal_attempt_path)) if journal_attempt_path else None
-    modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
+    modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)] if current_hl is None else []
     if journal:
         modules.insert(0, PerpetualFundingModule(funding_events, journal))
     from nautilus_trader.model.currencies import BTC, SOL
     from coinmaster.research.native_fixture import perpetual
     maker, taker = fee_policy.rates()
     multiplier = Decimal(policy.fee_multiplier)
-    btc_instrument = perpetual("BTCUSDT", BTC, "0.1", "0.001", "0.025", maker * multiplier, taker * multiplier)
-    sol_instrument = perpetual("SOLUSDT", SOL, "0.01", "0.1", "0.05", maker * multiplier, taker * multiplier)
+    btc_instrument = perpetual("BTCUSDT", BTC, "0.1", lot_constraints.get("BTC",{}).get("step","0.001"), "0.025", maker * multiplier, taker * multiplier, min_quantity=lot_constraints.get("BTC",{}).get("min_quantity"))
+    sol_instrument = perpetual("SOLUSDT", SOL, "0.01", lot_constraints.get("SOL",{}).get("step","0.1"), "0.05", maker * multiplier, taker * multiplier, min_quantity=lot_constraints.get("SOL",{}).get("min_quantity"))
     selected_leverage = ((btc_instrument.id, Decimal("40")), (sol_instrument.id, Decimal("20")))
-    modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)]
+    modules = [BybitTierMarginModule((), selected_leverage, max_mark_age_ns)] if current_hl is None else []
     if journal:
         modules.insert(0, PerpetualFundingModule(funding_events, journal))
+    if current_hl is not None:
+        btc_instrument,sol_instrument=current_hl.instruments
+        selected_leverage=current_hl.selected_leverage
+        SIM=btc_instrument.id.venue
+        mapping={BTC_PERP.id:btc_instrument.id,SOL_PERP.id:sol_instrument.id}
+        funding_events=tuple(replace(event,instrument_id=mapping[event.instrument_id]) for event in funding_events)
+        modules=[BybitTierMarginModule((),selected_leverage,max_mark_age_ns,
+            margin_policy=current_hl.margin_policy(max_mark_age_ns),settlement_currency=btc_instrument.settlement_currency)]
+        if journal:modules.insert(0,PerpetualFundingModule(funding_events,journal))
+        lot_constraints={i.base_currency.code:dict(step=str(i.size_increment),size_precision=i.size_precision,
+            min_quantity=None if i.min_quantity is None else str(i.min_quantity)) for i in current_hl.instruments}
+    coherent_observer = None
+    coherent_observer_report = None
+    if research_residual_recovery or research_cm2 is not None:
+        from coinmaster.research.paired_observer import CommittedNativeObserver
+        coherent_observer = CommittedNativeObserver(artifacts_root / "coherent-native-events.jsonl.gz",
+            initial_active_seed,(btc_instrument,sol_instrument),journal,trading_end_ms * 1_000_000)
+        modules.append(coherent_observer)
     def kind(instrument, price_type):
         return BarType(instrument, BarSpecification(1, BarAggregation.DAY, price_type), AggregationSource.EXTERNAL)
+    if research_c1_restore_dd not in ("0.35","0.40") or (research_c1_restore_dd!="0.35" and not research_residual_recovery):raise ValueError("R_REQUIRES_C1_RESTORE_DD_35_OR_40")
+    if research_c1_btc_cut_divisor not in (2,4) or (research_c1_btc_cut_divisor!=2 and not research_residual_recovery):raise ValueError("Q_REQUIRES_C1_DIVISOR_2_OR_4")
+    if research_residual_recovery and (not observe_minute_risk or not research_wait_4h or research_regime_reentry_band!="0.5" or research_zero_retrace or research_sol_dominant or research_wait_persist or research_sol_risk_first or research_conditional_sol or research_alpha_cushion or research_chop_pair):raise ValueError("C1_REQUIRES_CLEAN_E4_SETTLED_OBSERVER")
+    next_enabled = research_wait_4h or research_wait_persist or research_zero_retrace or research_sol_dominant
+    from coinmaster.strategy.next_band import next_bar_type, next_closed_bar
+    next_bar_types = tuple(next_bar_type(inst.id,hours) for inst,hours in ((btc_instrument,4),(sol_instrument,1),*((((sol_instrument,4),)) if research_residual_recovery else ()))) if next_enabled else ()
     confirmation_bars = tuple(BarType.new_composite(
         instrument.id, BarSpecification(15 if minutes == 15 else 1, BarAggregation.MINUTE if minutes == 15 else BarAggregation.HOUR, PriceType.LAST),
         AggregationSource.INTERNAL, 1, BarAggregation.MINUTE, AggregationSource.EXTERNAL,
-    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else ()
+    ) for instrument in (btc_instrument, sol_instrument) for minutes in (15, 60)) if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair or research_cm2 is not None else ()
+    h4_bar_type = BarType.new_composite(sol_instrument.id, BarSpecification(4, BarAggregation.HOUR, PriceType.LAST),
+        AggregationSource.INTERNAL, 1, BarAggregation.MINUTE, AggregationSource.EXTERNAL) if research_h4_ema is not None else None
+    h4_seed = ()
+    h4_warmup_hash = None
+    if research_h4_ema is not None:
+        import csv
+        if research_h4_warmup is None:
+            raise ValueError("H4_WARMUP_REQUIRED_BLOCKED_DATA")
+        h4_warmup_hash = sha256_file(research_h4_warmup)
+        with research_h4_warmup.open() as handle:
+            h4_seed = tuple((int(r["close_time_ns"]), float(r["close"])) for r in csv.DictReader(handle))
+        if len(h4_seed) != 730 or h4_seed[-1][0] != trading_start_ms*1_000_000 or any(b[0]-a[0] != 14_400_000_000_000 for a,b in zip(h4_seed,h4_seed[1:])):
+            raise ValueError("H4_EXACT_730_CLOSED_WARMUP_REQUIRED")
     minute_bars = {instrument.id: BarType(instrument.id, BarSpecification(1, BarAggregation.MINUTE, PriceType.LAST), AggregationSource.EXTERNAL)
                    for instrument in (btc_instrument, sol_instrument)}
     engine = BacktestEngine(BacktestEngineConfig(logging=LoggingConfig(log_level="ERROR"),
         run_analysis=not (research_alpha_cushion or research_chop_pair or research_sol_risk_first=="alpha-corridor-v1"),
-        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair else {})))
-    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), bar_execution=not bool(research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair))
+        **({"cache": CacheConfig(bar_capacity=128), "data_engine": DataEngineConfig(time_bars_build_with_no_updates=False)} if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair or research_cm2 is not None else {})))
+    from coinmaster.research.native_full_fill import zero_impact_venue_options
+    fill_kwargs=dict(**zero_impact_venue_options(),leverages=dict(selected_leverage)) if current_hl is not None else {}
+    engine.add_venue(venue=SIM, oms_type=OmsType.NETTING, account_type=AccountType.MARGIN, starting_balances=[Money(initial_active_seed, btc_instrument.quote_currency)], base_currency=btc_instrument.quote_currency, default_leverage=Decimal("1"), modules=modules, fee_model=MakerTakerFeeModel(), **fill_kwargs, bar_execution=not bool(research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair or research_cm2 is not None))
     engine.add_instrument(btc_instrument)
     engine.add_instrument(sol_instrument)
     mark_client, signal_client = ClientId("BYBIT_MARK"), ClientId("BYBIT_SIGNAL")
@@ -797,8 +936,9 @@ def run_native_diagnostic(
     strategy_type = WaveOverlayStrategy
     if observe_minute_risk:
         from coinmaster.research.minute_risk import NativeMinuteRiskRecorder, observed_strategy_type
-        risk_recorder = NativeMinuteRiskRecorder(artifacts_root / "minute-native-risk.csv.gz", initial_active_seed, (btc_instrument, sol_instrument), dict(selected_leverage), trading_end_ms * 1_000_000)
-        strategy_type = observed_strategy_type(WaveOverlayStrategy, risk_recorder)
+        risk_recorder = NativeMinuteRiskRecorder(artifacts_root / "minute-native-risk.csv.gz", initial_active_seed, (btc_instrument, sol_instrument), dict(selected_leverage), trading_end_ms * 1_000_000, margin_policy=current_hl.margin_policy(max_mark_age_ns) if current_hl is not None else None)
+        if research_cm2 is None:
+            strategy_type = observed_strategy_type(WaveOverlayStrategy, risk_recorder)
     cover_hour_seed = ()
     cover_warmup_hashes = {}
     if research_sol_cover or research_conditional_sol or research_sol_risk_first:
@@ -816,42 +956,64 @@ def run_native_diagnostic(
         if len(timestamps) != 721 or any(b-a != 3_600_000 for a,b in zip(timestamps,timestamps[1:])) or timestamps[-1] != trading_start_ms:
             raise ValueError("COVER_EXACT_720_HOURLY_RETURNS_REQUIRED")
         cover_hour_seed = tuple((t*1_000_000,paired["BTCUSDT"][t],paired["SOLUSDT"][t]) for t in timestamps)
-    strategy = strategy_type(WaveOverlayStrategyConfig(
-        btc_id=btc_instrument.id, sol_id=sol_instrument.id,
-        btc_bar_type=kind(btc_instrument.id, PriceType.LAST), sol_bar_type=kind(sol_instrument.id, PriceType.LAST),
-        btc_mark_data_type=venue_mark_data_type(btc_instrument.id), sol_mark_data_type=venue_mark_data_type(sol_instrument.id),
-        mark_client_id=mark_client, active_seed=initial_active_seed,
-        margin_policy=TierMarginPolicy((), dict(selected_leverage), max_mark_age_ns), trading_start_open_ns=trading_start_ms * 1_000_000,
-        terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, seed_bars=seed_bars,
-        research_portfolio_protect_45=research_portfolio_protect_45,
-        research_btc_direction_sizing=research_btc_direction_sizing,
-        research_btc_drawdown_sizing=research_btc_drawdown_sizing,
-        research_v3_risk=research_v3_risk,
-        research_h1_b1=research_h1_b1,
-        research_btc_split50=research_btc_split50,
-        research_btc_split_planref_v1=research_btc_split_planref_v1,
-        research_btc_split_tp_ioc=research_btc_split_tp_ioc,
-        research_btc_split_discount=Decimal(research_btc_split_discount),
-        research_sol_cover=Decimal(research_sol_cover) if research_sol_cover else None,
-        research_conditional_sol=research_conditional_sol,
-        research_sol_risk_first=research_sol_risk_first,
-        research_immediate_sol=research_immediate_sol,
-        research_immediate_lookback=research_immediate_lookback,
-        research_alpha_cushion=research_alpha_cushion,
-        research_chop_pair=research_chop_pair,
-        research_carry_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_chop_pair else (),
-        research_cover_hour_seed=cover_hour_seed,
-        research_confirmation_bars=confirmation_bars,
-        research_btc_episode_loss_20=research_btc_episode_loss_20,
-        research_sol_remaining_btc_hedge=research_sol_remaining_btc_hedge,
-        research_sol_notional_cap_multiple=Decimal("6") if research_sol_notional_cap_6x else None,
-        tp_fee_floor_v1=tp_fee_floor_v1, research_v0_execution_repairs=research_v0_execution_repairs, research_v0_zero_tp_netting=research_v0_zero_tp_netting, research_v0_deferred_selective_zero_tp=research_v0_deferred_selective_zero_tp, research_v0_selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs, max_mark_age_ns=max_mark_age_ns,
-        btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=signal_client,
-        reporting_checkpoint_ns=_reporting_checkpoints(start_at, end_at),
-        execution_delay_ns=(policy.execution_delay_minutes - 1) * MINUTE_MS * 1_000_000,
-        execution_policy_hash=policy.hash,
-        execution_policy_version=policy.version,
-    ))
+    if research_cm2 is not None:
+        from coinmaster.research.cm2_runner import build_strategy
+        strategy = build_strategy(research_cm2,instruments=(btc_instrument,sol_instrument),
+            minute_bars=minute_bars,
+            margin_policy=current_hl.margin_policy(max_mark_age_ns),
+            start_ns=trading_start_ms*1_000_000,end_ns=trading_end_ms*1_000_000,
+            mark_types=(venue_mark_data_type(btc_instrument.id),venue_mark_data_type(sol_instrument.id)),
+            mark_client=mark_client,journal=journal,exit_fee_rate=taker*multiplier,
+            execution_hash=policy.hash,risk_recorder=risk_recorder)
+    else:
+        strategy = strategy_type(WaveOverlayStrategyConfig(
+            btc_id=btc_instrument.id, sol_id=sol_instrument.id,
+            btc_bar_type=kind(btc_instrument.id, PriceType.LAST), sol_bar_type=kind(sol_instrument.id, PriceType.LAST),
+            btc_mark_data_type=venue_mark_data_type(btc_instrument.id), sol_mark_data_type=venue_mark_data_type(sol_instrument.id),
+            mark_client_id=mark_client, active_seed=initial_active_seed,
+            deposit_currency=str(btc_instrument.settlement_currency),
+            native_hl_admission=current_hl is not None,
+            research_sol_capital_staging_a=research_sol_capital_staging_a,
+            native_hl_selected_leverage=current_hl.selected_leverage if current_hl is not None else (),
+            margin_policy=current_hl.margin_policy(max_mark_age_ns) if current_hl is not None else TierMarginPolicy((), dict(selected_leverage), max_mark_age_ns), trading_start_open_ns=trading_start_ms * 1_000_000,
+            terminal_close_at_ns=trading_end_ms * 1_000_000, candidate=candidate, seed_bars=seed_bars,
+            research_portfolio_protect_45=research_portfolio_protect_45,
+            research_btc_direction_sizing=research_btc_direction_sizing,
+            research_btc_drawdown_sizing=research_btc_drawdown_sizing,
+            research_v3_risk=research_v3_risk,
+            research_h1_b1=research_h1_b1,
+            research_btc_split50=research_btc_split50,
+            research_btc_split_planref_v1=research_btc_split_planref_v1,
+            research_btc_split_tp_ioc=research_btc_split_tp_ioc,
+            research_btc_split_discount=Decimal(research_btc_split_discount),
+            research_sol_btc_open_only=research_sol_btc_open_only,
+            research_h4_ema=research_h4_ema, research_h4_gamma=Decimal(research_h4_gamma),
+            research_h4_seed=h4_seed, research_h4_bar_type=h4_bar_type,
+            research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_c1_restore_dd=Decimal(research_c1_restore_dd), research_c1_first_fresh_h4=research_c1_first_fresh_h4, research_c1_btc_postcut_d1=research_c1_btc_postcut_d1, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+            research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant, research_next_signals=next_bar_types,
+            research_regime_reentry_band=Decimal(research_regime_reentry_band) if research_regime_reentry_band is not None else None,
+            research_band_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_regime_reentry_band is not None else (),
+            research_sol_cover=Decimal(research_sol_cover) if research_sol_cover else None,
+            research_conditional_sol=research_conditional_sol,
+            research_sol_risk_first=research_sol_risk_first,
+            research_immediate_sol=research_immediate_sol,
+            research_immediate_lookback=research_immediate_lookback,
+            research_alpha_cushion=research_alpha_cushion,
+            research_chop_pair=research_chop_pair,
+            research_carry_daily_seed=tuple(((t+DAY_MS)*1_000_000,float(r["high"]),float(r["low"])) for t,r in sorted(daily["BTCUSDT"].items()) if t+DAY_MS<=trading_start_ms) if research_chop_pair else (),
+            research_cover_hour_seed=cover_hour_seed,
+            research_confirmation_bars=confirmation_bars,
+            research_btc_episode_loss_20=research_btc_episode_loss_20,
+            research_sol_remaining_btc_hedge=research_sol_remaining_btc_hedge,
+            research_sol_notional_cap_multiple=Decimal("6") if research_sol_notional_cap_6x else None,
+            tp_fee_floor_v1=tp_fee_floor_v1, research_v0_execution_repairs=research_v0_execution_repairs, research_v0_zero_tp_netting=research_v0_zero_tp_netting, research_v0_deferred_selective_zero_tp=research_v0_deferred_selective_zero_tp, research_v0_selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs, max_mark_age_ns=max_mark_age_ns,
+            btc_signal_data_type=daily_signal_data_type(btc_instrument.id), sol_signal_data_type=daily_signal_data_type(sol_instrument.id), signal_client_id=signal_client,
+            reporting_checkpoint_ns=_reporting_checkpoints(start_at, end_at),
+            execution_delay_ns=(policy.execution_delay_minutes - 1) * MINUTE_MS * 1_000_000,
+            execution_policy_hash=policy.hash,
+            execution_policy_version=policy.version,
+            **qualification_kwargs,
+        ))
     engine.add_strategy(strategy)
     audit_archive = None
     if research_sol_risk_first == "alpha-corridor-v1":
@@ -862,7 +1024,10 @@ def run_native_diagnostic(
     early_liquidation_cutoff = False
     def native_quote(instrument, close: str, precision: int, available_ns: int):
         mid = Decimal(str(close))
-        return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", available_ns)
+        if current_hl is not None:
+            return instrument_quote(instrument,mid*(1-spread),mid*(1+spread),available_ns)
+        return quote(instrument.id, f"{float(mid * (1 - spread)):.{precision}f}", f"{float(mid * (1 + spread)):.{precision}f}", available_ns, size_precision=instrument.size_precision)
+    next_accumulators = {}
     successful_run = False
     # Research housekeeping only: bound live reports between archival receipts.
     archival_batch_minutes = min(weekly_batch_minutes, 15) if audit_archive is not None else weekly_batch_minutes
@@ -870,15 +1035,35 @@ def run_native_diagnostic(
         for week in iter_weekly_minute_batches(iter_minute_bundles(data_root, trading_start_ms, trading_end_ms, cursor_batch_rows, require_exact_source_rows=(trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS)), archival_batch_minutes):
             if risk_recorder is not None:
                 risk_recorder.set_week(week)
-            marks, signals, quotes, source_bars = [], [], [], []
+            if coherent_observer is not None:
+                coherent_observer.set_week(week)
+            marks, signals, quotes, source_bars, next_bars = [], [], [], [], []
             for minute in week:
                 available_ns = (minute.open_time_ms + MINUTE_MS) * 1_000_000
-                if research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair:
+                if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair or research_cm2 is not None:
                     for instrument, row in ((btc_instrument, minute.btc_execution), (sol_instrument, minute.sol_execution)):
                         source_bars.append(Bar(minute_bars[instrument.id],
                             instrument.make_price(row["open"]), instrument.make_price(row["high"]),
                             instrument.make_price(row["low"]), instrument.make_price(row["close"]),
                             instrument.make_qty(0), available_ns, available_ns))
+                if next_enabled:
+                    for instrument,row,hours,kind in ((btc_instrument,minute.btc_execution,4,next_bar_types[0]),(sol_instrument,minute.sol_execution,1,next_bar_types[1]),*((((sol_instrument,minute.sol_execution,4,next_bar_types[2]),)) if research_residual_recovery else ())):
+                        duration=hours*60*MINUTE_MS
+                        key=(str(instrument.id),hours)
+                        acc=next_accumulators.get(key)
+                        if acc is None:
+                            if minute.open_time_ms % duration:raise ValueError('NEXT_INCOMPLETE_CLOSED_BAR_START')
+                            acc=next_accumulators[key]=dict(open=Decimal(row['open']),high=Decimal(row['high']),low=Decimal(row['low']),count=0,last_ms=minute.open_time_ms-MINUTE_MS)
+                        if minute.open_time_ms!=acc['last_ms']+MINUTE_MS:raise ValueError('NEXT_CLOSED_BAR_GAP')
+                        acc['count']+=1;acc['last_ms']=minute.open_time_ms;acc['high']=max(acc['high'],Decimal(row['high']));acc['low']=min(acc['low'],Decimal(row['low']))
+                        if (minute.open_time_ms+MINUTE_MS)%duration==0:
+                            if acc['count']!=hours*60:raise ValueError('NEXT_INCOMPLETE_CLOSED_BAR')
+                            next_bars.append(next_closed_bar(instrument.id,hours,acc['open'],acc['high'],acc['low'],Decimal(row['close']),available_ns))
+                            del next_accumulators[key]
+                if research_cm2 is not None:
+                    from coinmaster.strategy.cm2_native import minute_turnover
+                    marks.extend((minute_turnover(btc_instrument.id,minute.btc_execution["turnover"],available_ns),
+                                  minute_turnover(sol_instrument.id,minute.sol_execution["turnover"],available_ns)))
                 # Same timestamp ordering is marks -> daily signals -> quotes.
                 marks.extend((venue_mark(btc_instrument.id, Decimal(str(minute.btc_mark["close"])), available_ns), venue_mark(sol_instrument.id, Decimal(str(minute.sol_mark["close"])), available_ns)))
                 if include_daily_signals and (minute.open_time_ms + MINUTE_MS) % DAY_MS == 0:
@@ -891,6 +1076,8 @@ def run_native_diagnostic(
             engine.add_data(marks, client_id=mark_client, sort=False)
             if signals:
                 engine.add_data(signals, client_id=signal_client, sort=False)
+            if next_bars:
+                engine.add_data(next_bars, client_id=signal_client, sort=False)
             engine.add_data(quotes, sort=False)
             engine.sort_data()
             engine.run(streaming=True)
@@ -927,6 +1114,8 @@ def run_native_diagnostic(
                 early_liquidation_cutoff = True
                 break
         engine.end()
+        if coherent_observer is not None:
+            coherent_observer_report = coherent_observer.finish_after_engine_end(trading_end_ms * 1_000_000)
         # Retain only one native report DataFrame at a time; native history
         # remains authoritative and report-derived monetary formulas are unchanged.
         if audit_archive is not None:
@@ -977,9 +1166,7 @@ def run_native_diagnostic(
             del orders
         adapter = strategy.reporting_state()
         save_diagnostic_report(data_root,{'raw_audit_state':'NATIVE_EXPORTS_COMPLETE_BEFORE_VALIDATION',
-            'native_strategy_events':adapter,'native_order_events':strategy._order_audit,'native_risk_first_audit':strategy.risk_first_sol_audit,
-            'native_carry_audit':strategy.carry_pair_audit,'native_carry_counts':strategy.carry_pair_counts,
-            'native_alpha_audit':strategy.alpha_cushion_audit,'native_alpha_counts':strategy.alpha_cushion_counts,
+            'native_strategy_events':adapter,'native_order_events':strategy._order_audit,**auxiliary_audits(strategy),
             'execution_artifacts':artifacts,'native_fees':str(fees),'terminal_active':str(terminal_active)},
             artifact_label+'-raw-native',artifacts_root)
         terminal = adapter["terminal_lifecycle"]
@@ -990,7 +1177,7 @@ def run_native_diagnostic(
         fee_attribution = native_fee_attribution(adapter["fill_audit"], fees)
         audit = journal.funding_audit() if journal else []
         manifest = data_root / "bybit-1m" / "manifest.json"
-        full_config = {**BASELINE_CONFIG, "candidate": asdict(candidate), "execution_policy": asdict(policy), "fixed_base_fee_policy": asdict(fee_policy), "fee_policy_hash": fee_policy.hash, "tp_fee_floor_v1": tp_fee_floor_v1, "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH", "run_interval": {"start": start_at.isoformat(), "end_exclusive": end_at.isoformat(), "initial_active_seed": str(initial_active_seed)}}
+        full_config = {**BASELINE_CONFIG, "initial_total_usdt": str(initial_active_seed), "account": (BASELINE_CONFIG["account"] if initial_active_seed==Decimal("10000") else "SIM_MARGIN_USDT_DYNAMIC_SEED") if qualification_mode=="legacy_reference" else "SIM_MARGIN_USDT_DP55_QUALIFICATION", "candidate": asdict(candidate), "execution_policy": asdict(policy), "fixed_base_fee_policy": asdict(fee_policy), "fee_policy_hash": fee_policy.hash, "tp_fee_floor_v1": tp_fee_floor_v1, "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH" if qualification_mode=="legacy_reference" else "GLOBAL_DP55_NATIVE_USDT_M1", "qualification_mode": qualification_mode, "quantity_model": qualification_quantity_model, "lot_constraints": lot_constraints, "run_interval": {"start": start_at.isoformat(), "end_exclusive": end_at.isoformat(), "initial_active_seed": str(initial_active_seed)}}
         if research_v0_execution_repairs:
             full_config["research_v0_execution_repairs"] = True
             if not research_v0_zero_tp_netting:
@@ -999,8 +1186,32 @@ def run_native_diagnostic(
                 full_config["research_v0_deferred_selective_zero_tp"] = True
         if research_v0_selective_lifecycle_repairs:
             full_config["research_v0_selective_lifecycle_repairs"] = True
+        if research_sol_capital_staging_a:
+            from coinmaster.strategy.sol_capital_staging import funded_scale,BASE_SOL_CHILD
+            full_config["research_sol_capital_staging_a"]=dict(enabled=True,initial_funded_seed=str(initial_active_seed),
+                scale=str(funded_scale(initial_active_seed)),child_cap_qty=str(BASE_SOL_CHILD*funded_scale(initial_active_seed)),
+                admission="ORIGINAL_PARENT_ADMISSION_BEFORE_CHILD_CAP",residual="ACTUAL_FILL_CHARGES_AND_ORIGINAL_PARENT_REDUCTION_LEAVES",
+                scope="ALL_NORMAL_STRATEGY_SOL_MARKET_IOC",emergency_flatten_staged=False,
+                native_child_status="TRUTHFUL_FILLED_NOT_FORGED_PARENT_CANCELED",stale_original_quote_replayed=False,
+                historical_queue_identity="UNOBSERVED_NOT_INVENTED",
+                add_retry="ORIGINAL_D1_LEVEL_FREQUENCY",timeout_and_ordinary_reduction_retry="NEXT_60S",
+                forced_retry="SAME_CAUSALLY_FRESH_QUOTE_ONLY_AFTER_NATIVE_TERMINAL_AND_POSITION_PROGRESS",
+                economic_parent_ceiling=str(candidate.max_parent_notional),venue_grids_and_tiers_scaled=False)
         stats["peak_rss_bytes"] = _peak_rss_bytes()
         authoritative_liquidation = bool(adapter["liquidations"]) and bool(adapter["liquidation_lockout"])
+        if research_residual_recovery:
+            full_config["residual_recovery_research"]=dict(version="C1",trigger_DD="0.40",open_loss_dominates_remaining_50_cushion=True,cut_fraction="0.50",restore_DD="0.35",restore_closed_hours=4,max_cut_restore_per_group=1)
+        if research_c1_restore_dd != "0.35":
+            full_config["residual_recovery_research"]["restore_DD"]=research_c1_restore_dd
+        if research_c1_btc_cut_divisor != 2:
+            full_config["residual_recovery_research"]["btc_cut_divisor"]=research_c1_btc_cut_divisor
+        if next_enabled:
+            full_config["next_band_research"] = dict(wait_4h=research_wait_4h,wait_persist=research_wait_persist,zero_retrace=research_zero_retrace,sol_dominant=research_sol_dominant,bar_contract="PINNED_CLOSED_OHLC_D1_BEFORE_INTRADAY_QUOTE")
+        if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
+            full_config["hedge_band_research"] = dict(c0=research_sol_btc_open_only, h4_ema=research_h4_ema,
+                h4_gamma=research_h4_gamma, h4_warmup_sha256=h4_warmup_hash, regime_reentry_band=research_regime_reentry_band,
+                beta="LATEST_ACCEPTED_DAILY_LOG_RETURN_270_FREEZE_AT_ACTIVATION", ttl_ns=14_400_000_000_000,
+                atr="WILDER14_ORIGINAL_DAILY_OHLC_SEED", execution="EXISTING_NATIVE_ONLY")
         if research_h1_b1:
             full_config["research_h1_b1"] = {"variant": research_h1_b1, "direction_sizing": {"long": "5.5", "short": "7.875"},
                 "confirmation": "NATIVE_INTERNAL_15M_OR_1H_CLOSE_PREVIOUS_HIGH_LOW", "bar_execution": False, "native_bar_cache_capacity_per_type": 128, "build_empty_bars": False,
@@ -1031,7 +1242,40 @@ def run_native_diagnostic(
                 "held_rebalance": False,
                 "beta_entry_open_interval": ["0.2", "4"],
             }
+        if current_hl is not None:
+            full_config.update(venue="hyperliquid",account="NATIVE_HL_USDC_CURRENT_RULES_DIAGNOSTIC",
+                accounting_currency="USDC",initial_total_usdc=str(initial_active_seed),
+                tier_assumption="FROZEN_CURRENT_PUBLIC_HL_TIERS_HISTORICAL_APPLICABILITY_UNPROVEN",
+                deposit_protection="DISABLED_CLEAN_EXECUTION_DIAGNOSTIC_ONLY",current_hl_profile=current_hl.evidence,
+                full_fill_assumption="ZERO_MARKET_IMPACT_FULL_FILL_DIAGNOSTIC",maker_touch_fill=False,
+                recorded_book_liquidity_consumption=False,
+                liquidity_consumption_basis="EXPLICIT_ZERO_IMPACT_ORDER_LEAVES_CAPACITY;RECORDED_L1_SIZE_NOT_A_MARKET_DEPTH_CLAIM",
+                admission_core="SHARED_USDC_EXPOSURE_COST_CORE",venue_availability="UNOBSERVED_HISTORICALLY;ADDITIONAL_MANDATORY_LIVE_GATE")
+            full_config.pop("initial_total_usdt",None)
         result = {"status": "LIQUIDATED_EARLY_CUTOFF" if early_liquidation_cutoff or authoritative_liquidation else "NOT_FAITHFUL_DIAGNOSTIC", "ranking_eligible": False, "interval": f"[{start_at.isoformat()},{end_at.isoformat()})", "run_interval": full_config["run_interval"], "warmup": f"[{datetime.fromtimestamp(warmup_start_ms / 1000, tz=timezone.utc).isoformat()},{start_at.isoformat()}) feature-only", "config": full_config, "config_hash": hashlib.sha256(json.dumps(full_config, sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "data_hash": hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest(), "code_hash": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "policy": asdict(policy), "policy_hash": policy.hash, "streaming": stats, "summary": {"objective": "POST_BOUNDARY_SETTLED_NATIVE_CASH_ACTIVE_PLUS_RESERVE", "roi": str((terminal_active / initial_active_seed) - 1), "terminal_total": str(terminal_active), "interval_cash_terminal_total": str(interval_cash_terminal), "monthly_returns_basis": "NATIVE_CASH_ACCOUNT_INTERVAL_EXCLUDING_POST_BOUNDARY_SETTLEMENT", "max_drawdown_amount": cash_drawdown["amount"], "max_drawdown_percent": cash_drawdown["percent"], "drawdown_start": cash_drawdown["start"], "drawdown_trough": cash_drawdown["trough"], "drawdown_basis": cash_drawdown["basis"], "drawdown_recovery": "UNKNOWN_NOT_RECOVERED_OR_NOT_EXPORTED", "monthly_returns": monthly_returns(interval_cash_series, initial_active_seed)}, "cash_account_series": cash_account_series, "interval_cash_account_series": interval_cash_series, "marked_equity_series": {"status": "PARTIAL_NATIVE_MARKED_CHECKPOINTS_ONLY", "checkpoints": adapter["marked_equity_checkpoints"], "monthly_returns": "UNKNOWN_NOT_RECONCILED_TO_POST_BOUNDARY_SETTLED_CASH_OBJECTIVE"}, "fills": native_fill_count, "fill_timestamps_ns": fill_timestamps_ns, "fill_audit": adapter["fill_audit"], "entry_sizing_audit": adapter["entry_sizing_audit"], "fee_attribution": fee_attribution, "execution_artifacts": artifacts, "native_fees": str(fees), "native_order_rejections": native_order_rejections, "pre_submit_tier_margin_gate_blocks": adapter["pre_submit_tier_margin_gate_blocks"], "funding": {"count": len(audit), "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA"}, "funding_journal": str(journal_path) if journal else None, "liquidation_count": len(adapter["liquidations"]), "liquidation_value": str(sum((Decimal(item["close_value"]) for item in adapter["liquidations"]), Decimal("0"))), "liquidation_audit": adapter["liquidations"], "liquidation_lockout": adapter["liquidation_lockout"], "terminal_lifecycle": adapter["terminal_lifecycle"], "post_boundary_settlement": {"convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS", "boundary_timestamp": end_at.isoformat(), "fill_count": boundary_fill_count, "settled_cash_total": str(terminal_active), "interval_cash_total_before_settlement": str(interval_cash_terminal)}, "early_liquidation_cutoff": early_liquidation_cutoff or authoritative_liquidation, "terminal_active": str(terminal_active), "terminal_reserve": "0", "terminal_total": str(terminal_active), "terminal_open_positions": len(engine.cache.positions_open()), "limitations": ["1m close proxy has no BBO/L2/slippage/liquidity evidence", "Owner-specified non-VIP fixed-base fees are diagnostic; historical applicability remains unknown", "Venue marks are CustomData and do not participate in matching", "Historical liquidation and funding settlement marks are unvalidated"]}
+        if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None:
+            result["hedge_band_audit"] = strategy.hedge_band_audit
+        if research_residual_recovery:
+            result["coherent_native_observer"] = coherent_observer_report
+            result["funding_cash_audit"] = journal.funding_cash_audit() if journal else []
+            result["funding"]["signed_amount"] = str(sum((Decimal(row[5]) for row in result["funding_cash_audit"]),Decimal(0)))
+            from coinmaster.research.native_accounting import native_position_lifecycles
+            lifecycle_export=native_position_lifecycles(engine.cache)
+            native_realized=lifecycle_export["positions"]
+            complete=not lifecycle_export["unknown"] and all(row["realized_pnl"] is not None and row["closed"] for row in native_realized) and not engine.cache.positions_open()
+            realized_total=sum((Decimal(row["realized_pnl"]) for row in native_realized),Decimal(0)) if complete else None
+            bridge=terminal_active-initial_active_seed-realized_total-Decimal(result["funding"]["signed_amount"]) if complete else None
+            result["native_cash_reconciliation"]=dict(terminal_cash=str(terminal_active),seed=str(initial_active_seed),
+                native_position_lifecycle_export=lifecycle_export,native_position_realized=native_realized,native_realized_total=str(realized_total) if complete else None,
+                signed_funding=result["funding"]["signed_amount"],unallocated_bridge=str(bridge) if complete else None,
+                status="EXACT" if bridge==0 else "UNKNOWN_UNALLOCATED_NATIVE_BRIDGE",
+                fees_policy="NATIVE_POSITION_REALIZED_PNL_ALREADY_INCLUDES_NATIVE_COMMISSIONS_DO_NOT_SUBTRACT_AGAIN",
+                bridge_is_funding=False,tolerance=None,actual_native_cash_transitions=(coherent_observer_report or {}).get("native_cash_transitions"))
+            result["c1_audit"]=strategy.c1_audit
+            result["c1_denial_counts"]=strategy.c1_denials
+            result["c1_terminal_state"]=strategy._c1_export_terminal()
+        if next_enabled:
+            result["next_band_audit"] = strategy.next_band_audit
         result.update({
             "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED",
             "realized_unrealized": "UNKNOWN_NATIVE_ACCOUNT_REPORT_ONLY",
@@ -1040,26 +1284,55 @@ def run_native_diagnostic(
             "funding": {
                 "count": len(audit),
                 "by_instrument_count": {instrument: sum(1 for row in audit if row[1] == instrument) for instrument in sorted({row[1] for row in audit})},
-                "signed_amount": "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
+                "signed_amount": result["funding"]["signed_amount"] if research_residual_recovery or research_cm2 is not None else "UNKNOWN_NATIVE_AUDIT_HAS_POST_TOTAL_NOT_CASH_DELTA",
             },
         })
         if research_v0_execution_repairs:
-            coinmaster_root = Path(__file__).resolve().parents[1]
+            coinmaster_root = Path(__import__("coinmaster").__file__).resolve().parent
             result["source_hashes"] = {
                 name: hashlib.sha256((coinmaster_root / relative).read_bytes()).hexdigest()
                 for name, relative in (
                     ("native_baseline", "research/native_baseline.py"),
+                    ("effective_research_config", "research/effective_config.py"),
+                    ("qualification_policy", "research/qualification_policy.py"),
                     ("wave_domain", "domain/wave_overlay.py"),
-                    ("wave_strategy", "strategy/wave_overlay.py"),
+                    ("wave_strategy", "strategy/wave_overlay.py"), ("next_band", "strategy/next_band.py"), *(((("residual_recovery", "strategy/residual_recovery.py"),)) if research_residual_recovery else ()),
+                    *(((("hedge_band", "strategy/hedge_band.py"),)) if research_sol_btc_open_only or research_h4_ema is not None or research_regime_reentry_band is not None else ()),
                 )
             }
+        if research_residual_recovery:
+            coinmaster_root=Path(__import__("coinmaster").__file__).resolve().parent
+            result.setdefault("source_hashes",{}).update({name:hashlib.sha256((coinmaster_root/relative).read_bytes()).hexdigest() for name,relative in (
+                ("native_accounting","research/native_accounting.py"),("paired_observer","research/paired_observer.py"),
+                ("funding_fixture","research/native_fixture.py"),("native_journal","ledger/journal.py"))})
+        if research_cm2 is not None:
+            from coinmaster.research.cm2_runner import complete_report
+            result["coherent_native_observer"] = coherent_observer_report
+            complete_report(result,strategy,engine,journal,initial_active_seed,coherent_observer_report)
         # Preserve native facts before any boundary/metadata packaging assertion.
+        if qualification_mode=="live_qualification":
+            result["deposit_protection_projection"]=strategy.deposit_projection()
+            result["deposit_protection_durable"]=qualification_deposit_runtime.deposit_protection_state(
+                instance_id=qualification_deposit_runtime.owner,account_id=qualification_deposit_account_id)
         raw_native={**result,'native_strategy_events':strategy.reporting_state(),'native_order_events':strategy._order_audit,
-            'native_risk_first_audit':strategy.risk_first_sol_audit,
-            'native_carry_audit':strategy.carry_pair_audit,'native_carry_counts':strategy.carry_pair_counts,
-            'native_alpha_audit':strategy.alpha_cushion_audit,'native_alpha_counts':strategy.alpha_cushion_counts,
+            **auxiliary_audits(strategy),
             'raw_audit_state':'NATIVE_COMPLETE_PACKAGING_NOT_VALIDATED'}
         save_diagnostic_report(data_root,raw_native,artifact_label+'-raw-native',artifacts_root)
+        if qualification_mode=="live_qualification":
+            if strategy._deposit.latched:
+                if (strategy._deposit.exit_state!="TRIPPED_FLAT" or engine.cache.positions_open()
+                    or engine.cache.orders_open() or engine.cache.orders_inflight()
+                    or result["deposit_protection_durable"]!=strategy._deposit.durable()):
+                    raise ValueError("QUALIFICATION_DP_NATIVE_TERMINAL_FLAT_REQUIRED")
+                if (stats["processed_rows_per_source"]!=expected_rows or coherent_observer_report is None or coherent_observer_report["status"]!="PASS"
+                    or coherent_observer_report["end_exclusive_ns"]!=str(trading_end_ms*1_000_000)):
+                    raise ValueError("DP_CALENDAR_REQUIRES_COMPLETE_NATIVE_WATERMARKS")
+                from coinmaster.research.qualification_policy import verified_flat_calendar_returns
+                result["raw_account_change_months"]=result["summary"]["monthly_returns"]
+                result["summary"]["monthly_returns"]=verified_flat_calendar_returns(
+                    interval_cash_series,initial_active_seed,start_at,end_at,terminal_active)
+                result["summary"]["monthly_returns_basis"]="NATIVE_CASH_MUTATIONS_WITH_VERIFIED_FLAT_TERMINAL_WATERMARK_CARRY_FORWARD"
+                result["continued_trading_after_DP_pause"]=False
         if not early_liquidation_cutoff:
             assert_report_boundaries(result)
         if research_btc_split50 or research_sol_cover or research_conditional_sol:
@@ -1074,13 +1347,13 @@ def run_native_diagnostic(
             result["config"]["research_conditional_sol"] = research_conditional_sol
             if research_conditional_sol:
                 result["conditional_sol_audit"] = strategy.conditional_audit
-                result["source_hashes"]["conditional_hedge"] = sha256_file(Path(__file__).resolve().parents[1]/"strategy/conditional_hedge.py")
+                result["source_hashes"]["conditional_hedge"] = sha256_file(Path(__import__("coinmaster").__file__).resolve().parent/"strategy/conditional_hedge.py")
                 result["config"]["conditional_sol_policy"] = {"arm":">0.02_actual_blended_BTC_VWAP","off":"<=0.01_immediate_fresh_BTC_mark","confirmation":"POST_ARM_CLOSED_SOL15m_OR1h_PREVIOUS_BAR_BREAK_NEXT_FRESH_QUOTE","coverage":"0.50_actual_BTC_beta720completed1H_frozen","quantity_cadence":"LATCH_ACTIVATION_AND_ACTUAL_BTC_QUANTITY_CHANGE_ONLY_NO_PRICE_ONLY_REBALANCE","net_target":"MAX_ORIGINAL_AUTHORIZED_REMAINING_AND_CONDITIONAL","ownership_transfer":"SEPARATE_AUTHORIZATION_CREDIT_NO_NATIVE_FILL_OR_PNL"}
             if research_immediate_sol:
                 result["config"]["research_immediate_sol"]=research_immediate_sol
                 result["config"]["research_immediate_lookback"]=research_immediate_lookback
                 result["config"]["immediate_insurance_policy"]={"coefficient":"PURE_SAMPLE_DAILY_VOLRATIO_ROLLING_W_CLOSED_DAYS_FROZEN_FIRST_BTC_FILL","original_SOL":"OFF","target":"ACTUAL_REMAINING_BTC_VOLRATIO_LATCH_ON_FILL_OR_AUTHORIZED_FRACTION","confirm":"CLOSED_SOL_15M_OR_1H_PREVIOUS_BAR_BREAK_THEN_FRESH_QUOTE","funding_components":"UNKNOWN","retry":"KNOWN_ADD_DENIAL_NEXT_MINUTE_NO_RECURSION","BTC":"SELECTED_RULES_UNCHANGED"}
-                result["source_hashes"]["immediate_insurance"]=sha256_file(Path(__file__).resolve().parents[1]/"strategy/immediate_insurance.py")
+                result["source_hashes"]["immediate_insurance"]=sha256_file(Path(__import__("coinmaster").__file__).resolve().parent/"strategy/immediate_insurance.py")
                 result["immediate_sol_insurance_audit"]=strategy.insurance_audit
                 result["immediate_sol_insurance_cycles"]=strategy._insurance_report()["cycles"]
                 result["immediate_daily_sources"]={symbol:sha256_file(data_root/"normalized"/f"bybit-{symbol}-daily.parquet") for symbol in ("BTCUSDT","SOLUSDT")}
@@ -1092,16 +1365,16 @@ def run_native_diagnostic(
                 if research_sol_risk_first=="alpha-corridor-v1":
                     result["corridor_status_counts"]=getattr(strategy,"_rf_corridor_counts",{})
                     result["config"]["risk_first_sol_policy"]={"variant":"ALPHA-CORRIDOR-v1","risk_window":90,"E_H":"FINAL_POST_SOL_NATIVE_CHECKPOINT","floor":".55_GLOBAL_H_NO_RESET","objective":"NEAREST_LAWFUL_ALPHA_CONVEX_NATIVE_LOTS","failure":"EXPLICIT_MIN_L_BEST_EFFORT_NO_BTC_CHANGE","funding_L2":"UNKNOWN"}
-                result["source_hashes"]["risk_first_sol"]=sha256_file(Path(__file__).resolve().parents[1]/"strategy/risk_first_sol.py")
+                result["source_hashes"]["risk_first_sol"]=sha256_file(Path(__import__("coinmaster").__file__).resolve().parent/"strategy/risk_first_sol.py")
             result["config"]["cover_hour_warmup_sha256"] = cover_warmup_hashes
             result["config_hash"] = hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
-            result["source_hashes"]["split_cover"] = sha256_file(Path(__file__).resolve().parents[1]/"strategy/split_cover.py")
+            result["source_hashes"]["split_cover"] = sha256_file(Path(__import__("coinmaster").__file__).resolve().parent/"strategy/split_cover.py")
         if research_chop_pair:
             result["config"]["research_chop_pair"]=True
             result["carry_pair_audit"]=strategy.carry_pair_audit
             result["carry_pair_counts"]=strategy.carry_pair_counts
             result["carry_pair_policy"]={"name":"CHOP_PAIR_50_NET_v1","recovery_label":"REMAINING_INVENTORY_NOT_WHOLE_EPISODE","funding":"UNCHANGED_NATIVE_POSTINGS_ONLY","daily_atr":"EMA_TR_ALPHA_2_15_CAUSAL_SEED","range":"7_CLOSED_DAILY_TWO_CONSECUTIVE_SAME_BOUNDARY_1H"}
-            result["source_hashes"]["carry_pair"]=sha256_file(Path(__file__).resolve().parents[1]/"strategy/carry_pair.py")
+            result["source_hashes"]["carry_pair"]=sha256_file(Path(__import__("coinmaster").__file__).resolve().parent/"strategy/carry_pair.py")
             result["config_hash"]=hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
         if research_alpha_cushion:
             result["config"]["research_alpha_cushion"]=True
@@ -1111,7 +1384,7 @@ def run_native_diagnostic(
             result["alpha_cushion_audit_counts"]=strategy.alpha_cushion_counts
             result["alpha_cushion_audit_sampling"]={"diagnostic_sample_cap":4096,"diagnostic_sample_rows":strategy._alpha_sampled_rows,"diagnostic_rows_dropped":strategy._alpha_audit_dropped,"all_beta_and_daily_stress_rows_retained":True}
             result["alpha_cushion_native_peak_validation"]={"basis":"EXISTING_MINUTE_RECORDER_NATIVE_EQUITY_STATE_ONLY","initial_seed":str(initial_active_seed),"samples":strategy._alpha_observer_samples,"peak_updates":strategy._alpha_peak_updates,"peak_decreases":strategy._alpha_peak_decreases,"final_peak":str(strategy._alpha_peak),"last_equity_sample":str(strategy._alpha_equity)}
-            result["source_hashes"]["alpha_cushion"]=sha256_file(Path(__file__).resolve().parents[1]/"strategy/alpha_cushion.py")
+            result["source_hashes"]["alpha_cushion"]=sha256_file(Path(__import__("coinmaster").__file__).resolve().parent/"strategy/alpha_cushion.py")
             result["config_hash"]=hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
         if research_h1_b1:
             result["h1_b1_audit"] = strategy.h1_b1_audit
@@ -1138,17 +1411,10 @@ def run_native_diagnostic(
         successful_run = True
         return result
     finally:
-        if audit_archive is not None:
-            audit_archive.close()
-        if risk_recorder is not None:
-            risk_recorder.file.close()
-        engine.dispose()
-        if journal:
-            if successful_run:
-                _publish_clean_funding_attempt(journal, journal_attempt_path, journal_path)
-            else:
-                journal.close()
-                _quarantine_funding_attempt(journal_attempt_path)
+        _finalize_native_resources(audit_archive=audit_archive,risk_recorder=risk_recorder,
+            coherent_observer=coherent_observer,engine=engine,journal=journal,
+            successful_run=successful_run,journal_attempt_path=journal_attempt_path,journal_path=journal_path,
+            primary_error=os.sys.exc_info()[1])
 
 
 def coverage_blockers(root: Path) -> list[str]:
@@ -1283,7 +1549,7 @@ def run_job_request(path: Path) -> int:
         return 1
 
 
-def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_batch_minutes: int | None = None) -> Path:
+def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_report: Path, *, zero_tp_netting: bool = True, deferred_selective_zero_tp: bool = False, selective_lifecycle_repairs: bool = False, observe_minute_risk: bool = False, research_sol_notional_cap_6x: bool = False, research_portfolio_protect_45: bool = False, research_btc_episode_loss_20: bool = False, research_sol_remaining_btc_hedge: bool = False, research_btc_direction_sizing: bool = False, research_btc_drawdown_sizing: bool = False, research_v3_risk: str | None = None, research_h1_b1: str | None = None, research_btc_split50: bool = False, research_btc_split_planref_v1: bool = False, research_btc_split_tp_ioc: bool = False, research_btc_split_discount: str = "0.0025", research_sol_cover: str | None = None, research_conditional_sol: bool = False, research_immediate_sol: str | None = None, research_immediate_lookback: int = 90, research_sol_risk_first: str | None = None, research_alpha_cushion: bool = False, research_chop_pair: bool = False, research_sol_btc_open_only: bool = False, research_h4_ema: int | None = None, research_h4_gamma: str = "0.5", research_h4_warmup: Path | None = None, research_regime_reentry_band: str | None = None, research_residual_recovery: bool = False, research_c1_btc_cut_divisor: int = 2, research_c1_restore_dd: str = "0.35", research_c1_first_fresh_h4: bool = False, research_c1_btc_postcut_d1: bool = False, research_wait_4h: bool = False, research_wait_persist: bool = False, research_zero_retrace: bool = False, research_sol_dominant: bool = False, research_batch_minutes: int | None = None) -> Path:
     """Run one opt-in variant from the exact archived V0 economic inputs."""
     from coinmaster.domain.wave_overlay import Candidate
 
@@ -1291,8 +1557,8 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         raise ValueError("BATCH_OVERRIDE_REQUIRES_ALPHA_AND_1_TO_10080_MINUTES")
     if artifact_dir.exists():
         raise ValueError("RESEARCH_ARTIFACT_DIR_MUST_BE_NEW")
-    if deferred_selective_zero_tp and zero_tp_netting:
-        raise ValueError("DEFERRED_SELECTIVE_REQUIRES_ORIGINAL_ZERO_TP_BASE")
+    from coinmaster.strategy.execution_config import validate_zero_tp_modes
+    validate_zero_tp_modes(deferred_selective_zero_tp=deferred_selective_zero_tp,zero_tp_netting=zero_tp_netting)
     if selective_lifecycle_repairs and not deferred_selective_zero_tp:
         raise ValueError("SELECTIVE_LIFECYCLE_REQUIRES_DEFERRED_SELECTIVE")
     if sum((research_portfolio_protect_45, research_sol_notional_cap_6x, research_btc_episode_loss_20, research_sol_remaining_btc_hedge, research_btc_direction_sizing, research_btc_drawdown_sizing, research_v3_risk is not None, research_h1_b1 is not None)) > 1:
@@ -1316,9 +1582,8 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
     actual_data_hash = hashlib.sha256(json.dumps(json.loads(manifest.read_text()), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     if actual_data_hash != control["data_hash"]:
         raise ValueError("CONTROL_V0_DATA_HASH_MISMATCH")
-    candidate = Candidate(**config["candidate"])
-    if selective_lifecycle_repairs:
-        candidate = replace(candidate, max_parent_notional=30_000_000.0)
+    from coinmaster.research.effective_config import effective_research_candidate
+    candidate = effective_research_candidate(Candidate(**config["candidate"]), selective_lifecycle_repairs=selective_lifecycle_repairs)
     policy = ExecutionPolicy(**config["execution_policy"])
     fee_policy = FixedBaseFeePolicy(**config["fixed_base_fee_policy"])
     if fee_policy.hash != config["fee_policy_hash"]:
@@ -1337,6 +1602,14 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         label += "-tp-ioc"
     if research_sol_cover:
         label += "-sol-cover" + research_sol_cover
+    if research_sol_btc_open_only:
+        label += "-C0"
+    for enabled, name in ((research_residual_recovery,"C1"),(research_wait_4h,"E4"),(research_wait_persist,"EP"),(research_zero_retrace,"Z"),(research_sol_dominant,"S")):
+        if enabled:label += "-"+name
+    if research_h4_ema is not None:
+        label += f"-H4-4H-E{research_h4_ema}-G{research_h4_gamma}"
+    if research_regime_reentry_band is not None:
+        label += "-B-ATR"+research_regime_reentry_band
     if research_chop_pair:
         label += "-chop-pair-50-net-v1"
     if research_alpha_cushion:
@@ -1387,6 +1660,11 @@ def run_research_v0_repairs_cli(data_root: Path, artifact_dir: Path, control_rep
         research_immediate_lookback=research_immediate_lookback,
         research_alpha_cushion=research_alpha_cushion,
         research_chop_pair=research_chop_pair,
+        research_sol_btc_open_only=research_sol_btc_open_only, research_h4_ema=research_h4_ema,
+        research_h4_gamma=research_h4_gamma, research_h4_warmup=research_h4_warmup,
+        research_regime_reentry_band=research_regime_reentry_band,
+        research_residual_recovery=research_residual_recovery, research_c1_btc_cut_divisor=research_c1_btc_cut_divisor, research_c1_restore_dd=research_c1_restore_dd, research_c1_first_fresh_h4=research_c1_first_fresh_h4, research_c1_btc_postcut_d1=research_c1_btc_postcut_d1, research_wait_4h=research_wait_4h, research_wait_persist=research_wait_persist,
+        research_zero_retrace=research_zero_retrace, research_sol_dominant=research_sol_dominant,
         weekly_batch_minutes=research_batch_minutes or WEEK_MINUTES,
         cursor_batch_rows=research_batch_minutes or WEEK_MINUTES,
         research_btc_episode_loss_20=research_btc_episode_loss_20,
@@ -1419,6 +1697,13 @@ def main() -> None:
     parser.add_argument("--research-v0-original-zero-tp", action="store_true", help="With research repairs, retain original BTC entry and zero-threshold TP levels")
     parser.add_argument("--research-v0-deferred-selective-zero-tp", action="store_true", help="Research-only one-quote deferred BTC entry with causal zero-target selection")
     parser.add_argument("--research-v0-selective-lifecycle-repairs", action="store_true", help="Research-only accepted-target/causal-right/margin repairs with 30m parent cap")
+    parser.add_argument("--research-sol-btc-open-only", action="store_true")
+    for flag in ("residual-recovery", "c1-first-fresh-h4", "c1-btc-postcut-d1", "wait-4h", "wait-persist", "zero-retrace", "sol-dominant"):
+        parser.add_argument("--research-"+flag, action="store_true")
+    parser.add_argument("--research-h4-ema", type=int, choices=(13,34,89))
+    parser.add_argument("--research-h4-gamma", choices=("0.5","1"), default="0.5")
+    parser.add_argument("--research-h4-warmup", type=Path)
+    parser.add_argument("--research-regime-reentry-band", choices=("0","0.5"))
     parser.add_argument("--research-h1-b1", choices=("h1", "b1"), default=None)
     parser.add_argument("--research-v3-risk", choices=("b25", "s10_15", "r2", "t3"), default=None, help="One default-OFF research risk variation on V3 directional sizing")
     parser.add_argument("--research-btc-direction-sizing", action="store_true", help="Research-only frozen episode long5.5 short7.875 multiplier")
@@ -1427,10 +1712,14 @@ def main() -> None:
     parser.add_argument("--research-sol-remaining-btc-hedge", action="store_true", help="Research-only earned SOL admission clipped to remaining native BTC/beta")
     parser.add_argument("--research-portfolio-protect-45", action="store_true", help="Research-only paired-minute 45%% protective epoch drawdown; resume next genuine BTC episode")
     parser.add_argument("--research-sol-notional-cap-6x", action="store_true", help="Research-only aggregate SOL entry notional capped at 6x fresh native marked equity")
+    parser.add_argument("--research-c1-restore-dd", choices=("0.35","0.40"), default="0.35")
+    parser.add_argument("--research-c1-btc-cut-divisor", type=int, choices=(2,4), default=2)
     parser.add_argument("--observe-minute-risk", action="store_true", help="Research-only non-mutating native close-equity and conditional OHLC risk recorder")
     parser.add_argument("--control-report", type=Path)
     parser.add_argument("--artifact-dir", type=Path)
     args = parser.parse_args()
+    if (args.research_sol_btc_open_only or args.research_h4_ema is not None or args.research_regime_reentry_band is not None) and not args.research_v0_execution_repairs:
+        parser.error("C0/H4/B require the explicit native research repair pipeline")
     if args.job_request is not None:
         raise SystemExit(run_job_request(args.job_request))
     if (args.research_v0_original_zero_tp or args.research_v0_deferred_selective_zero_tp) and not args.research_v0_execution_repairs:
@@ -1468,6 +1757,11 @@ def main() -> None:
             research_conditional_sol=args.research_conditional_sol,
             research_alpha_cushion=args.research_alpha_cushion,
             research_chop_pair=args.research_chop_pair,
+            research_sol_btc_open_only=args.research_sol_btc_open_only, research_h4_ema=args.research_h4_ema,
+            research_h4_gamma=args.research_h4_gamma, research_h4_warmup=args.research_h4_warmup,
+            research_regime_reentry_band=args.research_regime_reentry_band,
+            research_residual_recovery=args.research_residual_recovery, research_c1_btc_cut_divisor=args.research_c1_btc_cut_divisor, research_c1_restore_dd=args.research_c1_restore_dd, research_c1_first_fresh_h4=args.research_c1_first_fresh_h4, research_c1_btc_postcut_d1=args.research_c1_btc_postcut_d1, research_wait_4h=args.research_wait_4h, research_wait_persist=args.research_wait_persist,
+            research_zero_retrace=args.research_zero_retrace, research_sol_dominant=args.research_sol_dominant,
             research_batch_minutes=args.research_batch_minutes,
             research_sol_risk_first=args.research_sol_risk_first,
             research_immediate_sol=args.research_immediate_sol,

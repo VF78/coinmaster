@@ -143,12 +143,18 @@ class SplitCoverResearch:
             if intent and intent.action=="BTC_ENTRY" and intent.episode_id==p["episode_id"]:
                 self.cancel_order(order)
 
+    def _split_stop_requested(self):
+        return not self._entries_enabled()
+
+    def _split_partial_targets_allowed(self):
+        return False
+
     def _split_check(self,tick):
         if not self._split_unfinished() or tick.instrument_id!=self.config.btc_id:
             return
         p=self._split_parent
         ep=self._domain.episode
-        if not ep or ep.id!=p["episode_id"] or self._forced_close_reason or self._liquidating or not self._entries_enabled():
+        if not ep or ep.id!=p["episode_id"] or self._forced_close_reason or self._liquidating or self._split_stop_requested():
             self._split_stop("CLOSE_OR_PAUSE_OR_DP")
             return
         # An actual early positive TP ends discount waiting, before reductions

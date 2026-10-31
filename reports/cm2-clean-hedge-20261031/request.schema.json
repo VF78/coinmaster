@@ -1,0 +1,17 @@
+{
+  "title": "CM2 attempt request",
+  "type": "object",
+  "required": [
+    "run_id",
+    "stage",
+    "policy",
+    "warmup_root",
+    "artifact_dir",
+    "current_hl_execution_inputs",
+    "shared_lock_path",
+    "attempt_ledger",
+    "budget_path",
+    "freeze_files"
+  ],
+  "description": "stage engineering additionally requires fixture_id=cm2-connected-native-v1,start_ns=1725148800000000000,end_ns=1725181200000000000; full stages require data_root and qualified_coverage_source. freeze_files is nonempty list of path/sha256 objects. Receipt requires status R2_RELEASED, matching stage, and true source_config_data_binary_freeze,independent_money_causality_review,own_stage_root_GO,fresh_resource_check,secretless_environment."
+}

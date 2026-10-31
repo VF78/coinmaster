@@ -1,0 +1,14 @@
+{
+  "command": "PYTHONPATH=runtime <pinned-python> -m pytest runtime/tests/test_cm2_policy.py runtime/tests/test_cm2_boundary.py runtime/tests/test_cm2_fixture_validation.py runtime/tests/test_cm2_report_precision.py -q",
+  "returncode": 0,
+  "native_engine_constructions": 0,
+  "result": "48 passed in 2.70s",
+  "child_probe": "ACTUAL_ORDINARY_PYTHON_CHILD_FLAGS_ENV_HOME_CWD_ASSERTED",
+  "lease_probe": "CHILD_INHERITED_FD_RETAINS_GLOBAL_FLOCK_AFTER_PARENT_CLOSE",
+  "source_separation": {
+    "safety": "e1ca4c2b10ee218483767a30f89fb07ac091d33f",
+    "feature_CSE": "752493ceb2ce0b71fe5e684b13cdd957b333ec3d"
+  },
+  "native_runs_since_E01": 0,
+  "original_E01": "FAIL_SPENT1_UNCHANGED_E02_REQUIRES_ROOT_GO"
+}

@@ -22,9 +22,11 @@ class DrawdownTracker:
         self.top = []
         self.count = 0
 
-    def add(self, timestamp, value):
+    def add(self, timestamp, value, *, sequence_id=None, timestamp_ns=None):
         value = D(value)
-        point = {"timestamp_ns": str(timestamp), "equity": str(value)}
+        point = {"timestamp_ns": str(timestamp if timestamp_ns is None else timestamp_ns), "equity": str(value)}
+        if sequence_id is not None:
+            point["sequence_id"] = str(sequence_id)
         self.count += 1
         if self.minimum is None or value < D(self.minimum["equity"]):
             self.minimum = point
@@ -82,7 +84,7 @@ class ConditionalUpperToLaterLowerTracker:
 
 
 class NativeMinuteRiskRecorder:
-    def __init__(self, path: Path, seed, instruments, leverage, end_exclusive_ns):
+    def __init__(self, path: Path, seed, instruments, leverage, end_exclusive_ns, *, margin_policy=None):
         from coinmaster.research.native_fixture import TierMarginPolicy
         self.path = path
         self.end_exclusive_ns = end_exclusive_ns
@@ -92,10 +94,10 @@ class NativeMinuteRiskRecorder:
         self.writer = csv.writer(self.file)
         self.writer.writerow(["bar_open_ms", "close_available_ns", "phase", "cash", "free_cash", "native_initial_margin", "native_maintenance_margin", "paired_close_equity", "conditional_adverse_equity", "conditional_favorable_equity", "conditional_high_mark_mm_upper", "conditional_margin_breach", "native_positions_and_mark_ohlc_json"])
         self.instruments = instruments
-        self.margin_policy = TierMarginPolicy((), leverage, 120_000_000_000)
+        self.margin_policy = margin_policy or TierMarginPolicy((), leverage, 120_000_000_000)
         # High notional is a maintenance upper bound only for monotone tiers.
         # Validate the actual captured profile rather than assume that property.
-        for tiers in self.margin_policy._profile.tiers.values():
+        for tiers in getattr(self.margin_policy._profile, 'tiers', {}).values():
             if any(t.mm < 0 for t in tiers) or any(
                 a.cap*b.mm-b.deduction < a.cap*a.mm-a.deduction
                 for a,b in zip(tiers,tiers[1:])
@@ -193,10 +195,15 @@ class NativeMinuteRiskRecorder:
         if epoch != self.fill_epoch:
             return
         _, cash, _, _, _, equity, _, _, _, details = snapshot
+        if hasattr(strategy,"_next_observe_settled"):
+            strategy._next_observe_settled(equity,timestamp,source)
         self.settled_curve.add(timestamp, equity)
         self.receipt_writer.writerow([source,timestamp,epoch,cash,equity,json.dumps(details,separators=(",",":"))])
         self.receipt_count += 1
         self.receipt_pending = None
+        # C1 decisions consume the committed consistent receipt and frozen marks.
+        if getattr(strategy.config,"research_residual_recovery",False):
+            strategy._c1_observe(equity,timestamp,source,epoch,details)
 
     def capture(self, strategy, timestamp, phase):
         if timestamp not in self.bundles:
@@ -239,9 +246,16 @@ class NativeMinuteRiskRecorder:
         self.writer.writerow([bundle.open_time_ms,timestamp,row_phase,cash,free,initial,maintenance,equity,adverse,favorable,upper,breach,json.dumps(details,separators=(",",":"))])
         self.rows += 1
 
+    def close_writers(self):
+        """Finish both gzip streams even when one close fails; no summary export."""
+        errors=[]
+        for writer in (self.file,self.receipt_file):
+            try:writer.close()
+            except BaseException as error:errors.append(error)
+        if errors:raise errors[0]
+
     def close(self):
-        self.file.close()
-        self.receipt_file.close()
+        self.close_writers()
         if self.rows != self.expected_minutes*3 or any(
             count != self.expected_minutes for count in self.phase_counts.values()
         ):
@@ -295,6 +309,7 @@ def observed_strategy_type(base, recorder):
                 if self.config.research_btc_episode_loss_20:
                     self._research_check_btc_episode_loss(timestamp, after_observation=True)
     def on_order_filled(self,event):
+        if getattr(self.config,"research_residual_recovery",False) and str(event.trade_id) in self._seen_trade_ids:return
         recorder.note_fill(event.ts_event)
         base.on_order_filled(self,event)
     def on_quote_tick(self,tick):
@@ -309,3 +324,31 @@ def observed_strategy_type(base, recorder):
         elif tick.instrument_id==self.config.btc_id:
             recorder.capture(self,tick.ts_event,"post_btc_quote_paired_close")
     return type(base.__name__,(base,),{"on_data":on_data,"on_quote_tick":on_quote_tick,"on_order_filled":on_order_filled,"_research_protection_defer_to_recorder":True,"_risk_first_observer_driven":True})
+
+
+def observed_neutral_strategy_type(base, recorder):
+    """Read-only native sampling without WaveOverlay economic callbacks."""
+    def on_data(self,data):
+        incoming=getattr(data,"data",data)
+        timestamp=getattr(incoming,"ts_event",None)
+        recorder.finalize_receipt(self,timestamp)
+        base.on_data(self,data)
+        from coinmaster.venues.marks import VenueMark
+        if (timestamp in recorder.bundles and isinstance(incoming,VenueMark)
+            and incoming.instrument_id==self.config.sol_id
+            and all(self._latest_marks.get(i) is not None and self._latest_marks[i].ts_event==timestamp
+                    for i in (self.config.btc_id,self.config.sol_id))):
+            recorder.capture(self,timestamp,"pre_quote_paired_close")
+    def on_order_filled(self,event):
+        if str(event.trade_id) in self._seen_trade_ids:
+            return
+        recorder.note_fill(event.ts_event)
+        base.on_order_filled(self,event)
+    def on_quote_tick(self,tick):
+        base.on_quote_tick(self,tick)
+        if tick.instrument_id==self.config.sol_id:
+            recorder.capture(self,tick.ts_event,"post_quote_paired_close")
+        elif tick.instrument_id==self.config.btc_id:
+            recorder.capture(self,tick.ts_event,"post_btc_quote_paired_close")
+    return type(base.__name__,(base,),{"on_data":on_data,"on_quote_tick":on_quote_tick,
+                                    "on_order_filled":on_order_filled})

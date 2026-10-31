@@ -247,6 +247,7 @@ class Episode:
     # exposure is earned only in the same proportion as the target quantity
     # that has actually filled, never when the target is merely accepted.
     btc_tp_filled_qty: dict[int, float] = field(default_factory=dict)
+    btc_risk_retired_lots: dict[int, int] = field(default_factory=dict)
     # Each target's original size is fixed from confirmed entry quantity.
     # Replacement intents carry only the remaining leaves.
     btc_tp_target_qty: dict[int, float] = field(default_factory=dict)
@@ -346,9 +347,9 @@ class WaveOverlayState:
             return min(max(0.0, target - episode.btc_tp_filled_qty.get(level, 0.0)), episode.btc_open_qty)
         self._ensure_btc_targets(episode)
         initial_lots = self._lots(episode.btc_initial_qty, self.btc_lot_step)
-        sold_lots = sum(episode.btc_tp_filled_lots.values())
+        sold_lots = sum(episode.btc_tp_filled_lots.values()) + sum(episode.btc_risk_retired_lots.values())
         leaves = min(
-            episode.btc_tp_target_lots[level] - episode.btc_tp_filled_lots.get(level, 0),
+            episode.btc_tp_target_lots[level] - episode.btc_tp_filled_lots.get(level, 0) - episode.btc_risk_retired_lots.get(level, 0),
             initial_lots - sold_lots,
         )
         return float(Decimal(max(0, leaves)) * self.btc_lot_step)
@@ -396,7 +397,7 @@ class WaveOverlayState:
         # A due timeout is a mandatory reduction.  It must preempt a queued
         # add or a resting planned exit under every candidate, including the
         # legacy control flag retained in the immutable candidate schema.
-        timeout = self._sol_exits(episode, feature, bars[index], index)
+        timeout = [] if getattr(self, "research_h4_owned", False) else self._sol_exits(episode, feature, bars[index], index)
         if timeout:
             return timeout
         # Ordinary work waits for a parent to become terminal, but the
@@ -416,7 +417,7 @@ class WaveOverlayState:
                     intents.append(self._intent(episode, "BTC_REDUCE", -episode.side, level, quantity=leaves))
         if intents:
             return intents
-        if not self.config.sol_overlay_enabled:
+        if getattr(self, "research_h4_owned", False) or not self.config.sol_overlay_enabled:
             return []
         # SOL rights come only from confirmed BTC reduce fills; additions follow reductions.
         # An invalid current beta permits only exits/reductions, never new risk.

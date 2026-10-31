@@ -1,0 +1,30 @@
+{
+  "schema": "execution-parity-current-live-configuration-v1",
+  "fee_rates": {
+    "taker": "0.000432",
+    "maker": "0.000144"
+  },
+  "fee_source": "ACCOUNT_USERFEES_VERIFIED_BY_COORDINATOR;public_rates_only",
+  "referral_discount_already_applied": true,
+  "fee_reserve_rate": "0.0005",
+  "selected_leverage": {
+    "BTC": "40",
+    "SOL": "20"
+  },
+  "venue": "HYPERLIQUID",
+  "accounting_currency": "USDC",
+  "equity_scope": "USDC_ONLY_CURRENT_QUALIFIED_NORMALIZATION",
+  "instrument_quantity_precision": {
+    "BTC": 5,
+    "SOL": 2
+  },
+  "historical_price_source": "PINNED_BYBIT_1M_PROXY_NOT_HL_BBO",
+  "funding": "PINNED_HISTORICAL_FUNDING_WITH_NATIVE_USDC_POSTINGS;not_future_guarantee",
+  "impact_model": "EXPLICIT_ZERO_IMPACT_FULL_FILL_NATIVE_HOOK_CAPACITY_EQUALS_ORDER_LEAVES",
+  "maker_touch_fill": false,
+  "drawdown_emergency_research": false,
+  "external_DD_test_stop": false,
+  "intrinsic_C1_preserved": true,
+  "live_DP_limit_percent": 55,
+  "live_order_capability": false
+}

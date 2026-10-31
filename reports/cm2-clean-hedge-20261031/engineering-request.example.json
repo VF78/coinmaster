@@ -1,0 +1,30 @@
+{
+  "run_id": "CM2_E01",
+  "stage": "engineering",
+  "policy": {
+    "trend_hours": 72,
+    "load": 4,
+    "stop_atr": 3,
+    "core": 0.5,
+    "hedge_trigger": 0.75,
+    "hedge_fraction": 0.75,
+    "buffer": 0.08,
+    "mode": "joint",
+    "version": "cm2-v1"
+  },
+  "fixture_id": "cm2-connected-native-v1",
+  "start_ns": 1725148800000000000,
+  "end_ns": 1725181200000000000,
+  "warmup_root": "<immutable-source>/reports/btc-split-sol-cover-20261018",
+  "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/runs/CM2_E01",
+  "current_hl_execution_inputs": "<frozen-public-current-HL-profile.json>",
+  "shared_lock_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/mac-native-research.lock",
+  "attempt_ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/trials.jsonl",
+  "budget_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/BUDGET.json",
+  "freeze_files": [
+    {
+      "path": "<immutable-source-or-binary-or-input-file>",
+      "sha256": "<required-actual-sha256>"
+    }
+  ]
+}

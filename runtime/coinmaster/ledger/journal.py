@@ -19,6 +19,7 @@ class NativeEventJournal:
             "event_id TEXT PRIMARY KEY, instrument_id TEXT NOT NULL, ts_event INTEGER NOT NULL, "
             "rate TEXT NOT NULL, settlement_mark TEXT NOT NULL, account_total_after TEXT NOT NULL)"
         )
+        self.db.execute("CREATE TABLE IF NOT EXISTS funding_cash (event_id TEXT NOT NULL,instrument_id TEXT NOT NULL,ts_event INTEGER NOT NULL,before_total TEXT NOT NULL,after_total TEXT NOT NULL,signed_delta TEXT NOT NULL,PRIMARY KEY(event_id,instrument_id))")
         self.db.execute("CREATE TABLE IF NOT EXISTS transfers (event_id TEXT PRIMARY KEY, active_before TEXT NOT NULL, active_after TEXT NOT NULL, reserve_before TEXT NOT NULL, reserve_after TEXT NOT NULL)")
         self.db.execute(
             "CREATE TABLE IF NOT EXISTS native_parent_order_audit ("
@@ -68,6 +69,14 @@ class NativeEventJournal:
             "SELECT event_id, instrument_id, ts_event, rate, settlement_mark, account_total_after "
             "FROM funding_events ORDER BY ts_event, event_id",
         ).fetchall()
+
+    def record_funding_cash(self,event_id,instrument_id,ts_event,before,after):
+        self.db.execute("INSERT OR IGNORE INTO funding_cash VALUES (?,?,?,?,?,?)",
+            (event_id,instrument_id,ts_event,str(before),str(after),str(after-before)))
+        self.db.commit()
+
+    def funding_cash_audit(self):
+        return self.db.execute("SELECT event_id,instrument_id,ts_event,before_total,after_total,signed_delta FROM funding_cash ORDER BY ts_event,event_id,instrument_id").fetchall()
 
     def checkpoint(self) -> None:
         """Flush durable evidence before an artifact DB is atomically published."""

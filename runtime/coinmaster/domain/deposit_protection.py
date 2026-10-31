@@ -6,6 +6,8 @@ from decimal import Decimal
 
 DAY_NS = 86_400_000_000_000
 CLOSE_FRESH_NS = 120_000_000_000
+UTC_DAILY_CLOSE = "UTC_DAILY_CLOSE"
+OBSERVED_NATIVE_EQUITY_PEAK = "OBSERVED_NATIVE_EQUITY_PEAK"
 
 
 def percent(value: int) -> int:
@@ -33,9 +35,15 @@ class DepositProtection:
     daily_sample_missed: bool = False
     current_equity: Decimal | None = None
     observed_ns: int | None = None
+    pending_daily_high: dict | None = None
+    currency: str = "USDC"
+    high_water_basis: str = UTC_DAILY_CLOSE
 
     def __post_init__(self) -> None:
         percent(self.limit_percent)
+        if self.high_water_basis not in (UTC_DAILY_CLOSE, OBSERVED_NATIVE_EQUITY_PEAK):
+            raise ValueError("DEPOSIT_HIGH_WATER_BASIS_INVALID")
+        if self.currency not in ("USDC", "USDT"):raise ValueError("DEPOSIT_CURRENCY_UNSUPPORTED")
         if self.high_water is not None and (not self.high_water.is_finite() or self.high_water <= 0):
             raise ValueError("DEPOSIT_HIGH_WATER_INVALID")
         if self.latched != (self.trigger is not None):
@@ -53,7 +61,7 @@ class DepositProtection:
         self.last_boundary_ns = now_ns // DAY_NS * DAY_NS
         self.current_equity, self.observed_ns = value, now_ns
 
-    def observe(self, value: Decimal | None, now_ns: int) -> tuple[bool, bool]:
+    def observe(self,value:Decimal|None,now_ns:int,*,allow_high_water:bool=True) -> tuple[bool, bool]:
         """Return (durable change, newly tripped); UNKNOWN never means zero."""
         value = equity(value)
         if self.high_water is None or self.last_boundary_ns is None:
@@ -68,10 +76,16 @@ class DepositProtection:
                 and previous_ns < boundary and previous_ns >= boundary - CLOSE_FRESH_NS
                 and boundary == self.last_boundary_ns + DAY_NS
             )
-            if valid_close and previous_value > self.high_water:
-                self.high_water = previous_value
+            if self.high_water_basis == UTC_DAILY_CLOSE and valid_close and previous_value>self.high_water:
+                if allow_high_water:self.high_water=previous_value
+                elif self.pending_daily_high is None or previous_value>Decimal(self.pending_daily_high['equity']):
+                    self.pending_daily_high=dict(equity=str(previous_value),observed_ns=previous_ns,boundary_ns=boundary)
             self.daily_sample_missed = not valid_close
             self.last_boundary_ns = boundary
+            changed = True
+        if (self.high_water_basis == OBSERVED_NATIVE_EQUITY_PEAK and allow_high_water
+            and not self.latched and value is not None and value > self.high_water):
+            self.high_water = value
             changed = True
         self.current_equity, self.observed_ns = value, now_ns
         if value is not None and not self.latched and value <= self.threshold:
@@ -96,6 +110,14 @@ class DepositProtection:
         self.trigger = None
         self.exit_state = None
         self.daily_sample_missed = False
+        self.pending_daily_high=None
+
+    def confirm_pending_high(self,start_ms,end_ms):
+        pending=self.pending_daily_high
+        if pending is None or not start_ms*1_000_000<=pending['observed_ns']<=(end_ms+1)*1_000_000:return False
+        self.high_water=max(self.high_water,Decimal(pending['equity']))
+        self.pending_daily_high=None
+        return True
 
     def projection(self) -> dict[str, object]:
         state = (
@@ -105,7 +127,8 @@ class DepositProtection:
         )
         return {
             "state": state, "drawdown_limit_percent": self.limit_percent,
-            "currency": "USDC", "equity": None if self.current_equity is None else str(self.current_equity),
+            "high_water_basis": self.high_water_basis,
+            "currency": self.currency, "equity": None if self.current_equity is None else str(self.current_equity),
             "high_water_equity": None if self.high_water is None else str(self.high_water),
             "threshold_equity": None if self.threshold is None else str(self.threshold),
             "observed_at_ns": self.observed_ns,
@@ -117,23 +140,27 @@ class DepositProtection:
     def durable(self) -> dict[str, object]:
         return {
             "schema": "coinmaster-deposit-protection-v1", "drawdown_limit_percent": self.limit_percent,
+            "high_water_basis": self.high_water_basis,
             "high_water_equity": None if self.high_water is None else str(self.high_water),
             "last_daily_close_utc": self.last_boundary_ns, "latched": self.latched,
             "trigger": self.trigger, "exit_state": self.exit_state,
-            "daily_sample_missed": self.daily_sample_missed,
+            "daily_sample_missed": self.daily_sample_missed,"pending_daily_high":self.pending_daily_high,
         }
 
     @classmethod
-    def from_durable(cls, row: dict[str, object]) -> "DepositProtection":
+    def from_durable(cls, row: dict[str, object], *, currency: str = "USDC", high_water_basis: str = UTC_DAILY_CLOSE) -> "DepositProtection":
         if row.get("schema") != "coinmaster-deposit-protection-v1":
             raise ValueError("DEPOSIT_STATE_SCHEMA_INVALID")
+        stored_basis = row.get("high_water_basis", UTC_DAILY_CLOSE)
+        if stored_basis != high_water_basis:
+            raise ValueError("DEPOSIT_HIGH_WATER_BASIS_MISMATCH")
         high = row.get("high_water_equity")
         state = cls(
-            limit_percent=percent(row["drawdown_limit_percent"]),
+            limit_percent=percent(row["drawdown_limit_percent"]), currency=currency, high_water_basis=stored_basis,
             high_water=None if high is None else Decimal(high),
             last_boundary_ns=row["last_daily_close_utc"], latched=row["latched"],
             trigger=row["trigger"], exit_state=row["exit_state"],
-            daily_sample_missed=row["daily_sample_missed"],
+            daily_sample_missed=row["daily_sample_missed"],pending_daily_high=row.get("pending_daily_high"),
         )
         if state.high_water is None or type(state.last_boundary_ns) is not int:
             raise ValueError("DEPOSIT_DURABLE_BASE_MISSING")

@@ -1,0 +1,125 @@
+{
+  "schema_version": "cm2-v1",
+  "architecture": "J1_BTC_BREAKOUT_SELECTIVE_SOL",
+  "active_economic_parameters": 7,
+  "parameters": [
+    {
+      "name": "trend_hours",
+      "units": "closed UTC hours",
+      "range": [
+        24,
+        168
+      ],
+      "default": 72,
+      "sampling": "log_uniform_integer",
+      "effect": "slower channel retains longer trends but enters later"
+    },
+    {
+      "name": "load",
+      "units": "BTC quote notional/native equity",
+      "range": [
+        1,
+        8
+      ],
+      "default": 4,
+      "sampling": "log_uniform",
+      "effect": "higher directional growth and drawdown; admission still obeys actual tiers and free margin"
+    },
+    {
+      "name": "stop_atr",
+      "units": "ATR24",
+      "range": [
+        2,
+        6
+      ],
+      "default": 3,
+      "sampling": "uniform",
+      "effect": "wider runner stop increases participation and adverse inventory"
+    },
+    {
+      "name": "core",
+      "units": "fraction actual BTC retained after first 2R positive-net harvest",
+      "range": [
+        0.5,
+        0.9
+      ],
+      "default": 0.75,
+      "sampling": "uniform",
+      "effect": "more runner participation and risk after harvest"
+    },
+    {
+      "name": "hedge_trigger",
+      "units": "six-hour residual standard deviations",
+      "range": [
+        0.25,
+        1.5
+      ],
+      "default": 0.75,
+      "sampling": "uniform",
+      "effect": "larger threshold makes protection more selective"
+    },
+    {
+      "name": "hedge_fraction",
+      "units": "maximum guarded BTC-factor fraction hedged",
+      "range": [
+        0.15,
+        0.75
+      ],
+      "default": 0.45,
+      "sampling": "uniform",
+      "effect": "more protection, gross margin, basis risk and winner insurance cost"
+    },
+    {
+      "name": "buffer",
+      "units": "actual BTC quote-notional fraction",
+      "range": [
+        0.03,
+        0.2
+      ],
+      "default": 0.08,
+      "sampling": "uniform",
+      "effect": "wider SOL no-trade band lowers turnover; hard cap/drain bypass"
+    }
+  ],
+  "frozen_constants": {
+    "signal": "paired completed hourly OHLC; next quote strictly after available_ns",
+    "atr_hours": 24,
+    "beta_hours": 168,
+    "residual_horizon_hours": 6,
+    "beta_min": 0.05,
+    "rho_min": 0.3,
+    "beta_guard": "beta+2*sqrt(residual_variance/(168*btc_variance)); deterministic guard not future guarantee",
+    "stress_horizon": "one hour for common/residual sigma and absolute95% tails",
+    "sigma_multiplier": 2,
+    "activation_confirmation_hours": 2,
+    "release_confirmation_hours": 2,
+    "release_trigger": "half activation z or favorable six-hour BTC return",
+    "ordinary_harvest_R": 2,
+    "unknown_btc_trim_fraction": 0.5,
+    "recovery_valid_hours": 2,
+    "capacity": "1% previous completed minute raw turnover",
+    "ordinary_child_interval_seconds": 60,
+    "max_gross_notional": "NONE: causal load target and existing public tiers/margin",
+    "account_leverage": "frozen explicit venue profile; distinct from economic BTC load",
+    "capacity_absolute_child_limit": "nonbinding 1e100 quote units; actual cap is prior-minute turnover1%",
+    "scope": "research-only; no live/recovery/deployment"
+  },
+  "anchors": [
+    "joint defaults",
+    "btc_only own matched defaults",
+    "btc_trim own matched defaults",
+    "joint load6 all other defaults"
+  ],
+  "search": {
+    "seed": 20261031,
+    "initial": 32,
+    "conditional_additional": 32,
+    "local_max": 32,
+    "qualifier_max": 12,
+    "engineering_max": 4,
+    "anchors_max": 4,
+    "total_max": 116,
+    "objective": "TOTAL>=5600000 and bothDD<=.45 and zero modeled liquidations; Pareto TOTAL up/DD down",
+    "qualification": "not pristine OOS"
+  }
+}
