@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CM2 completed native analysis inputs",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "native_dd_source",
+    "native_dd_source_sha256",
+    "ledger",
+    "cases"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "native_dd_source": {
+      "type": "string"
+    },
+    "native_dd_source_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "ledger": {
+      "type": "string"
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "case",
+          "run_id",
+          "stage"
+        ],
+        "properties": {
+          "case": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]+$"
+          },
+          "run_id": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "native_report": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "settled_receipts": {
+            "type": "string"
+          },
+          "coherent_trace": {
+            "type": "string"
+          },
+          "engine_count": {
+            "type": "string"
+          },
+          "request": {
+            "type": "string"
+          },
+          "go": {
+            "type": "string"
+          },
+          "derived_receipt": {
+            "type": "string",
+            "description": "Strict QUALIFICATION.json bound to ORIGINAL raw-native report and streams"
+          },
+          "qualifier_source": {
+            "type": "string",
+            "description": "Same reviewed immutable pure qualification helper source matching receipt hash"
+          }
+        }
+      }
+    }
+  }
+}

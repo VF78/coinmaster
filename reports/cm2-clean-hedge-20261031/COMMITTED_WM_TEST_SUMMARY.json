@@ -1,0 +1,23 @@
+{
+  "tests": "96 passed in 5.85s",
+  "returncode": 0,
+  "native_engine_constructions": 0,
+  "actual_Mac_financial_inputs_used": false,
+  "actual_R1_qualification": "NOT_RUN_PENDING_FROZEN_MAC_SCAN",
+  "qualification_model_id": "CM2_COMMITTED_NATIVE_WM_QUALIFICATION_V1",
+  "core_strategy_engine_money_bytes_equal779": true,
+  "core_paths": [
+    "runtime/coinmaster/strategy/cm2_policy.py",
+    "runtime/coinmaster/strategy/cm2_native.py",
+    "runtime/coinmaster/strategy/cm2_execution.py",
+    "runtime/coinmaster/research/native_baseline.py",
+    "runtime/coinmaster/research/minute_risk.py",
+    "runtime/coinmaster/research/paired_observer.py",
+    "runtime/coinmaster/research/native_full_fill.py",
+    "runtime/coinmaster/ledger/journal.py"
+  ],
+  "qualifier_sha256": "7d37f12e152915a176fa7091c00d1244ff1a76b7cfb2dd494c40735b0f6978d2",
+  "analyzer_sha256": "d4b5ec3898f14eff79fa98332c5ea32988b76c2d43b22c76261d0863c6b1d7bc",
+  "preserved": "ORIGINAL_R1_OS1_FAILED_LEDGER_RAW_MONEY_AND_LEGACY_SPARSE_CSV",
+  "new_source_scope": "exactfundingreadcache+reviewedbatch+strictpostprocessing; no strategycallbacks or monetaryposting change"
+}

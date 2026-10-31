@@ -1,0 +1,33 @@
+{
+  "schema": "cm2-static-block-v1",
+  "root_GO": false,
+  "block_id": "CM2_CACHED_CONTROLS_20261031",
+  "global_reservation_ref": "<ROOT_RESERVATION.json#two-remaining-anchor-slots>",
+  "stage": "anchors",
+  "reserved_attempts": 2,
+  "hosts": {
+    "mac": {
+      "quota": 2,
+      "max_workers": 2,
+      "min_available_memory_bytes": 2147483648,
+      "budget_path": "<Mac-block-root>/budget.json",
+      "attempt_ledger": "<Mac-block-root>/trials.jsonl",
+      "shared_lock_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/mac-native-research.lock",
+      "api_probe_root": "<Mac-block-root>/api-probes",
+      "cases": [
+        {
+          "run_id": "CM2_ANCHOR_BTC_ONLY",
+          "policy_sha256": "<canonical-sha-of-actual-R1-policy-with-only-mode-changed>",
+          "request_path": "<Mac-block-root>/CM2_ANCHOR_BTC_ONLY.json",
+          "request_sha256": "<exact-request-file-sha>"
+        },
+        {
+          "run_id": "CM2_ANCHOR_BTC_TRIM",
+          "policy_sha256": "<canonical-sha-of-actual-R1-policy-with-only-mode-changed>",
+          "request_path": "<Mac-block-root>/CM2_ANCHOR_BTC_TRIM.json",
+          "request_sha256": "<exact-request-file-sha>"
+        }
+      ]
+    }
+  }
+}

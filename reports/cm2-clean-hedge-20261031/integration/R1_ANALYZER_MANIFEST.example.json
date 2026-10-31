@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "native_dd_source": "<immutable0394-or-integrated-source>/runtime/coinmaster/research/minute_risk.py",
+  "native_dd_source_sha256": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad",
+  "ledger": "<Mac-own-CM2-root>/trials.jsonl",
+  "cases": [
+    {
+      "case": "JOINT",
+      "run_id": "CM2_ANCHOR_JOINT_R1",
+      "stage": "anchors",
+      "native_report": "<Mac-own-root>/runs/CM2_ANCHOR_JOINT_R1/CM2_ANCHOR_JOINT_R1-raw-native.json",
+      "settled_receipts": "<Mac-own-root>/runs/CM2_ANCHOR_JOINT_R1/minute-native-settled-receipts.csv.gz",
+      "coherent_trace": "<Mac-own-root>/runs/CM2_ANCHOR_JOINT_R1/coherent-native-events.jsonl.gz",
+      "engine_count": "<Mac-own-root>/runs/CM2_ANCHOR_JOINT_R1/engine-construction-count.json",
+      "request": "<ORIGINAL-R1-request.json>",
+      "go": "<ORIGINAL-R1-GO.json>",
+      "derived_receipt": "<ACTUAL-R1-derived-dir>/QUALIFICATION.json",
+      "qualifier_source": "<SAME-REVIEWED-FROZEN-7d37-helper>/runtime/coinmaster/research/cm2_committed_validation.py"
+    }
+  ]
+}

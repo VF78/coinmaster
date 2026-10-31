@@ -1,0 +1,22 @@
+{
+  "status": "POST_MAINTENANCE_PURE_REGRESSION_PASS",
+  "tests": "71 passed in5.56s",
+  "native_engine_constructions": 0,
+  "real_API_probes": 0,
+  "kernel": "Linux6.8.0-147-generic x86_64",
+  "python": "3.12.3",
+  "sqlite": "3.45.1",
+  "native": "1.231.0",
+  "native_engine_sha256": "89079fe33d4477e0abee0b5bf2261f79513d5ffba396cdadfeaa68bf2085cfb6",
+  "cache_commit": "d1f789b0267817637abb0ee98b7fc4254bbfb7c3",
+  "batch_source_commit": "998d64cde4e45909526c44de60ff6f8010b7e7cd",
+  "normal_cherry_pick_commit": "bce966ff46e9e526d6797612c8447a27802b6fb5",
+  "tracked_runtime_diff_vs779_at_this_checkpoint": [
+    "A\truntime/coinmaster/research/cm2_batch.py",
+    "A\truntime/coinmaster/research/cm2_funding_reader.py",
+    "M\truntime/coinmaster/research/cm2_runner.py",
+    "A\truntime/tests/test_cm2_batch.py",
+    "A\truntime/tests/test_cm2_funding_reader.py"
+  ],
+  "scope": "existing55+fundingcache9+reviewedbatch7; committedqualification next separatechange; noengine"
+}

@@ -1,0 +1,17 @@
+{
+  "command": "<pinned-python> -m pytest reports/cm2-clean-hedge-20261031/analysis/test_saved_cm2_analyze.py -q",
+  "returncode": 0,
+  "result": "9 passed in 0.43s",
+  "native_engine_constructions": 0,
+  "actual_Mac_financial_inputs_used": false,
+  "unfinished_streams_read": false,
+  "runtime_source_779_byte_identical_git_diff": true,
+  "analyzer_sha256": "cd0d8409a8603c63ea4add7f8649fbe12dcf2ee978ea1310f81b0abd5c9e7d1c",
+  "native_dd_source_sha256": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad",
+  "native_observer_source_sha256": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42",
+  "decimal_contract": {
+    "precision": 28,
+    "rounding": "ROUND_HALF_EVEN"
+  },
+  "actual_completed_anchor_analysis": "NOT_RUN_WAITING_ROOT_INPUTS_AND_REPORT_REVIEW"
+}

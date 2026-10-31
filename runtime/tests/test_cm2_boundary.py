@@ -15,7 +15,8 @@ from coinmaster.research.cm2_runner import acquire_shared_lease,register_attempt
 
 class AdapterBoundaryTests(unittest.TestCase):
     def test_same_available_quote_is_not_executable(self):
-        self_fake=N(_quotes={},config=N(trading_start_open_ns=0,terminal_close_at_ns=1000),
+        self_fake=N(_quotes={},_owned={},policy_state=State(),_restore_failed=False,
+                    config=N(trading_start_open_ns=0,terminal_close_at_ns=1000),
                     current_features=Features(100,100,True))
         self_fake._snapshot=lambda now: (_ for _ in ()).throw(RuntimeError("EXECUTION_BOUNDARY_ENTERED"))
         CM2Strategy.on_quote_tick(self_fake,N(instrument_id="BTC",ts_event=100))

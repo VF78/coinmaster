@@ -964,7 +964,7 @@ def run_native_diagnostic(
             start_ns=trading_start_ms*1_000_000,end_ns=trading_end_ms*1_000_000,
             mark_types=(venue_mark_data_type(btc_instrument.id),venue_mark_data_type(sol_instrument.id)),
             mark_client=mark_client,journal=journal,exit_fee_rate=taker*multiplier,
-            execution_hash=policy.hash,risk_recorder=risk_recorder)
+            execution_hash=policy.hash,risk_recorder=risk_recorder,coherent_observer=coherent_observer)
     else:
         strategy = strategy_type(WaveOverlayStrategyConfig(
             btc_id=btc_instrument.id, sol_id=sol_instrument.id,

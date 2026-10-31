@@ -1,0 +1,10 @@
+{
+  "scope_version": "CM2_CACHED_CONTROLS_20261031",
+  "root_allocation_sha256": "<FINAL-BLOCK-MANIFEST-SHA>",
+  "total_physical_cap": 2,
+  "stages": {
+    "anchors": {
+      "cap": 2
+    }
+  }
+}

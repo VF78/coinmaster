@@ -1,0 +1,10 @@
+{
+  "status": "R2_RELEASED",
+  "stage": "anchors",
+  "source_config_data_binary_freeze": false,
+  "independent_money_causality_review": false,
+  "own_stage_root_GO": false,
+  "fresh_resource_check": false,
+  "secretless_environment": true,
+  "root_allocation_sha256": "<FINAL-BLOCK-MANIFEST-SHA>"
+}

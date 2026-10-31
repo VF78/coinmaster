@@ -1,0 +1,1685 @@
+{
+  "cases": [
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 0,
+      "policy": {
+        "buffer": 0.137324,
+        "core": 0.705007,
+        "hedge_fraction": 0.435507,
+        "hedge_trigger": 0.510923,
+        "load": 4.895375,
+        "mode": "joint",
+        "stop_atr": 3.502606,
+        "trend_hours": 44,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "04c142ff1b4af1cc58c68df32c2839afb157156fc3604f25453809a1566c7c73",
+      "run_id": "CM2_BROAD_V1_000",
+      "u": [
+        0.30576168180957974,
+        0.7638064305024813,
+        0.37565150911206957,
+        0.5125186222856366,
+        0.20873809044889136,
+        0.47584420607369493,
+        0.6313199636230825
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 1,
+      "policy": {
+        "buffer": 0.043445,
+        "core": 0.805607,
+        "hedge_fraction": 0.312322,
+        "hedge_trigger": 0.983522,
+        "load": 5.039115,
+        "mode": "joint",
+        "stop_atr": 5.49048,
+        "trend_hours": 30,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "4aab079636deab960afc9da5ca884ce19e2095e7b148cee25af9b7cd9fb6371b",
+      "run_id": "CM2_BROAD_V1_001",
+      "u": [
+        0.10789889031473132,
+        0.7777234284077256,
+        0.8726201039444962,
+        0.7640180139775322,
+        0.5868172126459864,
+        0.27053617111264505,
+        0.0790886747007572
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 2,
+      "policy": {
+        "buffer": 0.048029,
+        "core": 0.849243,
+        "hedge_fraction": 0.518257,
+        "hedge_trigger": 0.699564,
+        "load": 1.462035,
+        "mode": "joint",
+        "stop_atr": 5.840717,
+        "trend_hours": 72,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "23a4b7a59a7a1bbc44d13589eb8d2112dcae6630ba907af8bf66ee058430d194",
+      "run_id": "CM2_BROAD_V1_002",
+      "u": [
+        0.563262652419975,
+        0.18265913257659838,
+        0.9601793391853823,
+        0.8731078928063439,
+        0.35965102019504414,
+        0.6137614417048207,
+        0.10605249585175491
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 3,
+      "policy": {
+        "buffer": 0.14027,
+        "core": 0.714762,
+        "hedge_fraction": 0.38251,
+        "hedge_trigger": 0.81874,
+        "load": 3.727571,
+        "mode": "joint",
+        "stop_atr": 3.957074,
+        "trend_hours": 55,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "4672c01ad50f5dfb2eb172f7b76bc447a99d8d0521364e321027d861b02d9e6a",
+      "run_id": "CM2_BROAD_V1_003",
+      "u": [
+        0.42345969497656344,
+        0.6327452765028339,
+        0.4892685336863726,
+        0.5369050750997105,
+        0.4549916190180233,
+        0.38751742521998,
+        0.6486461862527789
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 4,
+      "policy": {
+        "buffer": 0.049681,
+        "core": 0.517433,
+        "hedge_fraction": 0.376337,
+        "hedge_trigger": 0.344021,
+        "load": 3.136233,
+        "mode": "joint",
+        "stop_atr": 3.007055,
+        "trend_hours": 49,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "2d0fd311495174dce19b14c5f0ac4b2c77001f46bf761e9d4d8df0f7c52852cd",
+      "run_id": "CM2_BROAD_V1_004",
+      "u": [
+        0.3678275057449215,
+        0.5496775853748119,
+        0.25176372517383216,
+        0.043583612395651006,
+        0.07521712249103574,
+        0.3772283926068557,
+        0.11577187933856692
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 5,
+      "policy": {
+        "buffer": 0.044314,
+        "core": 0.551433,
+        "hedge_fraction": 0.270213,
+        "hedge_trigger": 0.940861,
+        "load": 3.91519,
+        "mode": "joint",
+        "stop_atr": 5.585053,
+        "trend_hours": 38,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "4ea232dba4993d2545522eaf4b729944334a273c0c99ff0b7c37cacf2b10c56c",
+      "run_id": "CM2_BROAD_V1_005",
+      "u": [
+        0.23877698118946922,
+        0.6563607737164687,
+        0.8962632506735583,
+        0.12858260512179331,
+        0.5526885308467472,
+        0.20035538790882668,
+        0.0842003462292632
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 6,
+      "policy": {
+        "buffer": 0.098318,
+        "core": 0.796344,
+        "hedge_fraction": 0.53303,
+        "hedge_trigger": 0.560879,
+        "load": 5.946981,
+        "mode": "joint",
+        "stop_atr": 5.44844,
+        "trend_hours": 156,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "4ed8e18c12d7a29c02431045f9e33ae4beaf433501cb41670a17b4c49c4455e4",
+      "run_id": "CM2_BROAD_V1_006",
+      "u": [
+        0.9606862255409473,
+        0.8573858309234619,
+        0.8621098778355547,
+        0.7408597396214085,
+        0.24870300176797866,
+        0.6383829218969652,
+        0.40186914450398414
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 7,
+      "policy": {
+        "buffer": 0.137453,
+        "core": 0.715899,
+        "hedge_fraction": 0.424595,
+        "hedge_trigger": 1.454279,
+        "load": 1.199599,
+        "mode": "joint",
+        "stop_atr": 4.280346,
+        "trend_hours": 70,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "f2a3c8db47f31c152c94d40d00399bc45837a9e924092bf4ce4b17c1e1884efe",
+      "run_id": "CM2_BROAD_V1_007",
+      "u": [
+        0.5531450675659183,
+        0.08751748002473547,
+        0.5700864716972773,
+        0.5397467552695869,
+        0.9634230227637022,
+        0.4576588529329272,
+        0.6320771474358391
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 8,
+      "policy": {
+        "buffer": 0.072821,
+        "core": 0.521739,
+        "hedge_fraction": 0.240887,
+        "hedge_trigger": 0.775454,
+        "load": 2.840528,
+        "mode": "joint",
+        "stop_atr": 4.307325,
+        "trend_hours": 71,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "8f04254150e6162a1364d072d65c6ebddceb0076c43f694667eedda79d5aba55",
+      "run_id": "CM2_BROAD_V1_008",
+      "u": [
+        0.5578251416426726,
+        0.5020530731261045,
+        0.5768313600528713,
+        0.05434781961556445,
+        0.42036308865723493,
+        0.15147838042236006,
+        0.2518891396756241
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 9,
+      "policy": {
+        "buffer": 0.063678,
+        "core": 0.500778,
+        "hedge_fraction": 0.320486,
+        "hedge_trigger": 1.076153,
+        "load": 4.357637,
+        "mode": "joint",
+        "stop_atr": 5.173452,
+        "trend_hours": 143,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "3c38ee13c96cd0ed9f38a2812679896e5a057d743f1d2b40ab433ba6a11b86ec",
+      "run_id": "CM2_BROAD_V1_009",
+      "u": [
+        0.9183044810347649,
+        0.7078486823788631,
+        0.7933631174204432,
+        0.0019459555123531036,
+        0.6609227587716547,
+        0.28414314131701135,
+        0.19810666420607792
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 10,
+      "policy": {
+        "buffer": 0.069362,
+        "core": 0.767404,
+        "hedge_fraction": 0.270068,
+        "hedge_trigger": 1.117469,
+        "load": 4.469675,
+        "mode": "joint",
+        "stop_atr": 4.11171,
+        "trend_hours": 38,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "dbc6470f0780bd946a8adefc99b7a7bfd4f288ac9cf167735cd1a878efd3fa7f",
+      "run_id": "CM2_BROAD_V1_010",
+      "u": [
+        0.23898547804249437,
+        0.7200566367270307,
+        0.527927475864258,
+        0.6685097051998198,
+        0.6939752197993314,
+        0.2001140810405273,
+        0.23154081892026424
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 11,
+      "policy": {
+        "buffer": 0.032632,
+        "core": 0.693443,
+        "hedge_fraction": 0.182401,
+        "hedge_trigger": 0.825617,
+        "load": 3.541585,
+        "mode": "joint",
+        "stop_atr": 5.277288,
+        "trend_hours": 71,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "c98ab307c34157b03ec09df5169b6e3a1ddc6e695c29bd2f041b7ffb3cfe10b0",
+      "run_id": "CM2_BROAD_V1_011",
+      "u": [
+        0.5602870609007684,
+        0.6081317613054837,
+        0.8193220509263915,
+        0.4836081393241326,
+        0.4604936355672459,
+        0.054001458370934174,
+        0.015484104226155981
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 12,
+      "policy": {
+        "buffer": 0.069801,
+        "core": 0.726142,
+        "hedge_fraction": 0.666282,
+        "hedge_trigger": 0.332979,
+        "load": 4.846191,
+        "mode": "joint",
+        "stop_atr": 5.062873,
+        "trend_hours": 148,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "3bef09098040126e4af822ccd7608bb7b323e42053494d0b55adb4ad2add54e0",
+      "run_id": "CM2_BROAD_V1_012",
+      "u": [
+        0.9347375448517117,
+        0.758950445750773,
+        0.765718143826611,
+        0.5653540288984394,
+        0.06638302018283704,
+        0.8604706195414291,
+        0.23412392698670648
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 13,
+      "policy": {
+        "buffer": 0.066268,
+        "core": 0.803951,
+        "hedge_fraction": 0.318686,
+        "hedge_trigger": 0.576759,
+        "load": 5.220252,
+        "mode": "joint",
+        "stop_atr": 2.324742,
+        "trend_hours": 78,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "8186d049c2edfb04e651a21929c4dbd250d1c9c46c82f991063d6d88fa4e6a76",
+      "run_id": "CM2_BROAD_V1_013",
+      "u": [
+        0.6076489010718927,
+        0.7947064809274272,
+        0.08118556433392266,
+        0.7598770898298535,
+        0.2614072666062467,
+        0.2811431844380936,
+        0.2133402754919591
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 14,
+      "policy": {
+        "buffer": 0.159059,
+        "core": 0.743424,
+        "hedge_fraction": 0.602392,
+        "hedge_trigger": 0.749208,
+        "load": 3.617581,
+        "mode": "joint",
+        "stop_atr": 4.824228,
+        "trend_hours": 126,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "43b669a4cc4c7d429a192b0036e5772c9a8056c30e899e8d47f147a1617734eb",
+      "run_id": "CM2_BROAD_V1_014",
+      "u": [
+        0.8504280565304214,
+        0.6183417309222213,
+        0.706057011481123,
+        0.6085596994849254,
+        0.3993665486464799,
+        0.7539864716187418,
+        0.7591729095016874
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 15,
+      "policy": {
+        "buffer": 0.173334,
+        "core": 0.805711,
+        "hedge_fraction": 0.309457,
+        "hedge_trigger": 0.873227,
+        "load": 3.62427,
+        "mode": "joint",
+        "stop_atr": 5.293713,
+        "trend_hours": 119,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "0acea242dc7f025d95d2a6f7fcf080dcd01a99609a269bb425af819522f6866b",
+      "run_id": "CM2_BROAD_V1_015",
+      "u": [
+        0.8244145863499459,
+        0.6192301273911986,
+        0.8234282184831594,
+        0.764278533487643,
+        0.4985815175219692,
+        0.2657618826726308,
+        0.8431409357312634
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 16,
+      "policy": {
+        "buffer": 0.192801,
+        "core": 0.834111,
+        "hedge_fraction": 0.390171,
+        "hedge_trigger": 0.680407,
+        "load": 4.420738,
+        "mode": "joint",
+        "stop_atr": 5.105119,
+        "trend_hours": 43,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "f666752dddabb3e7c19262a903a28ccce42a262128e4649d818ad20a6bfeca33",
+      "run_id": "CM2_BROAD_V1_016",
+      "u": [
+        0.29568757632639986,
+        0.7147623927915318,
+        0.7762797274833084,
+        0.835276933251234,
+        0.344325987444039,
+        0.40028479733499034,
+        0.9576503190298058
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 17,
+      "policy": {
+        "buffer": 0.158707,
+        "core": 0.632478,
+        "hedge_fraction": 0.512767,
+        "hedge_trigger": 0.380065,
+        "load": 3.121864,
+        "mode": "joint",
+        "stop_atr": 5.424198,
+        "trend_hours": 37,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "3fa1e746784ed08a77925fe257eca249b823bcdf602f6c6059dbd953729d2c1f",
+      "run_id": "CM2_BROAD_V1_017",
+      "u": [
+        0.2202372907186393,
+        0.5474692890358132,
+        0.8560495096846101,
+        0.33119542330181206,
+        0.10405178562385609,
+        0.6046119880375216,
+        0.7571020946765338
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 18,
+      "policy": {
+        "buffer": 0.043679,
+        "core": 0.626938,
+        "hedge_fraction": 0.32992,
+        "hedge_trigger": 1.008649,
+        "load": 6.614556,
+        "mode": "joint",
+        "stop_atr": 4.502434,
+        "trend_hours": 49,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "0d87bb83b7a2e0dbda201716c1a8d63b590c9bef0a5408e45157a47989ea45e4",
+      "run_id": "CM2_BROAD_V1_018",
+      "u": [
+        0.3690065928719324,
+        0.9085480772046552,
+        0.6256085621371027,
+        0.31734379359373666,
+        0.6069191190544693,
+        0.29986744924744846,
+        0.08046354263822575
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 19,
+      "policy": {
+        "buffer": 0.181102,
+        "core": 0.770547,
+        "hedge_fraction": 0.587819,
+        "hedge_trigger": 0.50008,
+        "load": 1.346285,
+        "mode": "joint",
+        "stop_atr": 4.21047,
+        "trend_hours": 32,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "99311d797ecc6f4591fed2385d9f6e20d92eca7df6aabb0ffa56dc200f9145a0",
+      "run_id": "CM2_BROAD_V1_019",
+      "u": [
+        0.15262181183292922,
+        0.1429945531602207,
+        0.5526175070392543,
+        0.6763673335337398,
+        0.2000643309387462,
+        0.7296982002940929,
+        0.888837352574799
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 20,
+      "policy": {
+        "buffer": 0.064969,
+        "core": 0.603133,
+        "hedge_fraction": 0.469637,
+        "hedge_trigger": 1.09218,
+        "load": 3.182192,
+        "mode": "joint",
+        "stop_atr": 4.982438,
+        "trend_hours": 84,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "e72b2610c354bbb7b18a36cb2a53209352988f36a922dd80a89b2689b2b21fef",
+      "run_id": "CM2_BROAD_V1_020",
+      "u": [
+        0.6451985941881536,
+        0.5566735715386654,
+        0.7456094080788137,
+        0.25783135957154035,
+        0.6737436372335166,
+        0.5327283085903054,
+        0.20570267368098127
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 21,
+      "policy": {
+        "buffer": 0.077553,
+        "core": 0.664503,
+        "hedge_fraction": 0.480735,
+        "hedge_trigger": 1.457549,
+        "load": 2.063598,
+        "mode": "joint",
+        "stop_atr": 3.156534,
+        "trend_hours": 73,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "d32a4b8a6ef9ea672146c927dc67e51c782b9b424a0af0f9b5874bd5bd6e21fd",
+      "run_id": "CM2_BROAD_V1_021",
+      "u": [
+        0.5732692498747328,
+        0.34838730720436684,
+        0.28913341824236427,
+        0.41125851018370485,
+        0.9660389193148918,
+        0.5512250157762514,
+        0.279725465615722
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 22,
+      "policy": {
+        "buffer": 0.053389,
+        "core": 0.824564,
+        "hedge_fraction": 0.723753,
+        "hedge_trigger": 1.499214,
+        "load": 2.24129,
+        "mode": "joint",
+        "stop_atr": 5.714358,
+        "trend_hours": 40,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "4717fa0fb1a2e6e25b2d91fdc146380b1efc6f951ead668b6eaba018a92114ab",
+      "run_id": "CM2_BROAD_V1_022",
+      "u": [
+        0.25791573694275927,
+        0.38810970202758377,
+        0.9285894371911665,
+        0.81141043670188,
+        0.9993710215981494,
+        0.9562550377670728,
+        0.1375814745074364
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 23,
+      "policy": {
+        "buffer": 0.186483,
+        "core": 0.636075,
+        "hedge_fraction": 0.326598,
+        "hedge_trigger": 1.135299,
+        "load": 2.650663,
+        "mode": "joint",
+        "stop_atr": 2.776515,
+        "trend_hours": 124,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "cbdcd9f37d3376a915377898b8d70afb8bbae9384fb949f22852ee32cbce37b2",
+      "run_id": "CM2_BROAD_V1_023",
+      "u": [
+        0.8434386125984284,
+        0.4687844485866236,
+        0.19412872373009438,
+        0.3401866703102837,
+        0.7082388825696091,
+        0.29433076425147864,
+        0.9204903664865621
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 24,
+      "policy": {
+        "buffer": 0.198053,
+        "core": 0.733997,
+        "hedge_fraction": 0.155187,
+        "hedge_trigger": 0.546977,
+        "load": 1.257188,
+        "mode": "joint",
+        "stop_atr": 5.952031,
+        "trend_hours": 40,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "b83a023c5ae4ede6dca19175f8aff357197f4e3958c6c77bbe91831b1df56f07",
+      "run_id": "CM2_BROAD_V1_024",
+      "u": [
+        0.2661032371894181,
+        0.11006682249885957,
+        0.9880078691332327,
+        0.5849928207056518,
+        0.23758196409620558,
+        0.008645072736775061,
+        0.9885498039434334
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 25,
+      "policy": {
+        "buffer": 0.152431,
+        "core": 0.70123,
+        "hedge_fraction": 0.386018,
+        "hedge_trigger": 0.432441,
+        "load": 1.381549,
+        "mode": "joint",
+        "stop_atr": 2.879159,
+        "trend_hours": 33,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "0cba4e70a8d6fa2382a24934049035a0ee90e09f63c547b94c331d4df2f21661",
+      "run_id": "CM2_BROAD_V1_025",
+      "u": [
+        0.1598452897689553,
+        0.15542884427355708,
+        0.21978965362032554,
+        0.5030756372661694,
+        0.1459531295951576,
+        0.3933629004776392,
+        0.720181720668452
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 26,
+      "policy": {
+        "buffer": 0.192904,
+        "core": 0.641014,
+        "hedge_fraction": 0.65168,
+        "hedge_trigger": 1.046111,
+        "load": 1.97514,
+        "mode": "joint",
+        "stop_atr": 4.666822,
+        "trend_hours": 86,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "409f20c38522aecc5a4b43e7561cddf6b037f029a3720b60f13c31a122871a8c",
+      "run_id": "CM2_BROAD_V1_026",
+      "u": [
+        0.6566355140220125,
+        0.3273183169939179,
+        0.6667055362328883,
+        0.3525342890541585,
+        0.6368888220938053,
+        0.8361338506805024,
+        0.9582610679382012
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 27,
+      "policy": {
+        "buffer": 0.133185,
+        "core": 0.639417,
+        "hedge_fraction": 0.156788,
+        "hedge_trigger": 0.46379,
+        "load": 3.639783,
+        "mode": "joint",
+        "stop_atr": 2.38335,
+        "trend_hours": 121,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "3fe0ef9c02be331f3dd0bce723fd878567af5dcf2b42a5ab56104b5117e759d4",
+      "run_id": "CM2_BROAD_V1_027",
+      "u": [
+        0.8311595315709575,
+        0.6212842119304427,
+        0.0958374654146511,
+        0.3485417653395536,
+        0.17103239470349407,
+        0.011312750398324245,
+        0.6069718993641482
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 28,
+      "policy": {
+        "buffer": 0.072057,
+        "core": 0.512675,
+        "hedge_fraction": 0.523313,
+        "hedge_trigger": 1.223538,
+        "load": 4.188758,
+        "mode": "joint",
+        "stop_atr": 2.227341,
+        "trend_hours": 61,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "fbfd16bbf358a9139041f8d439010c0b751558f5469b26117d811d1f1b34e6f8",
+      "run_id": "CM2_BROAD_V1_028",
+      "u": [
+        0.47780314602409724,
+        0.6888407916554384,
+        0.05683525279285262,
+        0.03168749601899101,
+        0.7788307426659394,
+        0.6221890451200511,
+        0.24739457576515667
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 29,
+      "policy": {
+        "buffer": 0.182775,
+        "core": 0.522212,
+        "hedge_fraction": 0.74636,
+        "hedge_trigger": 0.921461,
+        "load": 5.014433,
+        "mode": "joint",
+        "stop_atr": 3.557625,
+        "trend_hours": 31,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "39e93ffe10427554a68fce55be1d2e1d7de769607b176f9aad74cfa1f63dec09",
+      "run_id": "CM2_BROAD_V1_029",
+      "u": [
+        0.12894255430870272,
+        0.7753622381032838,
+        0.38940626807454903,
+        0.05553088036471421,
+        0.5371685941802151,
+        0.9939332427285077,
+        0.8986741171393013
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 30,
+      "policy": {
+        "buffer": 0.060983,
+        "core": 0.504347,
+        "hedge_fraction": 0.583991,
+        "hedge_trigger": 0.619292,
+        "load": 6.743843,
+        "mode": "joint",
+        "stop_atr": 5.696234,
+        "trend_hours": 41,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "a85d8a450c68782b26b9d9f75e47469d897492a046e0d9e250a449235dd4a020",
+      "run_id": "CM2_BROAD_V1_030",
+      "u": [
+        0.27552978455314625,
+        0.9178569512308881,
+        0.9240583877603766,
+        0.010867357717361581,
+        0.2954335635736113,
+        0.7233190830302844,
+        0.18225052998938363
+      ]
+    },
+    {
+      "block": "INITIAL32_PENDING_ROOT_GO",
+      "index": 31,
+      "policy": {
+        "buffer": 0.123131,
+        "core": 0.6287,
+        "hedge_fraction": 0.468282,
+        "hedge_trigger": 1.491726,
+        "load": 2.037943,
+        "mode": "joint",
+        "stop_atr": 2.90503,
+        "trend_hours": 135,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "6296a565ca5da7b7dc7f3c56ab9bc605a2ca946344f73b41152433170b28cbfc",
+      "run_id": "CM2_BROAD_V1_031",
+      "u": [
+        0.8893753252719129,
+        0.3423711547269207,
+        0.22625757850753658,
+        0.3217510717955231,
+        0.9933806111808025,
+        0.5304707257622929,
+        0.5478283398638174
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 32,
+      "policy": {
+        "buffer": 0.198269,
+        "core": 0.643368,
+        "hedge_fraction": 0.512536,
+        "hedge_trigger": 0.394597,
+        "load": 7.266562,
+        "mode": "joint",
+        "stop_atr": 4.260838,
+        "trend_hours": 32,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "8ad818ba08fd6d6e0332d3af7d2bb6b9c65f9af3ff7762fbb38ce363475e72b1",
+      "run_id": "CM2_BROAD_V1_032",
+      "u": [
+        0.14979252451621472,
+        0.9537576669742329,
+        0.5652094764691129,
+        0.35842115634857163,
+        0.11567725010256114,
+        0.6042262260188914,
+        0.9898204985695525
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 33,
+      "policy": {
+        "buffer": 0.068697,
+        "core": 0.825714,
+        "hedge_fraction": 0.537371,
+        "hedge_trigger": 0.253926,
+        "load": 1.208626,
+        "mode": "joint",
+        "stop_atr": 4.335369,
+        "trend_hours": 75,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "322427da6a1fc4af84133a6e28a567fb52227d59498d1df0802268962c4bd91c",
+      "run_id": "CM2_BROAD_V1_033",
+      "u": [
+        0.5840523277955542,
+        0.09112257134472956,
+        0.5838423061651575,
+        0.8142841885541918,
+        0.0031411915966503834,
+        0.645618858050421,
+        0.2276292488441083
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 34,
+      "policy": {
+        "buffer": 0.135793,
+        "core": 0.872807,
+        "hedge_fraction": 0.255482,
+        "hedge_trigger": 0.785087,
+        "load": 4.209121,
+        "mode": "joint",
+        "stop_atr": 2.928226,
+        "trend_hours": 91,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "417e79f5c7edac749687bd5edf6bdbbbc02ec5fb3a70bdb268b0194050e0e155",
+      "run_id": "CM2_BROAD_V1_034",
+      "u": [
+        0.6864334916221915,
+        0.6911730274716602,
+        0.2320565602169926,
+        0.9320175251403772,
+        0.42806967612019253,
+        0.17580295222123565,
+        0.6223095179015196
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 35,
+      "policy": {
+        "buffer": 0.116048,
+        "core": 0.782362,
+        "hedge_fraction": 0.374325,
+        "hedge_trigger": 1.078808,
+        "load": 1.400382,
+        "mode": "joint",
+        "stop_atr": 5.670661,
+        "trend_hours": 47,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "4c83d4beb1c87c1ab183d4b2e74c510420d0e5500b4a25640eab882ab59ac2b2",
+      "run_id": "CM2_BROAD_V1_035",
+      "u": [
+        0.3438382983716841,
+        0.1619401953985481,
+        0.9176653600749797,
+        0.7059052069655604,
+        0.6630460458447012,
+        0.3738750538568191,
+        0.5061633187281399
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 36,
+      "policy": {
+        "buffer": 0.086786,
+        "core": 0.81764,
+        "hedge_fraction": 0.722693,
+        "hedge_trigger": 1.202437,
+        "load": 1.112702,
+        "mode": "joint",
+        "stop_atr": 5.853887,
+        "trend_hours": 125,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "4878e1598b26ea7103507978ac3b69fe3ce39e7c1225978a1750478e08df540f",
+      "run_id": "CM2_BROAD_V1_036",
+      "u": [
+        0.8493447665236085,
+        0.05135568130248991,
+        0.9634717612913879,
+        0.7941005196999603,
+        0.7619494222620727,
+        0.9544876053217041,
+        0.3340345304322946
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 37,
+      "policy": {
+        "buffer": 0.183703,
+        "core": 0.527702,
+        "hedge_fraction": 0.306836,
+        "hedge_trigger": 0.754765,
+        "load": 7.625651,
+        "mode": "joint",
+        "stop_atr": 5.983451,
+        "trend_hours": 93,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "15e356f4463e5e434af4087a46ef29b0d7f20fe3c4121dce634222cb55a390b8",
+      "run_id": "CM2_BROAD_V1_037",
+      "u": [
+        0.6981670451885816,
+        0.9769535211492973,
+        0.9958626461503228,
+        0.06925414282046949,
+        0.4038116514501552,
+        0.26139261381599965,
+        0.9041341403721805
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 38,
+      "policy": {
+        "buffer": 0.07522,
+        "core": 0.502613,
+        "hedge_fraction": 0.445775,
+        "hedge_trigger": 1.390728,
+        "load": 6.216797,
+        "mode": "joint",
+        "stop_atr": 3.688053,
+        "trend_hours": 50,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "b6e70b234d50abfed1aff7aed7b10938b04f4e66a5de96ef7ecec0d2b651f321",
+      "run_id": "CM2_BROAD_V1_038",
+      "u": [
+        0.3768108946405593,
+        0.8787238233612918,
+        0.42201336009865453,
+        0.006531708148385107,
+        0.9125827828928051,
+        0.4929585373146671,
+        0.26600167962804666
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 39,
+      "policy": {
+        "buffer": 0.067471,
+        "core": 0.761275,
+        "hedge_fraction": 0.6352,
+        "hedge_trigger": 0.553295,
+        "load": 3.807592,
+        "mode": "joint",
+        "stop_atr": 3.396666,
+        "trend_hours": 49,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "904b0f6e29b781c1f0ea9ac9801530fb601eb86bef38ab7ea03f7bb9b4319356",
+      "run_id": "CM2_BROAD_V1_039",
+      "u": [
+        0.36403772731583917,
+        0.6429596602342031,
+        0.34916652784995517,
+        0.6531877201595189,
+        0.2426356898460975,
+        0.8086662432585562,
+        0.22041512285479492
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 40,
+      "policy": {
+        "buffer": 0.105316,
+        "core": 0.552979,
+        "hedge_fraction": 0.590248,
+        "hedge_trigger": 1.197271,
+        "load": 3.308015,
+        "mode": "joint",
+        "stop_atr": 2.721256,
+        "trend_hours": 25,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "7b90db1101c546e869c41761de86b8fab6dc15ee509eb56069646e488d338863",
+      "run_id": "CM2_BROAD_V1_040",
+      "u": [
+        0.02271361049219267,
+        0.5753219400385657,
+        0.18031390868648156,
+        0.13244843804981932,
+        0.757816583663736,
+        0.7337473418480723,
+        0.4430339694594446
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 41,
+      "policy": {
+        "buffer": 0.174441,
+        "core": 0.605789,
+        "hedge_fraction": 0.503776,
+        "hedge_trigger": 0.312229,
+        "load": 6.223594,
+        "mode": "joint",
+        "stop_atr": 5.380091,
+        "trend_hours": 131,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "5a8c10c2e586d53d402ea28bb77c55117c0c4580e7e3c3762ab059ee77fced12",
+      "run_id": "CM2_BROAD_V1_041",
+      "u": [
+        0.8705958611067101,
+        0.879249318186306,
+        0.8450227944957664,
+        0.2644731242769299,
+        0.049783550971704504,
+        0.5896262048455453,
+        0.8496534875160663
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 42,
+      "policy": {
+        "buffer": 0.186544,
+        "core": 0.740593,
+        "hedge_fraction": 0.323255,
+        "hedge_trigger": 1.148957,
+        "load": 1.43935,
+        "mode": "joint",
+        "stop_atr": 5.092019,
+        "trend_hours": 27,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "63e6d8d0d87e5f78b515203ef2c3285f81fb6775742f771d56c215a0396ed635",
+      "run_id": "CM2_BROAD_V1_042",
+      "u": [
+        0.0594110230755186,
+        0.17513912960032973,
+        0.7730046401155032,
+        0.6014829055954075,
+        0.7191656366158173,
+        0.2887577260785341,
+        0.9208454991805091
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 43,
+      "policy": {
+        "buffer": 0.043073,
+        "core": 0.664153,
+        "hedge_fraction": 0.152051,
+        "hedge_trigger": 1.143659,
+        "load": 3.886547,
+        "mode": "joint",
+        "stop_atr": 3.016213,
+        "trend_hours": 54,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "f47befc89b457f4dc4c8f10f0dcedfe0569b06bfd9f70898f85ad242568866da",
+      "run_id": "CM2_BROAD_V1_043",
+      "u": [
+        0.41724055695519235,
+        0.6528296647007552,
+        0.2540533500950165,
+        0.41038341696118497,
+        0.7149271063736083,
+        0.0034177049783661317,
+        0.07689786539865173
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 44,
+      "policy": {
+        "buffer": 0.037327,
+        "core": 0.561248,
+        "hedge_fraction": 0.444969,
+        "hedge_trigger": 1.13344,
+        "load": 1.357255,
+        "mode": "joint",
+        "stop_atr": 3.312609,
+        "trend_hours": 103,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "1ceffea432e65d2405e860ac88423fa49f2ed614e581637505e865708feea260",
+      "run_id": "CM2_BROAD_V1_044",
+      "u": [
+        0.7477608338555546,
+        0.1468971015073517,
+        0.32815225765258405,
+        0.15311903455403209,
+        0.7067523338124305,
+        0.4916143244676161,
+        0.04309938571152605
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 45,
+      "policy": {
+        "buffer": 0.148555,
+        "core": 0.879157,
+        "hedge_fraction": 0.53763,
+        "hedge_trigger": 0.632163,
+        "load": 2.003869,
+        "mode": "joint",
+        "stop_atr": 2.194545,
+        "trend_hours": 67,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "893c3c9c09bd32314ba7c66d3c038bec0cc68f213089e74af96369d2596db08c",
+      "run_id": "CM2_BROAD_V1_045",
+      "u": [
+        0.5278731289745126,
+        0.33426270054069396,
+        0.048636248676256266,
+        0.9478917753988867,
+        0.3057301771770996,
+        0.6460495237523776,
+        0.6973806628340777
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 46,
+      "policy": {
+        "buffer": 0.164116,
+        "core": 0.851546,
+        "hedge_fraction": 0.474002,
+        "hedge_trigger": 0.953372,
+        "load": 1.23278,
+        "mode": "joint",
+        "stop_atr": 2.537239,
+        "trend_hours": 31,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "9201cb4d0143ca65f751511462521d4d24cfe9526fe8466f3fffac7a96a085ab",
+      "run_id": "CM2_BROAD_V1_046",
+      "u": [
+        0.13099879207942167,
+        0.10063829485364217,
+        0.13430982988292084,
+        0.8788644813901527,
+        0.5626972321502175,
+        0.5400032971541734,
+        0.7889185433095216
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 47,
+      "policy": {
+        "buffer": 0.05749,
+        "core": 0.567305,
+        "hedge_fraction": 0.587241,
+        "hedge_trigger": 0.705293,
+        "load": 2.583774,
+        "mode": "joint",
+        "stop_atr": 2.860817,
+        "trend_hours": 25,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "769814a79bc23461cd4f38a3c1975a8169c6a770865ad8db3bca5b2e32037c1d",
+      "run_id": "CM2_BROAD_V1_047",
+      "u": [
+        0.015093576264969877,
+        0.4564933155030759,
+        0.21520437215564692,
+        0.16826168968961075,
+        0.3642344263448951,
+        0.7287351262679709,
+        0.16170677430860259
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 48,
+      "policy": {
+        "buffer": 0.113659,
+        "core": 0.83684,
+        "hedge_fraction": 0.193801,
+        "hedge_trigger": 1.43333,
+        "load": 1.152723,
+        "mode": "joint",
+        "stop_atr": 2.968495,
+        "trend_hours": 26,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "8f1df9596567d2877d9135201fbdade8e0ea9f4b58c6639dd516ee2d58295e36",
+      "run_id": "CM2_BROAD_V1_048",
+      "u": [
+        0.03172782085962389,
+        0.06834842517974526,
+        0.24212370782012393,
+        0.8420988591630513,
+        0.946664239826011,
+        0.07300107825940583,
+        0.4921128182100992
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 49,
+      "policy": {
+        "buffer": 0.117538,
+        "core": 0.662503,
+        "hedge_fraction": 0.626425,
+        "hedge_trigger": 0.368136,
+        "load": 2.312662,
+        "mode": "joint",
+        "stop_atr": 3.542377,
+        "trend_hours": 88,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "b79a67eccaf6c7c989628b57a0e9a9615070a9657a5fb2fd3f9412d3298788c7",
+      "run_id": "CM2_BROAD_V1_049",
+      "u": [
+        0.6666851035581582,
+        0.40318485627446377,
+        0.3855941912402622,
+        0.40625674191947625,
+        0.09450869690004293,
+        0.7940410151150646,
+        0.5149319547655143
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 50,
+      "policy": {
+        "buffer": 0.169725,
+        "core": 0.622829,
+        "hedge_fraction": 0.68508,
+        "hedge_trigger": 1.288645,
+        "load": 4.69268,
+        "mode": "joint",
+        "stop_atr": 2.034893,
+        "trend_hours": 161,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "b9a6ff5e6891bcd08fee5b9b2247730dbe049219acaf833c908f9dcc6c1d01f9",
+      "run_id": "CM2_BROAD_V1_050",
+      "u": [
+        0.977520887177197,
+        0.7434706657026418,
+        0.008723336853514785,
+        0.30707228380621554,
+        0.8309159010090348,
+        0.8918001991764183,
+        0.821911229083957
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 51,
+      "policy": {
+        "buffer": 0.140639,
+        "core": 0.793852,
+        "hedge_fraction": 0.433726,
+        "hedge_trigger": 1.105601,
+        "load": 2.569473,
+        "mode": "joint",
+        "stop_atr": 2.597547,
+        "trend_hours": 59,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "d96af3c46db29dc6838f6cc9e8dcda95d0afa4200aefe3bacbae8fd57e8fc9fa",
+      "run_id": "CM2_BROAD_V1_051",
+      "u": [
+        0.4638122310037456,
+        0.4538242018848335,
+        0.1493868397038176,
+        0.7346312023661203,
+        0.6844807150027695,
+        0.47287627474366845,
+        0.6508160220509691
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 52,
+      "policy": {
+        "buffer": 0.13272,
+        "core": 0.728597,
+        "hedge_fraction": 0.311588,
+        "hedge_trigger": 0.536243,
+        "load": 3.555482,
+        "mode": "joint",
+        "stop_atr": 3.544265,
+        "trend_hours": 41,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "d2e7a4cab7f1db2ffedd945756672fabb46931dad6b223e06ffb4576333b79fe",
+      "run_id": "CM2_BROAD_V1_052",
+      "u": [
+        0.27276984686724903,
+        0.6100150929460042,
+        0.3860661927479354,
+        0.5714929218795222,
+        0.22899406145343892,
+        0.2693131184400106,
+        0.6042340591739499
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 53,
+      "policy": {
+        "buffer": 0.080329,
+        "core": 0.547778,
+        "hedge_fraction": 0.458714,
+        "hedge_trigger": 1.480469,
+        "load": 1.271403,
+        "mode": "joint",
+        "stop_atr": 5.930555,
+        "trend_hours": 36,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "449544d038216918c6d3e372bae2685cd7c6f0faec23103d1962d671af93afaa",
+      "run_id": "CM2_BROAD_V1_053",
+      "u": [
+        0.20834639906602226,
+        0.1154738001604606,
+        0.9826387002820257,
+        0.11944483624869073,
+        0.9843751476324485,
+        0.5145225825813144,
+        0.29605200978584467
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 54,
+      "policy": {
+        "buffer": 0.079295,
+        "core": 0.657674,
+        "hedge_fraction": 0.396904,
+        "hedge_trigger": 0.850661,
+        "load": 1.25797,
+        "mode": "joint",
+        "stop_atr": 4.574753,
+        "trend_hours": 158,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "6e33ba87f323c1b7b577abb07b7f0c01dce0f4fa0c4f0b313c4acce9b55b01ff",
+      "run_id": "CM2_BROAD_V1_054",
+      "u": [
+        0.9671680463153617,
+        0.11036568230891719,
+        0.643688333258017,
+        0.3941849614751325,
+        0.48052868607255983,
+        0.41150744182871135,
+        0.28997302484372234
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 55,
+      "policy": {
+        "buffer": 0.040108,
+        "core": 0.84321,
+        "hedge_fraction": 0.15585,
+        "hedge_trigger": 0.993316,
+        "load": 3.865102,
+        "mode": "joint",
+        "stop_atr": 3.231932,
+        "trend_hours": 84,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "0ea7e3cc666671beba29b4ea6f0d6f721ca591f31c7d0ba857ee2bcaec227f1d",
+      "run_id": "CM2_BROAD_V1_055",
+      "u": [
+        0.6417100620330632,
+        0.6501688104730593,
+        0.30798301165657405,
+        0.858025301459599,
+        0.5946525745762672,
+        0.009749624479299945,
+        0.05945721310819074
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 56,
+      "policy": {
+        "buffer": 0.075904,
+        "core": 0.63132,
+        "hedge_fraction": 0.541517,
+        "hedge_trigger": 0.335548,
+        "load": 6.633224,
+        "mode": "joint",
+        "stop_atr": 3.10643,
+        "trend_hours": 92,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "959af18649b4f8973f1fb85aeafd18a74062311f88a730c766deaf7bd86aa1bf",
+      "run_id": "CM2_BROAD_V1_056",
+      "u": [
+        0.6895878201101527,
+        0.9099034240417413,
+        0.27660740140538154,
+        0.32830101861217154,
+        0.06843866757674588,
+        0.6525289241456922,
+        0.2700211455877972
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 57,
+      "policy": {
+        "buffer": 0.0742,
+        "core": 0.630211,
+        "hedge_fraction": 0.256965,
+        "hedge_trigger": 0.933546,
+        "load": 4.348815,
+        "mode": "joint",
+        "stop_atr": 4.954127,
+        "trend_hours": 42,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "2f9e8560a4709cb15a4d7c3fc09e0a8c6e801b0cd390609617d782d164f6851c",
+      "run_id": "CM2_BROAD_V1_057",
+      "u": [
+        0.2904616630925769,
+        0.7068740666152856,
+        0.7385318484190029,
+        0.3255285115718368,
+        0.5468367427835501,
+        0.17827474881780347,
+        0.26000070566274147
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 58,
+      "policy": {
+        "buffer": 0.193094,
+        "core": 0.773616,
+        "hedge_fraction": 0.583043,
+        "hedge_trigger": 0.853108,
+        "load": 3.793481,
+        "mode": "joint",
+        "stop_atr": 4.479803,
+        "trend_hours": 28,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "51bcb50d4ab01c691d4de4d3881bcaf4b363be1e23fdeba65a363922f1eefc72",
+      "run_id": "CM2_BROAD_V1_058",
+      "u": [
+        0.07352296257682367,
+        0.6411740752517785,
+        0.6199508282180969,
+        0.6840398814926217,
+        0.48248651488911587,
+        0.7217383753040344,
+        0.9593744466692307
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 59,
+      "policy": {
+        "buffer": 0.063423,
+        "core": 0.552456,
+        "hedge_fraction": 0.474385,
+        "hedge_trigger": 0.280903,
+        "load": 5.917997,
+        "mode": "joint",
+        "stop_atr": 2.093313,
+        "trend_hours": 44,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "3b7b57fc5f66c1f4983b004945428099a0071399b69ae6d06e2e46fc4e2e0e71",
+      "run_id": "CM2_BROAD_V1_059",
+      "u": [
+        0.31472681968462,
+        0.8550363472067564,
+        0.023328280095683884,
+        0.1311401752389567,
+        0.02472257998090155,
+        0.5406423567203475,
+        0.19660473160456904
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 60,
+      "policy": {
+        "buffer": 0.129283,
+        "core": 0.606836,
+        "hedge_fraction": 0.598448,
+        "hedge_trigger": 1.343614,
+        "load": 3.035866,
+        "mode": "joint",
+        "stop_atr": 2.272337,
+        "trend_hours": 90,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "61918cd4bfe73f3603d1feda162ed074d8567b9ad13c66f0219653af390ebf5b",
+      "run_id": "CM2_BROAD_V1_060",
+      "u": [
+        0.6793778645791293,
+        0.534036113376001,
+        0.06808420927357939,
+        0.26709113525942507,
+        0.8748908264278241,
+        0.7474138593509118,
+        0.5840189820937405
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 61,
+      "policy": {
+        "buffer": 0.114711,
+        "core": 0.627329,
+        "hedge_fraction": 0.327995,
+        "hedge_trigger": 1.485804,
+        "load": 1.138788,
+        "mode": "joint",
+        "stop_atr": 4.499662,
+        "trend_hours": 48,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "dae555a1eefbeba7d03abe6b5d36f232b59af6511d1fa7b91abbcc8b16a98cdb",
+      "run_id": "CM2_BROAD_V1_061",
+      "u": [
+        0.3609439989571469,
+        0.0624997858267593,
+        0.6249153817401261,
+        0.31832334736465084,
+        0.9886434818510955,
+        0.29665862585671987,
+        0.498299087026815
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 62,
+      "policy": {
+        "buffer": 0.145459,
+        "core": 0.749311,
+        "hedge_fraction": 0.405477,
+        "hedge_trigger": 1.075889,
+        "load": 1.619512,
+        "mode": "joint",
+        "stop_atr": 2.324369,
+        "trend_hours": 136,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "c63b9fcac24c36f35c8a2a6906fb789c0aefae8025a589eab4647811ea04f71a",
+      "run_id": "CM2_BROAD_V1_062",
+      "u": [
+        0.8926358722598808,
+        0.23185313144820563,
+        0.08109222829494445,
+        0.6232772194677658,
+        0.66071146496999,
+        0.42579446241412455,
+        0.6791696593861991
+      ]
+    },
+    {
+      "block": "CONDITIONAL32_HOLD",
+      "index": 63,
+      "policy": {
+        "buffer": 0.136064,
+        "core": 0.658388,
+        "hedge_fraction": 0.449127,
+        "hedge_trigger": 1.19714,
+        "load": 1.958958,
+        "mode": "joint",
+        "stop_atr": 2.775562,
+        "trend_hours": 39,
+        "version": "cm2-v1"
+      },
+      "policy_sha256": "0aa4c587897809546fd4c30b36da6dd627ba06c34eb96faf766384c61cfbb307",
+      "run_id": "CM2_BROAD_V1_063",
+      "u": [
+        0.24392281209967182,
+        0.32336206584628624,
+        0.19389044269412303,
+        0.39597001897985273,
+        0.7577116684673167,
+        0.4985446526700765,
+        0.6239081039147798
+      ]
+    }
+  ],
+  "count": 64,
+  "dispatch_authority": "NONE; immutable design only; exact JSON must be reused across hosts",
+  "generator_sha256": "dba0570e9a3a0040b32d65d2c39c39e66167e206fc19c88a03f64a28f2335635",
+  "sampler": {
+    "implementation": "stdlib random.Random(20261031), row-major64x7 random()",
+    "method": "SEEDED_UNIFORM_NOT_SOBOL",
+    "numpy": "2.5.3",
+    "python": "3.12.3",
+    "scipy": null,
+    "seed": 20261031
+  },
+  "schema": "cm2-frozen64-v1",
+  "space_canonical_sha256": "952085912e0648c63ab9c6d18911fb09b72deed0245efda7e038c3d3108c6321",
+  "space_sha256": "412942272a119c0370cf4bda15cebdb03c0c7d0b2b2e1f005803082ca7d58244",
+  "task_id": "CM2_CLEAN_HEDGE_20261031",
+  "validator_source_base_commit": "77935a3938d036be76bb8935e6c1eb925505d359",
+  "validator_source_sha256": "b7d9ee58b9c13caaa2df72c2ed138503f4726b73fbf5284f215b67fab46997ce"
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "native_dd_source": "<immutable-Mac-779-runtime>/coinmaster/research/minute_risk.py",
+  "native_dd_source_sha256": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad",
+  "ledger": "<own-CM2-root>/trials.jsonl",
+  "cases": [
+    {
+      "case": "JOINT",
+      "run_id": "CM2_ANCHOR_JOINT_R1",
+      "stage": "anchors",
+      "native_report": "<ORIGINAL-completed-JOINT-raw-native.json>",
+      "settled_receipts": "<completed-case-dir>/minute-native-settled-receipts.csv.gz",
+      "coherent_trace": "<completed-case-dir>/coherent-native-events.jsonl.gz",
+      "engine_count": "<completed-case-dir>/engine-construction-count.json",
+      "request": "<actual-case-request.json>",
+      "go": "<actual-root-GO-receipt.json>",
+      "derived_receipt": "<NEW-derived-directory>/QUALIFICATION.json",
+      "qualifier_source": "<reviewed-new-immutable-source>/runtime/coinmaster/research/cm2_committed_validation.py"
+    },
+    {
+      "case": "BTC_ONLY",
+      "run_id": "<actual-BTC-only-run-id>",
+      "stage": "anchors",
+      "native_report": "<ORIGINAL-completed-BTC_ONLY-raw-native.json>",
+      "settled_receipts": "<completed-case-dir>/minute-native-settled-receipts.csv.gz",
+      "coherent_trace": "<completed-case-dir>/coherent-native-events.jsonl.gz",
+      "engine_count": "<completed-case-dir>/engine-construction-count.json",
+      "request": "<actual-case-request.json>",
+      "go": "<actual-root-GO-receipt.json>",
+      "derived_receipt": "<NEW-derived-directory>/QUALIFICATION.json",
+      "qualifier_source": "<reviewed-new-immutable-source>/runtime/coinmaster/research/cm2_committed_validation.py"
+    },
+    {
+      "case": "BTC_TRIM",
+      "run_id": "<actual-BTC-trim-run-id>",
+      "stage": "anchors",
+      "native_report": "<ORIGINAL-completed-BTC_TRIM-raw-native.json>",
+      "settled_receipts": "<completed-case-dir>/minute-native-settled-receipts.csv.gz",
+      "coherent_trace": "<completed-case-dir>/coherent-native-events.jsonl.gz",
+      "engine_count": "<completed-case-dir>/engine-construction-count.json",
+      "request": "<actual-case-request.json>",
+      "go": "<actual-root-GO-receipt.json>",
+      "derived_receipt": "<NEW-derived-directory>/QUALIFICATION.json",
+      "qualifier_source": "<reviewed-new-immutable-source>/runtime/coinmaster/research/cm2_committed_validation.py"
+    }
+  ]
+}

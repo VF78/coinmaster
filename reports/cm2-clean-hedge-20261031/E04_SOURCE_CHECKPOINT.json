@@ -1,0 +1,57 @@
+{
+  "actual_e04_constructor_boundary_probe": "NOT_RUN_BY_SOURCE_AUTHOR_MOCK_IMPORT_BOUNDARY_TESTS_PASS",
+  "budget_or_ledger_changed_by_source_author": false,
+  "e04_actual_native_execution": "NOT_RUN_ROOT_GO_REQUIRED",
+  "e04_constructor_call_sites": 1,
+  "frozen64_sha256": "aa70cf321a2854c26c4aa3f8a295f9af7c4fb53015c08999498f9bafd913028b",
+  "integration_base": "1c70816202dc78c1d70f4d57b8c5c12b1116fa68",
+  "ordinary_harvest_contract": "CURRENT_QUOTE_NATIVE_LIMIT_IOC_AND_ACTUAL_NATIVE_COST_AUDIT",
+  "os_cold_recovery": "NOT_IMPLEMENTED",
+  "persistence_scope": "SAME_CLOCK_RETAINED_NATIVE_CACHE_ACCOUNT_OBSERVERS_FEEDS_JOURNAL_REPLAY_ONLY",
+  "r1_new_source_equivalence": false,
+  "runtime_file_sha256": {
+    "runtime/coinmaster/research/cm2_fixture_e04.py": "2c125719b381e36b7248ebd44bbdbf199f29205d602d5806dbae8754246db67f",
+    "runtime/coinmaster/research/cm2_runner.py": "38b18468f5bd5bfe025af594b34e27dc2da096670903526d0c477a6c4386aad7",
+    "runtime/coinmaster/research/native_baseline.py": "c19671cfc147226e04cc6475035cbefa4670a914f20503e212478ca167157cc8",
+    "runtime/coinmaster/strategy/cm2_checkpoint.py": "7b0db384b263e1cc74dc53b4568fb81c7ce99faf574c0904e457623ec8791069",
+    "runtime/coinmaster/strategy/cm2_native.py": "a1a255fa6fe551e8c3990d98d5d706b17080a15ce5a3ca880c705d01f092a879",
+    "runtime/coinmaster/strategy/cm2_policy.py": "f8a2eb87afe49fdad7e65fb588e69d786916818e1db055949c378170c7be260c"
+  },
+  "syntax": "PASS",
+  "tests": {
+    "command": "PYTHONPATH=runtime <venv-python> -B -m pytest -q runtime/tests/test_cm2*.py",
+    "elapsed_seconds": 6.43,
+    "native_engine_constructions": 0,
+    "passed": 131
+  },
+  "unchanged_native_authorities": {
+    "runtime/coinmaster/ledger/journal.py": {
+      "byte_equal_to_73b0": true,
+      "sha256": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d"
+    },
+    "runtime/coinmaster/research/cm2_committed_validation.py": {
+      "byte_equal_to_73b0": true,
+      "sha256": "7d37f12e152915a176fa7091c00d1244ff1a76b7cfb2dd494c40735b0f6978d2"
+    },
+    "runtime/coinmaster/research/cm2_fixture.py": {
+      "byte_equal_to_73b0": true,
+      "sha256": "76f48e5fcf09a2f643838763d2071809be0c988a29f10c67f370a03e84cdc339"
+    },
+    "runtime/coinmaster/research/minute_risk.py": {
+      "byte_equal_to_73b0": true,
+      "sha256": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad"
+    },
+    "runtime/coinmaster/research/native_full_fill.py": {
+      "byte_equal_to_73b0": true,
+      "sha256": "ecd23593316b55e428de909e1168a2cbe3f1cc121b3ca85f0e9ae21ac5147dd8"
+    },
+    "runtime/coinmaster/research/paired_observer.py": {
+      "byte_equal_to_73b0": true,
+      "sha256": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42"
+    },
+    "runtime/coinmaster/strategy/cm2_execution.py": {
+      "byte_equal_to_73b0": true,
+      "sha256": "4226c5acd055d6bb273574060ec51d5153491cf5426310e6566b979deff82f7b"
+    }
+  }
+}

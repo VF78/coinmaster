@@ -1,0 +1,15 @@
+{
+  "status": "DISJOINT_PACKET_INTEGRATION_PASS",
+  "search_source_commit": "c74a61a62159628ddbadc378bcbd90534ca1cd2d",
+  "search_cherry_pick": "6a268b72",
+  "diagnostics_source_commit": "1d34a0e05c2fcd707407a766fc23fd2285e11257",
+  "diagnostics_cherry_pick": "c3a159ab",
+  "tests": "7 passed in1.91s",
+  "runtime_equal0394": true,
+  "qualifier_sha256": "7d37f12e152915a176fa7091c00d1244ff1a76b7cfb2dd494c40735b0f6978d2",
+  "frozen64_sha256": "aa70cf321a2854c26c4aa3f8a295f9af7c4fb53015c08999498f9bafd913028b",
+  "native_constructions": 0,
+  "probes": 0,
+  "frozen64_rewritten": false,
+  "actual_Mac_financial_data_used": false
+}

@@ -36,22 +36,24 @@ class CM2RunConfig:
                           float(paired["SOLUSDT"][t]["close"])) for t in keys)
 
 def build_strategy(run_config, *, instruments, minute_bars, margin_policy, start_ns, end_ns,
-                   mark_types,mark_client,journal,exit_fee_rate,execution_hash,risk_recorder=None):
+                   mark_types,mark_client,journal,exit_fee_rate,execution_hash,risk_recorder=None,coherent_observer=None):
     from coinmaster.strategy.cm2_native import CM2Strategy, CM2StrategyConfig
     cls=CM2Strategy
     if risk_recorder is not None:
         from coinmaster.research.minute_risk import observed_neutral_strategy_type
         cls=observed_neutral_strategy_type(cls,risk_recorder)
-    def native_signed_funding(iid):
-        # journal rows are actual before/after native posting deltas.
-        return sum((Decimal(row[5]) for row in journal.funding_cash_audit() if row[1]==str(iid)),Decimal(0)) if journal else Decimal(0)
+    from coinmaster.research.cm2_funding_reader import NativeSignedFundingReader
+    native_signed_funding=NativeSignedFundingReader(journal)
+    from coinmaster.strategy.cm2_checkpoint import NativeCheckpointStore,observer_continuity
+    checkpoint_store=NativeCheckpointStore(journal)
     return cls(CM2StrategyConfig(btc_id=instruments[0].id,sol_id=instruments[1].id,
         btc_bar_type=minute_bars[instruments[0].id],sol_bar_type=minute_bars[instruments[1].id],
         btc_mark_data_type=mark_types[0],sol_mark_data_type=mark_types[1],mark_client_id=mark_client,
         policy=run_config.policy,limits=ExecutionLimits(run_config.absolute_child_limit),
         margin_policy=margin_policy,trading_start_open_ns=start_ns,terminal_close_at_ns=end_ns,
         seed_hours=run_config.seed(start_ns),exit_fee_rate=exit_fee_rate,
-        execution_policy_hash=execution_hash,funding_reader=native_signed_funding))
+        execution_policy_hash=execution_hash,funding_reader=native_signed_funding,
+        checkpoint_store=checkpoint_store,continuity_reader=lambda:observer_continuity(risk_recorder,coherent_observer)))
 
 def auxiliary_audits(strategy):
     if hasattr(strategy,"cm2_audit"):
@@ -86,7 +88,7 @@ def complete_report(result,strategy,engine,journal,seed,coherent):
     result["cm2"]["structural_diagnostics"]="UNKNOWN_PENDING_NATIVE_ACCEPTANCE"
     result["source_hashes"]={str(path.relative_to(Path(__file__).parents[1])):hashlib.sha256(path.read_bytes()).hexdigest()
         for path in (Path(__file__),Path(__file__).parents[1]/"strategy/cm2_policy.py",
-                     Path(__file__).parents[1]/"strategy/cm2_execution.py",Path(__file__).parents[1]/"strategy/cm2_native.py")}
+                     Path(__file__).parents[1]/"strategy/cm2_execution.py",Path(__file__).parents[1]/"strategy/cm2_native.py",Path(__file__).with_name("cm2_funding_reader.py"),Path(__file__).with_name("cm2_committed_validation.py"))}
     # The config hash includes the new economic policy, unlike the legacy wrapper.
     result["config_hash"]=hashlib.sha256(json.dumps(result["config"],sort_keys=True,separators=(",",":")).encode()).hexdigest()
 
@@ -116,12 +118,48 @@ def preflight(request,receipt):
             raise ValueError("CM2_FREEZE_MISMATCH:"+str(path))
     cfg=CM2RunConfig(Config(**request["policy"]),Path(request["warmup_root"]))
     if request["stage"]=="engineering":
-        from coinmaster.research.cm2_fixture import FIXTURE_ID,START_NS,END_NS
-        if (request.get("fixture_id"),request.get("start_ns"),request.get("end_ns")) != (FIXTURE_ID,START_NS,END_NS):
+        fixture=engineering_fixture_module(request)
+        if (request.get("fixture_id"),request.get("start_ns"),request.get("end_ns")) != (fixture.FIXTURE_ID,fixture.START_NS,fixture.END_NS):
             raise ValueError("CM2_EXPLICIT_BOUNDED_FIXTURE_CONTRACT_REQUIRED")
     else:
         cfg.seed(int(request.get("start_ns",1725148800000000000)))
     return cfg
+
+def engineering_fixture_module(request):
+    import importlib
+    modules={"cm2-connected-native-v1":"coinmaster.research.cm2_fixture",
+             "cm2-current-child-native-v2":"coinmaster.research.cm2_fixture_e04"}
+    name=modules.get(request.get("fixture_id"))
+    if name is None: raise ValueError("CM2_UNKNOWN_ENGINEERING_FIXTURE")
+    return importlib.import_module(name)
+
+
+def fixture_api_boundary_probe(request,probe):
+    """Exercise the ACTUAL fixture up to its imported native constructor."""
+    import nautilus_trader.backtest.engine as native_engine
+    fixture=engineering_fixture_module(request)
+    probe=Path(probe);probe.mkdir(parents=True,exist_ok=True)
+    original=native_engine.BacktestEngine
+    calls=[]
+    class BoundaryReached(BaseException): pass
+    def boundary(*args,**kwargs):
+        calls.append(1)
+        raise BoundaryReached()
+    native_engine.BacktestEngine=boundary
+    try:
+        try: fixture.run_fixture({**request,"artifact_dir":str(probe)})
+        except BoundaryReached: pass
+        else: raise ValueError("CM2_FIXTURE_NATIVE_BOUNDARY_NOT_REACHED")
+    finally:
+        native_engine.BacktestEngine=original
+    if len(calls)!=1: raise ValueError("CM2_FIXTURE_NATIVE_BOUNDARY_COUNT")
+    receipt={"status":"ACTUAL_API_ENGINE_BOUNDARY_PASS","kind":"ENGINEERING_FIXTURE",
+        "boundary_calls":len(calls),"native_engine_constructions":0,
+        "fixture_id":request["fixture_id"],"start_ns":request["start_ns"],"end_ns":request["end_ns"],
+        "only_kwarg_substitution":"artifact_dir","fixture_source_sha256":hashlib.sha256(Path(fixture.__file__).read_bytes()).hexdigest()}
+    (probe/"api-boundary-proof.json").write_text(json.dumps(receipt,indent=2)+"\n")
+    return receipt
+
 
 def append_ledger(path,row):
     import fcntl,os
@@ -163,36 +201,26 @@ def register_attempt(request,receipt):
     return entry
 
 def validate_full_output(result,request):
-    # Exact qualified 606 validator/coverage reuse; no legacy strategy asserts.
-    import ast,csv,gzip
-    from collections import Counter
-    from datetime import datetime,timezone
-    from coinmaster.research.native_baseline import assert_report_boundaries
-    assert_report_boundaries(result)
-    path=Path(request["qualified_coverage_source"])
-    if hashlib.sha256(path.read_bytes()).hexdigest()!="58b9a047ceb6627108e3bac52a957b231f405fe12b8a6bb1684e3582599682df":
-        raise ValueError("QUALIFIED_COVERAGE_SOURCE_PIN_MISMATCH")
-    node=next(n for n in ast.parse(path.read_text()).body if isinstance(n,ast.FunctionDef) and n.name=="coverage")
-    namespace={"Counter":Counter,"csv":csv,"gzip":gzip,"datetime":datetime,"timezone":timezone,
-               "sha":lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()}
-    exec(compile(ast.Module(body=[node],type_ignores=[]),str(path),"exec"),namespace)
-    cov=namespace["coverage"](result,Path(request["artifact_dir"]))
-    obs=result["coherent_native_observer"]
-    cash=result["native_cash_reconciliation"]
-    checks={"full_feed":result["streaming"]["processed_rows_per_source"]==1051200,
-        "full_24months":cov["full"],"coherent_end":int(obs["end_exclusive_ns"])==1788220800000000000,
-        "settled_receipts":int(obs["settled_receipts"])==1051199,"observer":obs["status"]=="PASS",
-        "native_cash":cash["status"]=="EXACT" and Decimal(cash["actual_native_cash_transitions"]["exact_bridge"])==0,
-        "USDC":result["config"]["accounting_currency"]=="USDC",
-        "DP_off":result["config"]["deposit_protection"]=="DISABLED_CLEAN_EXECUTION_DIAGNOSTIC_ONLY",
-        "terminal_flat":result["terminal_open_positions"]==0,
-        "terminal_orders":not any("ORDERS_NONTERMINAL" in x for x in obs["unknown"]),
-        "native_fees":result["fee_attribution"]["reconciled"]}
-    result["actual_feed_coverage"]=cov
-    result["cm2"]["financial_checks"]=checks
-    result["cm2"]["accounting_status"]="PASS" if all(checks.values()) else "FAIL"
-    if not all(checks.values()):
-        raise ValueError("CM2_FULL_ACCOUNTING_CHECK_FAILED")
+    # Postprocessing only: project actual committed-native watermarks; preserve
+    # sparse legacy recorder, original raw file, money and source/model IDs.
+    from coinmaster.research.cm2_committed_validation import qualify,sha,provenance_files
+    output=Path(request["artifact_dir"])
+    raw=output/(request["run_id"]+"-raw-native.json")
+    count=json.loads((output/"engine-construction-count.json").read_text())["engine_constructions"]
+    proof=qualify(raw,output/"minute-native-settled-receipts.csv.gz",
+        output/"coherent-native-events.jsonl.gz",output/"committed-wm-qualification-v1",
+        Path(__file__).with_name("minute_risk.py"),Path(request["qualified_coverage_source"]),count,
+        expected_report_sha=sha(raw),provenance=provenance_files(
+            request=request.get("_request_path"),ledger=request.get("attempt_ledger"),
+            engine_count_path=output/"engine-construction-count.json"))
+    result["actual_feed_coverage"]=proof["coverage"]
+    result["cm2"]["financial_checks"]=proof["checks"]
+    result["cm2"]["accounting_status"]="PASS"
+    result["derived_financial_status"]="PASS"
+    result["committed_wm_qualification"]={k:proof[k] for k in
+        ("qualification_model_id","original_report_sha256","parent_raw_model_ids","comparability","derived_report_sha256")}
+    result["committed_wm_qualification_receipt"]=str(output/"committed-wm-qualification-v1/QUALIFICATION.json")
+
 
 def full_native_kwargs(request, *, artifact_dir=None):
     """Single exact canonical full API contract shared by worker and probe."""
@@ -310,10 +338,13 @@ def run_worker(request,lease_fd):
     native_engine.BacktestEngine=exactly_one
     try:
         if request["stage"]=="engineering":
-            from coinmaster.research.cm2_fixture import run_fixture
-            return run_fixture(request)
+            result=engineering_fixture_module(request).run_fixture(request)
+            if len(constructions)!=1: raise ValueError("CM2_ACTUAL_FIXTURE_ENGINE_CONSTRUCTOR_COUNT")
+            return result
         from coinmaster.research.native_baseline import run_native_diagnostic,save_diagnostic_report
         result=run_native_diagnostic(**full_native_kwargs(request))
+        (Path(request["artifact_dir"])/"engine-construction-count.json").write_text(
+            json.dumps({"engine_constructions":len(constructions)})+"\n")
         # Preserve raw native evidence before an independent validation failure.
         save_diagnostic_report(Path(request["data_root"]),result,request["run_id"],Path(request["artifact_dir"]))
         validate_full_output(result,request)
@@ -381,10 +412,12 @@ def main(argv=None):
     if args.api_probe:
         if args.probe_dir is None or digest!=args.request_sha256:
             raise SystemExit("CM2_INTERNAL_PROBE_CONTRACT")
-        full_api_boundary_probe(request,args.probe_dir)
+        if request["stage"]=="engineering": fixture_api_boundary_probe(request,args.probe_dir)
+        else: full_api_boundary_probe(request,args.probe_dir)
         print("ACTUAL_API_ENGINE_BOUNDARY_PASS_CONSTRUCTORS0")
         return
     if args.worker:
+        request["_request_path"]=str(args.request.resolve())
         if args.lease_fd is None or digest!=args.request_sha256:
             raise SystemExit("CM2_INTERNAL_WORKER_CONTRACT")
         return run_worker(request,args.lease_fd)
@@ -392,7 +425,7 @@ def main(argv=None):
         raise SystemExit("CM2_NATIVE_HOLD_NO_RESOURCE_RECEIPT")
     receipt=json.loads(args.resource_receipt.read_text())
     preflight(request,receipt)
-    if request["stage"]!="engineering":
+    if request["stage"]!="engineering" or request.get("fixture_id")=="cm2-current-child-native-v2":
         import uuid,subprocess
         probe=Path(request.get("api_probe_root",str(Path(request["artifact_dir"]).parent/"api-probes")))/str(uuid.uuid4())
         command,env,cwd=worker_process_spec(

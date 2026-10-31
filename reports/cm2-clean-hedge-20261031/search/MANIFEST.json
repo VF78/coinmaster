@@ -1,0 +1,27 @@
+{
+  "api_probes": 0,
+  "count": 64,
+  "dispatch_authority": "NONE",
+  "economic_attempts": 0,
+  "files": {
+    "FROZEN64.json": "aa70cf321a2854c26c4aa3f8a295f9af7c4fb53015c08999498f9bafd913028b",
+    "README.md": "0dbfb28b8459f42d63bbd9b3244ba56d7d1e62fcfe83f432f7e7fc9bb3adcbdb",
+    "SPACE.json": "412942272a119c0370cf4bda15cebdb03c0c7d0b2b2e1f005803082ca7d58244",
+    "generate.py": "dba0570e9a3a0040b32d65d2c39c39e66167e206fc19c88a03f64a28f2335635",
+    "test_frozen.py": "35807e1427b5cb895183861dbdfe7bd4a56be924a0906ac3cdbcac92288120ce"
+  },
+  "frozen_at_utc": "2026-10-31T12:59:00.754797+00:00",
+  "initial_block": "indices0..31_PENDING_ROOT_GO",
+  "native_constructions": 0,
+  "remaining_block": "indices32..63_CONDITIONAL_HOLD",
+  "sampler": {
+    "implementation": "stdlib random.Random(20261031), row-major64x7 random()",
+    "method": "SEEDED_UNIFORM_NOT_SOBOL",
+    "numpy": "2.5.3",
+    "python": "3.12.3",
+    "scipy": null,
+    "seed": 20261031
+  },
+  "schema": "cm2-search-freeze-manifest-v1",
+  "source_base_commit": "77935a3938d036be76bb8935e6c1eb925505d359"
+}

@@ -146,6 +146,10 @@ class State:
     draining: bool = False
     safety_cap: D | None = None
     valid_count: int = 0
+    btc_intent: str = ""
+    intent_hour: int = 0
+    harvest_target: D | None = None
+    harvest_start_qty: D | None = None
 
 @dataclass(frozen=True)
 class Decision:
@@ -169,9 +173,88 @@ def positive_harvest(s: Snapshot) -> bool:
     net = gross-s.btc_entry_fees-abs(s.btc_qty)*s.btc_mark*s.exit_fee_rate+min(ZERO,s.btc_signed_funding)
     return net > abs(s.btc_qty)*s.btc_tick
 
-def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False) -> Decision:
+def actual_harvest_geometry(*, signed_before_qty, filled_qty, fill_price, native_vwap,
+                            allocated_entry_fees, allocated_signed_funding, native_commission,
+                            native_tick, known=True):
+    """Actual native-basis/cost permission audit, never account/PnL authority."""
+    values=(signed_before_qty,filled_qty,fill_price,native_vwap,allocated_entry_fees,
+            allocated_signed_funding,native_commission,native_tick)
+    if (not known or any(v is None or not v.is_finite() for v in values)
+            or filled_qty <= 0 or filled_qty > abs(signed_before_qty)
+            or native_vwap <= 0 or fill_price <= 0 or native_tick <= 0):
+        return {"status":"UNKNOWN","reason":"ACTUAL_NATIVE_BASIS_COST_OR_PARENT_UNPROVEN"}
+    gross=D(_sign(signed_before_qty))*filled_qty*(fill_price-native_vwap)
+    net=gross-allocated_entry_fees-native_commission+min(ZERO,allocated_signed_funding)
+    buffer=filled_qty*native_tick
+    return {"status":"PASS" if gross > 0 and net > buffer else "FAIL",
+        "scope":"NATIVE_BASIS_AND_ACTUAL_COST_GEOMETRY_NOT_NATIVE_PNL_AUTHORITY",
+        "native_before_qty":str(signed_before_qty),"native_fill_qty":str(filled_qty),
+        "native_fill_price":str(fill_price),"native_vwap":str(native_vwap),
+        "allocated_native_entry_fees":str(allocated_entry_fees),
+        "allocated_signed_native_funding":str(allocated_signed_funding),
+        "actual_native_commission":str(native_commission),"gross_geometry":str(gross),
+        "net_geometry":str(net),"strict_tick_buffer":str(buffer)}
+
+
+def btc_child_permission(cfg: Config, f: Features, s: Snapshot, st: State, *, now_ns: int,
+                         executable_price: D) -> tuple[bool, str]:
+    """Permission for ordinary BTC intent, using current native costs/quote.
+
+    This is an admission check, never an execution/PnL model. Safety reductions
+    are deliberately independent of ordinary entry/add/harvest permission.
+    """
+    intent = st.btc_intent
+    if intent not in ("INITIAL_ENTRY", "FAVORABLE_ADD", "POSITIVE_HARVEST"):
+        if abs(st.btc_target) > abs(s.btc_qty) or st.btc_target*s.btc_qty < 0:
+            return False, "NO_CURRENT_ORDINARY_INCREASE_RIGHT"
+        return True, "SAFETY_OR_NO_ORDINARY_INTENT"
+    if (not f.valid or not s.data_known or s.unknown_orders
+            or (cfg.mode != "btc_only" and not f.hedge_valid)
+            or not (f.available_ns < now_ns and 0 <= now_ns-f.closed_ns <= HOUR_NS)
+            or executable_price <= 0):
+        return False, "ORDINARY_FEATURE_OR_NATIVE_STATE_UNKNOWN"
+    if intent == "POSITIVE_HARVEST":
+        return (positive_harvest(replace(s,btc_mark=executable_price)), "CURRENT_EXECUTABLE_NET_HARVEST")
+    if st.harvested or st.harvest_target is not None or st.intent_hour != f.closed_ns:
+        return False, "ADD_RIGHT_EXPIRED_OR_HARVESTED"
+    direction = _sign(st.btc_target)
+    if not direction or not ((direction > 0 and f.close > f.channel_high)
+                             or (direction < 0 and f.close < f.channel_low)):
+        return False, "CURRENT_AUTHORIZED_BREAKOUT_REQUIRED"
+    # Flat initial entry has no basis yet. Every child after an actual fill
+    # must remain favorable against the actual native remaining basis.
+    if s.btc_qty:
+        if s.btc_vwap is None or direction != _sign(s.btc_qty):
+            return False, "NATIVE_BASIS_UNKNOWN_OR_FACTOR_MISMATCH"
+        favorable=direction*(executable_price-s.btc_vwap)
+        # Authentic remaining INITIAL_ENTRY budget may fill at the same basis;
+        # a new ADD/restoration needs a strictly favorable price.
+        if favorable < 0 or (favorable == 0 and intent != "INITIAL_ENTRY"):
+            return False, "CURRENT_EXECUTABLE_NOT_FAVORABLE"
+    return True, "CURRENT_AUTHORIZED_BREAKOUT_FAVORABLE"
+
+
+def reconcile_btc_intent(cfg, f, s, st, *, now_ns, executable_price):
+    """Revoke unsafe ordinary leaves permanently; late fills reduce to cap."""
+    if st.harvest_target is not None and abs(s.btc_qty) <= abs(st.harvest_target) and not s.btc_pending:
+        st = replace(st,harvested=True,harvest_target=None,harvest_start_qty=None,
+                     btc_intent="HOLD",btc_target=s.btc_qty,unhedged_btc_target=s.btc_qty)
+    allowed, reason = btc_child_permission(cfg,f,s,st,now_ns=now_ns,executable_price=executable_price)
+    if not allowed:
+        # Keep the once-per-parent harvest right only if native inventory
+        # actually reduced. A denied/canceled unfilled harvest consumes none.
+        partial = (st.harvest_start_qty is not None
+                   and abs(s.btc_qty) < abs(st.harvest_start_qty))
+        st = replace(st,btc_target=s.btc_qty,unhedged_btc_target=s.btc_qty,
+                     btc_intent="RISK_TRIM",intent_hour=0,harvested=st.harvested or partial,
+                     harvest_target=None,harvest_start_qty=None)
+    return st, allowed, reason
+
+
+def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, now_ns=None) -> Decision:
     if any(not v.is_finite() for v in (s.equity,s.btc_qty,s.sol_qty,s.btc_mark,s.sol_mark)):
         raise ValueError("non-finite native snapshot")
+    now_ns = max(f.available_ns,f.closed_ns)+1 if now_ns is None else now_ns
     d = _sign(s.btc_qty)
     new_hour = f.closed_ns > st.last_hour
     if terminal or st.draining or s.equity <= 0:
@@ -179,27 +262,47 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False) 
             clean = State(parent=st.parent,last_hour=f.closed_ns)
             return Decision(ZERO,ZERO,"TERMINAL_FLAT" if terminal else "DRAIN_COMPLETE",clean,True)
         return Decision(ZERO,ZERO,"TERMINAL_DRAIN" if terminal else "PARENT_DRAIN",
-                        replace(st,draining=True,btc_target=ZERO,sol_target=ZERO),True)
+                        replace(st,draining=True,btc_target=ZERO,sol_target=ZERO,btc_intent="RISK_TRIM",
+                                intent_hour=0,harvest_target=None,harvest_start_qty=None),True)
     # An unexpected BTC flat immediately invalidates SOL, including pending SOL.
     if d == 0 and st.direction != 0:
         return Decision(ZERO,ZERO,"BTC_FLAT_SOL_DRAIN",
-                        replace(st,draining=True,btc_target=ZERO,sol_target=ZERO),True)
+                        replace(st,draining=True,btc_target=ZERO,sol_target=ZERO,btc_intent="RISK_TRIM",
+                                intent_hour=0,harvest_target=None,harvest_start_qty=None),True)
     if d and st.direction == 0:
-        # Parent exists only once native BTC inventory is actually present.
+        if (st.btc_intent != "INITIAL_ENTRY" or _sign(st.btc_target) != d
+                or st.safety_cap is not None):
+            # Revoked/unknown first fills cannot manufacture a fresh parent.
+            return Decision(ZERO,ZERO,"LATE_OR_UNOWNED_BTC_DRAIN",
+                replace(st,draining=True,btc_target=ZERO,sol_target=ZERO,
+                        unhedged_btc_target=ZERO,btc_intent="RISK_TRIM",intent_hour=0,
+                        harvest_target=None,harvest_start_qty=None),True)
+        # Parent exists only once authorized native BTC inventory is present.
         r = st.initial_r or cfg.stop_atr*f.atr
         entry = float(s.btc_vwap or s.btc_mark)
         st = replace(st,direction=d,parent=st.parent+1,initial_r=r,
-                     stop=entry-d*r,extreme=entry,btc_target=st.btc_target or s.btc_qty)
+                     stop=entry-d*r,extreme=entry)
     if d and d != st.direction:
-        return Decision(ZERO,ZERO,"UNEXPECTED_FACTOR_FLIP",replace(st,draining=True),True)
-    unknown = not f.valid or not s.data_known or s.unknown_orders or (cfg.mode != "btc_only" and not f.hedge_valid)
+        return Decision(ZERO,ZERO,"UNEXPECTED_FACTOR_FLIP",replace(st,draining=True,btc_target=ZERO,sol_target=ZERO,unhedged_btc_target=ZERO,
+                            btc_intent="RISK_TRIM",harvest_target=None,harvest_start_qty=None),True)
+    unknown = (not f.valid or not s.data_known or s.unknown_orders
+               or not (0 <= now_ns-f.closed_ns <= HOUR_NS)
+               or (cfg.mode != "btc_only" and not f.hedge_valid))
     if unknown:
         # A single finite target is latched. Repeated callbacks never halve again.
         cap = st.safety_cap if st.safety_cap is not None else abs(s.btc_qty)*D(".5")
         target = D(d)*min(abs(s.btc_qty),cap)
         return Decision(target,ZERO,"UNKNOWN_DRAIN_AND_FIXED_TRIM",
-                        replace(st,btc_target=target,sol_target=ZERO,safety_cap=cap,
+                        replace(st,btc_target=target,unhedged_btc_target=target,btc_intent="RISK_TRIM",
+                                intent_hour=0,harvest_target=None,harvest_start_qty=None,
+                                harvested=st.harvested or (st.harvest_start_qty is not None
+                                    and abs(s.btc_qty) < abs(st.harvest_start_qty)),
+                                sol_target=ZERO,safety_cap=cap,
                                 valid_count=0,hedge_active=False,last_hour=max(st.last_hour,f.closed_ns)),True)
+    st, allowed, permission_reason = reconcile_btc_intent(cfg,f,s,st,now_ns=now_ns,executable_price=s.btc_mark)
+    if not allowed and not new_hour:
+        return Decision(st.btc_target,ZERO,"ORDINARY_INTENT_REVOKED:"+permission_reason,
+                        replace(st,sol_target=ZERO),True)
     if not new_hour:
         # Fill/mark rechecks cannot create new signal rights.
         target = st.btc_target
@@ -219,7 +322,8 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False) 
         notional = _cap(s.equity*D(str(cfg.load)),s.max_btc_notional)
         target = D(direction)*notional/s.btc_mark
         return Decision(target,ZERO,"BTC_BREAKOUT_ENTRY",replace(st,btc_target=target,
-                        initial_r=cfg.stop_atr*f.atr,last_add_hour=f.closed_ns,unhedged_btc_target=target))
+                        initial_r=cfg.stop_atr*f.atr,last_add_hour=f.closed_ns,unhedged_btc_target=target,
+                        btc_intent="INITIAL_ENTRY",intent_hour=f.closed_ns))
     previous_extreme = st.extreme
     extreme = max(st.extreme,f.close) if d > 0 else min(st.extreme,f.close)
     proposed = extreme-d*cfg.stop_atr*f.atr
@@ -228,13 +332,17 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False) 
     if d*(f.close-stop) <= 0:
         name = "TRAIL_PROFIT" if positive_harvest(s) else "PROTECTIVE_STOP"
         return Decision(ZERO,ZERO,name,replace(st,btc_target=ZERO,sol_target=ZERO,draining=True),True)
-    btc = st.unhedged_btc_target or st.btc_target
+    btc = st.btc_target
     reason = "CORE_HOLD"
-    if not st.harvested and d*(float(s.btc_mark)-float(s.btc_vwap or s.btc_mark)) >= 2*st.initial_r and positive_harvest(s):
-        btc = s.btc_qty*D(str(cfg.core))
-        st = replace(st,harvested=True)
+    if st.harvest_target is not None:
+        btc = st.harvest_target
         reason = "POSITIVE_NET_HARVEST"
-    elif (not st.harvested and s.btc_vwap is not None
+    elif not st.harvested and not s.btc_pending and d*(float(s.btc_mark)-float(s.btc_vwap or s.btc_mark)) >= 2*st.initial_r and positive_harvest(s):
+        btc = s.btc_qty*D(str(cfg.core))
+        st = replace(st,btc_intent="POSITIVE_HARVEST",intent_hour=f.closed_ns,
+                     harvest_target=btc,harvest_start_qty=s.btc_qty)
+        reason = "POSITIVE_NET_HARVEST"
+    elif (not st.harvested and not s.btc_pending and s.btc_vwap is not None
           and d*(float(s.btc_mark)-float(s.btc_vwap)) > 0
           and d*(f.close-previous_extreme) > 0
           and ((d > 0 and f.close > f.channel_high) or (d < 0 and f.close < f.channel_low))
@@ -244,6 +352,7 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False) 
         if abs(desired) > abs(btc):
             btc = desired
             reason = "FAVORABLE_BREAKOUT_TARGET"
+            st = replace(st,btc_intent="FAVORABLE_ADD",intent_hour=f.closed_ns)
         st = replace(st,last_add_hour=f.closed_ns)
     adverse = d*f.btc_return6 < 0 and d*f.residual_z < -cfg.hedge_trigger
     released = d*f.btc_return6 >= 0 or d*f.residual_z >= -cfg.hedge_trigger/2
@@ -252,10 +361,12 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False) 
     active = st.hedge_active
     if ac >= 2: active = True
     if rc >= 2: active = False
-    st = replace(st,activate_count=ac,release_count=rc,hedge_active=active,btc_target=btc,unhedged_btc_target=btc)
+    st = replace(st,activate_count=ac,release_count=rc,hedge_active=active,btc_target=btc,
+                 unhedged_btc_target=(st.unhedged_btc_target if st.hedge_active and cfg.mode == "btc_trim"
+                                     and reason == "CORE_HOLD" else btc))
     sol = ZERO
     if active and cfg.mode != "btc_only":
-        b = abs(btc if cfg.mode == "btc_trim" else s.btc_qty)*s.btc_mark
+        b = abs(st.unhedged_btc_target if cfg.mode == "btc_trim" else s.btc_qty)*s.btc_mark
         x = D(str(cfg.hedge_fraction))/D(str(f.beta_guard))*b
         x = _cap(x,s.max_sol_notional)
         # Common-factor stress + residual stress + roundtrip exit cost.
@@ -263,16 +374,21 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False) 
         benefit = D(str(f.common_loss*f.beta-f.residual_loss))*x
         cost = x*s.exit_fee_rate*2
         if benefit > cost:
-            if cfg.mode == "btc_trim":
+            if cfg.mode == "btc_trim" and st.harvest_target is None:
                 trim_b = max(ZERO,b-D(str(f.beta))*x)
                 btc = D(d)*min(abs(btc),trim_b/s.btc_mark)
                 reason = "MATCHED_BTC_TRIM"
-            else:
+                # If this new favorable target still grows the trimmed control,
+                # retain its ordinary ADD permission; reductions are safety intent.
+                if abs(btc) <= abs(s.btc_qty):
+                    st = replace(st,btc_intent="RISK_TRIM",intent_hour=0,
+                                 harvest_target=None,harvest_start_qty=None)
+            elif cfg.mode == "joint":
                 sol = -D(d)*x/s.sol_mark
                 reason = "SELECTIVE_SOL_HEDGE"
     sol = _held_sol_cap(cfg,f,s,sol)
     st = replace(st,btc_target=btc,sol_target=sol)
-    return Decision(btc,sol,reason,st)
+    return Decision(btc,sol,reason,st,not allowed)
 
 def _held_sol_cap(cfg, f, s, target):
     if s.btc_qty == 0 or not f.hedge_valid or s.sol_mark <= 0:

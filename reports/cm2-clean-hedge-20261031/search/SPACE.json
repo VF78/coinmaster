@@ -1,0 +1,23 @@
+{
+  "schema": "cm2-j1-seven-dimensional-search-v1",
+  "seed": 20261031,
+  "count": 64,
+  "preferred_sampler": "scipy.stats.qmc.Sobol(d=7,scramble=True,seed=20261031).random_base2(m=6)",
+  "fallback_sampler": "random.Random(20261031): 64 successive rows of 7 random() draws; SEEDED_UNIFORM_NOT_SOBOL",
+  "parameters": [
+    {"name":"trend_hours","lower":24,"upper":168,"scale":"log","rounding":"floor(x+0.5)","default":72,"units":"completed hourly closes in prior BTC channel"},
+    {"name":"load","lower":1,"upper":8,"scale":"log","rounding":"round(x,6)","default":4.0,"units":"target BTC notional / native account equity; venue margin cap remains"},
+    {"name":"stop_atr","lower":2,"upper":6,"scale":"linear","rounding":"round(x,6)","default":3.0,"units":"initial and trailing BTC stop distance in ATR24 multiples"},
+    {"name":"core","lower":0.5,"upper":0.9,"scale":"linear","rounding":"round(x,6)","default":0.75,"units":"fraction of current BTC quantity retained after eligible positive 2R harvest"},
+    {"name":"hedge_trigger","lower":0.25,"upper":1.5,"scale":"linear","rounding":"round(x,6)","default":0.75,"units":"adverse six-hour SOL residual z threshold; release at half threshold"},
+    {"name":"hedge_fraction","lower":0.15,"upper":0.75,"scale":"linear","rounding":"round(x,6)","default":0.45,"units":"beta-guard-adjusted SOL hedge fraction against actual BTC notional; causal native safety constraints remain"},
+    {"name":"buffer","lower":0.03,"upper":0.20,"scale":"linear","rounding":"round(x,6)","default":0.08,"units":"SOL rebalance notional difference / actual BTC notional"}
+  ],
+  "transforms": {"linear":"lower+u*(upper-lower)","log":"exp(log(lower)+u*(log(upper)-log(lower)))","u_precision":"retain sampled binary64 values, no coordinate rounding","continuous_rounding":"Python round(value,6), then Config(**policy) validation","duplicates":"deduplicate by canonical policy SHA256 after rounding; any duplicate stops generation without replacement"},
+  "fixed_policy": {"mode":"joint","version":"cm2-v1"},
+  "fixed_constants_not_optimized": {"atr_hours":24,"ols_hours":168,"residual_hours":6,"hedge_hysteresis_consecutive_hours":2,"positive_harvest_initial_R_multiple":2,"ordinary_child_cadence_per_symbol_minutes":1,"prior_completed_minute_turnover_participation_fraction":"0.01","maker_fee":"0.000144","taker_fee":"0.000432","funding":"pinned historical signed native USDC postings","execution":"native1.231; Bybit M1 proxy; zero-impact full-fill historical model; unchanged native tiers/precision; DP off"},
+  "ids": "CM2_BROAD_V1_000..CM2_BROAD_V1_063",
+  "initial_block_indices": [0,31],
+  "conditional_hold_indices": [32,63],
+  "dispatch_authority": "NONE; all64 are frozen design points only. Initial32 require separate root stage/accounting/resource GO; second32 require evidence gate and separate GO. Aggregate116 cap unchanged."
+}

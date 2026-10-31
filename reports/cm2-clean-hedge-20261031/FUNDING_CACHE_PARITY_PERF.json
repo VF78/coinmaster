@@ -1,0 +1,35 @@
+{
+  "status": "PURE_PARITY_PASS_MICROTIMING_ONLY",
+  "native_engine_constructions": 0,
+  "tests": "9 passed in3.88s",
+  "actual_Mac_financial_data_used": false,
+  "benchmark": {
+    "synthetic_rows": 792,
+    "method": "3x25 same persistent WALjournal/same sorted rows/interleaved/originalBTCfilter+Decimalsum",
+    "before_seconds_per_call": 0.0031973669305443765,
+    "after_seconds_per_call": 2.079527825117111e-05,
+    "before_samples": [
+      0.0031973669305443765,
+      0.0025615575909614563,
+      0.0035825055092573166
+    ],
+    "after_samples": [
+      1.375395804643631e-05,
+      2.2741369903087617e-05,
+      2.079527825117111e-05
+    ],
+    "speedup": 153.75446733271352,
+    "both_assets_and_absent_exact_as_tuple": true,
+    "extrapolation": "NO_RUNTIME_CALL_COUNT_OR_ROI_OR_FULLRUN_SPEED_CLAIM"
+  },
+  "source_sha256": {
+    "runtime/coinmaster/research/cm2_funding_reader.py": "d4963d3f95c695ce61aee3342c272e18c0883912ccb989590737250af75c0214",
+    "runtime/coinmaster/research/cm2_runner.py": "17b5fd655442c9f96db80df8c962989903f68a1e55bad93638c09a627422e3c5",
+    "runtime/tests/test_cm2_funding_reader.py": "c743cd2fd72438ed730afbc8b4b6c23886f3f3be97acc7cb6d94c7420c359657"
+  },
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "sqlite": "3.45.1",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.39",
+  "remaining": "full55+9regression and criticalAPI tests after VPS_MAINTENANCE_RELEASED; no realprobe/native/autoretry",
+  "active_Mac_R1_source": "77935a39_UNCHANGED"
+}
