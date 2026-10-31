@@ -30,13 +30,13 @@
     },
     {
       "path": "reports/research-25-runs-20261031/additional-Q0-L1/RESULT_RU.md",
-      "sha256": "0c040605d56785ea05fad85c41d1550c5d8ef55fc620d6a837303b83240dded9",
-      "bytes": 2568
+      "sha256": "4cab9a2b01040bc1fac7a782e303248da8ca355f35c6a9bd5de0d2a73d8cf700",
+      "bytes": 4694
     },
     {
       "path": "reports/research-25-runs-20261031/additional-Q0-L1/attempt.json",
-      "sha256": "c9b4d6b91ed277abf290a3fb4fe0db038d7e48bc35561ef0ac802ee9f770056a",
-      "bytes": 748
+      "sha256": "de502715d39ac76a2792de21a6c2339890de9a28a405edf7de29da6141fb62c3",
+      "bytes": 1296
     },
     {
       "path": "reports/research-25-runs-20261031/additional-Q0-L1/native-report.json",

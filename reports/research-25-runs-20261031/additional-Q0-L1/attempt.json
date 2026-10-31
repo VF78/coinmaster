@@ -14,5 +14,18 @@
   "model_liquidations": 0,
   "diagnostic_not_qualified_hedge_candidate": true,
   "economic_decision": "NO_GO",
-  "native_report_public_subset_sha256": "2e469b1b64dd4cfa7a0b27473a1a8a9195c76aaef88880eaaa533c3891eb033c"
+  "native_report_public_subset_sha256": "2e469b1b64dd4cfa7a0b27473a1a8a9195c76aaef88880eaaa533c3891eb033c",
+  "native_semantics": {
+    "actual_SOL_ADD_RESTORE_fills": 34,
+    "all_increases_have_current_opposite_BTC_parent": true,
+    "SOL_held_BTC_flat_native_copies": 77,
+    "closed_flat_BTC_SOL_episodes": 14,
+    "maximum_observed_receipt_duration_seconds": 540,
+    "duration_is_guaranteed_upper_bound": false,
+    "instantaneous_joint_close_proven": false,
+    "mandatory_BTC_FLAT_drain_fills": 24,
+    "mandatory_BTC_FLAT_drain_quantity": "24000",
+    "positive_KNOWN_size_drain_fills": 0,
+    "full_cycle_current_BTC_hedge_qualified": false
+  }
 }
