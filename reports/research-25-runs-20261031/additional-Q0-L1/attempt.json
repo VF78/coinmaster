@@ -1,0 +1,18 @@
+{
+  "case": "Q0_L1",
+  "factorial_attempt": 16,
+  "overall_two_campaigns_attempt": 26,
+  "actual_exit": 0,
+  "accounting_checks": 11,
+  "all_accounting_checks_pass": true,
+  "native_engine_constructions": 1,
+  "source_commit": "0d6e4f922ab203a667a884a08aeef7658d9c258f",
+  "original_native_report_sha256": "7426715f5c4fc6dedf2c64b11ff567b909dc877d13d6a005b0739790303e110d",
+  "terminal_total": "166876.31729574",
+  "settled_DD_percent": "67.54535153404652209562525466",
+  "coherent_DD_percent": "67.54535153404652209562525466",
+  "model_liquidations": 0,
+  "diagnostic_not_qualified_hedge_candidate": true,
+  "economic_decision": "NO_GO",
+  "native_report_public_subset_sha256": "2e469b1b64dd4cfa7a0b27473a1a8a9195c76aaef88880eaaa533c3891eb033c"
+}

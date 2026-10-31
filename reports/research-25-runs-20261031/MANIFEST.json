@@ -1,5 +1,5 @@
 {
-  "snapshot": "25completed-attempts-research-publication-20261031",
+  "snapshot": "25attempt archive plus separatelyapprovedQ0L1 additionalattempt; total26 across two campaigns",
   "original_raw_artifacts_unchanged": true,
   "publication_is_sanitized_subset": true,
   "files": [
@@ -25,8 +25,23 @@
     },
     {
       "path": "reports/research-25-runs-20261031/README_RU.md",
-      "sha256": "43c927cec8dc91beb4a0cdf697a7b3c9a9be177dabcf1f046af2b60bff9d8cec",
-      "bytes": 4459
+      "sha256": "3f4cff91d6d982d9242893c8656574f1f8fbf13911686ed88f9036e01094ebf5",
+      "bytes": 4650
+    },
+    {
+      "path": "reports/research-25-runs-20261031/additional-Q0-L1/RESULT_RU.md",
+      "sha256": "0c040605d56785ea05fad85c41d1550c5d8ef55fc620d6a837303b83240dded9",
+      "bytes": 2568
+    },
+    {
+      "path": "reports/research-25-runs-20261031/additional-Q0-L1/attempt.json",
+      "sha256": "c9b4d6b91ed277abf290a3fb4fe0db038d7e48bc35561ef0ac802ee9f770056a",
+      "bytes": 748
+    },
+    {
+      "path": "reports/research-25-runs-20261031/additional-Q0-L1/native-report.json",
+      "sha256": "2e469b1b64dd4cfa7a0b27473a1a8a9195c76aaef88880eaaa533c3891eb033c",
+      "bytes": 5637970
     },
     {
       "path": "reports/research-25-runs-20261031/attempts.json",
