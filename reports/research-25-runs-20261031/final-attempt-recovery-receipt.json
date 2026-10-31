@@ -1,0 +1,810 @@
+{
+  "status": "REPORT_ONLY_RECOVERED_ACCOUNTING_NOT_AS_RUN_WRAPPER_PASS",
+  "as_run_status": "TECH_FAILED",
+  "as_run_exit": 1,
+  "as_run_error": "MONTHLY_ROW_COUNT:17",
+  "as_run_native_engine_constructions": 1,
+  "recovery_engine_constructions": 0,
+  "source_commit": "65ba7cacb0f192b25df638ecf3dca9dd5f270789",
+  "raw_sha256": "fa8d3ed086a6c6367549f8d6cd9b826a555e551aa2ffd1d6e527763220aadbe0",
+  "failure_sha256": "5b45b9a8900405ad9649a1e384f0f65258a5e1f8cbea34b582ee5191926f9d5e",
+  "preflight_sha256": "16e84526d940e2b7ad4e98596f20cc0724ce475ee013836c67efbb892666fea7",
+  "recovery_script_sha256": "fabb27a97d50b39a1f9bcc421fe4f098dcfd54697132edcbd48321e3d68da7bd",
+  "native_initial_cash": "10000",
+  "epoch_semantics": "CSV fill_epoch is minute_risk fill-only counter; coherent epoch/state_epoch count fills AND funding. Independently validated, NOT numerically equated.",
+  "position_schema_comparison": "All24 compare native instrument_id+side+quantity; risk lacks position_id. Native1.231 PositionSide str LONG=2 SHORT=3. Missing7 exact empty arrays.",
+  "original_monthly_returns": [
+    {
+      "month": "2024-09",
+      "return": "0.187227549243",
+      "total": "11872.27549243"
+    },
+    {
+      "month": "2024-10",
+      "return": "0.375167580540901243800703784",
+      "total": "16326.36836444"
+    },
+    {
+      "month": "2024-11",
+      "return": "0.773908435873600890916148118",
+      "total": "28961.48256886"
+    },
+    {
+      "month": "2024-12",
+      "return": "-0.0086560383344998033262400688",
+      "total": "28710.79086552"
+    },
+    {
+      "month": "2025-01",
+      "return": "0.316856658320590450153498165",
+      "total": "37807.99611691"
+    },
+    {
+      "month": "2025-02",
+      "return": "0.386926206977869367691884336",
+      "total": "52436.90064786"
+    },
+    {
+      "month": "2025-03",
+      "return": "0.609854522795391200886739235",
+      "total": "84415.78166933"
+    },
+    {
+      "month": "2025-04",
+      "return": "-0.1311410080564603089743305389",
+      "total": "73345.41096534"
+    },
+    {
+      "month": "2025-05",
+      "return": "0.003527628569867412785124410",
+      "total": "73604.14633253"
+    },
+    {
+      "month": "2025-06",
+      "return": "0.076209602440167173471059766",
+      "total": "79213.48906248"
+    },
+    {
+      "month": "2025-07",
+      "return": "0.110048171596307167314177112",
+      "total": "87930.78869957"
+    },
+    {
+      "month": "2025-08",
+      "return": "0.345277890399935301534170956",
+      "total": "118291.34592296"
+    },
+    {
+      "month": "2025-09",
+      "return": "-0.4229145066997659625595093808",
+      "total": "68264.21971510"
+    },
+    {
+      "month": "2025-10",
+      "return": "-0.0293084324055848348131879254",
+      "total": "66263.50244586"
+    },
+    {
+      "month": "2025-11",
+      "return": "0",
+      "total": "66263.50244586"
+    },
+    {
+      "month": "2025-12",
+      "return": "0",
+      "total": "66263.50244586"
+    },
+    {
+      "month": "2026-01",
+      "return": "-0.1597034192011860996262945116",
+      "total": "55680.99453701"
+    }
+  ],
+  "original_export_literal_canonicalization": {
+    "2024-09": {
+      "observed_native_cash_literal": "11872.27549243",
+      "original_export_cash_literal": "11872.27549243",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2024-10": {
+      "observed_native_cash_literal": "16326.36836444",
+      "original_export_cash_literal": "16326.36836444",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2024-11": {
+      "observed_native_cash_literal": "28961.48256886",
+      "original_export_cash_literal": "28961.48256886",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2024-12": {
+      "observed_native_cash_literal": "28710.79086552",
+      "original_export_cash_literal": "28710.79086552",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2025-01": {
+      "observed_native_cash_literal": "37807.99611691",
+      "original_export_cash_literal": "37807.99611691",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2025-02": {
+      "observed_native_cash_literal": "52436.90064786",
+      "original_export_cash_literal": "52436.90064786",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2025-03": {
+      "observed_native_cash_literal": "84415.78166933",
+      "original_export_cash_literal": "84415.78166933",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2025-04": {
+      "observed_native_cash_literal": "73345.41096534",
+      "original_export_cash_literal": "73345.41096534",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2025-05": {
+      "observed_native_cash_literal": "73604.14633253",
+      "original_export_cash_literal": "73604.14633253",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2025-06": {
+      "observed_native_cash_literal": "79213.48906248",
+      "original_export_cash_literal": "79213.48906248",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2025-07": {
+      "observed_native_cash_literal": "87930.78869957",
+      "original_export_cash_literal": "87930.78869957",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2025-08": {
+      "observed_native_cash_literal": "118291.34592296",
+      "original_export_cash_literal": "118291.34592296",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2025-09": {
+      "observed_native_cash_literal": "68264.2197151",
+      "original_export_cash_literal": "68264.21971510",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2025-10": {
+      "observed_native_cash_literal": "66263.50244586",
+      "original_export_cash_literal": "66263.50244586",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2025-11": {
+      "observed_native_cash_literal": "66263.50244586",
+      "original_export_cash_literal": "66263.50244586",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2025-12": {
+      "observed_native_cash_literal": "66263.50244586",
+      "original_export_cash_literal": "66263.50244586",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    },
+    "2026-01": {
+      "observed_native_cash_literal": "55680.99453701",
+      "original_export_cash_literal": "55680.99453701",
+      "numeric_exact_equal": true,
+      "purpose": "Original exporter scale only; no monetary substitution or rounding"
+    }
+  },
+  "actual_month_endpoints": {
+    "2024-09": {
+      "month": "2024-09",
+      "source_ns": 1727740740000000000,
+      "receipt_ns": 1727740800000000000,
+      "fill_epoch": 19,
+      "cash": "11872.27549243",
+      "positions": [],
+      "coherent_sequence": 129689,
+      "coherent_epoch": 46,
+      "coherent_state_epoch": 46,
+      "coherent_mark_available_ns": "1727740740000000000",
+      "coherent_positions": []
+    },
+    "2024-10": {
+      "month": "2024-10",
+      "source_ns": 1730419140000000000,
+      "receipt_ns": 1730419200000000000,
+      "fill_epoch": 52,
+      "cash": "16326.36836444",
+      "positions": [],
+      "coherent_sequence": 263767,
+      "coherent_epoch": 125,
+      "coherent_state_epoch": 125,
+      "coherent_mark_available_ns": "1730419140000000000",
+      "coherent_positions": []
+    },
+    "2024-11": {
+      "month": "2024-11",
+      "source_ns": 1733011140000000000,
+      "receipt_ns": 1733011200000000000,
+      "fill_epoch": 67,
+      "cash": "28961.48256886",
+      "positions": [],
+      "coherent_sequence": 393455,
+      "coherent_epoch": 169,
+      "coherent_state_epoch": 169,
+      "coherent_mark_available_ns": "1733011140000000000",
+      "coherent_positions": []
+    },
+    "2024-12": {
+      "month": "2024-12",
+      "source_ns": 1735689540000000000,
+      "receipt_ns": 1735689600000000000,
+      "fill_epoch": 136,
+      "cash": "28710.79086552",
+      "positions": [],
+      "coherent_sequence": 527567,
+      "coherent_epoch": 265,
+      "coherent_state_epoch": 265,
+      "coherent_mark_available_ns": "1735689540000000000",
+      "coherent_positions": []
+    },
+    "2025-01": {
+      "month": "2025-01",
+      "source_ns": 1738367940000000000,
+      "receipt_ns": 1738368000000000000,
+      "fill_epoch": 176,
+      "cash": "37807.99611691",
+      "positions": [
+        {
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "side": "2",
+          "quantity": "0.88556",
+          "avg_px_open": "102234.801395373",
+          "mark_ohlc": {
+            "open_time_ms": 1738367880000,
+            "open": "102348.71",
+            "high": "102374.1",
+            "low": "102348.69",
+            "close": "102374"
+          },
+          "low_native_pnl": "100.86404831",
+          "high_native_pnl": "123.35727231"
+        }
+      ],
+      "coherent_sequence": 661669,
+      "coherent_epoch": 356,
+      "coherent_state_epoch": 355,
+      "coherent_mark_available_ns": "1738367940000000000",
+      "coherent_positions": [
+        {
+          "position_id": "BTC-USD-PERP.HYPERLIQUID-WaveOverlayStrategy-000",
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "quantity": "0.88556",
+          "side": "LONG",
+          "raw_mark": "102374",
+          "native_price": "102374.0",
+          "native_upnl": "123.26871631"
+        }
+      ]
+    },
+    "2025-02": {
+      "month": "2025-02",
+      "source_ns": 1740787140000000000,
+      "receipt_ns": 1740787200000000000,
+      "fill_epoch": 315,
+      "cash": "52436.90064786",
+      "positions": [],
+      "coherent_sequence": 782979,
+      "coherent_epoch": 531,
+      "coherent_state_epoch": 531,
+      "coherent_mark_available_ns": "1740787140000000000",
+      "coherent_positions": []
+    },
+    "2025-03": {
+      "month": "2025-03",
+      "source_ns": 1743465540000000000,
+      "receipt_ns": 1743465600000000000,
+      "fill_epoch": 351,
+      "cash": "84415.78166933",
+      "positions": [],
+      "coherent_sequence": 916991,
+      "coherent_epoch": 577,
+      "coherent_state_epoch": 577,
+      "coherent_mark_available_ns": "1743465540000000000",
+      "coherent_positions": []
+    },
+    "2025-04": {
+      "month": "2025-04",
+      "source_ns": 1746057540000000000,
+      "receipt_ns": 1746057600000000000,
+      "fill_epoch": 401,
+      "cash": "73345.41096534",
+      "positions": [],
+      "coherent_sequence": 1046767,
+      "coherent_epoch": 665,
+      "coherent_state_epoch": 665,
+      "coherent_mark_available_ns": "1746057540000000000",
+      "coherent_positions": []
+    },
+    "2025-05": {
+      "month": "2025-05",
+      "source_ns": 1748735940000000000,
+      "receipt_ns": 1748736000000000000,
+      "fill_epoch": 458,
+      "cash": "73604.14633253",
+      "positions": [
+        {
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "side": "2",
+          "quantity": "1.23822",
+          "avg_px_open": "107573.44938028522",
+          "mark_ohlc": {
+            "open_time_ms": 1748735880000,
+            "open": "104566",
+            "high": "104566.94",
+            "low": "104566",
+            "close": "104566.94"
+          },
+          "low_native_pnl": "-3723.88397166",
+          "high_native_pnl": "-3722.76957366"
+        },
+        {
+          "instrument_id": "SOL-USD-PERP.HYPERLIQUID",
+          "side": "3",
+          "quantity": "509.88",
+          "avg_px_open": "173.37",
+          "mark_ohlc": {
+            "open_time_ms": 1748735880000,
+            "open": "156.37",
+            "high": "156.42",
+            "low": "156.292",
+            "close": "156.298"
+          },
+          "low_native_pnl": "8707.73064",
+          "high_native_pnl": "8642.466"
+        }
+      ],
+      "coherent_sequence": 1180885,
+      "coherent_epoch": 764,
+      "coherent_state_epoch": 762,
+      "coherent_mark_available_ns": "1748735940000000000",
+      "coherent_positions": [
+        {
+          "position_id": "BTC-USD-PERP.HYPERLIQUID-WaveOverlayStrategy-000",
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "quantity": "1.23822",
+          "side": "LONG",
+          "raw_mark": "104566.94",
+          "native_price": "104566.9",
+          "native_upnl": "-3722.76957366"
+        },
+        {
+          "position_id": "SOL-USD-PERP.HYPERLIQUID-WaveOverlayStrategy-000",
+          "instrument_id": "SOL-USD-PERP.HYPERLIQUID",
+          "quantity": "509.88",
+          "side": "SHORT",
+          "raw_mark": "156.298",
+          "native_price": "156.2980",
+          "native_upnl": "8704.67136"
+        }
+      ]
+    },
+    "2025-06": {
+      "month": "2025-06",
+      "source_ns": 1751327940000000000,
+      "receipt_ns": 1751328000000000000,
+      "fill_epoch": 480,
+      "cash": "79213.48906248",
+      "positions": [
+        {
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "side": "2",
+          "quantity": "1.84027",
+          "avg_px_open": "106384.5",
+          "mark_ohlc": {
+            "open_time_ms": 1751327880000,
+            "open": "107023.2",
+            "high": "107052.14",
+            "low": "107023.2",
+            "close": "107052.14"
+          },
+          "low_native_pnl": "1175.380449",
+          "high_native_pnl": "1228.564252"
+        }
+      ],
+      "coherent_sequence": 1310677,
+      "coherent_epoch": 860,
+      "coherent_state_epoch": 859,
+      "coherent_mark_available_ns": "1751327940000000000",
+      "coherent_positions": [
+        {
+          "position_id": "BTC-USD-PERP.HYPERLIQUID-WaveOverlayStrategy-000",
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "quantity": "1.84027",
+          "side": "LONG",
+          "raw_mark": "107052.14",
+          "native_price": "107052.1",
+          "native_upnl": "1228.564252"
+        }
+      ]
+    },
+    "2025-07": {
+      "month": "2025-07",
+      "source_ns": 1754006340000000000,
+      "receipt_ns": 1754006400000000000,
+      "fill_epoch": 482,
+      "cash": "87930.78869957",
+      "positions": [],
+      "coherent_sequence": 1444653,
+      "coherent_epoch": 888,
+      "coherent_state_epoch": 888,
+      "coherent_mark_available_ns": "1754006340000000000",
+      "coherent_positions": []
+    },
+    "2025-08": {
+      "month": "2025-08",
+      "source_ns": 1756684740000000000,
+      "receipt_ns": 1756684800000000000,
+      "fill_epoch": 664,
+      "cash": "118291.34592296",
+      "positions": [],
+      "coherent_sequence": 1579077,
+      "coherent_epoch": 1140,
+      "coherent_state_epoch": 1140,
+      "coherent_mark_available_ns": "1756684740000000000",
+      "coherent_positions": []
+    },
+    "2025-09": {
+      "month": "2025-09",
+      "source_ns": 1759276740000000000,
+      "receipt_ns": 1759276800000000000,
+      "fill_epoch": 809,
+      "cash": "68264.2197151",
+      "positions": [],
+      "coherent_sequence": 1709187,
+      "coherent_epoch": 1395,
+      "coherent_state_epoch": 1395,
+      "coherent_mark_available_ns": "1759276740000000000",
+      "coherent_positions": []
+    },
+    "2025-10": {
+      "month": "2025-10",
+      "source_ns": 1761955140000000000,
+      "receipt_ns": 1761955200000000000,
+      "fill_epoch": 825,
+      "cash": "66263.50244586",
+      "positions": [],
+      "coherent_sequence": 1843209,
+      "coherent_epoch": 1446,
+      "coherent_state_epoch": 1446,
+      "coherent_mark_available_ns": "1761955140000000000",
+      "coherent_positions": []
+    },
+    "2025-11": {
+      "month": "2025-11",
+      "source_ns": 1764547140000000000,
+      "receipt_ns": 1764547200000000000,
+      "fill_epoch": 825,
+      "cash": "66263.50244586",
+      "positions": [],
+      "coherent_sequence": 1972809,
+      "coherent_epoch": 1446,
+      "coherent_state_epoch": 1446,
+      "coherent_mark_available_ns": "1764547140000000000",
+      "coherent_positions": []
+    },
+    "2025-12": {
+      "month": "2025-12",
+      "source_ns": 1767225540000000000,
+      "receipt_ns": 1767225600000000000,
+      "fill_epoch": 825,
+      "cash": "66263.50244586",
+      "positions": [],
+      "coherent_sequence": 2106729,
+      "coherent_epoch": 1446,
+      "coherent_state_epoch": 1446,
+      "coherent_mark_available_ns": "1767225540000000000",
+      "coherent_positions": []
+    },
+    "2026-01": {
+      "month": "2026-01",
+      "source_ns": 1769903940000000000,
+      "receipt_ns": 1769904000000000000,
+      "fill_epoch": 829,
+      "cash": "55680.99453701",
+      "positions": [],
+      "coherent_sequence": 2240693,
+      "coherent_epoch": 1468,
+      "coherent_state_epoch": 1468,
+      "coherent_mark_available_ns": "1769903940000000000",
+      "coherent_positions": []
+    },
+    "2026-02": {
+      "month": "2026-02",
+      "source_ns": 1772323140000000000,
+      "receipt_ns": 1772323200000000000,
+      "fill_epoch": 829,
+      "cash": "55680.99453701",
+      "positions": [],
+      "coherent_sequence": 2361653,
+      "coherent_epoch": 1468,
+      "coherent_state_epoch": 1468,
+      "coherent_mark_available_ns": "1772323140000000000",
+      "coherent_positions": []
+    },
+    "2026-03": {
+      "month": "2026-03",
+      "source_ns": 1775001540000000000,
+      "receipt_ns": 1775001600000000000,
+      "fill_epoch": 829,
+      "cash": "55680.99453701",
+      "positions": [],
+      "coherent_sequence": 2495573,
+      "coherent_epoch": 1468,
+      "coherent_state_epoch": 1468,
+      "coherent_mark_available_ns": "1775001540000000000",
+      "coherent_positions": []
+    },
+    "2026-04": {
+      "month": "2026-04",
+      "source_ns": 1777593540000000000,
+      "receipt_ns": 1777593600000000000,
+      "fill_epoch": 829,
+      "cash": "55680.99453701",
+      "positions": [],
+      "coherent_sequence": 2625173,
+      "coherent_epoch": 1468,
+      "coherent_state_epoch": 1468,
+      "coherent_mark_available_ns": "1777593540000000000",
+      "coherent_positions": []
+    },
+    "2026-05": {
+      "month": "2026-05",
+      "source_ns": 1780271940000000000,
+      "receipt_ns": 1780272000000000000,
+      "fill_epoch": 829,
+      "cash": "55680.99453701",
+      "positions": [],
+      "coherent_sequence": 2759093,
+      "coherent_epoch": 1468,
+      "coherent_state_epoch": 1468,
+      "coherent_mark_available_ns": "1780271940000000000",
+      "coherent_positions": []
+    },
+    "2026-06": {
+      "month": "2026-06",
+      "source_ns": 1782863940000000000,
+      "receipt_ns": 1782864000000000000,
+      "fill_epoch": 829,
+      "cash": "55680.99453701",
+      "positions": [],
+      "coherent_sequence": 2888693,
+      "coherent_epoch": 1468,
+      "coherent_state_epoch": 1468,
+      "coherent_mark_available_ns": "1782863940000000000",
+      "coherent_positions": []
+    },
+    "2026-07": {
+      "month": "2026-07",
+      "source_ns": 1785542340000000000,
+      "receipt_ns": 1785542400000000000,
+      "fill_epoch": 829,
+      "cash": "55680.99453701",
+      "positions": [],
+      "coherent_sequence": 3022613,
+      "coherent_epoch": 1468,
+      "coherent_state_epoch": 1468,
+      "coherent_mark_available_ns": "1785542340000000000",
+      "coherent_positions": []
+    },
+    "2026-08": {
+      "month": "2026-08",
+      "source_ns": 1788220740000000000,
+      "receipt_ns": 1788220800000000000,
+      "fill_epoch": 829,
+      "cash": "55680.99453701",
+      "positions": [],
+      "coherent_sequence": 3156533,
+      "coherent_epoch": 1468,
+      "coherent_state_epoch": 1468,
+      "coherent_mark_available_ns": "1788220740000000000",
+      "coherent_positions": []
+    }
+  },
+  "missing_month_flat_samples": {
+    "2026-02": 40320,
+    "2026-03": 44640,
+    "2026-04": 43200,
+    "2026-05": 44640,
+    "2026-06": 43200,
+    "2026-07": 44640,
+    "2026-08": 44640
+  },
+  "missing_month_zero_cash_mutation_events": {},
+  "native_terminal_orders_proof": "All saved native order statuses terminal before first missing month; observer PASS/unknown[] terminal open/inflight check",
+  "order_timestamp_schema": "Native1.231 Order.ts_last UNIX nanoseconds uint64_t; saved CSV19 ASCII digits; ISO interval parser unchanged",
+  "native_order_count": 906,
+  "last_native_order_ns": 1768953600000000000,
+  "checks": {
+    "one_engine": true,
+    "full_feed": true,
+    "full_24months": true,
+    "coherent_end": true,
+    "settled_receipts": true,
+    "observer": true,
+    "native_cash": true,
+    "USDC": true,
+    "DP_off": true,
+    "terminal_flat": true,
+    "terminal_orders": true
+  },
+  "feed_coverage": {
+    "month_counts_complete": true,
+    "path": "[LOCAL_PRIVATE_ARTIFACT]",
+    "sha256": "73c9ed93b5efacf0060693c8fc4a994e241f2f3952a9d4c90bc05260b55a7e05",
+    "rows": 1051199,
+    "initial_seed_samples": 1,
+    "first_source_ns": 1725148860000000000,
+    "last_receipt_ns": 1788220800000000000,
+    "source_calendar_months": 24,
+    "month_rows": {
+      "2024-09": 43199,
+      "2024-10": 44640,
+      "2024-11": 43200,
+      "2024-12": 44640,
+      "2025-01": 44640,
+      "2025-02": 40320,
+      "2025-03": 44640,
+      "2025-04": 43200,
+      "2025-05": 44640,
+      "2025-06": 43200,
+      "2025-07": 44640,
+      "2025-08": 44640,
+      "2025-09": 43200,
+      "2025-10": 44640,
+      "2025-11": 43200,
+      "2025-12": 44640,
+      "2026-01": 44640,
+      "2026-02": 40320,
+      "2026-03": 44640,
+      "2026-04": 43200,
+      "2026-05": 44640,
+      "2026-06": 43200,
+      "2026-07": 44640,
+      "2026-08": 44640
+    },
+    "full": true
+  },
+  "saved_event_drawdown_unchanged": {
+    "maximum_loss_below_seed_amount": "1910.83154945",
+    "maximum_loss_below_seed_percent": "19.108315494500",
+    "minimum": {
+      "equity": "8089.16845055",
+      "sequence_id": "9050",
+      "timestamp_ns": "1725329640000000000"
+    },
+    "samples": 2105336,
+    "top3_distinct_excursions": [
+      {
+        "drawdown_amount": "67671.31980304",
+        "drawdown_peak_percent": "55.09278937905130800732308666",
+        "peak": {
+          "equity": "122831.53669611",
+          "sequence_id": "1603891",
+          "timestamp_ns": "1757180760000000000"
+        },
+        "recovery": null,
+        "trough": {
+          "equity": "55160.21689307",
+          "sequence_id": "2193044",
+          "timestamp_ns": "1768951080000000000"
+        }
+      },
+      {
+        "drawdown_amount": "32280.55109987",
+        "drawdown_peak_percent": "35.30545481978216478283937064",
+        "peak": {
+          "equity": "91432.19161075",
+          "sequence_id": "933034",
+          "timestamp_ns": "1743785820000000000"
+        },
+        "recovery": {
+          "equity": "91475.53101277",
+          "sequence_id": "1452279",
+          "timestamp_ns": "1754158740000000000"
+        },
+        "trough": {
+          "equity": "59151.64051088",
+          "sequence_id": "1006639",
+          "timestamp_ns": "1745255220000000000"
+        }
+      },
+      {
+        "drawdown_amount": "12638.54275827",
+        "drawdown_peak_percent": "33.74356715291156233251312081",
+        "peak": {
+          "equity": "37454.67306701",
+          "sequence_id": "481284",
+          "timestamp_ns": "1734767220000000000"
+        },
+        "recovery": {
+          "equity": "37709.72289735",
+          "sequence_id": "616286",
+          "timestamp_ns": "1737461760000000000"
+        },
+        "trough": {
+          "equity": "24816.13030874",
+          "sequence_id": "595164",
+          "timestamp_ns": "1737039720000000000"
+        }
+      }
+    ]
+  },
+  "saved_settled_drawdown_unchanged": {
+    "maximum_loss_below_seed_amount": "1910.83154945",
+    "maximum_loss_below_seed_percent": "19.108315494500",
+    "minimum": {
+      "equity": "8089.16845055",
+      "timestamp_ns": "1725329640000000000"
+    },
+    "samples": 1051200,
+    "top3_distinct_excursions": [
+      {
+        "drawdown_amount": "67671.31980304",
+        "drawdown_peak_percent": "55.09278937905130800732308666",
+        "peak": {
+          "equity": "122831.53669611",
+          "timestamp_ns": "1757180760000000000"
+        },
+        "recovery": null,
+        "trough": {
+          "equity": "55160.21689307",
+          "timestamp_ns": "1768951080000000000"
+        }
+      },
+      {
+        "drawdown_amount": "32280.55109987",
+        "drawdown_peak_percent": "35.30545481978216478283937064",
+        "peak": {
+          "equity": "91432.19161075",
+          "timestamp_ns": "1743785820000000000"
+        },
+        "recovery": {
+          "equity": "91475.53101277",
+          "timestamp_ns": "1754158740000000000"
+        },
+        "trough": {
+          "equity": "59151.64051088",
+          "timestamp_ns": "1745255220000000000"
+        }
+      },
+      {
+        "drawdown_amount": "12638.54275827",
+        "drawdown_peak_percent": "33.74356715291156233251312081",
+        "peak": {
+          "equity": "37454.67306701",
+          "timestamp_ns": "1734767220000000000"
+        },
+        "recovery": {
+          "equity": "37659.71426389",
+          "timestamp_ns": "1737461760000000000"
+        },
+        "trough": {
+          "equity": "24816.13030874",
+          "timestamp_ns": "1737039720000000000"
+        }
+      }
+    ]
+  },
+  "ranking_eligible": false,
+  "qualification": "INCOMPLETE_NO_STRESS_OR_PROMOTION; NO_NATIVE_BUDGET_EXTENSION"
+}

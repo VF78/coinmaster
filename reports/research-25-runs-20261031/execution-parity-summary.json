@@ -1,0 +1,103 @@
+{
+  "task": "EXECUTION_PARITY_REBUILD_20261029",
+  "objective": {
+    "primary_terminal_total": "5499360.14984003",
+    "primary_DD_percent": "52",
+    "outer_terminal_floor": "5000000",
+    "outer_DD_percent": "55",
+    "zero_model_liquidation": true,
+    "not_automatic_live_approval": true
+  },
+  "reference": {
+    "source": "fccd60c01e8cae5e8258748b046f43f88a16bb79",
+    "report_sha256": "c3e23a88efff0688b33b6d9e93c9dd29e0f19e9973e2224b845e8fa51bd049d2",
+    "data_sha256": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "period_UTC": "[2024-09-01,2026-09-01)",
+    "seed": "10000",
+    "terminal_metric": "native_post_boundary_flat_cash_active_plus_reserve; netprofit_and_ROI_separately"
+  },
+  "guarantee_boundary": "Identical ordered recorded inputs+nativeevents+sharedconfiguration => deterministic same strategy/state/output test. Future realfills/queues/transport or historicaldifferentvenue prices cannotbe guaranteed. Do not label zeroimpact model live-identical.",
+  "engineering_result": {
+    "case": "E0R2",
+    "actual_exit": 0,
+    "wall_seconds": 2.379546558484435,
+    "native_full_entry_SOL": "2000",
+    "maker_exit_SOL": "500",
+    "fresh_quote_final_IOC_SOL": "1500",
+    "status": "PASS",
+    "pure_checks": 93,
+    "known_baseline_test_deselected": 1,
+    "independent_review": "PASS_0_NEW_P1"
+  },
+  "control_failure": {
+    "case": "CLEAN10K",
+    "native_engines": 1,
+    "actual_exit": 1,
+    "wall_seconds": 16.968837281689048,
+    "native_elapsed_seconds": 13.03586404491216,
+    "last_data_UTC": "2024-09-02T00:09:00Z",
+    "error": "KeyError sol_right_activations: later split child reuses parent intent ID and appends ordinary sizing record; activation blindly addressed final row",
+    "economic_result": null,
+    "output": "VPS J/CLEAN10K",
+    "preserved": true
+  },
+  "control_failure_R1": {
+    "status": "NATIVE_ACCOUNTING_QUALIFIED_BUT_NONCOMPARABLE_TO_WINNER",
+    "actual_wrapper_exit": 1,
+    "terminal_total": "17368.19458222",
+    "DD_percent": "93.25950820458832977677671561",
+    "model_liquidations": 1,
+    "cause": "ROOT harness omitted original research_v0_zero_tp_netting=False; APIdefaultTrue re-netted BTC .79073 to .45467; cannot attribute this run to correct winning BTC core",
+    "native_accounting_receipt_sha256": "8aade839c9c9e69bb723ecea57ac50c409cd699a6f25806636fff460fdba4806",
+    "no_report_or_exit_rewritten": true
+  },
+  "control_failure_R2": {
+    "actual_exit": 1,
+    "native_engines": 0,
+    "wall_seconds": 6.909593963995576,
+    "cause": "Caller supplied duplicate ExecutionPolicy while currentHL source factory owns policy",
+    "preserved": true
+  },
+  "completed_control_R3": {
+    "case": "CLEAN10K_R3",
+    "source": "e3cfc392662d5b4a5b55f485f67f3df659138a54",
+    "pid": 246609,
+    "supervisor_pid": 246608,
+    "started_utc": "2026-10-29T22:57:58.460816+00:00",
+    "actual_first_native_BTC_cumulative": [
+      "0.39536",
+      "0.79073"
+    ],
+    "status": "COMPLETED_ECONOMIC_NO_GO",
+    "actual_exit": 0,
+    "total": "561476.78949795",
+    "DD_percent": "85.39093016192872766265959973",
+    "model_liquidations": 1,
+    "report_sha256": "389c66fc2e7117c60dec688b32ea7a2f0ecc6c52d486e13b37fa6a67131bdaaa"
+  },
+  "completed_A10K": {
+    "source": "5b56f7d02e09d4495ac018ec1ce701f6f0dfb737",
+    "actual_exit": 0,
+    "TOTAL": "5635720.91989984",
+    "net_profit": "5625720.91989984",
+    "ROI_percent": "56257.2091989984",
+    "coherent_DD_percent": "51.43837118735670368072135682",
+    "settled_DD_percent": "51.43837118735670368072135682",
+    "model_liquidations": 0,
+    "all_11_financial_checks": true,
+    "report_sha256": "c01a9626317680a2461153148128ea8725178594c2e65a47a02c1ba9e5990f6f",
+    "status": "PRIMARY_OBJECTIVE_MODEL_PASS_NOT_LIVE_READY"
+  },
+  "B_final": {
+    "status": "RAW_NOT_QUALIFIED_ECONOMIC_NO_GO",
+    "actual_exit": 1,
+    "TOTAL_raw": "883181.30709990",
+    "DD_percent": "74.76431632934234140933659134",
+    "native_cash_bridge": "0E-8",
+    "native_position_sum_gap": "1E-8",
+    "report_sha256": "3e65b37ab48b5c1946c642e3319a3969e5380faa862ab535e8c015a0dc7a92ec",
+    "no_rerun": true
+  },
+  "physical_spent": 10,
+  "physical_active": 0
+}

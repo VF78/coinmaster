@@ -1,0 +1,132 @@
+{
+  "snapshot": "25completed-attempts-research-publication-20261031",
+  "original_raw_artifacts_unchanged": true,
+  "publication_is_sanitized_subset": true,
+  "files": [
+    {
+      "path": "reports/research-25-runs-20261031/ACTUAL_PATH_ATTRIBUTION_RU.md",
+      "sha256": "8a6eb1ab7ce1de88d0e938110c17ae8f201b955935dce0a4da03c122917f6a3d",
+      "bytes": 3053
+    },
+    {
+      "path": "reports/research-25-runs-20261031/CAUSAL_BOUNDARY_AND_NEXT_PROTOCOL_RU.md",
+      "sha256": "18984485ca388a3e72e61a1aa2770e484537a8546016edf1454df131ad9887a1",
+      "bytes": 11609
+    },
+    {
+      "path": "reports/research-25-runs-20261031/EXECUTION_PARITY_RESULTS_RU.md",
+      "sha256": "a24a49a337bfec9a9ed25eeeb16fd8f1bec70af7a988a27ebae690a8e058890c",
+      "bytes": 4240
+    },
+    {
+      "path": "reports/research-25-runs-20261031/FACTORIAL_RESULTS_RU.md",
+      "sha256": "4b9074eb5739a1a3b351ed3b02cac4df9f8ce24d3fc4276e47279588acdd04a4",
+      "bytes": 36042
+    },
+    {
+      "path": "reports/research-25-runs-20261031/README_RU.md",
+      "sha256": "43c927cec8dc91beb4a0cdf697a7b3c9a9be177dabcf1f046af2b60bff9d8cec",
+      "bytes": 4459
+    },
+    {
+      "path": "reports/research-25-runs-20261031/attempts.json",
+      "sha256": "94564a90263c975618fe7639cbf6acf48adedae73bd6b41459c8cbe160e3f31c",
+      "bytes": 50652
+    },
+    {
+      "path": "reports/research-25-runs-20261031/execution-parity-sol-evidence.json",
+      "sha256": "410aaf3bc339b795ec595bca1a7f8933960d1cd410f04238a3b8fca64f6a1956",
+      "bytes": 944757
+    },
+    {
+      "path": "reports/research-25-runs-20261031/execution-parity-summary.json",
+      "sha256": "0f36ca0f79f4401cf24ae556c49cb12fe9d037211efca4a32283eea1ad76802a",
+      "bytes": 4190
+    },
+    {
+      "path": "reports/research-25-runs-20261031/final-attempt-recovery-receipt.json",
+      "sha256": "71c0d3b32d250ae9437caf5eda6eda83f66b6a352e0fe4dd741d0223cf5ecbbe",
+      "bytes": 26003
+    },
+    {
+      "path": "reports/research-25-runs-20261031/first-policy-divergence.json",
+      "sha256": "605e3111b29e52abae9375c812b594e1beb730f46ff8a372ab57f369014bedd4",
+      "bytes": 6536
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/A01.json",
+      "sha256": "39f92461049ec6f81f545b29c06bdf2e3c9c459e3d14fb043ed814afc6282242",
+      "bytes": 1860982
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/A01C.json",
+      "sha256": "9b221b4afb474bc11a1083350084a1de15f7dc46eef26b4f0ae4ffac277c45fd",
+      "bytes": 1868839
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/A01N.json",
+      "sha256": "e79fb551b7092211ba236074358e9194e9865cbc9f57477089c8e6daa78f9237",
+      "bytes": 2268876
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/A10.json",
+      "sha256": "bf52460c9ed8dc09282302efdef50efca76d7fc1799a305e4821a716ce5e2641",
+      "bytes": 2002941
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/A11.json",
+      "sha256": "70fcc8fce895c83d140cb7ed0999c3a008108ca849e0df53eb3b49be20655b50",
+      "bytes": 2034950
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/A11C.json",
+      "sha256": "d135021f09efd15e5e6b86d2ae39972a2736679002dd6475ee2b11afe15a395d",
+      "bytes": 2045460
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/A11N.json",
+      "sha256": "2a77b7be9affdbf4ffd1fd65bb10ac256aea9af997058251909c7c9901d5ac3a",
+      "bytes": 2239733
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/B0.json",
+      "sha256": "77e6c52b0a65a702b5ab3ee438f7b725d4f4c04cb2dbc1a57349378c8eec405a",
+      "bytes": 1249666
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/C1_BTC_RESERVE.json",
+      "sha256": "e051d19207faf68664292577bde77977a2c7d360c2be9d7d2592085018838fc4",
+      "bytes": 2663752
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/C1_BTC_RESERVE_ADMISSION.json",
+      "sha256": "bd53dcdba674b4c0817f378dfadfd1e2787a544f7f6fe4a0d0379d32f549c5f1",
+      "bytes": 2312401
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/PB_A10.json",
+      "sha256": "9ed63a597dfbf6e274ba6ef1211ae2bb3f9defb79c395dd269616205ac7e4f9a",
+      "bytes": 1831144
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/PB_DEFER.json",
+      "sha256": "a495f1721bccd076c12c4b2d30c6f17cda0205f8171182de98b3cf5916c760e6",
+      "bytes": 2917505
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/PF_STAGE.json",
+      "sha256": "8a8877df2f11b244868a22c7925045b9ff5566e6baeae6d01d461e2d563d056d",
+      "bytes": 12551807
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/T08.json",
+      "sha256": "cb0548199b5d4b18fc02623046a7c713c5b3adb5e99383ca1840f6be056014e5",
+      "bytes": 2066444
+    },
+    {
+      "path": "reports/research-25-runs-20261031/native-reports/T12.json",
+      "sha256": "a820ad74427a596e49120f6047a2d11558643c12508272fa60e2a1e6e39a8ee0",
+      "bytes": 2027554
+    }
+  ]
+}

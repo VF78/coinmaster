@@ -1,0 +1,1039 @@
+{
+  "scope": "25 completed registered attempts, including technical failures; not 25 successful full economics",
+  "execution_parity": {
+    "campaign": "execution-parity-rebuild-20261029",
+    "physical_spent": 10,
+    "active": 0,
+    "original_ledger_sha256": "670806cf88da18418958ec006ecc0cabbd0968301f3d3c6e8cd289fc608d6c90",
+    "attempts": [
+      {
+        "case": "E0_COMMON",
+        "source_commit": "31aba8191ccaec327cc43d54714b3386ee8d1d24",
+        "status": "FAILED",
+        "started_utc": "2026-10-29T20:00:15.433662+00:00",
+        "actual_exit": 1,
+        "timeout": false,
+        "wall_seconds": 2.6269518174231052,
+        "max_engines": 1
+      },
+      {
+        "case": "E0R_COMMON",
+        "source_commit": "2ba508c67c4742c83031ab4b027f719e71e4d198",
+        "status": "FAILED",
+        "started_utc": "2026-10-29T20:06:16.493740+00:00",
+        "actual_exit": 1,
+        "timeout": false,
+        "wall_seconds": 2.4254036471247673,
+        "max_engines": 1
+      },
+      {
+        "case": "E0R2_COMMON",
+        "source_commit": "124a37bcb6b6dfbb48fa0b725e3e8dcaa90d0758",
+        "status": "PASS",
+        "started_utc": "2026-10-29T20:49:13.658634+00:00",
+        "actual_exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.379546558484435,
+        "max_engines": 1
+      },
+      {
+        "case": "CLEAN10K",
+        "source_commit": "124a37bcb6b6dfbb48fa0b725e3e8dcaa90d0758",
+        "status": "FAILED",
+        "started_utc": "2026-10-29T21:06:54.355622+00:00",
+        "actual_exit": 1,
+        "timeout": false,
+        "wall_seconds": 16.968837281689048,
+        "max_engines": 1
+      },
+      {
+        "case": "CLEAN10K_R1",
+        "source_commit": "0ba61448b324df1c617797eac03a00c030e1a5e8",
+        "status": "NATIVE_COMPLETED_NONCOMPARABLE_TO_WINNER",
+        "started_utc": "2026-10-29T21:20:45.776631+00:00",
+        "actual_exit": 1,
+        "timeout": false,
+        "wall_seconds": 1395.7648788765073,
+        "max_engines": 1
+      },
+      {
+        "case": "CLEAN10K_R2",
+        "source_commit": "e3cfc392662d5b4a5b55f485f67f3df659138a54",
+        "status": "FAILED",
+        "started_utc": "2026-10-29T22:46:54.058014+00:00",
+        "actual_exit": 1,
+        "timeout": false,
+        "wall_seconds": 6.909593963995576,
+        "max_engines": 1
+      },
+      {
+        "case": "CLEAN10K_R3",
+        "source_commit": "e3cfc392662d5b4a5b55f485f67f3df659138a54",
+        "status": "COMPLETED",
+        "started_utc": "2026-10-29T22:57:58.456253+00:00",
+        "actual_exit": 0,
+        "timeout": false,
+        "wall_seconds": 1943.456444277428,
+        "max_engines": 1
+      },
+      {
+        "case": "A10K",
+        "source_commit": "5b56f7d02e09d4495ac018ec1ce701f6f0dfb737",
+        "status": "COMPLETED",
+        "started_utc": "2026-10-29T22:59:25.447651+00:00",
+        "actual_exit": 0,
+        "timeout": false,
+        "wall_seconds": 3379.5986801609397,
+        "max_engines": 1
+      },
+      {
+        "case": "B10K",
+        "source_commit": "5e1a899b0e112db488ad4a118f74214b0362d2b0",
+        "status": "FAILED",
+        "started_utc": "2026-10-30T00:05:21.897343+00:00",
+        "actual_exit": 1,
+        "timeout": false,
+        "wall_seconds": 3857.610021716915,
+        "max_engines": 1
+      },
+      {
+        "case": "A_ACTUAL_CAPITAL",
+        "source_commit": "5b56f7d02e09d4495ac018ec1ce701f6f0dfb737",
+        "status": "COMPLETED",
+        "started_utc": "2026-10-30T00:07:45.517710+00:00",
+        "actual_exit": 0,
+        "timeout": false,
+        "wall_seconds": 3600.6143386457115,
+        "max_engines": 1
+      }
+    ],
+    "publication_note": "Metadata only; real-account capital and account-derived financial readbacks excluded."
+  },
+  "factorial": {
+    "attempts": [
+      {
+        "case": "A10",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "FAIL_DRAWDOWN",
+        "source_commit": "c34b3230712fab095e6d985b48f1db29dfe343a6",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-30T19:52:08.228610+00:00",
+        "started_utc": "2026-10-30T19:52:08.304762+00:00",
+        "finished_utc": "2026-10-30T20:02:08.556119+00:00",
+        "native_version": "1.231.0",
+        "normalized_data_sha256": {
+          "bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+          "bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+          "bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+          "bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+          "bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+          "bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+          "bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+          "bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+        },
+        "metrics": {
+          "terminal_total_usdc": "5762437.77290470",
+          "settled_dd_percent": "58.35000208284179056154827121",
+          "coherent_dd_percent": "58.35000208284179056154827121",
+          "liquidations": 0,
+          "native_fees_usdc": "497094.72489607",
+          "signed_funding_usdc": "56875.74476869",
+          "config_hash": "31b29b442a828d7d32af84ccfe0c9b37b4ff0f16d83c9ffc6ba1387df658cd36",
+          "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+          "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"
+        },
+        "selection_disposition": "REJECT_TARGET_DD_INTERMEDIATE_LEGACY_SOL_NOT_FINAL_HEDGE",
+        "report": "native-reports/A10.json",
+        "report_sha256": "266ef7b825d574a143788980032c24d79d7051eb131942365d7b8b6c30d9c60b",
+        "terminal_total": "5762437.77290470",
+        "liquidation_count": 0,
+        "settled_DD_percent": "58.35000208284179056154827121",
+        "coherent_DD_percent": "58.35000208284179056154827121"
+      },
+      {
+        "case": "A01",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "FAIL_TOTAL_AND_DRAWDOWN",
+        "source_commit": "c34b3230712fab095e6d985b48f1db29dfe343a6",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-30T19:52:08.307730+00:00",
+        "started_utc": "2026-10-30T19:52:08.361500+00:00",
+        "finished_utc": "2026-10-30T19:59:53.512938+00:00",
+        "native_version": "1.231.0",
+        "normalized_data_sha256": {
+          "bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+          "bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+          "bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+          "bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+          "bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+          "bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+          "bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+          "bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+        },
+        "metrics": {
+          "terminal_total_usdc": "219007.54974675",
+          "settled_dd_percent": "64.82800194825276813545725889",
+          "coherent_dd_percent": "64.82800194825276813545725889",
+          "liquidations": 0,
+          "native_fees_usdc": "47240.13855624",
+          "signed_funding_usdc": "5381.54182001",
+          "config_hash": "ffe5a7ff02322ecb29c50b2baaf8948c4f270a14199f9c52cf7ffbbeae4604ab",
+          "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+          "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"
+        },
+        "selection_disposition": "DIAGNOSTIC_IMPLEMENTATION_GAP_NOT_FOR_SELECTION",
+        "report": "native-reports/A01.json",
+        "report_sha256": "a69c9db5b0365214bb0090fd47865a293ad9d447b566cff777a3c5046f39ecfc",
+        "terminal_total": "219007.54974675",
+        "liquidation_count": 0,
+        "settled_DD_percent": "64.82800194825276813545725889",
+        "coherent_DD_percent": "64.82800194825276813545725889"
+      },
+      {
+        "case": "A11",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "FAIL_TOTAL_AND_DRAWDOWN",
+        "source_commit": "c34b3230712fab095e6d985b48f1db29dfe343a6",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-30T20:02:08.566921+00:00",
+        "started_utc": "2026-10-30T20:02:08.670405+00:00",
+        "finished_utc": "2026-10-30T20:10:53.946873+00:00",
+        "native_version": "1.231.0",
+        "normalized_data_sha256": {
+          "bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+          "bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+          "bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+          "bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+          "bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+          "bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+          "bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+          "bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+        },
+        "metrics": {
+          "terminal_total_usdc": "137444.39958423",
+          "settled_dd_percent": "66.46512154160615578389595664",
+          "coherent_dd_percent": "66.46512154160615578389595664",
+          "liquidations": 0,
+          "native_fees_usdc": "30783.96247016",
+          "signed_funding_usdc": "4605.26648837",
+          "config_hash": "258ffc4d9aef3f4ef06f62d125184d2d8d5f5dfe38678720d87ba75e5d213a89",
+          "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+          "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"
+        },
+        "selection_disposition": "DIAGNOSTIC_IMPLEMENTATION_GAP_NOT_FOR_SELECTION",
+        "report": "native-reports/A11.json",
+        "report_sha256": "50277f603c63dd713c734e2a9e7355adcdf27125d43ddfad3f53da4aae8e066f",
+        "terminal_total": "137444.39958423",
+        "liquidation_count": 0,
+        "settled_DD_percent": "66.46512154160615578389595664",
+        "coherent_DD_percent": "66.46512154160615578389595664"
+      },
+      {
+        "case": "T08",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "FAIL_TOTAL_AND_DRAWDOWN",
+        "source_commit": "af89118dcebb098349bbc5b4926f6e14e18fca0c",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-30T20:23:38.960684+00:00",
+        "started_utc": "2026-10-30T20:23:39.029606+00:00",
+        "finished_utc": "2026-10-30T20:32:54.321468+00:00",
+        "native_version": "1.231.0",
+        "normalized_data_sha256": {
+          "bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+          "bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+          "bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+          "bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+          "bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+          "bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+          "bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+          "bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+        },
+        "metrics": {
+          "terminal_total_usdc": "1864003.64025638",
+          "settled_dd_percent": "72.15993237388878785394965761",
+          "coherent_dd_percent": "72.15993237388878785394965761",
+          "liquidations": 0,
+          "native_fees_usdc": "303866.44452713",
+          "signed_funding_usdc": "63710.54348040",
+          "config_hash": "43a3272e2720de15a88733569e0b591fd68e877dc6abb06b1fd5b96f8f54e241",
+          "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+          "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"
+        },
+        "selection_disposition": "REJECT_TARGET_DD_INTERMEDIATE_LEGACY_SOL_NOT_FINAL_HEDGE",
+        "report": "native-reports/T08.json",
+        "report_sha256": "fbf82ef463b404e7064087c1605a86be48419b57533bc7fea444b4e6f732e4e7",
+        "terminal_total": "1864003.64025638",
+        "liquidation_count": 0,
+        "settled_DD_percent": "72.15993237388878785394965761",
+        "coherent_DD_percent": "72.15993237388878785394965761"
+      },
+      {
+        "case": "T12",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "FAIL_TOTAL_AND_DRAWDOWN",
+        "source_commit": "af89118dcebb098349bbc5b4926f6e14e18fca0c",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-30T20:23:39.031391+00:00",
+        "started_utc": "2026-10-30T20:23:39.086311+00:00",
+        "finished_utc": "2026-10-30T20:33:39.350633+00:00",
+        "native_version": "1.231.0",
+        "normalized_data_sha256": {
+          "bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+          "bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+          "bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+          "bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+          "bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+          "bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+          "bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+          "bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+        },
+        "metrics": {
+          "terminal_total_usdc": "5395105.78237572",
+          "settled_dd_percent": "70.18431164679179685133400912",
+          "coherent_dd_percent": "70.18431164679179685133400912",
+          "liquidations": 0,
+          "native_fees_usdc": "509755.18501254",
+          "signed_funding_usdc": "68367.30353523",
+          "config_hash": "1360c826d340805910d78397911f98d2c8020c5d8b5cb04210cbb7790de15f85",
+          "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+          "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"
+        },
+        "selection_disposition": "REJECT_TARGET_DD_INTERMEDIATE_LEGACY_SOL_NOT_FINAL_HEDGE",
+        "report": "native-reports/T12.json",
+        "report_sha256": "ad2ad34e20fcd42381ba2ac6a3e418254b4cb8f9ea9aaf88c87002b34b6c8ff1",
+        "terminal_total": "5395105.78237572",
+        "liquidation_count": 0,
+        "settled_DD_percent": "70.18431164679179685133400912",
+        "coherent_DD_percent": "70.18431164679179685133400912"
+      },
+      {
+        "case": "B0",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "DIAGNOSTIC_CONTROL_NOT_CANDIDATE",
+        "source_commit": "049eacef4ad2bf9adbf4867dafed326106bb732c",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-30T20:36:03.790940+00:00",
+        "started_utc": "2026-10-30T20:36:03.865178+00:00",
+        "finished_utc": "2026-10-30T20:42:49.103754+00:00",
+        "native_version": "1.231.0",
+        "normalized_data_sha256": {
+          "bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+          "bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+          "bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+          "bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+          "bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+          "bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+          "bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+          "bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+        },
+        "metrics": {
+          "terminal_total_usdc": "358370.46374134",
+          "settled_dd_percent": "64.82799999405777241986399143",
+          "coherent_dd_percent": "64.82799999405777241986399143",
+          "liquidations": 0,
+          "native_fees_usdc": "62251.08400411",
+          "signed_funding_usdc": "8973.65191143",
+          "config_hash": "725f6008905a0f7a51b66a34dd6ab93ab0734e8d37c11cf8fa421488531c75ef",
+          "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+          "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"
+        },
+        "selection_disposition": "MATCHED_BTC_ONLY_CONTROL_NOT_CANDIDATE",
+        "report": "native-reports/B0.json",
+        "report_sha256": "b2accf760b4d5492841a9f5adb0c55b6dae1a4d7821802f8865fca50566e91ad",
+        "terminal_total": "358370.46374134",
+        "liquidation_count": 0,
+        "settled_DD_percent": "64.82799999405777241986399143",
+        "coherent_DD_percent": "64.82799999405777241986399143"
+      },
+      {
+        "case": "A01C",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "FAIL_TOTAL_AND_DRAWDOWN",
+        "source_commit": "0023034a056d1a806f904c522bfb17ef875afc4c",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-30T21:03:32.070485+00:00",
+        "started_utc": "2026-10-30T21:03:32.124389+00:00",
+        "finished_utc": "2026-10-30T21:10:47.405670+00:00",
+        "native_version": "1.231.0",
+        "normalized_data_sha256": {
+          "bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+          "bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+          "bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+          "bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+          "bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+          "bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+          "bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+          "bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+        },
+        "metrics": {
+          "terminal_total_usdc": "210113.01240135",
+          "settled_dd_percent": "64.82800384937677839813666215",
+          "coherent_dd_percent": "64.82800384937677839813666215",
+          "liquidations": 0,
+          "native_fees_usdc": "45487.99743083",
+          "signed_funding_usdc": "5133.82952417",
+          "config_hash": "a8934d07f59be7574c581dbec1d5cc93086d43e72008d926d79558635dcd1719",
+          "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+          "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"
+        },
+        "selection_disposition": "REJECT_TOTAL_AND_DRAWDOWN_RESEARCH_ONLY_NOT_LIVE_QUALIFIED",
+        "report": "native-reports/A01C.json",
+        "report_sha256": "6a5453f7c741ecaff9a2a5ca43470d42d79d699f71e12ace8a7de80030728680",
+        "terminal_total": "210113.01240135",
+        "liquidation_count": 0,
+        "settled_DD_percent": "64.82800384937677839813666215",
+        "coherent_DD_percent": "64.82800384937677839813666215"
+      },
+      {
+        "case": "A11C",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "FAIL_TOTAL_AND_DRAWDOWN",
+        "source_commit": "0023034a056d1a806f904c522bfb17ef875afc4c",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-30T21:03:32.126763+00:00",
+        "started_utc": "2026-10-30T21:03:32.178693+00:00",
+        "finished_utc": "2026-10-30T21:12:02.456438+00:00",
+        "native_version": "1.231.0",
+        "normalized_data_sha256": {
+          "bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+          "bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+          "bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+          "bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+          "bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+          "bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+          "bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+          "bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+        },
+        "metrics": {
+          "terminal_total_usdc": "132149.21692132",
+          "settled_dd_percent": "66.46511672624448651194727637",
+          "coherent_dd_percent": "66.46511672624448651194727637",
+          "liquidations": 0,
+          "native_fees_usdc": "29748.30676640",
+          "signed_funding_usdc": "4396.35041173",
+          "config_hash": "d065a1994f2f11115a47c9af70b71e618a5eab2340927ebbe2a13d387dc9640f",
+          "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+          "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"
+        },
+        "selection_disposition": "REJECT_TOTAL_AND_DRAWDOWN_RESEARCH_ONLY_NOT_LIVE_QUALIFIED",
+        "report": "native-reports/A11C.json",
+        "report_sha256": "1b051c5a07449ea61474d08de1c36c9ec9fca79244ae52a1a027098531d1aceb",
+        "terminal_total": "132149.21692132",
+        "liquidation_count": 0,
+        "settled_DD_percent": "66.46511672624448651194727637",
+        "coherent_DD_percent": "66.46511672624448651194727637"
+      },
+      {
+        "case": "A01N",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "FAIL_TOTAL_AND_DRAWDOWN",
+        "source_commit": "9bbde5b569d509247098777913d6ad471e97a361",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-30T21:29:06.427638+00:00",
+        "started_utc": "2026-10-30T21:29:06.491554+00:00",
+        "finished_utc": "2026-10-30T21:36:36.737870+00:00",
+        "native_version": "1.231.0",
+        "normalized_data_sha256": {
+          "bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+          "bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+          "bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+          "bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+          "bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+          "bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+          "bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+          "bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+        },
+        "metrics": {
+          "terminal_total_usdc": "229103.04536684",
+          "settled_dd_percent": "64.90889725542819901111793075",
+          "coherent_dd_percent": "64.90889725542819901111793075",
+          "liquidations": 0,
+          "native_fees_usdc": "53296.97597942",
+          "signed_funding_usdc": "5740.25607424",
+          "config_hash": "c12e168320804f38e70590f4ea995c5177b0117438c4ca931f483fd1b008fac3",
+          "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+          "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"
+        },
+        "selection_disposition": "REJECT_TOTAL_AND_DRAWDOWN_RESEARCH_ONLY_NOT_LIVE_QUALIFIED",
+        "report": "native-reports/A01N.json",
+        "report_sha256": "9b595a8c804b36fe5b106c9ec42f88709a35023d0aa32416b2784d9c10e0edcd",
+        "terminal_total": "229103.04536684",
+        "liquidation_count": 0,
+        "settled_DD_percent": "64.90889725542819901111793075",
+        "coherent_DD_percent": "64.90889725542819901111793075"
+      },
+      {
+        "case": "A11N",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "FAIL_TOTAL_AND_DRAWDOWN",
+        "source_commit": "9bbde5b569d509247098777913d6ad471e97a361",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-30T21:29:06.493564+00:00",
+        "started_utc": "2026-10-30T21:29:06.544248+00:00",
+        "finished_utc": "2026-10-30T21:37:36.769996+00:00",
+        "native_version": "1.231.0",
+        "normalized_data_sha256": {
+          "bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+          "bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+          "bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+          "bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+          "bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+          "bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+          "bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+          "bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+        },
+        "metrics": {
+          "terminal_total_usdc": "153568.61995721",
+          "settled_dd_percent": "66.60949944246702010875326078",
+          "coherent_dd_percent": "66.60949944246702010875326078",
+          "liquidations": 0,
+          "native_fees_usdc": "35443.43714563",
+          "signed_funding_usdc": "5348.45518292",
+          "config_hash": "2e87f645a53170b6fd1fb912eb62544264d80d7675ee7e84a499beb6077e2c8d",
+          "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+          "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"
+        },
+        "selection_disposition": "REJECT_TOTAL_AND_DRAWDOWN_RESEARCH_ONLY_NOT_LIVE_QUALIFIED",
+        "report": "native-reports/A11N.json",
+        "report_sha256": "8a87ec88d8c25fa830d4627c65ae0ceb3452e2e9bb7a56bd1b76f212bca76ada",
+        "terminal_total": "153568.61995721",
+        "liquidation_count": 0,
+        "settled_DD_percent": "66.60949944246702010875326078",
+        "coherent_DD_percent": "66.60949944246702010875326078"
+      },
+      {
+        "case": "PF_STAGE",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "FAIL_TOTAL_AND_DRAWDOWN",
+        "source_commit": "52f8dd6ef3b72f248f23c5bc0ebe9df4ba7a79dd",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-30T22:57:44.679008+00:00",
+        "started_utc": "2026-10-30T22:57:44.732358+00:00",
+        "finished_utc": "2026-10-30T23:11:30.165149+00:00",
+        "native_version": "1.231.0",
+        "normalized_data_sha256": {
+          "bybit-BTCUSDT-funding.parquet": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17",
+          "bybit-SOLUSDT-funding.parquet": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d",
+          "bybit-BTCUSDT-execution-1m.parquet": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88",
+          "bybit-SOLUSDT-execution-1m.parquet": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8",
+          "bybit-SOLUSDT-daily.parquet": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4",
+          "bybit-BTCUSDT-mark-1m.parquet": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285",
+          "bybit-BTCUSDT-daily.parquet": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+          "bybit-SOLUSDT-mark-1m.parquet": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+        },
+        "metrics": {
+          "terminal_total_usdc": "31865.31178316",
+          "settled_dd_percent": "65.37842199671870629148831193",
+          "coherent_dd_percent": "65.37842199671870629148831193",
+          "liquidations": 0,
+          "native_fees_usdc": "18348.01241032",
+          "signed_funding_usdc": "1284.09163253",
+          "config_hash": "962b4044c767f0ff189fdd5e5fc4ca38e74bf52e5da8ad6a110218b9d2c2ae96",
+          "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+          "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc"
+        },
+        "report": "native-reports/PF_STAGE.json",
+        "report_sha256": "626b5ead5a2c573e3b2f88f4b390648e52244841d9a5a4b750fe0288497feeea",
+        "terminal_total": "31865.31178316",
+        "liquidation_count": 0,
+        "settled_DD_percent": "65.37842199671870629148831193",
+        "coherent_DD_percent": "65.37842199671870629148831193"
+      },
+      {
+        "case": "PB_A10",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "NO_GO",
+        "source_commit": "aef51137fa6683cc5acdc46436f54318e8675c39",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-31T00:08:19.103552+00:00",
+        "started_utc": "2026-10-31T00:08:19.107517+00:00",
+        "finished_utc": "2026-10-31T00:17:32.853607+00:00",
+        "native_version": "1.231.0",
+        "metrics": {
+          "TOTAL": "136564.67784581",
+          "liquidation_count": 0,
+          "native_drawdown_fields": {
+            "event_drawdown": {
+              "samples": 2105168,
+              "minimum": {
+                "timestamp_ns": "1725329640000000000",
+                "equity": "8089.16845055",
+                "sequence_id": "9050"
+              },
+              "maximum_loss_below_seed_amount": "1910.83154945",
+              "maximum_loss_below_seed_percent": "19.108315494500",
+              "top3_distinct_excursions": [
+                {
+                  "peak": {
+                    "timestamp_ns": "1783345140000000000",
+                    "equity": "383686.97642244",
+                    "sequence_id": "2912274"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1787119980000000000",
+                    "equity": "128668.94879183",
+                    "sequence_id": "3101299"
+                  },
+                  "recovery": null,
+                  "drawdown_amount": "255018.02763061",
+                  "drawdown_peak_percent": "66.46512477656649124672725779"
+                },
+                {
+                  "peak": {
+                    "timestamp_ns": "1744333200000000000",
+                    "equity": "85362.65289172",
+                    "sequence_id": "959939"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1764340080000000000",
+                    "equity": "35475.50180724",
+                    "sequence_id": "1961430"
+                  },
+                  "recovery": {
+                    "timestamp_ns": "1772187660000000000",
+                    "equity": "85921.10235092",
+                    "sequence_id": "2354033"
+                  },
+                  "drawdown_amount": "49887.15108448",
+                  "drawdown_peak_percent": "58.44142537106991671380516468"
+                },
+                {
+                  "peak": {
+                    "timestamp_ns": "1734767220000000000",
+                    "equity": "34621.09494961",
+                    "sequence_id": "481250"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1735561620000000000",
+                    "equity": "17484.09161579",
+                    "sequence_id": "521029"
+                  },
+                  "recovery": {
+                    "timestamp_ns": "1737484380000000000",
+                    "equity": "34651.68249123",
+                    "sequence_id": "617255"
+                  },
+                  "drawdown_amount": "17137.00333382",
+                  "drawdown_peak_percent": "49.49873295100114983078807704"
+                }
+              ]
+            },
+            "settled_drawdown": {
+              "samples": 1051200,
+              "minimum": {
+                "timestamp_ns": "1725329640000000000",
+                "equity": "8089.16845055"
+              },
+              "maximum_loss_below_seed_amount": "1910.83154945",
+              "maximum_loss_below_seed_percent": "19.108315494500",
+              "top3_distinct_excursions": [
+                {
+                  "peak": {
+                    "timestamp_ns": "1783345140000000000",
+                    "equity": "383686.97642244"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1787119980000000000",
+                    "equity": "128668.94879183"
+                  },
+                  "recovery": null,
+                  "drawdown_amount": "255018.02763061",
+                  "drawdown_peak_percent": "66.46512477656649124672725779"
+                },
+                {
+                  "peak": {
+                    "timestamp_ns": "1744333200000000000",
+                    "equity": "85362.65289172"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1764340080000000000",
+                    "equity": "35475.50180724"
+                  },
+                  "recovery": {
+                    "timestamp_ns": "1772187660000000000",
+                    "equity": "85921.10235092"
+                  },
+                  "drawdown_amount": "49887.15108448",
+                  "drawdown_peak_percent": "58.44142537106991671380516468"
+                },
+                {
+                  "peak": {
+                    "timestamp_ns": "1734767220000000000",
+                    "equity": "34621.09494961"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1735561620000000000",
+                    "equity": "17484.09161579"
+                  },
+                  "recovery": {
+                    "timestamp_ns": "1737484380000000000",
+                    "equity": "34651.68249123"
+                  },
+                  "drawdown_amount": "17137.00333382",
+                  "drawdown_peak_percent": "49.49873295100114983078807704"
+                }
+              ]
+            },
+            "post_boundary_settlement_excluded_from_event_drawdown": true
+          },
+          "native_report_sha256": "dba57f68fc8a200c1376503ec2229369b2298ecc6766dc254eb96cca8f04e7f7"
+        },
+        "report": "native-reports/PB_A10.json",
+        "report_sha256": "dba57f68fc8a200c1376503ec2229369b2298ecc6766dc254eb96cca8f04e7f7",
+        "terminal_total": "136564.67784581",
+        "liquidation_count": 0,
+        "settled_DD_percent": "66.46512477656649124672725779",
+        "coherent_DD_percent": "66.46512477656649124672725779"
+      },
+      {
+        "case": "PB_DEFER",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "NO_GO",
+        "source_commit": "24c6021e4c860443276de620e095558599f8dbff",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-31T00:46:56.975752+00:00",
+        "started_utc": "2026-10-31T00:46:56.979739+00:00",
+        "finished_utc": "2026-10-31T00:57:35.129606+00:00",
+        "native_version": "1.231.0",
+        "metrics": {
+          "TOTAL": "184399.01849249",
+          "liquidation_count": 0,
+          "native_drawdown_fields": {
+            "event_drawdown": {
+              "samples": 2106364,
+              "minimum": {
+                "timestamp_ns": "1725329640000000000",
+                "equity": "8089.16845055",
+                "sequence_id": "9050"
+              },
+              "maximum_loss_below_seed_amount": "1910.83154945",
+              "maximum_loss_below_seed_percent": "19.108315494500",
+              "top3_distinct_excursions": [
+                {
+                  "peak": {
+                    "timestamp_ns": "1783345140000000000",
+                    "equity": "518080.33474009",
+                    "sequence_id": "2913470"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1787119980000000000",
+                    "equity": "173737.66635697",
+                    "sequence_id": "3102495"
+                  },
+                  "recovery": null,
+                  "drawdown_amount": "344342.66838312",
+                  "drawdown_peak_percent": "66.46511077396316720120397310"
+                },
+                {
+                  "peak": {
+                    "timestamp_ns": "1757180760000000000",
+                    "equity": "122831.53669611",
+                    "sequence_id": "1603891"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1764340080000000000",
+                    "equity": "52532.12530522",
+                    "sequence_id": "1962530"
+                  },
+                  "recovery": {
+                    "timestamp_ns": "1772187120000000000",
+                    "equity": "123538.5706968",
+                    "sequence_id": "2355106"
+                  },
+                  "drawdown_amount": "70299.41139089",
+                  "drawdown_peak_percent": "57.23237963293863079034597207"
+                },
+                {
+                  "peak": {
+                    "timestamp_ns": "1778813640000000000",
+                    "equity": "496120.29716264",
+                    "sequence_id": "2686679"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1779336420000000000",
+                    "equity": "318156.34362826",
+                    "sequence_id": "2712875"
+                  },
+                  "recovery": {
+                    "timestamp_ns": "1783339440000000000",
+                    "equity": "496461.37813354",
+                    "sequence_id": "2913182"
+                  },
+                  "drawdown_amount": "177963.95353438",
+                  "drawdown_peak_percent": "35.87112935152483697369874088"
+                }
+              ]
+            },
+            "settled_drawdown": {
+              "samples": 1051200,
+              "minimum": {
+                "timestamp_ns": "1725329640000000000",
+                "equity": "8089.16845055"
+              },
+              "maximum_loss_below_seed_amount": "1910.83154945",
+              "maximum_loss_below_seed_percent": "19.108315494500",
+              "top3_distinct_excursions": [
+                {
+                  "peak": {
+                    "timestamp_ns": "1783345140000000000",
+                    "equity": "518080.33474009"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1787119980000000000",
+                    "equity": "173737.66635697"
+                  },
+                  "recovery": null,
+                  "drawdown_amount": "344342.66838312",
+                  "drawdown_peak_percent": "66.46511077396316720120397310"
+                },
+                {
+                  "peak": {
+                    "timestamp_ns": "1757180760000000000",
+                    "equity": "122831.53669611"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1764340080000000000",
+                    "equity": "52532.12530522"
+                  },
+                  "recovery": {
+                    "timestamp_ns": "1772187120000000000",
+                    "equity": "123538.5706968"
+                  },
+                  "drawdown_amount": "70299.41139089",
+                  "drawdown_peak_percent": "57.23237963293863079034597207"
+                },
+                {
+                  "peak": {
+                    "timestamp_ns": "1778813640000000000",
+                    "equity": "496120.29716264"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1779336420000000000",
+                    "equity": "318156.34362826"
+                  },
+                  "recovery": {
+                    "timestamp_ns": "1783339440000000000",
+                    "equity": "496461.37813354"
+                  },
+                  "drawdown_amount": "177963.95353438",
+                  "drawdown_peak_percent": "35.87112935152483697369874088"
+                }
+              ]
+            },
+            "post_boundary_settlement_excluded_from_event_drawdown": true
+          },
+          "native_report_sha256": "24888bbebbc58fff277d6b7c0aa4b46255cf490690115eb11d907ce56560cf92"
+        },
+        "report": "native-reports/PB_DEFER.json",
+        "report_sha256": "24888bbebbc58fff277d6b7c0aa4b46255cf490690115eb11d907ce56560cf92",
+        "terminal_total": "184399.01849249",
+        "liquidation_count": 0,
+        "settled_DD_percent": "66.46511077396316720120397310",
+        "coherent_DD_percent": "66.46511077396316720120397310"
+      },
+      {
+        "case": "C1_BTC_RESERVE",
+        "status": "COMPLETED",
+        "technical_status": "PASS",
+        "economic_status": "NO_GO",
+        "source_commit": "da2a678bcfbad643ede1e8f249ec22fe5c3fb264",
+        "actual_exit": 0,
+        "registered_utc": "2026-10-31T01:49:53.006673+00:00",
+        "started_utc": "2026-10-31T01:49:53.010894+00:00",
+        "finished_utc": "2026-10-31T01:59:10.095285+00:00",
+        "native_version": "1.231.0",
+        "metrics": {
+          "TOTAL": "44557.39862867",
+          "liquidation_count": 0,
+          "native_drawdown_fields": {
+            "event_drawdown": {
+              "samples": 2105648,
+              "minimum": {
+                "timestamp_ns": "1725329640000000000",
+                "equity": "8089.16845055",
+                "sequence_id": "9050"
+              },
+              "maximum_loss_below_seed_amount": "1910.83154945",
+              "maximum_loss_below_seed_percent": "19.108315494500",
+              "top3_distinct_excursions": [
+                {
+                  "peak": {
+                    "timestamp_ns": "1757180760000000000",
+                    "equity": "122831.53669611",
+                    "sequence_id": "1603891"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1788052740000000000",
+                    "equity": "44557.39862867",
+                    "sequence_id": "3148443"
+                  },
+                  "recovery": null,
+                  "drawdown_amount": "78274.13806744",
+                  "drawdown_peak_percent": "63.72478939272188907441787422"
+                },
+                {
+                  "peak": {
+                    "timestamp_ns": "1743785820000000000",
+                    "equity": "91432.19161075",
+                    "sequence_id": "933034"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1745255220000000000",
+                    "equity": "59151.64051088",
+                    "sequence_id": "1006639"
+                  },
+                  "recovery": {
+                    "timestamp_ns": "1754158740000000000",
+                    "equity": "91475.53101277",
+                    "sequence_id": "1452279"
+                  },
+                  "drawdown_amount": "32280.55109987",
+                  "drawdown_peak_percent": "35.30545481978216478283937064"
+                },
+                {
+                  "peak": {
+                    "timestamp_ns": "1734767220000000000",
+                    "equity": "37454.67306701",
+                    "sequence_id": "481284"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1737039720000000000",
+                    "equity": "24816.13030874",
+                    "sequence_id": "595164"
+                  },
+                  "recovery": {
+                    "timestamp_ns": "1737461760000000000",
+                    "equity": "37709.72289735",
+                    "sequence_id": "616286"
+                  },
+                  "drawdown_amount": "12638.54275827",
+                  "drawdown_peak_percent": "33.74356715291156233251312081"
+                }
+              ]
+            },
+            "settled_drawdown": {
+              "samples": 1051200,
+              "minimum": {
+                "timestamp_ns": "1725329640000000000",
+                "equity": "8089.16845055"
+              },
+              "maximum_loss_below_seed_amount": "1910.83154945",
+              "maximum_loss_below_seed_percent": "19.108315494500",
+              "top3_distinct_excursions": [
+                {
+                  "peak": {
+                    "timestamp_ns": "1757180760000000000",
+                    "equity": "122831.53669611"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1788052740000000000",
+                    "equity": "44557.39862867"
+                  },
+                  "recovery": null,
+                  "drawdown_amount": "78274.13806744",
+                  "drawdown_peak_percent": "63.72478939272188907441787422"
+                },
+                {
+                  "peak": {
+                    "timestamp_ns": "1743785820000000000",
+                    "equity": "91432.19161075"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1745255220000000000",
+                    "equity": "59151.64051088"
+                  },
+                  "recovery": {
+                    "timestamp_ns": "1754158740000000000",
+                    "equity": "91475.53101277"
+                  },
+                  "drawdown_amount": "32280.55109987",
+                  "drawdown_peak_percent": "35.30545481978216478283937064"
+                },
+                {
+                  "peak": {
+                    "timestamp_ns": "1734767220000000000",
+                    "equity": "37454.67306701"
+                  },
+                  "trough": {
+                    "timestamp_ns": "1737039720000000000",
+                    "equity": "24816.13030874"
+                  },
+                  "recovery": {
+                    "timestamp_ns": "1737461760000000000",
+                    "equity": "37659.71426389"
+                  },
+                  "drawdown_amount": "12638.54275827",
+                  "drawdown_peak_percent": "33.74356715291156233251312081"
+                }
+              ]
+            },
+            "post_boundary_settlement_excluded_from_event_drawdown": true
+          },
+          "native_report_sha256": "dae109e8593c0f88512a901a99f16998422cc9fff3f254047a763a32ecfa7504"
+        },
+        "report": "native-reports/C1_BTC_RESERVE.json",
+        "report_sha256": "dae109e8593c0f88512a901a99f16998422cc9fff3f254047a763a32ecfa7504",
+        "terminal_total": "44557.39862867",
+        "liquidation_count": 0,
+        "settled_DD_percent": "63.72478939272188907441787422",
+        "coherent_DD_percent": "63.72478939272188907441787422"
+      },
+      {
+        "case": "C1_BTC_RESERVE_ADMISSION",
+        "status": "FAILED",
+        "technical_status": "FAIL",
+        "economic_status": "UNQUALIFIED_AS_RUN_TECH_FAIL",
+        "source_commit": "65ba7cacb0f192b25df638ecf3dca9dd5f270789",
+        "actual_exit": 1,
+        "registered_utc": "2026-10-31T02:34:41.681774+00:00",
+        "started_utc": "2026-10-31T02:34:41.685667+00:00",
+        "finished_utc": "2026-10-31T02:43:11.518113+00:00",
+        "native_version": "1.231.0",
+        "report": "native-reports/C1_BTC_RESERVE_ADMISSION.json",
+        "report_sha256": "63fbe12f708127ac4f1a945386d2f50b72f288de6a1b8bcf0292400746d7a5bd",
+        "terminal_total": "55680.99453701",
+        "liquidation_count": 0,
+        "settled_DD_percent": "55.09278937905130800732308666",
+        "coherent_DD_percent": "55.09278937905130800732308666",
+        "report_only_recovery": {
+          "status": "REPORT_ONLY_RECOVERED_ACCOUNTING_NOT_AS_RUN_WRAPPER_PASS",
+          "economic_status": "NO_GO_TOTAL_AND_BOTH_DD",
+          "engine_constructions": 0,
+          "report_sha256": "63fbe12f708127ac4f1a945386d2f50b72f288de6a1b8bcf0292400746d7a5bd",
+          "receipt_sha256": "0739be14dc9d07a7347602664bb53a8d374e52d56a3132a897136eab2c166d08",
+          "checks": {
+            "one_engine": true,
+            "full_feed": true,
+            "full_24months": true,
+            "coherent_end": true,
+            "settled_receipts": true,
+            "observer": true,
+            "native_cash": true,
+            "USDC": true,
+            "DP_off": true,
+            "terminal_flat": true,
+            "terminal_orders": true
+          }
+        },
+        "as_run_failure_preserved": true
+      }
+    ],
+    "completed_attempt_count": 15,
+    "accounting_normal_pass": 14,
+    "original_technical_failure_separately_recovered": 1
+  },
+  "additional_Q0_L1": "Owner-approved additional diagnostic is separate, not part of these 25 archived results."
+}
