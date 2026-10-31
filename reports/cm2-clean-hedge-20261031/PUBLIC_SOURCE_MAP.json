@@ -1,0 +1,2867 @@
+{
+  "public_base": "75ffc9c69e9d79c4da4cd0614634a3eeba48d716",
+  "public_readme_sha256": "758e225d24d5017d963ac68c96ed492bd9fdcf9a78fc17ab2b77fe90f606a5c8",
+  "qualified_coverage_source": {
+    "path": "reports/cm2-clean-hedge-20261031/qualified-reference/factorial_full_runner.py",
+    "scope": "AST_COVERAGE_EXTRACTION_ONLY",
+    "sha256": "58b9a047ceb6627108e3bac52a957b231f405fe12b8a6bb1684e3582599682df"
+  },
+  "report_tool_files": {
+    "424739af": {
+      "reports/cm2-clean-hedge-20261031/aggregate/README.md": {
+        "blob": "0b2e96b6b1ce2b1cbed264e04846ebdec91f152f",
+        "bytes": 4207,
+        "mode": "100644"
+      },
+      "reports/cm2-clean-hedge-20261031/aggregate/merge_saved.py": {
+        "blob": "8e0fea2831bc63e64671991b182410cbace0bf43",
+        "bytes": 9251,
+        "mode": "100644"
+      },
+      "reports/cm2-clean-hedge-20261031/aggregate/test_merge_saved.py": {
+        "blob": "cea183d8f7c5c077ad87e0d691f5602449a07066",
+        "bytes": 6135,
+        "mode": "100644"
+      }
+    },
+    "617e1502": {
+      "reports/cm2-clean-hedge-20261031/native-attribution/README.md": {
+        "blob": "a29ad28eb2f3e8ff02f38f164d9cf0e5ffc45db5",
+        "bytes": 6411,
+        "mode": "100644"
+      },
+      "reports/cm2-clean-hedge-20261031/native-attribution/native_attribution.py": {
+        "blob": "3953dff262d1b6085332c9df3e0abf47e9211f8e",
+        "bytes": 19478,
+        "mode": "100644"
+      },
+      "reports/cm2-clean-hedge-20261031/native-attribution/test_native_attribution.py": {
+        "blob": "ecaf5b66a5ff747c905cacf7c59bc873afffd0f8",
+        "bytes": 10213,
+        "mode": "100644"
+      }
+    }
+  },
+  "report_tool_source_commits": {
+    "aggregate": "424739af85d440c4858381e5cb00fe1b87b25a93",
+    "native-attribution": "617e150294db6af5516b7bac037a94fb103985f2"
+  },
+  "results": "NOT_INCLUDED_IN_SOURCE_SNAPSHOTS",
+  "schema": "cm2-public-source-map-v1",
+  "versions": {
+    "BROAD_004e": {
+      "files": {
+        "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": {
+          "blob": "2f112b5f4adfb09d45d58b853a238ea4164ebc5f",
+          "bytes": 151995,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": {
+          "blob": "8f2df11726b34284d50ea633684a3051bb1bf38c",
+          "bytes": 142017,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "reports/cm2-clean-hedge-20261031/BATCH_CONTRACT.md": {
+          "blob": "bf01ea3ce105ac8ba1966c2f131739a43c55983f",
+          "bytes": 6616,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/BOUNDED_CHECKPOINT.md": {
+          "blob": "1c5ff41daa0d03876b9b47f5f06c5507b80aec2f",
+          "bytes": 5468,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/CHILD_ADMISSION_FIX.md": {
+          "blob": "4db270e554f93492abf02bbba3303aa06390d424",
+          "bytes": 4516,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/COMMITTED_WM_QUALIFICATION.md": {
+          "blob": "96c3f63b26f4af695eb468bc7a435802776659be",
+          "bytes": 4778,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/COMMITTED_WM_TEST_OUTPUT.txt": {
+          "blob": "ba3b9d9cb98707b389c8bd85aade41dce2924d11",
+          "bytes": 179,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/COMMITTED_WM_TEST_SUMMARY.json": {
+          "blob": "1e901f5ba090b80f29890bf67f04172dc962db61",
+          "bytes": 1143,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/DESIGN.md": {
+          "blob": "2bb4b220ebee21306890afdc4720842b7d546ab2",
+          "bytes": 5631,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E01_REMEDIATION.md": {
+          "blob": "53615a404ad5e1847fc6631af5b7222a611ca17e",
+          "bytes": 2021,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E01_REMEDIATION_TEST_SUMMARY.json": {
+          "blob": "cdcc9a51e1e6c68ad348a269d9e5273913362808",
+          "bytes": 1477,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E04_FAILURE_CAUSE.md": {
+          "blob": "11d78c0c54bb6759f52d1ad0a1ec738b16fe9903",
+          "bytes": 3234,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E04_FIXTURE_REMEDIATION.json": {
+          "blob": "cef1842166a39aaf4e2de09ae5f82d7fac4f80c5",
+          "bytes": 1462,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E04_SOURCE_CHECKPOINT.json": {
+          "blob": "91b9bb06ef1885fbebe39e491c3c49ec4cdea06e",
+          "bytes": 2941,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E04_TIMELINE_REMEDIATION.json": {
+          "blob": "3dec2d93157487c233d7dd28c047918ac3770e6a",
+          "bytes": 1038,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E04_TIMELINE_REMEDIATION.md": {
+          "blob": "5aebece576abec5fcec6e16f176e07afc19fba96",
+          "bytes": 1952,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/ENGINEERING_CONTRACT.md": {
+          "blob": "db76a61f1eef535385e18acf4367ae6df597abbf",
+          "bytes": 3198,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FEATURE_CSE_PARITY_TIMING.json": {
+          "blob": "5fa9af87ebd4cec979adc2bb5c9d7eb364eed817",
+          "bytes": 6079,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FINAL_PRE_E02_PURE_TEST_OUTPUT.txt": {
+          "blob": "7196c204fc7b6db9495e1d750757fb9211491663",
+          "bytes": 99,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FINAL_PRE_E02_PURE_TEST_SUMMARY.json": {
+          "blob": "1e09c8e6c1ce703011505dd2e771ecd159d3ecf6",
+          "bytes": 712,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FULL_API_CORRECTION_TEST_OUTPUT.txt": {
+          "blob": "153ba43da121031fdda71d2cb7dbfbe49ac20d3b",
+          "bytes": 99,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FULL_API_CORRECTION_TEST_SUMMARY.json": {
+          "blob": "50aec84fcbd3b150b6e489121bbf461b64edfcc9",
+          "bytes": 927,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FULL_API_PREFLIGHT_CORRECTION.md": {
+          "blob": "10b2e31b6d0adfebe8773741b6dacd272404e88e",
+          "bytes": 3118,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FUNDING_CACHE.md": {
+          "blob": "4b324a4743a38466f00a8eab4f2365b85faa5547",
+          "bytes": 2394,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FUNDING_CACHE_PARITY_PERF.json": {
+          "blob": "598c5511f5db22a4586aec4e76e512e014ba11b1",
+          "bytes": 1522,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/HARVEST_EXECUTION_CONTRACT.md": {
+          "blob": "1449ab0d286101840dddba2e010cfcff2e8707be",
+          "bytes": 2306,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/NOVELTY_AND_REUSE.md": {
+          "blob": "a6f86551107b204f5b26213b2f5255598f2701fd",
+          "bytes": 1942,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PARAMETER_SPACE.json": {
+          "blob": "2be98c1ece0ec8cb071e405531acf0386fb1b11a",
+          "bytes": 3733,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/POST_MAINTENANCE_REGRESSION.json": {
+          "blob": "f89805bfc3b24ef964f7feb0ac5d33c3b1be2945",
+          "bytes": 981,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_INITIAL_COLLECTION_FAILURE.json": {
+          "blob": "05788e5ca61d074f35b2437622685ec9f2c72e07",
+          "bytes": 405,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_INITIAL_COLLECTION_FAILURE.txt": {
+          "blob": "d2dd4701eaeac191576bc8d9d4f72369dd207077",
+          "bytes": 1630,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_OUTPUT.txt": {
+          "blob": "c4f93d481e47adfaf87b10121629ca571cbc6697",
+          "bytes": 99,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_SUMMARY.json": {
+          "blob": "5f3dafc4943d6931694a9aef6bb4fd2f7c142da0",
+          "bytes": 568,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/REPORTING_STATE_ONLY_EQUIVALENCE.json": {
+          "blob": "03a6fe209d233d6dec428eb7892d057bad1e2e7e",
+          "bytes": 1453,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/STOP_PURPOSE_FIX_PROOF.json": {
+          "blob": "fc53fc321126102f1906f4abbc1060c78ba7392e",
+          "bytes": 2106,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/README.md": {
+          "blob": "d2fb8cbf297363d611f4d67c67f8b6883c3de94f",
+          "bytes": 5746,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/TEST_OUTPUT.txt": {
+          "blob": "ffe401bcfd2bbb8939917d3bc6d9308df5680b81",
+          "bytes": 98,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/TEST_SUMMARY.json": {
+          "blob": "d3bf8c8a5117edeccc0de0123733aff6ef536ff7",
+          "bytes": 799,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/manifest.example.json": {
+          "blob": "6f4242a32120ac52f90afb388d278734f1a3ac87",
+          "bytes": 2375,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/manifest.schema.json": {
+          "blob": "cfc0c9c537df477b619dd5094fd273e5072ba207",
+          "bytes": 1803,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/saved_cm2_analyze.py": {
+          "blob": "0e1cf3f7bc2204fa4cee09ad8ef894de778c607c",
+          "bytes": 35243,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/test_saved_cm2_analyze.py": {
+          "blob": "af24d8d5f36f59b62fb63b34e989a333b1ff0386",
+          "bytes": 12155,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/diagnostics/README.md": {
+          "blob": "657bd732cf8e8eed7a699906d74c4264248ef187",
+          "bytes": 6514,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/diagnostics/causal_hedge.py": {
+          "blob": "4345535d8b16008331f3c5a80e4d1c2747e0d699",
+          "bytes": 16049,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/diagnostics/test_causal_hedge.py": {
+          "blob": "7c12c6789e11607c89c7b1b5bda0c5a4456a6e49",
+          "bytes": 5294,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/engineering-request.example.json": {
+          "blob": "acbc8aa37605f517e1f268fa53de516b9a94e0d8",
+          "bytes": 1104,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/HANDOFF.md": {
+          "blob": "86c40dce4ffb2f1ee0040c322ea8cd5b32aec29e",
+          "bytes": 4169,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/INTEGRATION_CHECKS.json": {
+          "blob": "f09092fc487a2d7f54f014aa75086eed207e3a83",
+          "bytes": 630,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/R1_ANALYZER_MANIFEST.example.json": {
+          "blob": "ea469d14ea776def4adaa308abd5f93b7632bf5b",
+          "bytes": 1071,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/TWO_MAC_CONTROLS_BLOCK.example.json": {
+          "blob": "05183a7fccb291c1f1325b7df95f66fc85ae2b97",
+          "bytes": 1227,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/TWO_MAC_CONTROLS_BUDGET.example.json": {
+          "blob": "02c3632c83515c3423f656d0e7b0819f1bd31d72",
+          "bytes": 196,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/TWO_MAC_CONTROLS_RECEIPT.example.json": {
+          "blob": "d9be347b2233927f144c05c3493092251be5bec0",
+          "bytes": 299,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/request.schema.json": {
+          "blob": "ad80bb3dcb68950a14c798099a359743addbc18c",
+          "bytes": 737,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/FROZEN64.json": {
+          "blob": "51ec1d0644bfb363be6150bdbc91768fcb7a8331",
+          "bytes": 45998,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/MANIFEST.json": {
+          "blob": "d3e20d81d367af569f704567f8801956d1e36178",
+          "bytes": 1080,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/README.md": {
+          "blob": "0327fd5174ff71d6e2ae6287d87256eea842fe88",
+          "bytes": 2958,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/SPACE.json": {
+          "blob": "a63350096e376563cb43586f824b5a747c91a90b",
+          "bytes": 2867,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/generate.py": {
+          "blob": "7c3003613a03032784c7e61e47c0486da7f13ac0",
+          "bytes": 4360,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/test_frozen.py": {
+          "blob": "b2ddd380ba90d0fe8bf6a5bf53237b4874e16420",
+          "bytes": 2301,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/domain/deposit_protection.py": {
+          "blob": "fed8dba4dd81935a5c218c8abcd43aec0b156281",
+          "bytes": 8050,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/domain/wave_overlay.py": {
+          "blob": "682016abdae8115a31ee3382af9c265efa34ff9b",
+          "bytes": 36608,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ledger/journal.py": {
+          "blob": "5d22e8d087ee08e1f674d6198ce4e518c39102a4",
+          "bytes": 7503,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/ops/hl_info_receipt.py": {
+          "blob": "fa0f7ef446667ef76564c21d9cc6d31532626af3",
+          "bytes": 21976,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ops/hl_live_money.py": {
+          "blob": "68c5aa08b2bdd9bce18d4a23edb232efdb90f48f",
+          "bytes": 28943,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ops/hl_unified_account.py": {
+          "blob": "02d68710aef6270e81056f1979473d922feaf97d",
+          "bytes": 5202,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ops/hl_unified_instruments.py": {
+          "blob": "5ccc00ff421dae3261ff563c062f3da0e14c4855",
+          "bytes": 4618,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/ops/stage_g_config.py": {
+          "blob": "96dd3dca123a8cfd19e8a116a4bb5d8f71b7b082",
+          "bytes": 8963,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/__init__.py": {
+          "blob": "08c42ed98d64455b710d05e398e3d75bebfd97ce",
+          "bytes": 68,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/cm2_batch.py": {
+          "blob": "7e377d1aa9baa5ce33d76f2a0d020b49037e6aa8",
+          "bytes": 13248,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_committed_validation.py": {
+          "blob": "a427c2a60b1cb59474f7795e1ac983b339e95dbf",
+          "bytes": 19357,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_fixture.py": {
+          "blob": "ba1072565cef3d3e5fb1e24699dc34055b2f03d6",
+          "bytes": 13956,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_fixture_e04.py": {
+          "blob": "39e4616ce95e47aa6d265da620e232967ad9f3c6",
+          "bytes": 38348,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_fixture_validation.py": {
+          "blob": "64ebaaac95aed8682f640271e19d4a2485b77645",
+          "bytes": 6202,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_funding_reader.py": {
+          "blob": "bea50a1ad274d63f8e9a16e8c49dc243b6819419",
+          "bytes": 2600,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_runner.py": {
+          "blob": "fff40e73fb2ff24843f3d44735a95dceb9955c43",
+          "bytes": 27436,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/current_hl_profile.py": {
+          "blob": "196890f1c28b2160acd915a1c1d65069e6e1f11e",
+          "bytes": 3706,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/effective_config.py": {
+          "blob": "1640188055931936f81ff7cf751c1527299766e4",
+          "bytes": 985,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/job_protocol.py": {
+          "blob": "db72dba4c2e0f7bce3e7b6271f5c17a6051fb821",
+          "bytes": 2020,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/minute_risk.py": {
+          "blob": "2dcc7058bb7ed7236b09f970b91a0b7b88570df8",
+          "bytes": 22187,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_accounting.py": {
+          "blob": "47edf6984c8b91fe86acb9f77fcca275b344b81a",
+          "bytes": 2253,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_audit.py": {
+          "blob": "77640daa93b48d6d547e420835a50f4baf4978d0",
+          "bytes": 14750,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/native_baseline.py": {
+          "blob": "d23a5db95279fda08e9e19335b06772e380332ba",
+          "bytes": 138022,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_fixture.py": {
+          "blob": "bab35d9d5902820d19300027ad9d2ad1faa2872e",
+          "bytes": 25524,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_full_fill.py": {
+          "blob": "4af08a51a41debf70cdb5ea187a76db237178ba2",
+          "bytes": 2140,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/optimizer_job.py": {
+          "blob": "cc5ab86beefd524ce4a6910dd301a49f5a68abbc",
+          "bytes": 11135,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/paired_observer.py": {
+          "blob": "5e02a6a628597d2d0ad04433085af0600f65609a",
+          "bytes": 15656,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/qualification_policy.py": {
+          "blob": "1ca291dd5fd629c86d87a958814c55a1e8616d18",
+          "bytes": 5963,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/alpha_cushion.py": {
+          "blob": "a0011e3888045a66364c860228f098157a6f4678",
+          "bytes": 17556,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/c1_inputs.py": {
+          "blob": "836ea347bd9821d1c53a595e227e123d2be25c3e",
+          "bytes": 1820,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/carry_pair.py": {
+          "blob": "976cb6db9abc8387d29a5465baf22ba34b0fef7a",
+          "bytes": 15700,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/cm2_checkpoint.py": {
+          "blob": "48dcc31aefb2d9dee4f4fac0da2262b4d60bc27a",
+          "bytes": 3588,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/cm2_execution.py": {
+          "blob": "503c80845e9d44c0a04beb63af1c9ff982f7e054",
+          "bytes": 4325,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/cm2_native.py": {
+          "blob": "ac471aa702fe3727ad0b8626c7c7742232ee1f4f",
+          "bytes": 44296,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/cm2_policy.py": {
+          "blob": "060dda8e305368bbec507ac1b43a385b3026b6b1",
+          "bytes": 22543,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/conditional_hedge.py": {
+          "blob": "2879de9dfca9545b74bb0d47fc74cd1179e95d1f",
+          "bytes": 18812,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/execution_config.py": {
+          "blob": "46776f7529956d69e1dcac9813ff7fca0bc62c1b",
+          "bytes": 387,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/hedge_band.py": {
+          "blob": "959a9df997d4ef4123da3db14f8fe12fd66ee3b8",
+          "bytes": 13530,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/immediate_insurance.py": {
+          "blob": "04504028ec42b21581945ef3fee165d03e82cb7a",
+          "bytes": 13488,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/next_band.py": {
+          "blob": "1c011b27d8491d2b1ee9da75c23cf3789071e1ac",
+          "bytes": 18805,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/residual_recovery.py": {
+          "blob": "f07de66bd3bcdd3bf8a228185a10ca07888f75c9",
+          "bytes": 30754,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/risk_first_sol.py": {
+          "blob": "09038fd2546cfeba3fe15764248bb5926b764b83",
+          "bytes": 35382,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/sol_capital_staging.py": {
+          "blob": "61d04cd58b0f78429a583faa94142c21004431d4",
+          "bytes": 913,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/split_cover.py": {
+          "blob": "c0bd25330c0b3c54ee4348b9aa3372036ae4c1f4",
+          "bytes": 22556,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/wave_overlay.py": {
+          "blob": "200043d7eb3e29f50018475738ddf70cca04b17a",
+          "bytes": 208169,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/venues/bybit_profile.py": {
+          "blob": "e7a44859e9917158337f34f9e0cb8aee63771fb5",
+          "bytes": 2690,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/venues/effective_fees.py": {
+          "blob": "461aef0160df96c13f63e20a218843e05675d6ee",
+          "bytes": 999,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/venues/hyperliquid_profile.py": {
+          "blob": "fa9ccea5f8699d6e4c96b8a35dcccd6bab36266a",
+          "bytes": 8348,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/margin_policy.py": {
+          "blob": "dd1b99d7ac8267bb11d5ce964adbc90dd3e4e3bd",
+          "bytes": 3217,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/marks.py": {
+          "blob": "a36d0b94f02bcb7be60deef6fa06a25a397d0f46",
+          "bytes": 1669,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/production_preflight.py": {
+          "blob": "90a3562127904939c5e63a9c500b0523fdce369a",
+          "bytes": 5504,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/signals.py": {
+          "blob": "4dc92ec0f4c156e220bba00c0932fc4963fb821d",
+          "bytes": 1417,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/pyproject.toml": {
+          "blob": "7ef64ad6de8e24882701b03efc4bcb215b01e93c",
+          "bytes": 473,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/tests/cm2_feature_parity_probe.py": {
+          "blob": "2fcc81bab563eb64c0973b79b64ed45344e1504a",
+          "bytes": 3968,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/fixtures/hl-current-20261029/execution-profile-inputs.json": {
+          "blob": "5f2ab71b4d34e3aa9959112b0c0202499022bff7",
+          "bytes": 994,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/fixtures/hl-current-20261029/hyperliquid-meta-BTC-SOL-20261029.json": {
+          "blob": "92d69cf557d49aafde20feeacae4b0e9f55308a7",
+          "bytes": 854,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/fixtures/hl-current-20261029/native-btc-sol-raw.json": {
+          "blob": "c4832ff139cda1d9e6a2d99a7f7a96bbc9b8a9bf",
+          "bytes": 1550,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_batch.py": {
+          "blob": "d03142157be6a24095361f9bf4a48c55c9943a7e",
+          "bytes": 7157,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_boundary.py": {
+          "blob": "c4b54d232efed9cde94ad9534040042c5dc09cec",
+          "bytes": 6412,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_checkpoint.py": {
+          "blob": "3d194d9abe5a9f0f79a1413c3ead6e99d25ca95e",
+          "bytes": 10020,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_child_admission.py": {
+          "blob": "8d5557c11ff190b17bc1faa46d2f254b6b4ec4fb",
+          "bytes": 16841,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_committed_validation.py": {
+          "blob": "3822cbf1dcbc12599387da6367d5e47cd5cfac2c",
+          "bytes": 10162,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_boundary.py": {
+          "blob": "b2a8bc8a53961ab5584d2a6a46973608c428b6fc",
+          "bytes": 3170,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_e04.py": {
+          "blob": "b2d95cfe46dbcb11af2dcca71e32fd6b2bef4125",
+          "bytes": 7306,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_e04_failure.py": {
+          "blob": "573f76a4fa3880651f2363d6b0286e7842dd265f",
+          "bytes": 9198,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_validation.py": {
+          "blob": "53f69b955826cecefe2771273a582b9158816026",
+          "bytes": 4471,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_full_api_probe.py": {
+          "blob": "0372be23975f265af3ff66b2b41ea9497e2ba342",
+          "bytes": 6426,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_funding_reader.py": {
+          "blob": "5f3970ab1c737293749ab6c28b710abee3a53c64",
+          "bytes": 7663,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_harvest_execution.py": {
+          "blob": "69fc9dad5af38328efcb6cba2285187a519cd516",
+          "bytes": 6414,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_harvest_reporting.py": {
+          "blob": "5a4bad5cebfb22d82a0d9f2ea8bec8475f86ceba",
+          "bytes": 2406,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_policy.py": {
+          "blob": "081ffb42d9646f21b136aa5d762756241a19f62b",
+          "bytes": 14749,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_report_precision.py": {
+          "blob": "2006810c9db502b968ba9c80d45f2d6eb2472497",
+          "bytes": 3685,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_stop_purpose.py": {
+          "blob": "4c06096732a7f12a94752562513071a86d42d3fd",
+          "bytes": 5743,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/uv.lock": {
+          "blob": "abd811b3f7845d4db6bf41b739866f0caacebcad",
+          "bytes": 43993,
+          "mode": "100644",
+          "same_public_base_blob": true
+        }
+      },
+      "original_commit": "004eecf4b1f0da1b20dc50a3c691d24e3d2928da",
+      "public_snapshot_commit": "453d115a127a90620a21695162a40ab4a52e0f70"
+    },
+    "CONTROLS_3b": {
+      "files": {
+        "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": {
+          "blob": "2f112b5f4adfb09d45d58b853a238ea4164ebc5f",
+          "bytes": 151995,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": {
+          "blob": "8f2df11726b34284d50ea633684a3051bb1bf38c",
+          "bytes": 142017,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "reports/cm2-clean-hedge-20261031/BATCH_CONTRACT.md": {
+          "blob": "bf01ea3ce105ac8ba1966c2f131739a43c55983f",
+          "bytes": 6616,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/BOUNDED_CHECKPOINT.md": {
+          "blob": "1c5ff41daa0d03876b9b47f5f06c5507b80aec2f",
+          "bytes": 5468,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/CHILD_ADMISSION_FIX.md": {
+          "blob": "4db270e554f93492abf02bbba3303aa06390d424",
+          "bytes": 4516,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/COMMITTED_WM_QUALIFICATION.md": {
+          "blob": "96c3f63b26f4af695eb468bc7a435802776659be",
+          "bytes": 4778,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/COMMITTED_WM_TEST_OUTPUT.txt": {
+          "blob": "ba3b9d9cb98707b389c8bd85aade41dce2924d11",
+          "bytes": 179,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/COMMITTED_WM_TEST_SUMMARY.json": {
+          "blob": "1e901f5ba090b80f29890bf67f04172dc962db61",
+          "bytes": 1143,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/DESIGN.md": {
+          "blob": "2bb4b220ebee21306890afdc4720842b7d546ab2",
+          "bytes": 5631,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E01_REMEDIATION.md": {
+          "blob": "53615a404ad5e1847fc6631af5b7222a611ca17e",
+          "bytes": 2021,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E01_REMEDIATION_TEST_SUMMARY.json": {
+          "blob": "cdcc9a51e1e6c68ad348a269d9e5273913362808",
+          "bytes": 1477,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E04_SOURCE_CHECKPOINT.json": {
+          "blob": "91b9bb06ef1885fbebe39e491c3c49ec4cdea06e",
+          "bytes": 2941,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/ENGINEERING_CONTRACT.md": {
+          "blob": "db76a61f1eef535385e18acf4367ae6df597abbf",
+          "bytes": 3198,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FEATURE_CSE_PARITY_TIMING.json": {
+          "blob": "5fa9af87ebd4cec979adc2bb5c9d7eb364eed817",
+          "bytes": 6079,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FINAL_PRE_E02_PURE_TEST_OUTPUT.txt": {
+          "blob": "7196c204fc7b6db9495e1d750757fb9211491663",
+          "bytes": 99,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FINAL_PRE_E02_PURE_TEST_SUMMARY.json": {
+          "blob": "1e09c8e6c1ce703011505dd2e771ecd159d3ecf6",
+          "bytes": 712,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FULL_API_CORRECTION_TEST_OUTPUT.txt": {
+          "blob": "153ba43da121031fdda71d2cb7dbfbe49ac20d3b",
+          "bytes": 99,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FULL_API_CORRECTION_TEST_SUMMARY.json": {
+          "blob": "50aec84fcbd3b150b6e489121bbf461b64edfcc9",
+          "bytes": 927,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FULL_API_PREFLIGHT_CORRECTION.md": {
+          "blob": "10b2e31b6d0adfebe8773741b6dacd272404e88e",
+          "bytes": 3118,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FUNDING_CACHE.md": {
+          "blob": "4b324a4743a38466f00a8eab4f2365b85faa5547",
+          "bytes": 2394,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FUNDING_CACHE_PARITY_PERF.json": {
+          "blob": "598c5511f5db22a4586aec4e76e512e014ba11b1",
+          "bytes": 1522,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/HARVEST_EXECUTION_CONTRACT.md": {
+          "blob": "1449ab0d286101840dddba2e010cfcff2e8707be",
+          "bytes": 2306,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/NOVELTY_AND_REUSE.md": {
+          "blob": "a6f86551107b204f5b26213b2f5255598f2701fd",
+          "bytes": 1942,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PARAMETER_SPACE.json": {
+          "blob": "2be98c1ece0ec8cb071e405531acf0386fb1b11a",
+          "bytes": 3733,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/POST_MAINTENANCE_REGRESSION.json": {
+          "blob": "f89805bfc3b24ef964f7feb0ac5d33c3b1be2945",
+          "bytes": 981,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_INITIAL_COLLECTION_FAILURE.json": {
+          "blob": "05788e5ca61d074f35b2437622685ec9f2c72e07",
+          "bytes": 405,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_INITIAL_COLLECTION_FAILURE.txt": {
+          "blob": "d2dd4701eaeac191576bc8d9d4f72369dd207077",
+          "bytes": 1630,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_OUTPUT.txt": {
+          "blob": "c4f93d481e47adfaf87b10121629ca571cbc6697",
+          "bytes": 99,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_SUMMARY.json": {
+          "blob": "5f3dafc4943d6931694a9aef6bb4fd2f7c142da0",
+          "bytes": 568,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/README.md": {
+          "blob": "d2fb8cbf297363d611f4d67c67f8b6883c3de94f",
+          "bytes": 5746,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/TEST_OUTPUT.txt": {
+          "blob": "ffe401bcfd2bbb8939917d3bc6d9308df5680b81",
+          "bytes": 98,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/TEST_SUMMARY.json": {
+          "blob": "d3bf8c8a5117edeccc0de0123733aff6ef536ff7",
+          "bytes": 799,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/manifest.example.json": {
+          "blob": "6f4242a32120ac52f90afb388d278734f1a3ac87",
+          "bytes": 2375,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/manifest.schema.json": {
+          "blob": "cfc0c9c537df477b619dd5094fd273e5072ba207",
+          "bytes": 1803,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/saved_cm2_analyze.py": {
+          "blob": "0e1cf3f7bc2204fa4cee09ad8ef894de778c607c",
+          "bytes": 35243,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/test_saved_cm2_analyze.py": {
+          "blob": "af24d8d5f36f59b62fb63b34e989a333b1ff0386",
+          "bytes": 12155,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/diagnostics/README.md": {
+          "blob": "657bd732cf8e8eed7a699906d74c4264248ef187",
+          "bytes": 6514,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/diagnostics/causal_hedge.py": {
+          "blob": "4345535d8b16008331f3c5a80e4d1c2747e0d699",
+          "bytes": 16049,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/diagnostics/test_causal_hedge.py": {
+          "blob": "7c12c6789e11607c89c7b1b5bda0c5a4456a6e49",
+          "bytes": 5294,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/engineering-request.example.json": {
+          "blob": "acbc8aa37605f517e1f268fa53de516b9a94e0d8",
+          "bytes": 1104,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/HANDOFF.md": {
+          "blob": "86c40dce4ffb2f1ee0040c322ea8cd5b32aec29e",
+          "bytes": 4169,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/INTEGRATION_CHECKS.json": {
+          "blob": "f09092fc487a2d7f54f014aa75086eed207e3a83",
+          "bytes": 630,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/R1_ANALYZER_MANIFEST.example.json": {
+          "blob": "ea469d14ea776def4adaa308abd5f93b7632bf5b",
+          "bytes": 1071,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/TWO_MAC_CONTROLS_BLOCK.example.json": {
+          "blob": "05183a7fccb291c1f1325b7df95f66fc85ae2b97",
+          "bytes": 1227,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/TWO_MAC_CONTROLS_BUDGET.example.json": {
+          "blob": "02c3632c83515c3423f656d0e7b0819f1bd31d72",
+          "bytes": 196,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/TWO_MAC_CONTROLS_RECEIPT.example.json": {
+          "blob": "d9be347b2233927f144c05c3493092251be5bec0",
+          "bytes": 299,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/request.schema.json": {
+          "blob": "ad80bb3dcb68950a14c798099a359743addbc18c",
+          "bytes": 737,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/FROZEN64.json": {
+          "blob": "51ec1d0644bfb363be6150bdbc91768fcb7a8331",
+          "bytes": 45998,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/MANIFEST.json": {
+          "blob": "d3e20d81d367af569f704567f8801956d1e36178",
+          "bytes": 1080,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/README.md": {
+          "blob": "0327fd5174ff71d6e2ae6287d87256eea842fe88",
+          "bytes": 2958,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/SPACE.json": {
+          "blob": "a63350096e376563cb43586f824b5a747c91a90b",
+          "bytes": 2867,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/generate.py": {
+          "blob": "7c3003613a03032784c7e61e47c0486da7f13ac0",
+          "bytes": 4360,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/test_frozen.py": {
+          "blob": "b2ddd380ba90d0fe8bf6a5bf53237b4874e16420",
+          "bytes": 2301,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/domain/deposit_protection.py": {
+          "blob": "fed8dba4dd81935a5c218c8abcd43aec0b156281",
+          "bytes": 8050,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/domain/wave_overlay.py": {
+          "blob": "682016abdae8115a31ee3382af9c265efa34ff9b",
+          "bytes": 36608,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ledger/journal.py": {
+          "blob": "5d22e8d087ee08e1f674d6198ce4e518c39102a4",
+          "bytes": 7503,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/ops/hl_info_receipt.py": {
+          "blob": "fa0f7ef446667ef76564c21d9cc6d31532626af3",
+          "bytes": 21976,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ops/hl_live_money.py": {
+          "blob": "68c5aa08b2bdd9bce18d4a23edb232efdb90f48f",
+          "bytes": 28943,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ops/hl_unified_account.py": {
+          "blob": "02d68710aef6270e81056f1979473d922feaf97d",
+          "bytes": 5202,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ops/hl_unified_instruments.py": {
+          "blob": "5ccc00ff421dae3261ff563c062f3da0e14c4855",
+          "bytes": 4618,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/ops/stage_g_config.py": {
+          "blob": "96dd3dca123a8cfd19e8a116a4bb5d8f71b7b082",
+          "bytes": 8963,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/__init__.py": {
+          "blob": "08c42ed98d64455b710d05e398e3d75bebfd97ce",
+          "bytes": 68,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/cm2_batch.py": {
+          "blob": "7e377d1aa9baa5ce33d76f2a0d020b49037e6aa8",
+          "bytes": 13248,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_committed_validation.py": {
+          "blob": "a427c2a60b1cb59474f7795e1ac983b339e95dbf",
+          "bytes": 19357,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_fixture.py": {
+          "blob": "ba1072565cef3d3e5fb1e24699dc34055b2f03d6",
+          "bytes": 13956,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_fixture_e04.py": {
+          "blob": "5ec704707197205b4564618d97bfa721013fd840",
+          "bytes": 34205,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_fixture_validation.py": {
+          "blob": "64ebaaac95aed8682f640271e19d4a2485b77645",
+          "bytes": 6202,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_funding_reader.py": {
+          "blob": "bea50a1ad274d63f8e9a16e8c49dc243b6819419",
+          "bytes": 2600,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_runner.py": {
+          "blob": "fff40e73fb2ff24843f3d44735a95dceb9955c43",
+          "bytes": 27436,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/current_hl_profile.py": {
+          "blob": "196890f1c28b2160acd915a1c1d65069e6e1f11e",
+          "bytes": 3706,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/effective_config.py": {
+          "blob": "1640188055931936f81ff7cf751c1527299766e4",
+          "bytes": 985,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/job_protocol.py": {
+          "blob": "db72dba4c2e0f7bce3e7b6271f5c17a6051fb821",
+          "bytes": 2020,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/minute_risk.py": {
+          "blob": "2dcc7058bb7ed7236b09f970b91a0b7b88570df8",
+          "bytes": 22187,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_accounting.py": {
+          "blob": "47edf6984c8b91fe86acb9f77fcca275b344b81a",
+          "bytes": 2253,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_audit.py": {
+          "blob": "77640daa93b48d6d547e420835a50f4baf4978d0",
+          "bytes": 14750,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/native_baseline.py": {
+          "blob": "d23a5db95279fda08e9e19335b06772e380332ba",
+          "bytes": 138022,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_fixture.py": {
+          "blob": "bab35d9d5902820d19300027ad9d2ad1faa2872e",
+          "bytes": 25524,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_full_fill.py": {
+          "blob": "4af08a51a41debf70cdb5ea187a76db237178ba2",
+          "bytes": 2140,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/optimizer_job.py": {
+          "blob": "cc5ab86beefd524ce4a6910dd301a49f5a68abbc",
+          "bytes": 11135,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/paired_observer.py": {
+          "blob": "5e02a6a628597d2d0ad04433085af0600f65609a",
+          "bytes": 15656,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/qualification_policy.py": {
+          "blob": "1ca291dd5fd629c86d87a958814c55a1e8616d18",
+          "bytes": 5963,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/alpha_cushion.py": {
+          "blob": "a0011e3888045a66364c860228f098157a6f4678",
+          "bytes": 17556,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/c1_inputs.py": {
+          "blob": "836ea347bd9821d1c53a595e227e123d2be25c3e",
+          "bytes": 1820,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/carry_pair.py": {
+          "blob": "976cb6db9abc8387d29a5465baf22ba34b0fef7a",
+          "bytes": 15700,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/cm2_checkpoint.py": {
+          "blob": "48dcc31aefb2d9dee4f4fac0da2262b4d60bc27a",
+          "bytes": 3588,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/cm2_execution.py": {
+          "blob": "503c80845e9d44c0a04beb63af1c9ff982f7e054",
+          "bytes": 4325,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/cm2_native.py": {
+          "blob": "506705d65f66d01d4ccbb57e4b9fa01249dce084",
+          "bytes": 43818,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/cm2_policy.py": {
+          "blob": "fd8e74bfdd2a3def79281ac5cc7a70690bdb6ffa",
+          "bytes": 22436,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/conditional_hedge.py": {
+          "blob": "2879de9dfca9545b74bb0d47fc74cd1179e95d1f",
+          "bytes": 18812,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/execution_config.py": {
+          "blob": "46776f7529956d69e1dcac9813ff7fca0bc62c1b",
+          "bytes": 387,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/hedge_band.py": {
+          "blob": "959a9df997d4ef4123da3db14f8fe12fd66ee3b8",
+          "bytes": 13530,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/immediate_insurance.py": {
+          "blob": "04504028ec42b21581945ef3fee165d03e82cb7a",
+          "bytes": 13488,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/next_band.py": {
+          "blob": "1c011b27d8491d2b1ee9da75c23cf3789071e1ac",
+          "bytes": 18805,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/residual_recovery.py": {
+          "blob": "f07de66bd3bcdd3bf8a228185a10ca07888f75c9",
+          "bytes": 30754,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/risk_first_sol.py": {
+          "blob": "09038fd2546cfeba3fe15764248bb5926b764b83",
+          "bytes": 35382,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/sol_capital_staging.py": {
+          "blob": "61d04cd58b0f78429a583faa94142c21004431d4",
+          "bytes": 913,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/split_cover.py": {
+          "blob": "c0bd25330c0b3c54ee4348b9aa3372036ae4c1f4",
+          "bytes": 22556,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/wave_overlay.py": {
+          "blob": "200043d7eb3e29f50018475738ddf70cca04b17a",
+          "bytes": 208169,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/venues/bybit_profile.py": {
+          "blob": "e7a44859e9917158337f34f9e0cb8aee63771fb5",
+          "bytes": 2690,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/venues/effective_fees.py": {
+          "blob": "461aef0160df96c13f63e20a218843e05675d6ee",
+          "bytes": 999,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/venues/hyperliquid_profile.py": {
+          "blob": "fa9ccea5f8699d6e4c96b8a35dcccd6bab36266a",
+          "bytes": 8348,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/margin_policy.py": {
+          "blob": "dd1b99d7ac8267bb11d5ce964adbc90dd3e4e3bd",
+          "bytes": 3217,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/marks.py": {
+          "blob": "a36d0b94f02bcb7be60deef6fa06a25a397d0f46",
+          "bytes": 1669,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/production_preflight.py": {
+          "blob": "90a3562127904939c5e63a9c500b0523fdce369a",
+          "bytes": 5504,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/signals.py": {
+          "blob": "4dc92ec0f4c156e220bba00c0932fc4963fb821d",
+          "bytes": 1417,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/pyproject.toml": {
+          "blob": "7ef64ad6de8e24882701b03efc4bcb215b01e93c",
+          "bytes": 473,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/tests/cm2_feature_parity_probe.py": {
+          "blob": "2fcc81bab563eb64c0973b79b64ed45344e1504a",
+          "bytes": 3968,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/fixtures/hl-current-20261029/execution-profile-inputs.json": {
+          "blob": "5f2ab71b4d34e3aa9959112b0c0202499022bff7",
+          "bytes": 994,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/fixtures/hl-current-20261029/hyperliquid-meta-BTC-SOL-20261029.json": {
+          "blob": "92d69cf557d49aafde20feeacae4b0e9f55308a7",
+          "bytes": 854,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/fixtures/hl-current-20261029/native-btc-sol-raw.json": {
+          "blob": "c4832ff139cda1d9e6a2d99a7f7a96bbc9b8a9bf",
+          "bytes": 1550,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_batch.py": {
+          "blob": "d03142157be6a24095361f9bf4a48c55c9943a7e",
+          "bytes": 7157,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_boundary.py": {
+          "blob": "c4b54d232efed9cde94ad9534040042c5dc09cec",
+          "bytes": 6412,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_checkpoint.py": {
+          "blob": "3d194d9abe5a9f0f79a1413c3ead6e99d25ca95e",
+          "bytes": 10020,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_child_admission.py": {
+          "blob": "8d5557c11ff190b17bc1faa46d2f254b6b4ec4fb",
+          "bytes": 16841,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_committed_validation.py": {
+          "blob": "3822cbf1dcbc12599387da6367d5e47cd5cfac2c",
+          "bytes": 10162,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_boundary.py": {
+          "blob": "b2a8bc8a53961ab5584d2a6a46973608c428b6fc",
+          "bytes": 3170,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_e04.py": {
+          "blob": "7b3706dc82e30dd2c1ddee66982c62149ab6fb17",
+          "bytes": 7305,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_validation.py": {
+          "blob": "53f69b955826cecefe2771273a582b9158816026",
+          "bytes": 4471,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_full_api_probe.py": {
+          "blob": "0372be23975f265af3ff66b2b41ea9497e2ba342",
+          "bytes": 6426,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_funding_reader.py": {
+          "blob": "5f3970ab1c737293749ab6c28b710abee3a53c64",
+          "bytes": 7663,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_harvest_execution.py": {
+          "blob": "69fc9dad5af38328efcb6cba2285187a519cd516",
+          "bytes": 6414,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_policy.py": {
+          "blob": "081ffb42d9646f21b136aa5d762756241a19f62b",
+          "bytes": 14749,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_report_precision.py": {
+          "blob": "2006810c9db502b968ba9c80d45f2d6eb2472497",
+          "bytes": 3685,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/uv.lock": {
+          "blob": "abd811b3f7845d4db6bf41b739866f0caacebcad",
+          "bytes": 43993,
+          "mode": "100644",
+          "same_public_base_blob": true
+        }
+      },
+      "original_commit": "3b654410de84a226c27b0ded6aa11c31ce0d2c12",
+      "public_snapshot_commit": "60408a3d08aa9b23942f9d02b9bf2ba22c32051b"
+    },
+    "PROPOSED_b8": {
+      "files": {
+        "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": {
+          "blob": "2f112b5f4adfb09d45d58b853a238ea4164ebc5f",
+          "bytes": 151995,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": {
+          "blob": "8f2df11726b34284d50ea633684a3051bb1bf38c",
+          "bytes": 142017,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "reports/cm2-clean-hedge-20261031/AUDITED_CHILD_CONTRACT_PROOF.json": {
+          "blob": "7c4178961dc85cba4ccbe34b651caacc82035c21",
+          "bytes": 3455,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/AUDITED_CHILD_CONTRACT_SOURCE.md": {
+          "blob": "63bc3304b002126ab43a75401e01973c8527d29e",
+          "bytes": 4572,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/AUDITED_CHILD_CONTRACT_TEST_RECEIPT.json": {
+          "blob": "1ebe12f17e1097192cd312beef03eccfdfe9bb7a",
+          "bytes": 864,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/BATCH_CONTRACT.md": {
+          "blob": "bf01ea3ce105ac8ba1966c2f131739a43c55983f",
+          "bytes": 6616,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/BOUNDED_CHECKPOINT.md": {
+          "blob": "1c5ff41daa0d03876b9b47f5f06c5507b80aec2f",
+          "bytes": 5468,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/CHILD_ADMISSION_FIX.md": {
+          "blob": "4db270e554f93492abf02bbba3303aa06390d424",
+          "bytes": 4516,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/COMMITTED_WM_QUALIFICATION.md": {
+          "blob": "96c3f63b26f4af695eb468bc7a435802776659be",
+          "bytes": 4778,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/COMMITTED_WM_TEST_OUTPUT.txt": {
+          "blob": "ba3b9d9cb98707b389c8bd85aade41dce2924d11",
+          "bytes": 179,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/COMMITTED_WM_TEST_SUMMARY.json": {
+          "blob": "1e901f5ba090b80f29890bf67f04172dc962db61",
+          "bytes": 1143,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/DESIGN.md": {
+          "blob": "2bb4b220ebee21306890afdc4720842b7d546ab2",
+          "bytes": 5631,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/DUST_NATIVE_FIXTURE_SOURCE_PROOF.json": {
+          "blob": "888716efbbfa1cc60bb3897ea123747aa2dd172a",
+          "bytes": 1824,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/DUST_PUBLIC_PROBE_ROUTING_PROOF.json": {
+          "blob": "f53d85fbaa180ba3b2611c80c188207433af144a",
+          "bytes": 855,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E01_REMEDIATION.md": {
+          "blob": "53615a404ad5e1847fc6631af5b7222a611ca17e",
+          "bytes": 2021,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E01_REMEDIATION_TEST_SUMMARY.json": {
+          "blob": "cdcc9a51e1e6c68ad348a269d9e5273913362808",
+          "bytes": 1477,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E04_FAILURE_CAUSE.md": {
+          "blob": "11d78c0c54bb6759f52d1ad0a1ec738b16fe9903",
+          "bytes": 3234,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E04_FIXTURE_REMEDIATION.json": {
+          "blob": "cef1842166a39aaf4e2de09ae5f82d7fac4f80c5",
+          "bytes": 1462,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E04_SOURCE_CHECKPOINT.json": {
+          "blob": "91b9bb06ef1885fbebe39e491c3c49ec4cdea06e",
+          "bytes": 2941,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E04_TIMELINE_REMEDIATION.json": {
+          "blob": "3dec2d93157487c233d7dd28c047918ac3770e6a",
+          "bytes": 1038,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E04_TIMELINE_REMEDIATION.md": {
+          "blob": "5aebece576abec5fcec6e16f176e07afc19fba96",
+          "bytes": 1952,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/ENGINEERING_CONTRACT.md": {
+          "blob": "db76a61f1eef535385e18acf4367ae6df597abbf",
+          "bytes": 3198,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FEATURE_CSE_PARITY_TIMING.json": {
+          "blob": "5fa9af87ebd4cec979adc2bb5c9d7eb364eed817",
+          "bytes": 6079,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FINAL_PRE_E02_PURE_TEST_OUTPUT.txt": {
+          "blob": "7196c204fc7b6db9495e1d750757fb9211491663",
+          "bytes": 99,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FINAL_PRE_E02_PURE_TEST_SUMMARY.json": {
+          "blob": "1e09c8e6c1ce703011505dd2e771ecd159d3ecf6",
+          "bytes": 712,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FULL_API_CORRECTION_TEST_OUTPUT.txt": {
+          "blob": "153ba43da121031fdda71d2cb7dbfbe49ac20d3b",
+          "bytes": 99,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FULL_API_CORRECTION_TEST_SUMMARY.json": {
+          "blob": "50aec84fcbd3b150b6e489121bbf461b64edfcc9",
+          "bytes": 927,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FULL_API_PREFLIGHT_CORRECTION.md": {
+          "blob": "10b2e31b6d0adfebe8773741b6dacd272404e88e",
+          "bytes": 3118,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FUNDING_CACHE.md": {
+          "blob": "4b324a4743a38466f00a8eab4f2365b85faa5547",
+          "bytes": 2394,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FUNDING_CACHE_PARITY_PERF.json": {
+          "blob": "598c5511f5db22a4586aec4e76e512e014ba11b1",
+          "bytes": 1522,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/HARVEST_EXECUTION_CONTRACT.md": {
+          "blob": "1449ab0d286101840dddba2e010cfcff2e8707be",
+          "bytes": 2306,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/NOVELTY_AND_REUSE.md": {
+          "blob": "a6f86551107b204f5b26213b2f5255598f2701fd",
+          "bytes": 1942,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PARAMETER_SPACE.json": {
+          "blob": "2be98c1ece0ec8cb071e405531acf0386fb1b11a",
+          "bytes": 3733,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/POST_MAINTENANCE_REGRESSION.json": {
+          "blob": "f89805bfc3b24ef964f7feb0ac5d33c3b1be2945",
+          "bytes": 981,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_INITIAL_COLLECTION_FAILURE.json": {
+          "blob": "05788e5ca61d074f35b2437622685ec9f2c72e07",
+          "bytes": 405,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_INITIAL_COLLECTION_FAILURE.txt": {
+          "blob": "d2dd4701eaeac191576bc8d9d4f72369dd207077",
+          "bytes": 1630,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_OUTPUT.txt": {
+          "blob": "c4f93d481e47adfaf87b10121629ca571cbc6697",
+          "bytes": 99,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_SUMMARY.json": {
+          "blob": "5f3dafc4943d6931694a9aef6bb4fd2f7c142da0",
+          "bytes": 568,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/REPORTING_STATE_ONLY_EQUIVALENCE.json": {
+          "blob": "03a6fe209d233d6dec428eb7892d057bad1e2e7e",
+          "bytes": 1453,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/RESIDUAL_DUST_FIX_PROOF.json": {
+          "blob": "6dba1c1560a3ea958ccb0688391dbcabe6bc4d04",
+          "bytes": 935,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/STOP_PURPOSE_FIX_PROOF.json": {
+          "blob": "fc53fc321126102f1906f4abbc1060c78ba7392e",
+          "bytes": 2106,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/README.md": {
+          "blob": "d2fb8cbf297363d611f4d67c67f8b6883c3de94f",
+          "bytes": 5746,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/TEST_OUTPUT.txt": {
+          "blob": "ffe401bcfd2bbb8939917d3bc6d9308df5680b81",
+          "bytes": 98,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/TEST_SUMMARY.json": {
+          "blob": "d3bf8c8a5117edeccc0de0123733aff6ef536ff7",
+          "bytes": 799,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/manifest.example.json": {
+          "blob": "6f4242a32120ac52f90afb388d278734f1a3ac87",
+          "bytes": 2375,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/manifest.schema.json": {
+          "blob": "cfc0c9c537df477b619dd5094fd273e5072ba207",
+          "bytes": 1803,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/saved_cm2_analyze.py": {
+          "blob": "0e1cf3f7bc2204fa4cee09ad8ef894de778c607c",
+          "bytes": 35243,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/analysis/test_saved_cm2_analyze.py": {
+          "blob": "af24d8d5f36f59b62fb63b34e989a333b1ff0386",
+          "bytes": 12155,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/diagnostics/README.md": {
+          "blob": "657bd732cf8e8eed7a699906d74c4264248ef187",
+          "bytes": 6514,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/diagnostics/causal_hedge.py": {
+          "blob": "4345535d8b16008331f3c5a80e4d1c2747e0d699",
+          "bytes": 16049,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/diagnostics/test_causal_hedge.py": {
+          "blob": "7c12c6789e11607c89c7b1b5bda0c5a4456a6e49",
+          "bytes": 5294,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/engineering-request.example.json": {
+          "blob": "acbc8aa37605f517e1f268fa53de516b9a94e0d8",
+          "bytes": 1104,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/HANDOFF.md": {
+          "blob": "86c40dce4ffb2f1ee0040c322ea8cd5b32aec29e",
+          "bytes": 4169,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/INTEGRATION_CHECKS.json": {
+          "blob": "f09092fc487a2d7f54f014aa75086eed207e3a83",
+          "bytes": 630,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/R1_ANALYZER_MANIFEST.example.json": {
+          "blob": "ea469d14ea776def4adaa308abd5f93b7632bf5b",
+          "bytes": 1071,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/TWO_MAC_CONTROLS_BLOCK.example.json": {
+          "blob": "05183a7fccb291c1f1325b7df95f66fc85ae2b97",
+          "bytes": 1227,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/TWO_MAC_CONTROLS_BUDGET.example.json": {
+          "blob": "02c3632c83515c3423f656d0e7b0819f1bd31d72",
+          "bytes": 196,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/integration/TWO_MAC_CONTROLS_RECEIPT.example.json": {
+          "blob": "d9be347b2233927f144c05c3493092251be5bec0",
+          "bytes": 299,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/request.schema.json": {
+          "blob": "ad80bb3dcb68950a14c798099a359743addbc18c",
+          "bytes": 737,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/FROZEN64.json": {
+          "blob": "51ec1d0644bfb363be6150bdbc91768fcb7a8331",
+          "bytes": 45998,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/MANIFEST.json": {
+          "blob": "d3e20d81d367af569f704567f8801956d1e36178",
+          "bytes": 1080,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/README.md": {
+          "blob": "0327fd5174ff71d6e2ae6287d87256eea842fe88",
+          "bytes": 2958,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/SPACE.json": {
+          "blob": "a63350096e376563cb43586f824b5a747c91a90b",
+          "bytes": 2867,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/generate.py": {
+          "blob": "7c3003613a03032784c7e61e47c0486da7f13ac0",
+          "bytes": 4360,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/search/test_frozen.py": {
+          "blob": "b2ddd380ba90d0fe8bf6a5bf53237b4874e16420",
+          "bytes": 2301,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/domain/deposit_protection.py": {
+          "blob": "fed8dba4dd81935a5c218c8abcd43aec0b156281",
+          "bytes": 8050,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/domain/wave_overlay.py": {
+          "blob": "682016abdae8115a31ee3382af9c265efa34ff9b",
+          "bytes": 36608,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ledger/journal.py": {
+          "blob": "5d22e8d087ee08e1f674d6198ce4e518c39102a4",
+          "bytes": 7503,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/ops/hl_info_receipt.py": {
+          "blob": "fa0f7ef446667ef76564c21d9cc6d31532626af3",
+          "bytes": 21976,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ops/hl_live_money.py": {
+          "blob": "68c5aa08b2bdd9bce18d4a23edb232efdb90f48f",
+          "bytes": 28943,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ops/hl_unified_account.py": {
+          "blob": "02d68710aef6270e81056f1979473d922feaf97d",
+          "bytes": 5202,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ops/hl_unified_instruments.py": {
+          "blob": "5ccc00ff421dae3261ff563c062f3da0e14c4855",
+          "bytes": 4618,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/ops/stage_g_config.py": {
+          "blob": "96dd3dca123a8cfd19e8a116a4bb5d8f71b7b082",
+          "bytes": 8963,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/__init__.py": {
+          "blob": "08c42ed98d64455b710d05e398e3d75bebfd97ce",
+          "bytes": 68,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/cm2_batch.py": {
+          "blob": "7e377d1aa9baa5ce33d76f2a0d020b49037e6aa8",
+          "bytes": 13248,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_committed_validation.py": {
+          "blob": "a427c2a60b1cb59474f7795e1ac983b339e95dbf",
+          "bytes": 19357,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_fixture.py": {
+          "blob": "ba1072565cef3d3e5fb1e24699dc34055b2f03d6",
+          "bytes": 13956,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_fixture_dust.py": {
+          "blob": "25a0793e9a71b8f6c656af781d4b5db08a680b7f",
+          "bytes": 16135,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_fixture_e04.py": {
+          "blob": "39e4616ce95e47aa6d265da620e232967ad9f3c6",
+          "bytes": 38348,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_fixture_validation.py": {
+          "blob": "64ebaaac95aed8682f640271e19d4a2485b77645",
+          "bytes": 6202,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_funding_reader.py": {
+          "blob": "bea50a1ad274d63f8e9a16e8c49dc243b6819419",
+          "bytes": 2600,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_runner.py": {
+          "blob": "49dda793be645d38c145bd08926b081d6287654b",
+          "bytes": 27932,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/current_hl_profile.py": {
+          "blob": "196890f1c28b2160acd915a1c1d65069e6e1f11e",
+          "bytes": 3706,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/effective_config.py": {
+          "blob": "1640188055931936f81ff7cf751c1527299766e4",
+          "bytes": 985,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/job_protocol.py": {
+          "blob": "db72dba4c2e0f7bce3e7b6271f5c17a6051fb821",
+          "bytes": 2020,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/minute_risk.py": {
+          "blob": "2dcc7058bb7ed7236b09f970b91a0b7b88570df8",
+          "bytes": 22187,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_accounting.py": {
+          "blob": "47edf6984c8b91fe86acb9f77fcca275b344b81a",
+          "bytes": 2253,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_audit.py": {
+          "blob": "77640daa93b48d6d547e420835a50f4baf4978d0",
+          "bytes": 14750,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/native_baseline.py": {
+          "blob": "d23a5db95279fda08e9e19335b06772e380332ba",
+          "bytes": 138022,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_fixture.py": {
+          "blob": "bab35d9d5902820d19300027ad9d2ad1faa2872e",
+          "bytes": 25524,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_full_fill.py": {
+          "blob": "4af08a51a41debf70cdb5ea187a76db237178ba2",
+          "bytes": 2140,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/optimizer_job.py": {
+          "blob": "cc5ab86beefd524ce4a6910dd301a49f5a68abbc",
+          "bytes": 11135,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/paired_observer.py": {
+          "blob": "5e02a6a628597d2d0ad04433085af0600f65609a",
+          "bytes": 15656,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/qualification_policy.py": {
+          "blob": "1ca291dd5fd629c86d87a958814c55a1e8616d18",
+          "bytes": 5963,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/alpha_cushion.py": {
+          "blob": "a0011e3888045a66364c860228f098157a6f4678",
+          "bytes": 17556,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/c1_inputs.py": {
+          "blob": "836ea347bd9821d1c53a595e227e123d2be25c3e",
+          "bytes": 1820,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/carry_pair.py": {
+          "blob": "976cb6db9abc8387d29a5465baf22ba34b0fef7a",
+          "bytes": 15700,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/cm2_checkpoint.py": {
+          "blob": "48dcc31aefb2d9dee4f4fac0da2262b4d60bc27a",
+          "bytes": 3588,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/cm2_execution.py": {
+          "blob": "1c4db33b5bab990b6f76db76771ffd105a02afe6",
+          "bytes": 5325,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/cm2_native.py": {
+          "blob": "393b35068eecd4a0f91e73f3aef31883a6053c0b",
+          "bytes": 58219,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/cm2_order_contract.py": {
+          "blob": "2f134e0c757e5fcd82415109aeafb30b4262e0fb",
+          "bytes": 5743,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/cm2_policy.py": {
+          "blob": "060dda8e305368bbec507ac1b43a385b3026b6b1",
+          "bytes": 22543,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/conditional_hedge.py": {
+          "blob": "2879de9dfca9545b74bb0d47fc74cd1179e95d1f",
+          "bytes": 18812,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/execution_config.py": {
+          "blob": "46776f7529956d69e1dcac9813ff7fca0bc62c1b",
+          "bytes": 387,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/hedge_band.py": {
+          "blob": "959a9df997d4ef4123da3db14f8fe12fd66ee3b8",
+          "bytes": 13530,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/immediate_insurance.py": {
+          "blob": "04504028ec42b21581945ef3fee165d03e82cb7a",
+          "bytes": 13488,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/next_band.py": {
+          "blob": "1c011b27d8491d2b1ee9da75c23cf3789071e1ac",
+          "bytes": 18805,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/residual_recovery.py": {
+          "blob": "f07de66bd3bcdd3bf8a228185a10ca07888f75c9",
+          "bytes": 30754,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/risk_first_sol.py": {
+          "blob": "09038fd2546cfeba3fe15764248bb5926b764b83",
+          "bytes": 35382,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/sol_capital_staging.py": {
+          "blob": "61d04cd58b0f78429a583faa94142c21004431d4",
+          "bytes": 913,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/split_cover.py": {
+          "blob": "c0bd25330c0b3c54ee4348b9aa3372036ae4c1f4",
+          "bytes": 22556,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/wave_overlay.py": {
+          "blob": "200043d7eb3e29f50018475738ddf70cca04b17a",
+          "bytes": 208169,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/venues/bybit_profile.py": {
+          "blob": "e7a44859e9917158337f34f9e0cb8aee63771fb5",
+          "bytes": 2690,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/venues/effective_fees.py": {
+          "blob": "461aef0160df96c13f63e20a218843e05675d6ee",
+          "bytes": 999,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/venues/hyperliquid_profile.py": {
+          "blob": "fa9ccea5f8699d6e4c96b8a35dcccd6bab36266a",
+          "bytes": 8348,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/margin_policy.py": {
+          "blob": "dd1b99d7ac8267bb11d5ce964adbc90dd3e4e3bd",
+          "bytes": 3217,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/marks.py": {
+          "blob": "a36d0b94f02bcb7be60deef6fa06a25a397d0f46",
+          "bytes": 1669,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/production_preflight.py": {
+          "blob": "90a3562127904939c5e63a9c500b0523fdce369a",
+          "bytes": 5504,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/signals.py": {
+          "blob": "4dc92ec0f4c156e220bba00c0932fc4963fb821d",
+          "bytes": 1417,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/pyproject.toml": {
+          "blob": "7ef64ad6de8e24882701b03efc4bcb215b01e93c",
+          "bytes": 473,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/tests/cm2_feature_parity_probe.py": {
+          "blob": "2fcc81bab563eb64c0973b79b64ed45344e1504a",
+          "bytes": 3968,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/fixtures/hl-current-20261029/execution-profile-inputs.json": {
+          "blob": "5f2ab71b4d34e3aa9959112b0c0202499022bff7",
+          "bytes": 994,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/fixtures/hl-current-20261029/hyperliquid-meta-BTC-SOL-20261029.json": {
+          "blob": "92d69cf557d49aafde20feeacae4b0e9f55308a7",
+          "bytes": 854,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/fixtures/hl-current-20261029/native-btc-sol-raw.json": {
+          "blob": "c4832ff139cda1d9e6a2d99a7f7a96bbc9b8a9bf",
+          "bytes": 1550,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_batch.py": {
+          "blob": "d03142157be6a24095361f9bf4a48c55c9943a7e",
+          "bytes": 7157,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_boundary.py": {
+          "blob": "a6edc71ecce54716a841aef42e70089146a54103",
+          "bytes": 6630,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_checkpoint.py": {
+          "blob": "9a3149d7ef1dba7df3c67b222670842fac5d7475",
+          "bytes": 13160,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_child_admission.py": {
+          "blob": "8285d016090e98572b3c5b5e92ddcb3f2fb7110f",
+          "bytes": 17383,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_committed_validation.py": {
+          "blob": "3822cbf1dcbc12599387da6367d5e47cd5cfac2c",
+          "bytes": 10162,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_final_send_contract.py": {
+          "blob": "e80a4a79918962f4265d2324d5f060c6afc13025",
+          "bytes": 8705,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_boundary.py": {
+          "blob": "b2a8bc8a53961ab5584d2a6a46973608c428b6fc",
+          "bytes": 3170,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_dust.py": {
+          "blob": "eb1d2b688cc383d3e38640c6221f5203076316d9",
+          "bytes": 2579,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_e04.py": {
+          "blob": "b2d95cfe46dbcb11af2dcca71e32fd6b2bef4125",
+          "bytes": 7306,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_e04_failure.py": {
+          "blob": "573f76a4fa3880651f2363d6b0286e7842dd265f",
+          "bytes": 9198,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_validation.py": {
+          "blob": "53f69b955826cecefe2771273a582b9158816026",
+          "bytes": 4471,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_full_api_probe.py": {
+          "blob": "0372be23975f265af3ff66b2b41ea9497e2ba342",
+          "bytes": 6426,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_funding_reader.py": {
+          "blob": "5f3970ab1c737293749ab6c28b710abee3a53c64",
+          "bytes": 7663,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_harvest_execution.py": {
+          "blob": "ee8322ff770849d5154ca75790a10e89e7284b2c",
+          "bytes": 6650,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_harvest_reporting.py": {
+          "blob": "5a4bad5cebfb22d82a0d9f2ea8bec8475f86ceba",
+          "bytes": 2406,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_order_contract.py": {
+          "blob": "503c48a7c6c96f375992372cf82aec20b7d7e478",
+          "bytes": 16016,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_policy.py": {
+          "blob": "081ffb42d9646f21b136aa5d762756241a19f62b",
+          "bytes": 14749,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_public_probe_dispatch.py": {
+          "blob": "2b543e25711cdb01ba211b1312c26728bfe783d3",
+          "bytes": 2894,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_report_precision.py": {
+          "blob": "2006810c9db502b968ba9c80d45f2d6eb2472497",
+          "bytes": 3685,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_residual_dust.py": {
+          "blob": "2a9cc0a064dcc972a59c17f5d5ac74dc829274ba",
+          "bytes": 4702,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_stop_purpose.py": {
+          "blob": "afd18a1ffb83854ae8ac4726183f0dc37410a8a5",
+          "bytes": 5995,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/uv.lock": {
+          "blob": "abd811b3f7845d4db6bf41b739866f0caacebcad",
+          "bytes": 43993,
+          "mode": "100644",
+          "same_public_base_blob": true
+        }
+      },
+      "original_commit": "b8dab4a0375451c4279db8ce05c7db9cddbe7fd0",
+      "public_snapshot_commit": "3484a53ba3388efe79bd45cb49fbaf6c7b827d3b"
+    },
+    "R1_779": {
+      "files": {
+        "reports/btc-split-sol-cover-20261018/data-warmup-BTCUSDT-1h.csv": {
+          "blob": "2f112b5f4adfb09d45d58b853a238ea4164ebc5f",
+          "bytes": 151995,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "reports/btc-split-sol-cover-20261018/data-warmup-SOLUSDT-1h.csv": {
+          "blob": "8f2df11726b34284d50ea633684a3051bb1bf38c",
+          "bytes": 142017,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "reports/cm2-clean-hedge-20261031/DESIGN.md": {
+          "blob": "2bb4b220ebee21306890afdc4720842b7d546ab2",
+          "bytes": 5631,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E01_REMEDIATION.md": {
+          "blob": "53615a404ad5e1847fc6631af5b7222a611ca17e",
+          "bytes": 2021,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/E01_REMEDIATION_TEST_SUMMARY.json": {
+          "blob": "cdcc9a51e1e6c68ad348a269d9e5273913362808",
+          "bytes": 1477,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/ENGINEERING_CONTRACT.md": {
+          "blob": "db76a61f1eef535385e18acf4367ae6df597abbf",
+          "bytes": 3198,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FEATURE_CSE_PARITY_TIMING.json": {
+          "blob": "5fa9af87ebd4cec979adc2bb5c9d7eb364eed817",
+          "bytes": 6079,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FINAL_PRE_E02_PURE_TEST_OUTPUT.txt": {
+          "blob": "7196c204fc7b6db9495e1d750757fb9211491663",
+          "bytes": 99,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FINAL_PRE_E02_PURE_TEST_SUMMARY.json": {
+          "blob": "1e09c8e6c1ce703011505dd2e771ecd159d3ecf6",
+          "bytes": 712,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FULL_API_CORRECTION_TEST_OUTPUT.txt": {
+          "blob": "153ba43da121031fdda71d2cb7dbfbe49ac20d3b",
+          "bytes": 99,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FULL_API_CORRECTION_TEST_SUMMARY.json": {
+          "blob": "50aec84fcbd3b150b6e489121bbf461b64edfcc9",
+          "bytes": 927,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/FULL_API_PREFLIGHT_CORRECTION.md": {
+          "blob": "10b2e31b6d0adfebe8773741b6dacd272404e88e",
+          "bytes": 3118,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/NOVELTY_AND_REUSE.md": {
+          "blob": "a6f86551107b204f5b26213b2f5255598f2701fd",
+          "bytes": 1942,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PARAMETER_SPACE.json": {
+          "blob": "2be98c1ece0ec8cb071e405531acf0386fb1b11a",
+          "bytes": 3733,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_INITIAL_COLLECTION_FAILURE.json": {
+          "blob": "05788e5ca61d074f35b2437622685ec9f2c72e07",
+          "bytes": 405,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_INITIAL_COLLECTION_FAILURE.txt": {
+          "blob": "d2dd4701eaeac191576bc8d9d4f72369dd207077",
+          "bytes": 1630,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_OUTPUT.txt": {
+          "blob": "c4f93d481e47adfaf87b10121629ca571cbc6697",
+          "bytes": 99,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/PURE_TEST_SUMMARY.json": {
+          "blob": "5f3dafc4943d6931694a9aef6bb4fd2f7c142da0",
+          "bytes": 568,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/engineering-request.example.json": {
+          "blob": "acbc8aa37605f517e1f268fa53de516b9a94e0d8",
+          "bytes": 1104,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "reports/cm2-clean-hedge-20261031/request.schema.json": {
+          "blob": "ad80bb3dcb68950a14c798099a359743addbc18c",
+          "bytes": 737,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/domain/deposit_protection.py": {
+          "blob": "fed8dba4dd81935a5c218c8abcd43aec0b156281",
+          "bytes": 8050,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/domain/wave_overlay.py": {
+          "blob": "682016abdae8115a31ee3382af9c265efa34ff9b",
+          "bytes": 36608,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ledger/journal.py": {
+          "blob": "5d22e8d087ee08e1f674d6198ce4e518c39102a4",
+          "bytes": 7503,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/ops/hl_info_receipt.py": {
+          "blob": "fa0f7ef446667ef76564c21d9cc6d31532626af3",
+          "bytes": 21976,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ops/hl_live_money.py": {
+          "blob": "68c5aa08b2bdd9bce18d4a23edb232efdb90f48f",
+          "bytes": 28943,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ops/hl_unified_account.py": {
+          "blob": "02d68710aef6270e81056f1979473d922feaf97d",
+          "bytes": 5202,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/ops/hl_unified_instruments.py": {
+          "blob": "5ccc00ff421dae3261ff563c062f3da0e14c4855",
+          "bytes": 4618,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/ops/stage_g_config.py": {
+          "blob": "96dd3dca123a8cfd19e8a116a4bb5d8f71b7b082",
+          "bytes": 8963,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/__init__.py": {
+          "blob": "08c42ed98d64455b710d05e398e3d75bebfd97ce",
+          "bytes": 68,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/cm2_fixture.py": {
+          "blob": "ba1072565cef3d3e5fb1e24699dc34055b2f03d6",
+          "bytes": 13956,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_fixture_validation.py": {
+          "blob": "64ebaaac95aed8682f640271e19d4a2485b77645",
+          "bytes": 6202,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/cm2_runner.py": {
+          "blob": "d9de5e8cf6fd25f7886d4c2f38733ac7ec5f78ae",
+          "bytes": 25615,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/current_hl_profile.py": {
+          "blob": "196890f1c28b2160acd915a1c1d65069e6e1f11e",
+          "bytes": 3706,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/effective_config.py": {
+          "blob": "1640188055931936f81ff7cf751c1527299766e4",
+          "bytes": 985,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/job_protocol.py": {
+          "blob": "db72dba4c2e0f7bce3e7b6271f5c17a6051fb821",
+          "bytes": 2020,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/minute_risk.py": {
+          "blob": "2dcc7058bb7ed7236b09f970b91a0b7b88570df8",
+          "bytes": 22187,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_accounting.py": {
+          "blob": "47edf6984c8b91fe86acb9f77fcca275b344b81a",
+          "bytes": 2253,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_audit.py": {
+          "blob": "77640daa93b48d6d547e420835a50f4baf4978d0",
+          "bytes": 14750,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/native_baseline.py": {
+          "blob": "3edad4968e0c5605e37e6e1d598ae400de8c2cea",
+          "bytes": 137986,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_fixture.py": {
+          "blob": "bab35d9d5902820d19300027ad9d2ad1faa2872e",
+          "bytes": 25524,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/native_full_fill.py": {
+          "blob": "4af08a51a41debf70cdb5ea187a76db237178ba2",
+          "bytes": 2140,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/optimizer_job.py": {
+          "blob": "cc5ab86beefd524ce4a6910dd301a49f5a68abbc",
+          "bytes": 11135,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/research/paired_observer.py": {
+          "blob": "5e02a6a628597d2d0ad04433085af0600f65609a",
+          "bytes": 15656,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/research/qualification_policy.py": {
+          "blob": "1ca291dd5fd629c86d87a958814c55a1e8616d18",
+          "bytes": 5963,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/alpha_cushion.py": {
+          "blob": "a0011e3888045a66364c860228f098157a6f4678",
+          "bytes": 17556,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/c1_inputs.py": {
+          "blob": "836ea347bd9821d1c53a595e227e123d2be25c3e",
+          "bytes": 1820,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/carry_pair.py": {
+          "blob": "976cb6db9abc8387d29a5465baf22ba34b0fef7a",
+          "bytes": 15700,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/cm2_execution.py": {
+          "blob": "503c80845e9d44c0a04beb63af1c9ff982f7e054",
+          "bytes": 4325,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/cm2_native.py": {
+          "blob": "299cedbb7cbac659976b40395b1b80a3c41e6398",
+          "bytes": 22186,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/cm2_policy.py": {
+          "blob": "b6dc36da6cec38ab19def4bee825ce515c223708",
+          "bytes": 14753,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/strategy/conditional_hedge.py": {
+          "blob": "2879de9dfca9545b74bb0d47fc74cd1179e95d1f",
+          "bytes": 18812,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/execution_config.py": {
+          "blob": "46776f7529956d69e1dcac9813ff7fca0bc62c1b",
+          "bytes": 387,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/hedge_band.py": {
+          "blob": "959a9df997d4ef4123da3db14f8fe12fd66ee3b8",
+          "bytes": 13530,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/immediate_insurance.py": {
+          "blob": "04504028ec42b21581945ef3fee165d03e82cb7a",
+          "bytes": 13488,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/next_band.py": {
+          "blob": "1c011b27d8491d2b1ee9da75c23cf3789071e1ac",
+          "bytes": 18805,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/residual_recovery.py": {
+          "blob": "f07de66bd3bcdd3bf8a228185a10ca07888f75c9",
+          "bytes": 30754,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/risk_first_sol.py": {
+          "blob": "09038fd2546cfeba3fe15764248bb5926b764b83",
+          "bytes": 35382,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/sol_capital_staging.py": {
+          "blob": "61d04cd58b0f78429a583faa94142c21004431d4",
+          "bytes": 913,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/split_cover.py": {
+          "blob": "c0bd25330c0b3c54ee4348b9aa3372036ae4c1f4",
+          "bytes": 22556,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/strategy/wave_overlay.py": {
+          "blob": "200043d7eb3e29f50018475738ddf70cca04b17a",
+          "bytes": 208169,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/venues/bybit_profile.py": {
+          "blob": "e7a44859e9917158337f34f9e0cb8aee63771fb5",
+          "bytes": 2690,
+          "mode": "100644"
+        },
+        "runtime/coinmaster/venues/effective_fees.py": {
+          "blob": "461aef0160df96c13f63e20a218843e05675d6ee",
+          "bytes": 999,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/coinmaster/venues/hyperliquid_profile.py": {
+          "blob": "fa9ccea5f8699d6e4c96b8a35dcccd6bab36266a",
+          "bytes": 8348,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/margin_policy.py": {
+          "blob": "dd1b99d7ac8267bb11d5ce964adbc90dd3e4e3bd",
+          "bytes": 3217,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/marks.py": {
+          "blob": "a36d0b94f02bcb7be60deef6fa06a25a397d0f46",
+          "bytes": 1669,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/production_preflight.py": {
+          "blob": "90a3562127904939c5e63a9c500b0523fdce369a",
+          "bytes": 5504,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/coinmaster/venues/signals.py": {
+          "blob": "4dc92ec0f4c156e220bba00c0932fc4963fb821d",
+          "bytes": 1417,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/pyproject.toml": {
+          "blob": "7ef64ad6de8e24882701b03efc4bcb215b01e93c",
+          "bytes": 473,
+          "mode": "100644",
+          "same_public_base_blob": true
+        },
+        "runtime/tests/cm2_feature_parity_probe.py": {
+          "blob": "2fcc81bab563eb64c0973b79b64ed45344e1504a",
+          "bytes": 3968,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/fixtures/hl-current-20261029/execution-profile-inputs.json": {
+          "blob": "5f2ab71b4d34e3aa9959112b0c0202499022bff7",
+          "bytes": 994,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/fixtures/hl-current-20261029/hyperliquid-meta-BTC-SOL-20261029.json": {
+          "blob": "92d69cf557d49aafde20feeacae4b0e9f55308a7",
+          "bytes": 854,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/fixtures/hl-current-20261029/native-btc-sol-raw.json": {
+          "blob": "c4832ff139cda1d9e6a2d99a7f7a96bbc9b8a9bf",
+          "bytes": 1550,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_boundary.py": {
+          "blob": "5dad3414e4243ce4538a995b1c44bb36c0dddd58",
+          "bytes": 6338,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_fixture_validation.py": {
+          "blob": "53f69b955826cecefe2771273a582b9158816026",
+          "bytes": 4471,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_full_api_probe.py": {
+          "blob": "0372be23975f265af3ff66b2b41ea9497e2ba342",
+          "bytes": 6426,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_policy.py": {
+          "blob": "081ffb42d9646f21b136aa5d762756241a19f62b",
+          "bytes": 14749,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/tests/test_cm2_report_precision.py": {
+          "blob": "2006810c9db502b968ba9c80d45f2d6eb2472497",
+          "bytes": 3685,
+          "mode": "100644",
+          "same_public_base_blob": false
+        },
+        "runtime/uv.lock": {
+          "blob": "abd811b3f7845d4db6bf41b739866f0caacebcad",
+          "bytes": 43993,
+          "mode": "100644",
+          "same_public_base_blob": true
+        }
+      },
+      "original_commit": "77935a3938d036be76bb8935e6c1eb925505d359",
+      "public_snapshot_commit": "53fbd3f4fdff8b6c9c0508443cc273733f01e121"
+    }
+  }
+}
