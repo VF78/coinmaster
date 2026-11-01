@@ -852,6 +852,10 @@ def run_native_diagnostic(
     if (trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS) and expected_rows != 1_051_200:
         raise ValueError("CANONICAL_1M_ROW_COUNT_MISMATCH")
     seed_bars, daily = _load_daily_seed(data_root, warmup_start_ms, trading_start_ms, trading_end_ms)
+    cm2_paired_seed=()
+    if research_cm2 is not None and research_cm2.sol_policy is not None and research_cm2.sol_policy.enabled:
+        from coinmaster.research.cm2_runner import exact_paired_seed
+        cm2_paired_seed=exact_paired_seed(daily,trading_start_ms)
     start_at = datetime.fromtimestamp(trading_start_ms / 1000, tz=timezone.utc)
     end_at = datetime.fromtimestamp(trading_end_ms / 1000, tz=timezone.utc)
     selected_leverage = ((BTC_PERP.id, Decimal("40")), (SOL_PERP.id, Decimal("20")))
@@ -967,6 +971,7 @@ def run_native_diagnostic(
             mark_client=mark_client,journal=journal,exit_fee_rate=taker*multiplier,
             execution_hash=policy.hash,risk_recorder=risk_recorder,coherent_observer=coherent_observer,
             seed_days=seed_bars,
+            seed_paired_closes=cm2_paired_seed,
             seed_ohlc=tuple(((t+DAY_MS)*1_000_000,float(r['high']),float(r['low'])) for t,r in sorted(daily['BTCUSDT'].items()) if warmup_start_ms<=t and t+DAY_MS<=trading_start_ms),
             daily_types=(daily_signal_data_type(btc_instrument.id),daily_signal_data_type(sol_instrument.id)),
             h4_type=next_bar_types[0],signal_client=signal_client,initial_seed=initial_active_seed)

@@ -63,7 +63,7 @@ def test_parent_reserves_full_future_btc_before_subordinate_sol_growth():
     f,b,sol,s,_,_,_=collateral(equity='100',held='0')
     s[0]=replace(s[0],sol_mark=D(1),price_known={b:True,sol:True})
     assert admit(f,sol,1)
-    f.reference.parent=N(selected_quantity=D(5000),split_terminal=False)
+    f.reference.parent=N(selected_quantity=D(5000),filled_quantity=D(0),split_terminal=False)
     assert not admit(f,sol,1)
     assert f.pre_submit_gate_blocks[-1]['reason'] in ('NATIVE_FREE_MARGIN','NATIVE_AGGREGATE_COLLATERAL')
     f.reference.parent=None;f.reference.c1=N(revoked=False,credit=500000)

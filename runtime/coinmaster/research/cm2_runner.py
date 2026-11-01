@@ -10,11 +10,13 @@ from coinmaster.domain.wave_overlay import Candidate
 from coinmaster.strategy.cm2_reference_policy import ReferenceConfig,ReferenceFlags,selected_btc_candidate,DAY
 from coinmaster.strategy.cm2_execution import ExecutionLimits
 from coinmaster.strategy.cm2_order_contract import MODEL_ID
+from coinmaster.strategy.cm2_sol_policy import SolConfig,parse_sol_config,policy_document
 
 
 def reference_config(value):
-    if type(value) is not dict or set(value)!={'version','candidate','flags','emergency_drawdown_fraction'}:
+    if type(value) is not dict or set(value) not in ({'version','candidate','flags','emergency_drawdown_fraction'},{'version','candidate','flags','emergency_drawdown_fraction','sol'}):
         raise ValueError('CM2_REFERENCE_POLICY_FIELDS_REQUIRED')
+    parse_sol_config(value)
     expected=asdict(selected_btc_candidate());candidate=value['candidate']
     if type(candidate) is not dict or set(candidate)!=set(expected):raise ValueError('CM2_REFERENCE_CANDIDATE_FIELDS')
     normalized=dict(candidate)
@@ -32,10 +34,27 @@ def reference_config(value):
 class CM2RunConfig:
     policy: ReferenceConfig
     absolute_child_limit: Decimal = Decimal('1e100')
+    sol_policy: SolConfig | None = None
 
     def __post_init__(self):
         if not isinstance(self.policy,ReferenceConfig):raise ValueError('OLD_CM2_POLICY_VERSION_REJECTED')
+        if self.sol_policy is not None and not isinstance(self.sol_policy,SolConfig):raise ValueError('TYPED_SOL_CONFIG_REQUIRED')
         if not self.absolute_child_limit.is_finite() or self.absolute_child_limit<=0:raise ValueError('CM2_CHILD_LIMIT_INVALID')
+
+
+def exact_paired_seed(daily,start_ms):
+    """Reuse the loaded source strings; never recover exact K inputs from floats."""
+    day_ms=86_400_000
+    times=sorted(t for t in daily['BTCUSDT'] if t+day_ms<=start_ms)[-61:]
+    if (len(times)!=61 or times[-1]+day_ms!=(start_ms//day_ms)*day_ms
+            or any(b-a!=day_ms for a,b in zip(times,times[1:]))
+            or any(t not in daily['SOLUSDT'] for t in times)):
+        raise ValueError('SOL_EXACT_61_PAIRED_SEED_REQUIRED')
+    rows=tuple(((t+day_ms)*1_000_000,daily['BTCUSDT'][t]['close'],daily['SOLUSDT'][t]['close']) for t in times)
+    if any(type(b) is not str or type(s) is not str or not Decimal(b).is_finite() or not Decimal(s).is_finite()
+            or Decimal(b)<=0 or Decimal(s)<=0 for _,b,s in rows):
+        raise ValueError('SOL_ORIGINAL_EXACT_PRICE_STRINGS_REQUIRED')
+    return rows
 
 
 def request_interval(request):
@@ -50,7 +69,7 @@ def request_interval(request):
 def build_strategy(run_config, *, instruments,minute_bars,margin_policy,start_ns,end_ns,
                    mark_types,mark_client,journal,exit_fee_rate,execution_hash,
                    seed_days,seed_ohlc,daily_types,h4_type,signal_client,initial_seed,
-                   risk_recorder=None,coherent_observer=None):
+                   risk_recorder=None,coherent_observer=None,seed_paired_closes=()):
     from coinmaster.strategy.cm2_native import CM2Strategy,CM2StrategyConfig
     if journal is None:raise ValueError('CM2_NATIVE_FUNDING_JOURNAL_REQUIRED')
     cls=CM2Strategy
@@ -67,6 +86,7 @@ def build_strategy(run_config, *, instruments,minute_bars,margin_policy,start_ns
         policy=run_config.policy,limits=ExecutionLimits(run_config.absolute_child_limit),
         margin_policy=margin_policy,active_seed=initial_seed,btc_step=instruments[0].size_increment.as_decimal(),
         trading_start_open_ns=start_ns,terminal_close_at_ns=end_ns,seed_days=tuple(seed_days),seed_ohlc=tuple(seed_ohlc),
+        sol_policy=run_config.sol_policy,seed_paired_closes=tuple(seed_paired_closes),
         exit_fee_rate=exit_fee_rate,execution_policy_hash=execution_hash,
         funding_reader=NativeSignedFundingReader(journal),checkpoint_store=NativeCheckpointStore(journal),
         continuity_reader=lambda:observer_continuity(risk_recorder,coherent_observer)))
@@ -106,6 +126,7 @@ def complete_report(result,strategy,engine,journal,seed,coherent):
     result['cm2']['structural_diagnostics']='NATIVE_QUALIFICATION_PENDING'
     result["source_hashes"]={str(path.relative_to(Path(__file__).parents[1])):hashlib.sha256(path.read_bytes()).hexdigest()
         for path in (Path(__file__),Path(__file__).parents[1]/"strategy/cm2_reference_policy.py",
+                     Path(__file__).parents[1]/"strategy/cm2_sol_policy.py",Path(__file__).parents[1]/"strategy/cm2_sol_volatility.py",
                      Path(__file__).parents[1]/"domain/wave_overlay.py",Path(__file__).parents[1]/"strategy/cm2_policy.py",
                      Path(__file__).parents[1]/"strategy/cm2_execution.py",Path(__file__).parents[1]/"strategy/cm2_native.py",
                      Path(__file__).parents[1]/"strategy/cm2_order_contract.py",Path(__file__).parents[1]/"strategy/cm2_checkpoint.py",Path(__file__).with_name("cm2_funding_reader.py"),Path(__file__).with_name("cm2_committed_validation.py"))}
@@ -130,7 +151,7 @@ def preflight(request,receipt):
         raise ValueError('CM2_NATIVE_HOLD_RESOURCE_OR_SCOPED_GATE')
     if receipt.get('stage')!=request['stage']:raise ValueError('CM2_STAGE_RECEIPT_MISMATCH')
     start,end=request_interval(request);family=source_family(request)
-    if family=='CM2BTCREF':cfg=CM2RunConfig(reference_config(request['policy']))
+    if family=='CM2BTCREF':cfg=CM2RunConfig(reference_config(request['policy']),sol_policy=parse_sol_config(request['policy']))
     else:
         expected={'version':'reference-btc-only-public5b-v1',
             'source_commit':'5b56f7d02e09d4495ac018ec1ce701f6f0dfb737',
@@ -168,6 +189,7 @@ def preflight(request,receipt):
             raise ValueError('CM2_FREEZE_MISMATCH:'+str(item['path']))
     source_root=Path(__file__).parents[1]
     required_sources={source_root/name for name in ('strategy/cm2_reference_policy.py','domain/wave_overlay.py',
+        'strategy/cm2_sol_policy.py','strategy/cm2_sol_volatility.py',
         'strategy/cm2_policy.py','strategy/cm2_native.py','strategy/cm2_execution.py','strategy/cm2_order_contract.py',
         'strategy/cm2_checkpoint.py','research/cm2_runner.py','research/cm2_committed_validation.py',
         'research/native_baseline.py','research/cm2_batch.py','research/cm2_funding_reader.py','research/minute_risk.py','research/paired_observer.py')}
@@ -186,7 +208,7 @@ def preflight(request,receipt):
 
 
 def engineering_fixture_module(request):
-    if request.get('fixture_id') not in ('cm2-btc-reference-cycle-native-v1','cm2-btc-reference-terminal-native-v1'):
+    if request.get('fixture_id') not in ('cm2-btc-reference-cycle-native-v1','cm2-btc-reference-terminal-native-v1','cm2-btc-sol-wave-native-v1'):
         raise ValueError('OLD_BREAKOUT_FIXTURE_NOT_QUALIFICATION_FOR_BTC_REFERENCE')
     from coinmaster.research import cm2_reference_fixture
     return cm2_reference_fixture
@@ -310,12 +332,13 @@ def postchild_validation(request):
         prepared=json.loads(Path(request['prepared_control_kwargs']).read_text())
         if not same_typed(result['config']['candidate'],prepared['candidate']):raise ValueError('CONTROL_RAW_CANDIDATE_BINDING_MISMATCH')
     else:
-        policy=asdict(reference_config(request['policy']))
+        policy=policy_document(reference_config(request['policy']),parse_sol_config(request['policy']))
         # JSON changes tuple lists only, so compare canonical JSON values.
         if json.loads(json.dumps(policy))!=result['cm2']['policy'] or result['request_execution_model_id']!=MODEL_ID:
             raise ValueError('CM2_RAW_POLICY_REQUEST_VERSION_MISMATCH')
         source_root=Path(__file__).parents[1]
         required={'research/cm2_runner.py','strategy/cm2_reference_policy.py','domain/wave_overlay.py',
+            'strategy/cm2_sol_policy.py','strategy/cm2_sol_volatility.py',
             'strategy/cm2_policy.py','strategy/cm2_execution.py','strategy/cm2_native.py','strategy/cm2_order_contract.py',
             'strategy/cm2_checkpoint.py','research/cm2_funding_reader.py','research/cm2_committed_validation.py'}
         if set(result['source_hashes'])!=required or any(hashlib.sha256((source_root/name).read_bytes()).hexdigest()!=digest
@@ -398,7 +421,7 @@ def validate_engineering_output(request):
 
 
 def full_native_kwargs(request, *, artifact_dir=None):
-    start,end=request_interval(request);cfg=CM2RunConfig(reference_config(request['policy']))
+    start,end=request_interval(request);cfg=CM2RunConfig(reference_config(request['policy']),sol_policy=parse_sol_config(request['policy']))
     return dict(data_root=Path(request['data_root']),
         artifact_dir=Path(request['artifact_dir']) if artifact_dir is None else Path(artifact_dir),
         artifact_label=request['run_id'],include_funding=True,
@@ -453,7 +476,9 @@ def full_api_boundary_probe(request,probe_dir):
                     instruments=[str(i.id) for i in profile.instruments],
                     public_profile_evidence=profile.evidence,
                     selected_leverage={str(i):str(v) for i,v in local["selected_leverage"]},
-                    actual_cm2_policy=asdict(local["research_cm2"].policy))
+                    actual_cm2_policy=policy_document(local["research_cm2"].policy,local["research_cm2"].sol_policy),
+                    actual_sol_seed_count=len(local["cm2_paired_seed"]),
+                    actual_sol_seed_sha256=hashlib.sha256(json.dumps(local["cm2_paired_seed"]).encode()).hexdigest())
                 opened_journal=local.get("journal")
             finally:
                 del frame

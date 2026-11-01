@@ -4,6 +4,7 @@ from dataclasses import asdict,replace
 from datetime import datetime,timezone
 from decimal import Decimal as D,ROUND_FLOOR,ROUND_CEILING,ROUND_HALF_EVEN
 from hashlib import sha256
+from math import isfinite
 from pathlib import Path
 import json
 from nautilus_trader.config import StrategyConfig
@@ -15,6 +16,7 @@ from nautilus_trader.trading.strategy import Strategy
 from coinmaster.domain.wave_overlay import DailyBar
 from coinmaster.strategy.cm2_reference_policy import ReferenceConfig,ReferenceBtcPolicy,DAY,HOUR
 from coinmaster.strategy.cm2_policy import pending_effects
+from coinmaster.strategy.cm2_sol_policy import SolConfig,SolPolicy,policy_document
 from coinmaster.strategy.cm2_execution import ExecutionLimits,NativeExposure,SafetyState,order_plan
 from coinmaster.strategy.cm2_checkpoint import KEY,SCHEMA,canonical,decode
 from coinmaster.strategy.cm2_order_contract import (MODEL_ID,FRESH_NS,DRAIN_NS,REDUCE_FLOOR_POLICY,
@@ -65,6 +67,8 @@ class CM2StrategyConfig(StrategyConfig,frozen=True):
     terminal_close_at_ns: int
     seed_days: tuple = ()
     seed_ohlc: tuple = ()
+    sol_policy: object = None
+    seed_paired_closes: tuple = ()
     exit_fee_rate: D = D('.000432')
     execution_policy_hash: str = ''
     funding_reader: object = None
@@ -86,6 +90,12 @@ class CM2Strategy(Strategy):
             if ns not in ohlc:raise ValueError("GENUINE_D1_OHLC_SEED_REQUIRED")
             self.reference.accept_closed_day(day,receipt_ns=config.trading_start_open_ns,
                 btc_high=float(ohlc[ns][0]),btc_low=float(ohlc[ns][1]))
+        if config.sol_policy is not None and not isinstance(config.sol_policy,SolConfig):raise ValueError('TYPED_SOL_CONFIG_REQUIRED')
+        self.sol=SolPolicy(config.sol_policy) if config.sol_policy is not None and config.sol_policy.enabled else None
+        if self.sol is not None:
+            if len(config.seed_paired_closes)!=61:raise ValueError('SOL_EXACT_61_SEED_REQUIRED')
+            for ns,b,s in config.seed_paired_closes:self.sol.accept_daily(ns,b,s,config.trading_start_open_ns)
+            if self.sol.daily[-1].close_ns!=(config.trading_start_open_ns//DAY)*DAY:raise ValueError('SOL_SEED_LATEST_BOUNDARY_REQUIRED')
         self.safety=SafetyState(emergency_peak_equity=config.active_seed)
         self._latest_marks={};self._quotes={};self._owned={};self._order_audit={};self._seen_trade_ids=set()
         self._days_pending={};self._queued_tp={};self._needs_daily=False;self._tp_ready_ns=0
@@ -98,7 +108,7 @@ class CM2Strategy(Strategy):
         self._retained_audit_chain='0'*64;self._checkpoint_revision=0;self._checkpoint_loaded=False
         self.terminal_lifecycle={"status":"NOT_REACHED","reason":""}
         self._admission_sources={name:sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
-            for name in ('cm2_native.py','cm2_reference_policy.py','cm2_execution.py','cm2_checkpoint.py','cm2_order_contract.py')}
+            for name in ('cm2_native.py','cm2_reference_policy.py','cm2_execution.py','cm2_checkpoint.py','cm2_order_contract.py','cm2_sol_policy.py','cm2_sol_volatility.py')}
 
     def on_start(self):
         if self.cache.instrument(self.config.btc_id).size_increment.as_decimal()!=self.config.btc_step:
@@ -138,6 +148,7 @@ class CM2Strategy(Strategy):
                     datetime.fromtimestamp(ns/1e9,timezone.utc),datetime.fromtimestamp(available/1e9,timezone.utc),
                     float(b.open),float(b.close),float(s.close))
                 self.reference.accept_closed_day(bar,receipt_ns=now,btc_high=float(b.high),btc_low=float(b.low))
+                if self.sol is not None:self.sol.accept_daily(ns,str(b.close),str(s.close),now)
                 del self._days_pending[ns];self._needs_daily=True;self._evaluate_daily(now)
         elif getattr(item,'hours',None)==4 and item.instrument_id==self.config.btc_id:
             self.reference.accept_closed_btc_h4(open_ns=item.open_time_ns,close_ns=item.ts_event,
@@ -223,9 +234,13 @@ class CM2Strategy(Strategy):
         # reconciliation may re-arm the next causal decision.
         self._needs_daily=False
         if decision.action=='BTC_CLOSE':
+            sol=getattr(self,'sol',None)
+            sol_end=sol is not None and sol.market_end(decision.parent_id,decision.reason)
+            sol_reason=sol.episode.exit_reason if sol_end else None
             self.reference.stop_entry_remainder(decision.parent_id,reason=decision.reason)
             self.reference.revoke_c1(now,'MANDATORY_BTC_CLOSE');self._queued_tp.clear()
             self._begin_drain(now,'BTC_ECONOMIC',[str(self.config.btc_id)],decision.reason)
+            if sol_end:self._sol_request_exit(now,sol_reason)
         elif decision.action=='BTC_ENTRY':
             self._audit(now,'BTC_ENTRY_INTENT')
         parent=self.reference.parent
@@ -298,6 +313,8 @@ class CM2Strategy(Strategy):
             prices[self.config.btc_id],prices[self.config.sol_id],bool(unknown_assets),known,known_prices,frozenset(unknown_assets))
 
     def _begin_drain(self,now,scope,ids,reason):
+        sol=getattr(self,'sol',None)
+        if scope=='GLOBAL' and sol is not None:sol.request_exit(reason)
         previous=self._drain.get(scope)
         state=drain_update(previous['state'] if previous else None,now,ids)
         self._drain[scope]={'state':state,'reason':reason,
@@ -339,6 +356,7 @@ class CM2Strategy(Strategy):
             if name in self.clock.timer_names:self.clock.cancel_timer(name)
             self.drain_audit.append({'timestamp_ns':now,'scope':scope,'event':'NATIVE_SCOPED_FLAT'})
             del self._drain[scope]
+            if scope=='SOL_SUBORDINATE' and getattr(self,'sol',None) is not None:self._sol_reconcile()
             # GLOBAL safety stays latched independently; SOL drain never owns
             # the BTC economic reset or a later BTC episode's target.
 
@@ -416,6 +434,8 @@ class CM2Strategy(Strategy):
                 if not any(v['purpose'].startswith('C1_') for v in self._owned.values()):self._execute_targets(tick,now)
             else:
                 self._execute_entry(tick,now);self._execute_targets(tick,now)
+        elif tick.instrument_id==self.config.sol_id and getattr(self,'sol',None) is not None:
+            self._execute_sol(tick,now)
         elif tick.instrument_id==self.config.sol_id and self._position(self.config.sol_id) is not None:
             # No SOL alpha is active in this BTC-only stage. Known subordinate
             # inventory drains without changing the BTC economic decision.
@@ -427,7 +447,137 @@ class CM2Strategy(Strategy):
                 and not btc_close_phase and 'BTC_ECONOMIC' not in self._drain
                 and self.reference.consume_h4_reentry_facts(now)):
             self._needs_daily=True;self._evaluate_daily(now)
+        if tick.instrument_id==self.config.btc_id and getattr(self,'sol',None) is not None:self._sol_observe_btc(tick,now)
         self._capture_btc_source(now)
+
+
+    def _sol_daily_feature(self,now):
+        if not self.reference.signals:return None
+        row=self.reference._features.bars[-1]
+        if _ns(row.close_time)!=(now//DAY)*DAY or _ns(row.available_at)>now:return None
+        return self.reference.signals[-1]
+
+    def _sol_pending_growth(self):
+        return sum((o.leaves_qty.as_decimal() for o in self._orders(self.config.sol_id) if not o.is_reduce_only),ZERO)
+
+    def _sol_reconcile(self):
+        sol=getattr(self,'sol',None)
+        if sol is not None:
+            before=sol.episode
+            sol.reconcile(native_flat=self._position(self.config.sol_id) is None,
+                owners_terminal=not self._orders(self.config.sol_id) and not any(
+                    v['instrument_id']==self.config.sol_id for v in self._owned.values()))
+            if before is not sol.episode:self._persist_checkpoint()
+
+    def _sol_request_exit(self,now,reason):
+        sol=getattr(self,'sol',None)
+        if sol is not None and sol.request_exit(reason):
+            self._begin_drain(now,'SOL_SUBORDINATE',[str(self.config.sol_id)],reason)
+            self._persist_checkpoint()
+
+    def _sol_refresh_opening(self,now):
+        sol=getattr(self,'sol',None)
+        if sol is None or sol.episode is None or not sol.episode.opening_live:return
+        ep=sol.episode;p=self.reference.parent;btc=self._position(self.config.btc_id)
+        if (p is None or p.id!=ep.sponsor or p.close_reason or btc is None
+                or (1 if btc.is_long else -1)!=ep.btc_side):
+            sol.retire_opening()
+        else:
+            try:
+                s=self._snapshot(now);tick=self._quotes.get(self.config.sol_id)
+                if (s.unknown_orders or not s.data_known or not all(s.price_known.values())
+                        or tick is None or not bbo_status(tick,now)[0]):
+                    raise ValueError('SOL_OPENING_FACTS_UNKNOWN')
+                price=tick.ask_price.as_decimal() if ep.side==1 else tick.bid_price.as_decimal()
+                cap=sol.remaining(native_btc_notional=abs(s.btc_qty*s.btc_mark),executable_price=price,
+                    lot=self.cache.instrument(self.config.sol_id).size_increment.as_decimal(),
+                    actual_sol=ZERO,pending_growth=ZERO)
+                if abs(s.sol_qty)+self._sol_pending_growth()<=cap:return
+                if abs(s.sol_qty)>=cap:sol.retire_opening()
+            except (ValueError,AttributeError,TypeError):
+                pass  # Unknown never rearms; cancel attainable unfilled growth.
+        for order in self._orders(self.config.sol_id):
+            if not order.is_reduce_only and not order.is_pending_cancel:self.cancel_order(order)
+        self._sol_reconcile()
+        if not ep.opening_live:self._persist_checkpoint()
+
+    def _sol_observe_btc(self,tick,now):
+        sol=getattr(self,'sol',None)
+        if sol is None:return
+        btc=self._position(self.config.btc_id)
+        native=btc.quantity.as_decimal()*(D(1) if btc.is_long else D(-1)) if btc else ZERO
+        before=(sol.gate_parent,sol.exhaustion)
+        sol.observe_wave(self.reference.parent,native_btc=native,
+            bid=tick.bid_price.as_decimal(),ask=tick.ask_price.as_decimal(),
+            source_ns=tick.ts_event,receipt_ns=now)
+        if before!=(sol.gate_parent,sol.exhaustion):self._persist_checkpoint()
+        self._sol_refresh_opening(now)
+
+    def _execute_sol(self,tick,now):
+        sol=self.sol
+        self._sol_reconcile()
+        f=self._sol_daily_feature(now)
+        if f is not None and sol.episode is not None:
+            sol.relative_exit(relative=f.relative,mu=f.mu,daily_ns=(now//DAY)*DAY,now=now)
+        if sol.episode is not None and sol.episode.exit_reason:
+            self._sol_request_exit(now,sol.episode.exit_reason)
+        if self._scope_for(self.config.sol_id) is not None:
+            self._execute_drain(tick,now,self._scope_for(self.config.sol_id));return
+        self._sol_refresh_opening(now);self._sol_reconcile()
+        p=self.reference.parent;btc=self._position(self.config.btc_id)
+        held=btc is not None and p is not None and (1 if btc.is_long else -1)==p.side
+        truth=False
+        if held and not p.close_reason and sol.exhaustion is not None and sol.exhaustion['parent_id']==p.id:
+            truth=None
+            if (f is not None and f.z is not None and f.sigma is not None
+                    and isfinite(f.z) and isfinite(f.sigma) and f.sigma>0):
+                try:
+                    s=self._snapshot(now)
+                    if s.data_known and not s.unknown_orders and all(s.price_known.values()):
+                        truth=p.side*f.z>=1.25
+                except (ValueError,AttributeError):pass
+        before_gate=(sol.gate_parent,sol.gate_truth,sol.gate_spent)
+        edge=sol.observe_gate(p.id if p else None,truth)
+        if before_gate!=(sol.gate_parent,sol.gate_truth,sol.gate_spent):self._persist_checkpoint()
+        owners=any(v['instrument_id']==self.config.sol_id for v in self._owned.values()) or bool(self._orders(self.config.sol_id))
+        position=self._position(self.config.sol_id)
+        if edge and (sol.episode is not None or owners or position is not None):
+            sol.commit_opportunity();self._persist_checkpoint()
+        if sol.episode is None and edge and position is None and not owners:
+            s=self._snapshot(now);side=-p.side
+            price=tick.ask_price.as_decimal() if side==1 else tick.bid_price.as_decimal()
+            ep=sol.opening_candidate(sponsor=p.id,btc_side=p.side,
+                native_btc_notional=abs(s.btc_qty*s.btc_mark),sigma=D(str(f.sigma)),
+                executable_price=price,lot=self.cache.instrument(self.config.sol_id).size_increment.as_decimal(),now=now)
+            if ep is not None and self._admit(self.config.sol_id,ep.quantity,price,s,now):
+                row=self.reference._features.bars[-1]
+                ep.permission={'exhaustion':dict(sol.exhaustion),'decision_ns':now,
+                    'daily_close_ns':_ns(row.close_time),'daily_available_ns':_ns(row.available_at),
+                    'relative':f.relative,'mu':f.mu,'sigma':f.sigma,'z':f.z,
+                    'actual_btc_qty':s.btc_qty,'coherent_btc_mark':s.btc_mark,
+                    'actual_btc_notional':abs(s.btc_qty*s.btc_mark)}
+                sol.episode=ep
+        ep=sol.episode
+        if ep is None or not ep.opening_live or ep.exit_reason or owners:return
+        if not held or p.id!=ep.sponsor or p.close_reason:
+            sol.retire_opening();self._sol_reconcile();return
+        try:
+            s=self._snapshot(now)
+            if not s.data_known or s.unknown_orders or not all(s.price_known.values()):return
+            price=tick.ask_price.as_decimal() if ep.side==1 else tick.bid_price.as_decimal()
+            q=sol.remaining(native_btc_notional=abs(s.btc_qty*s.btc_mark),executable_price=price,
+                lot=self.cache.instrument(self.config.sol_id).size_increment.as_decimal(),
+                actual_sol=abs(s.sol_qty),pending_growth=self._sol_pending_growth())
+            if not q:
+                sol.retire_opening();self._sol_reconcile();return
+            sent=self._send(self.config.sol_id,q,ep.side,'SOL_OPEN',now,tick,reason='SOL_V1_ACCEPTED_OPENING')
+            accepted=sent or ep.native_filled or any(v['instrument_id']==self.config.sol_id for v in self._owned.values())
+            if accepted and sol.gate_truth is True:
+                sol.commit_opportunity();self._persist_checkpoint()
+            if not accepted and not ep.native_filled:
+                sol.retire_opening();self._sol_reconcile()
+        except (ValueError,AttributeError,TypeError) as error:
+            self.target_blockers['SOL_OPEN']={'reason':str(error),'clock_ns':str(now)}
 
     def _execute_drain(self,tick,now,scope):
         if tick.ts_event<self._drain[scope]['state']['first_ns']:return
@@ -609,6 +759,11 @@ class CM2Strategy(Strategy):
                 parent=self.reference.parent
                 if iid==self.config.btc_id and purpose.startswith('ENTRY') and parent is not None:
                     admitted=max(q,parent.selected_quantity-parent.filled_quantity)
+                if purpose=='SOL_OPEN' and getattr(self,'sol',None) is not None:
+                    admitted=self.sol.remaining(native_btc_notional=abs(snapshot.btc_qty*snapshot.btc_mark),
+                        executable_price=executable,lot=instrument.size_increment.as_decimal(),
+                        actual_sol=abs(snapshot.sol_qty),pending_growth=self._sol_pending_growth())
+                    if admitted<q:raise ValueError('SOL_CURRENT_PARENT_CAP_SHRANK')
                 if not self._admit(iid,admitted,executable,snapshot,now):
                     if purpose=='C1_RESTORE':self.reference.deny_c1_restore()
                     return False
@@ -635,6 +790,8 @@ class CM2Strategy(Strategy):
                 'raw_limit_price':raw_limit,'decision_index':decision_index if decision_index is not None else (self.reference.signals[-1].index if self.reference.signals else -1),
                 'accepted_retry':bool(purpose=='TP_IOC' and parent is not None and (level in parent.suppressed_zero_levels or parent.filled_quantity==parent.selected_quantity and not parent.stop_reason)),
                 'reduce_only':reduce_only,'reason':reason}
+            if getattr(self,'sol',None) is not None and iid==self.config.sol_id and self.sol.episode is not None:
+                context['sol_episode']=asdict(self.sol.episode)
             self._owned[oid]=context
             self._order_audit[oid]=_report_value({**context,'client_order_id':oid,'instrument_id':str(iid),
                 'native_order_type':order.order_type.name,'native_time_in_force':order.time_in_force.name,
@@ -694,6 +851,25 @@ class CM2Strategy(Strategy):
             row=self.liquidation_audit[-1]
             row['close_fills'].append({'trade_id':tid,'quantity':str(event.last_qty),'price':str(event.last_px)})
             row['close_value']=str(D(row['close_value'])+event.last_qty.as_decimal()*event.last_px.as_decimal())
+        sol=getattr(self,'sol',None)
+        if sol is not None and event.instrument_id==self.config.sol_id:
+            foreign=context is None
+            if context is not None and context['purpose']=='SOL_OPEN':
+                owner=context.get('sol_episode');ep=sol.episode
+                try:
+                    foreign=(owner is None or ep is None or owner['sponsor']!=ep.sponsor
+                        or owner['accepted_ns']!=ep.accepted_ns or owner['side']!=ep.side
+                        or D(owner['k'])!=ep.k)
+                except (KeyError,ValueError,TypeError,ArithmeticError):foreign=True
+                if not foreign:sol.native_fill()
+            if foreign and context is not None and context['purpose']=='SOL_OPEN':
+                sol.request_exit('SOL_FILL_EPISODE_IDENTITY_UNKNOWN')
+                self._begin_drain(self.clock.timestamp_ns(),'SOL_SUBORDINATE',
+                    [str(self.config.sol_id)],'SOL_FILL_EPISODE_IDENTITY_UNKNOWN')
+            elif foreign:
+                self._restore_failed=True;self.safety.global_latched=True;self.safety.reason='FOREIGN_OR_LATE_SOL_FILL'
+                self._begin_drain(self.clock.timestamp_ns(),'GLOBAL',[str(self.config.btc_id),str(self.config.sol_id)],self.safety.reason)
+        if event.instrument_id==self.config.btc_id and sol is not None:self._sol_refresh_opening(self.clock.timestamp_ns())
         self._chain_audit('NATIVE_FILL',self.fill_audit[-1]);self._terminal_event(event,only_if_closed=True)
         self._persist_checkpoint()
 
@@ -740,6 +916,7 @@ class CM2Strategy(Strategy):
                 self.drain_audit.append({'timestamp_ns':now,'scope':scope,'event':'NATIVE_CALLBACK_PROGRESS',
                     'retired_order_id':oid,'purpose':purpose})
                 self._execute_drain(tick,now,scope)
+        if getattr(self,'sol',None) is not None:self._sol_reconcile()
         self._persist_checkpoint()
 
     def on_order_canceled(self,event):self._terminal_event(event)
@@ -810,7 +987,7 @@ class CM2Strategy(Strategy):
                 projected=abs(held)+growth+(abs(q) if other==iid else ZERO)
                 if other==self.config.btc_id:
                     parent=self.reference.parent
-                    logical=parent.selected_quantity if parent is not None and parent.selected_quantity is not None and not parent.split_terminal else ZERO
+                    logical=abs(held)+max(ZERO,parent.selected_quantity-parent.filled_quantity) if parent is not None and parent.selected_quantity is not None and not parent.split_terminal else ZERO
                     cycle=self.reference.c1
                     if cycle is not None and not cycle.revoked:logical=max(logical,abs(held)+D(cycle.credit)*self.config.btc_step)
                     logical_fees+=max(ZERO,logical-projected)*mark*fee_rate
@@ -890,6 +1067,7 @@ class CM2Strategy(Strategy):
         evidence=getattr(profile,'evidence',None)
         return {'model_id':MODEL_ID,'policy_version':self.config.policy.version,
             'implementation_sources':dict(self._admission_sources),
+            'sol_model':asdict(self.config.sol_policy) if getattr(self.config,'sol_policy',None) is not None else None,
             'bbo_and_mark_max_age_ns':FRESH_NS,'drain_interval_ns':DRAIN_NS,
             'operational_intervals_authority':'OWN_RESEARCH_CHOICES_NOT_HL_PARAMETERS',
             'limit_GTC_rounding':'REFERENCE_NATIVE_MAKE_PRICE_THEN_5SIG_HALF_EVEN',
@@ -906,7 +1084,8 @@ class CM2Strategy(Strategy):
                 for key,spec in sorted(getattr(profile,'instruments',{}).items())}}
 
     def _checkpoint_identity(self):
-        return {'schema':SCHEMA,'sources':self._admission_sources,'policy':asdict(self.config.policy),
+        return {'schema':SCHEMA,'sources':self._admission_sources,'policy':policy_document(self.config.policy,self.config.sol_policy),
+            'seed_paired_closes_sha256':sha256(canonical(self.config.seed_paired_closes)).hexdigest(),
             'execution_policy_hash':self.config.execution_policy_hash,'strategy_id':str(self.id),
             'request_model_id':MODEL_ID,'request_contract':self._request_contract_identity(),
             'seed_days_sha256':sha256(canonical([[_ns(d.open_time),_ns(d.close_time),_ns(d.available_at),
@@ -930,6 +1109,7 @@ class CM2Strategy(Strategy):
             'domain':{'reference':self.reference.snapshot_state(),'safety':asdict(self.safety),
                 'owned':{oid:{**v,'instrument_id':str(v['instrument_id']),'client_order_id':str(v['client_order_id'])} for oid,v in self._owned.items()},
                 'seen_trade_ids':sorted(self._seen_trade_ids),'queued_tp':{str(k):asdict(v) for k,v in self._queued_tp.items()},
+                'sol':self.sol.snapshot() if self.sol is not None else None,
                 'needs_daily':self._needs_daily,'tp_ready_ns':self._tp_ready_ns,
                 'drain':self._drain,'btc_source_frame':self._btc_source_frame,'restore_failed':self._restore_failed,
                 'risk_unknown':self._risk_unknown,'liquidating':self._liquidating,
@@ -970,6 +1150,8 @@ class CM2Strategy(Strategy):
         for drain in drains.values():validate_drain(drain['state'],(str(self.config.btc_id),str(self.config.sol_id)))
         safety=SafetyState(**domain['safety'])
         if safety.emergency_latched and not safety.global_latched:raise ValueError('CM2_EMERGENCY_LATCH_INCONSISTENT')
+        if (self.sol is None)!=(domain['sol'] is None):raise ValueError('SOL_CHECKPOINT_MODEL_MISMATCH')
+        if self.sol is not None:self.sol.restore(domain['sol'],self.clock.timestamp_ns())
         self.reference.restore_state(domain['reference']);self.safety=safety;self._owned=owned
         from coinmaster.strategy.cm2_reference_policy import TargetPlan
         self._queued_tp={int(k):TargetPlan(**v) for k,v in domain['queued_tp'].items()}
@@ -1002,7 +1184,7 @@ class CM2Strategy(Strategy):
             'fill_audit':self.fill_audit,'entry_sizing_audit':self.entry_sizing_audit,
             'emergency_drawdown_control':{'status':'LATCHED' if self.safety.emergency_latched else 'DISABLED_RESEARCH' if self.config.policy.emergency_drawdown_fraction is None else 'ARMED',
                 'configured_fraction':self.config.policy.emergency_drawdown_fraction,'state':asdict(self.safety)},
-            'cm2':{'policy':asdict(self.config.policy),'request_execution_model_id':MODEL_ID,
+            'cm2':{'policy':policy_document(self.config.policy,self.config.sol_policy),'request_execution_model_id':MODEL_ID,
                 'request_contract':request,'request_contract_sha256':sha256(canonical(request)).hexdigest(),
                 'execution_comparability':'BTC_FIRST_REFERENCE_COMPONENT_WITH_EXPLICIT_NATIVE_GUARD_DEVIATIONS',
                 'reduce_only_minimum_policy':REDUCE_FLOOR_POLICY,'market_wire_price_and_IOC_backend_classification':'UNKNOWN',
@@ -1013,7 +1195,8 @@ class CM2Strategy(Strategy):
                 'target_blockers':self.target_blockers,'orphan_intervals':self.orphan_intervals,
                 'open_orphan_since_ns':self.orphan_started_ns,'checkpoint_revision':self._checkpoint_revision,
                 'ordinary_harvest_actual_geometry':{'status':'NOT_APPLICABLE_BTC_REFERENCE_POLICY'},
-                'sol_staging_harvest_context':{'status':'NOT_APPLICABLE_SOL_COMPONENT_INACTIVE'},
+                'sol_staging_harvest_context':{'status':'FIXED_SOL_V1_ACTIVE' if self.sol is not None else 'SOL_DEFAULT_OFF',
+                    'state':self.sol.snapshot() if self.sol is not None else None},
                 'capacity_model':{'model':'ZERO_IMPACT_ORDER_LEAVES_DIAGNOSTIC','participation':None,
                     'official_venue_caps':'ENFORCED','discretionary_turnover_cap':'DISABLED_MATCHED_REFERENCE_PROFILE'},
                 'restart_recovery':'SAME_CLOCK_NATIVE_CACHE_JOURNAL_BINDING_ONLY_OS_COLD_RECOVERY_UNKNOWN',
