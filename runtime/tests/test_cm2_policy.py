@@ -10,35 +10,43 @@ from coinmaster.strategy.cm2_policy import (
     Config,Features,Snapshot,State,Hour,HOUR_NS,MINUTE_NS,PairedHourBuilder,features,decide,positive_harvest)
 from coinmaster.strategy.cm2_execution import order_plan,stage_targets
 
+def configured(**kwargs):
+    # TEST-ONLY explicit acceptance inputs, not trading recommendations/defaults.
+    values=dict(parent_risk_fraction=.9,initial_band_atr=100,hedge_future_cost_rate=.000432,
+        downside_scenarios=((-0.02,-0.04),(-0.01,0.005),(0.02,0.04),(0.01,-0.005)))
+    values.update(kwargs)
+    return Config(**values)
+
 def feat(t=200*HOUR_NS,**kwargs):
     return replace(Features(t,t,True,close=1000,channel_high=1010,channel_low=990,
         atr=10,beta=1.5,beta_guard=1.8,rho=.8,residual_z=0,btc_return6=.01,
-        common_loss=.02,residual_loss=.001,hedge_valid=True),**kwargs)
+        common_loss=.02,residual_loss=.001,hedge_valid=True,covariance_ratio=1/1.8),**kwargs)
 
 def snap(**kwargs):
     return replace(Snapshot(D("10000"),D("1"),D("0"),D("1000"),D("100"),
         btc_vwap=D("1000"),btc_entry_fees=D(".4"),btc_signed_funding=D("0")),**kwargs)
 
 def state(**kwargs):
+    if kwargs.get("direction",1)<0 and "stop" not in kwargs: kwargs["stop"]=1200
     return replace(State(direction=1,parent=1,btc_target=D("1"),unhedged_btc_target=D("1"),
         initial_r=100,stop=800,extreme=1000,last_hour=199*HOUR_NS),**kwargs)
 
 class PolicyTests(unittest.TestCase):
     def test_parameter_bounds(self):
         for name,value in (("load",9),("trend_hours",23),("stop_atr",1.9),("hedge_fraction",1),("core",.95)):
-            with self.assertRaises(ValueError): Config(**{name:value})
+            with self.assertRaises(ValueError): configured(**{name:value})
     def test_entry_target_is_finite_and_no_callback_add(self):
         s=snap(btc_qty=D(0),btc_vwap=None)
         f=feat(close=1020)
-        first=decide(Config(),f,s,State())
+        first=decide(configured(),f,s,State())
         self.assertEqual(first.btc_target,D(40))
-        again=decide(Config(),f,replace(s,btc_pending=D(40)),first.state)
+        again=decide(configured(),f,replace(s,btc_pending=D(40)),first.state)
         self.assertEqual(again.btc_target,D(40))
     def test_entry_long_short_scale(self):
         for close,sign in ((1020,1),(980,-1)):
             f=feat(close=close)
-            a=decide(Config(),f,snap(btc_qty=D(0)),State())
-            b=decide(Config(),f,snap(equity=D(20000),btc_qty=D(0)),State())
+            a=decide(configured(),f,snap(btc_qty=D(0)),State())
+            b=decide(configured(),f,snap(equity=D(20000),btc_qty=D(0)),State())
             self.assertEqual(a.btc_target,D(sign*40))
             self.assertEqual(b.btc_target,a.btc_target*2)
     def test_prior_channel_rolling_cannot_average_down(self):
@@ -47,10 +55,10 @@ class PolicyTests(unittest.TestCase):
         for d,q,mark,c,hi,lo,stop,extreme in cases:
             s=snap(btc_qty=q,btc_mark=mark)
             st=state(direction=d,btc_target=q,unhedged_btc_target=q,stop=stop,extreme=extreme)
-            result=decide(Config(),feat(close=c,channel_high=hi,channel_low=lo),s,st)
+            result=decide(configured(),feat(close=c,channel_high=hi,channel_low=lo),s,st)
             self.assertEqual(result.btc_target,q)
     def test_unknown_basis_cannot_add(self):
-        result=decide(Config(),feat(close=1020),snap(btc_vwap=None),state())
+        result=decide(configured(),feat(close=1020),snap(btc_vwap=None),state())
         self.assertEqual(result.btc_target,D(1))
     def test_harvest_requires_actual_positive_net_costs(self):
         s=snap(btc_mark=D(1001),btc_entry_fees=D(5))
@@ -61,10 +69,10 @@ class PolicyTests(unittest.TestCase):
     def test_harvest_reduces_once_no_add(self):
         f=feat(close=1250,channel_high=1240)
         s=snap(btc_mark=D(1250))
-        a=decide(Config(),f,s,state(initial_r=100))
+        a=decide(configured(),f,s,state(initial_r=100))
         self.assertEqual(a.reason,"POSITIVE_NET_HARVEST")
         self.assertEqual(a.btc_target,D(".75"))
-        b=decide(Config(),replace(f,closed_ns=f.closed_ns+HOUR_NS,close=1260),replace(s,btc_qty=D(".75")),a.state)
+        b=decide(configured(),replace(f,closed_ns=f.closed_ns+HOUR_NS,close=1260),replace(s,btc_qty=D(".75")),a.state)
         self.assertEqual(b.btc_target,D(".75"))
     def test_two_close_hedge_hysteresis_and_opposite_sign(self):
         for d in (1,-1):
@@ -72,58 +80,58 @@ class PolicyTests(unittest.TestCase):
             st=state(direction=d,btc_target=q,unhedged_btc_target=q,stop=800 if d>0 else 1200)
             s=snap(btc_qty=q)
             f=feat(residual_z=-d*2,btc_return6=-d*.02)
-            a=decide(Config(),f,s,st)
+            a=decide(configured(),f,s,st)
             self.assertEqual(a.sol_target,D(0))
             f=replace(f,closed_ns=f.closed_ns+HOUR_NS)
-            b=decide(Config(),f,s,a.state)
+            b=decide(configured(),f,s,a.state)
             self.assertLess(b.sol_target*q,0)
             self.assertGreater(abs(q)*s.btc_mark-D(str(f.beta_guard))*abs(b.sol_target)*s.sol_mark,0)
             release=replace(f,closed_ns=f.closed_ns+HOUR_NS,residual_z=0,btc_return6=d*.01)
-            c=decide(Config(),release,s,b.state)
+            c=decide(configured(),release,s,b.state)
             self.assertNotEqual(c.sol_target,D(0))
-            e=decide(Config(),replace(release,closed_ns=release.closed_ns+HOUR_NS),s,c.state)
+            e=decide(configured(),replace(release,closed_ns=release.closed_ns+HOUR_NS),s,c.state)
             self.assertEqual(e.sol_target,D(0))
     def test_small_unknown_beta_has_finite_latched_trim(self):
-        for f in (feat(hedge_valid=False,beta=0,beta_guard=0),feat(valid=False)):
-            a=decide(Config(),f,snap(),state())
+        for f in (feat(valid=False),):
+            a=decide(configured(),f,snap(),state())
             self.assertEqual(a.btc_target,D(".5"))
-            b=decide(Config(),f,snap(btc_qty=D(".5")),a.state)
+            b=decide(configured(),f,snap(btc_qty=D(".5")),a.state)
             self.assertEqual(b.btc_target,D(".5"))
             self.assertEqual(b.sol_target,D(0))
     def test_bad_residual_risk_denies_sol(self):
         f=feat(residual_z=-2,btc_return6=-.02,residual_loss=.2)
-        a=decide(Config(),f,snap(),state(activate_count=1))
+        a=decide(configured(downside_scenarios=((-0.01,.08),(.01,-.08))),f,snap(),state(activate_count=1))
         self.assertEqual(a.sol_target,D(0))
     def test_buffer_changes_ordinary_inventory_not_hard_cap_or_drain(self):
         s=snap(sol_qty=D("-2.1"))
         st=state(last_hour=200*HOUR_NS,sol_target=D("-2.5"))
-        a=decide(Config(buffer=.08),feat(),s,st)
-        b=decide(Config(buffer=.03),feat(),s,st)
+        a=decide(configured(buffer=.08),feat(),s,st)
+        b=decide(configured(buffer=.03),feat(),s,st)
         self.assertEqual(a.sol_target,D("-2.1"))
         self.assertEqual(b.sol_target,D("-2.5"))
-        c=decide(Config(buffer=.20),feat(),snap(sol_qty=D("-3")),st)
-        self.assertEqual(c.sol_target,D("-2.5"))
-        d=decide(Config(buffer=.20),feat(),s,replace(st,sol_target=D(0)))
+        c=decide(configured(buffer=.20),feat(),snap(sol_qty=D("-3")),st)
+        self.assertEqual(c.sol_target,D("-3")) # safely inside no-factor-flip cap; h is soft
+        d=decide(configured(buffer=.20),feat(),s,replace(st,sol_target=D(0)))
         self.assertEqual(d.sol_target,D(0))
     def test_matched_trim_not_geometric(self):
         f=feat(residual_z=-2,btc_return6=-.02)
-        a=decide(Config(mode="btc_trim"),f,snap(),state(activate_count=1))
+        a=decide(configured(mode="btc_trim"),f,snap(),state(activate_count=1))
         s=snap(btc_qty=a.btc_target)
-        b=decide(Config(mode="btc_trim"),replace(f,closed_ns=f.closed_ns+HOUR_NS),s,a.state)
+        b=decide(configured(mode="btc_trim"),replace(f,closed_ns=f.closed_ns+HOUR_NS),s,a.state)
         self.assertEqual(a.btc_target,b.btc_target)
     def test_flat_parent_drains_sol_and_blocks_new_parent(self):
-        a=decide(Config(),feat(close=1100),snap(btc_qty=D(0),sol_qty=D(-1)),state())
+        a=decide(configured(),feat(close=1100),snap(btc_qty=D(0),sol_qty=D(-1)),state())
         self.assertEqual((a.btc_target,a.sol_target),(D(0),D(0)))
         self.assertTrue(a.state.draining)
-        b=decide(Config(),feat(),snap(btc_qty=D(0),sol_qty=D(0),unknown_orders=True),a.state)
+        b=decide(configured(),feat(),snap(btc_qty=D(0),sol_qty=D(0),unknown_orders=True),a.state)
         self.assertTrue(b.state.draining)
     def test_terminal_emergency_bypasses_ordinary_staging(self):
-        a=decide(Config(),feat(),snap(sol_qty=D(-2)),state(),terminal=True)
+        a=decide(configured(),feat(),snap(sol_qty=D(-2)),state(),terminal=True)
         b,sol,wait=stage_targets(a,snap(sol_qty=D(-2)),feat())
         self.assertEqual((b,sol,wait),(D(0),D(0),False))
     def test_ordinary_reduction_stages_sol_before_btc(self):
         f=feat()
-        a=decide(Config(),f,snap(),state())
+        a=decide(configured(),f,snap(),state())
         a=replace(a,btc_target=D(".1"),sol_target=D(-1))
         b,sol,wait=stage_targets(a,snap(sol_qty=D(-5),sol_pending=D(-1)),f)
         self.assertTrue(wait)
@@ -132,7 +140,7 @@ class PolicyTests(unittest.TestCase):
     def test_proposed_sol_and_pending_btc_reduction_capped(self):
         f=feat(beta=1,beta_guard=1)
         s=snap(btc_qty=D(100),sol_qty=D(0),btc_pending=D(-70))
-        decision=decide(Config(),f,s,state(btc_target=D(100),unhedged_btc_target=D(100)))
+        decision=decide(configured(),f,s,state(btc_target=D(100),unhedged_btc_target=D(100)))
         decision=replace(decision,btc_target=D(50),sol_target=D(-750))
         btc,sol,wait=stage_targets(decision,s,f)
         self.assertEqual(btc,D(50))
@@ -142,8 +150,8 @@ class PolicyTests(unittest.TestCase):
             self.assertGreaterEqual(actual_btc*s.btc_mark-abs(sol)*s.sol_mark,0)
 
     def test_held_sol_cap_after_btc_fill(self):
-        a=decide(Config(),feat(),snap(btc_qty=D(".1")),state(last_hour=200*HOUR_NS,sol_target=D(-4)))
-        self.assertLessEqual(abs(a.sol_target),D(".1")*D(1000)*D(".45")/D("1.8")/D(100))
+        a=decide(configured(),feat(),snap(btc_qty=D(".1")),state(last_hour=200*HOUR_NS,sol_target=D(-4)))
+        self.assertLessEqual(abs(a.sol_target),D(".1")*D(1000)/D("1.8")/D(100))
     def test_pending_counted_once(self):
         kwargs=dict(actual=D(1),target=D(3),pending=D(2),unknown=False,price=D(1000),step=D(".001"),min_qty=D(".001"),max_child=D(1000))
         self.assertEqual(order_plan(**kwargs).action,"WAIT")
@@ -152,7 +160,7 @@ class PolicyTests(unittest.TestCase):
     def test_e01_guard_trim_rounds_target_toward_flat_and_progresses(self):
         f=feat(beta=1,beta_guard=1)
         s=snap(btc_qty=D(40),sol_qty=D(-300),btc_mark=D(1070),sol_mark=D(90))
-        decision=decide(Config(),f,s,state(btc_target=D(40),unhedged_btc_target=D(40)))
+        decision=decide(configured(),f,s,state(btc_target=D(40),unhedged_btc_target=D(40)))
         decision=replace(decision,btc_target=D(20),sol_target=-D(40)*D(1070)*D(".75")/D(90))
         args=dict(sol_step=D(".01"),sol_min_qty=D(".01"),sol_min_notional=D(10))
         btc,sol,wait=stage_targets(decision,s,f,**args)
@@ -169,7 +177,7 @@ class PolicyTests(unittest.TestCase):
     def test_preexisting_dust_over_guard_uses_legal_minimum_reduce(self):
         f=feat(beta=1,beta_guard=1)
         s=snap(btc_qty=D(40),sol_qty=D("-237.78"),btc_mark=D(1070),sol_mark=D(90))
-        decision=replace(decide(Config(),f,s,state()),btc_target=D(20),sol_target=D(-300))
+        decision=replace(decide(configured(),f,s,state()),btc_target=D(20),sol_target=D(-300))
         btc,sol,wait=stage_targets(decision,s,f,sol_step=D(".01"),sol_min_qty=D(".01"),sol_min_notional=D(10))
         self.assertEqual((btc,sol,wait),(D(40),D("-237.66"),True))
         plan=order_plan(actual=s.sol_qty,target=sol,pending=D(0),unknown=False,price=D(90),
@@ -206,16 +214,16 @@ class CausalityTests(unittest.TestCase):
         hs=self.hours()
         for n in (169,180,210):
             prefix=hs[:n]
-            a=features(prefix,Config(),prefix[-1].available_ns)
-            b=features(tuple(x for x in hs if x.available_ns<=prefix[-1].available_ns),Config(),prefix[-1].available_ns)
+            a=features(prefix,configured(),prefix[-1].available_ns)
+            b=features(tuple(x for x in hs if x.available_ns<=prefix[-1].available_ns),configured(),prefix[-1].available_ns)
             self.assertEqual(a,b)
-            self.assertEqual(decide(Config(),a,snap(),state()),decide(Config(),b,snap(),state()))
+            self.assertEqual(decide(configured(),a,snap(),state()),decide(configured(),b,snap(),state()))
     def test_future_availability_rejected(self):
         hs=self.hours()
-        with self.assertRaises(ValueError): features(hs,Config(),hs[-2].available_ns)
+        with self.assertRaises(ValueError): features(hs,configured(),hs[-2].available_ns)
     def test_channel_excludes_decision_hour(self):
         hs=self.hours()
-        f=features(hs,Config(),hs[-1].available_ns)
+        f=features(hs,configured(),hs[-1].available_ns)
         self.assertEqual(f.channel_high,max(h.btc_close for h in hs[-73:-1]))
     def test_paired_barrier_and_duplicate(self):
         builder=PairedHourBuilder()

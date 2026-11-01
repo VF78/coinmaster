@@ -19,7 +19,7 @@ from nautilus_trader.model.identifiers import InstrumentId, ClientId, ClientOrde
 from nautilus_trader.trading.strategy import Strategy
 from coinmaster.strategy.cm2_policy import (
     Config, State, Snapshot, Features, Hour, PairedHourBuilder, features, decide, D, ZERO,
-    reconcile_btc_intent, actual_harvest_geometry, btc_child_permission, HOUR_NS)
+    reconcile_btc_intent, actual_harvest_geometry, btc_child_permission, HOUR_NS, Day, slow_features, evaluate_mandatory_risk, pending_effects, arm_slow_release)
 from coinmaster.strategy.cm2_execution import ExecutionLimits, order_plan, stage_targets, REDUCE_MIN_NOTIONAL_REASON
 from coinmaster.strategy.cm2_checkpoint import KEY, SCHEMA, canonical, decode
 from coinmaster.venues.margin_policy import MarginMark
@@ -57,6 +57,7 @@ class CM2StrategyConfig(StrategyConfig, frozen=True):
     trading_start_open_ns: int
     terminal_close_at_ns: int
     seed_hours: tuple = ()
+    seed_days: tuple = ()
     exit_fee_rate: Decimal = Decimal(".000432")
     execution_policy_hash: str = ""
     funding_reader: object = None
@@ -69,7 +70,10 @@ class CM2Strategy(Strategy):
         self.policy_state = State()
         self.hour_builder = PairedHourBuilder()
         self.hours = deque(config.seed_hours,maxlen=170)
+        self.days = deque(config.seed_days,maxlen=4000)
         self.current_features = features(tuple(self.hours),config.policy,config.trading_start_open_ns) if self.hours else Features(config.trading_start_open_ns,config.trading_start_open_ns,False,"WARMUP")
+        if config.policy.core_signal == "slow_d1_h4":
+            self.current_features = slow_features(self.current_features,tuple(self.days),tuple(self.hours),config.trading_start_open_ns)
         self._latest_marks = {}
         self._quotes = {}
         self._owned = {}
@@ -102,6 +106,7 @@ class CM2Strategy(Strategy):
         self._admission_sources = {name:sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
             for name in ("cm2_native.py","cm2_policy.py","cm2_execution.py","cm2_checkpoint.py","cm2_order_contract.py")}
         self._seed_hours_sha256=sha256(canonical(config.seed_hours)).hexdigest()
+        self._seed_days_sha256=sha256(canonical(config.seed_days)).hexdigest()
         self._checkpoint_revision = 0
         self._checkpoint_loaded = False
         self._restore_failed = False
@@ -132,6 +137,14 @@ class CM2Strategy(Strategy):
         if hour is not None:
             self.hours.append(hour)
             self.current_features = features(tuple(self.hours),self.config.policy,hour.available_ns)
+            if self.config.policy.core_signal == "slow_d1_h4":
+                if hour.closed_ns % (24*HOUR_NS) == 0:
+                    hs = list(self.hours)[-24:]
+                    if len(hs) != 24 or any(b.closed_ns-a.closed_ns != HOUR_NS for a,b in zip(hs,hs[1:])):
+                        raise ValueError("D1_CONTIGUOUS_24H_REQUIRED")
+                    self.days.append(Day(hour.closed_ns,max(h.available_ns for h in hs),hs[0].btc_open,
+                        max(h.btc_high for h in hs),min(h.btc_low for h in hs),hour.btc_close))
+                self.current_features = slow_features(self.current_features,tuple(self.days),tuple(self.hours),hour.available_ns)
 
     def on_data(self, data):
         mark = getattr(data,"data",data)
@@ -170,9 +183,10 @@ class CM2Strategy(Strategy):
         if cash is None:
             raise ValueError("NATIVE_CASH_UNAVAILABLE")
         equity = cash.as_decimal()
-        qtys,marks,pending = {},{},{}
+        qtys,marks,pending,effects,price_known = {},{},{},{},{}
         known = not self._risk_unknown
-        unknown = False
+        unknown = any(str(o.client_order_id) not in self._owned
+            for o in [*self.cache.orders_open(),*self.cache.orders_inflight()])
         for iid in (self.config.btc_id,self.config.sol_id):
             mark = self._latest_marks.get(iid)
             if mark is None or now-mark.ts_event > 120_000_000_000 or mark.ts_event > now:
@@ -181,6 +195,7 @@ class CM2Strategy(Strategy):
             if not price.is_finite() or price <= 0:
                 known = False
                 price = ZERO
+            price_known[iid] = mark is not None and 0 <= now-mark.ts_event <= 120_000_000_000 and price > 0
             marks[iid] = price
             pos = self._position(iid)
             qtys[iid] = (pos.quantity.as_decimal()*(D(1) if pos.is_long else D(-1))) if pos is not None else ZERO
@@ -196,6 +211,9 @@ class CM2Strategy(Strategy):
                 if now-info["submit_ns"] > 120_000_000_000 and not info.get("acked",False):
                     unknown = True
             pending[iid] = leaves
+            effects[iid] = pending_effects(qtys[iid],tuple(
+                ((D(1) if o.side == OrderSide.BUY else D(-1))*o.leaves_qty.as_decimal(),o.is_reduce_only)
+                for o in live))
             # A locally submitted ID disappearing before terminal acknowledgement
             # is UNKNOWN, not an invitation to send again.
             for oid,info in self._owned.items():
@@ -212,7 +230,11 @@ class CM2Strategy(Strategy):
                         self._entry_fees if bpos else ZERO,
                         self._parent_funding if self._parent_cost_known else None,
                         self.config.exit_fee_rate,D(str(self.cache.instrument(self.config.btc_id).price_increment)),
-                        self.config.limits.max_gross_notional,self.config.limits.max_gross_notional)
+                        self.config.limits.max_gross_notional,self.config.limits.max_gross_notional,
+                        btc_reduction_pending=effects[self.config.btc_id][0],
+                        sol_increase_pending=effects[self.config.sol_id][1],
+                        btc_price_known=price_known[self.config.btc_id],
+                        core_data_known=price_known[self.config.btc_id] and not self._risk_unknown)
 
     def on_quote_tick(self, tick):
         now = self.clock.timestamp_ns()
@@ -235,10 +257,13 @@ class CM2Strategy(Strategy):
         f = self.current_features
         # A closed-hour signal cannot act on its own same-timestamp quote.
         execution_embargo = not terminal and now <= f.available_ns
-        if execution_embargo and not self._owned and not self.policy_state.btc_intent:
+        if execution_embargo and not self._owned and not self.policy_state.btc_intent and not self.policy_state.direction:
             return
         s = self._snapshot(now)
-        if execution_embargo:
+        mandatory = evaluate_mandatory_risk(s,self.policy_state,self.config.policy)
+        if mandatory is not None and mandatory.state.draining and self.config.policy.core_signal == "slow_d1_h4":
+            mandatory = replace(mandatory,state=arm_slow_release(mandatory.state,f,now))
+        if execution_embargo and mandatory is None:
             before=self.policy_state
             checked,allowed,why=reconcile_btc_intent(self.config.policy,f,s,before,
                 now_ns=now,executable_price=s.btc_mark)
@@ -252,7 +277,7 @@ class CM2Strategy(Strategy):
                 self._persist_checkpoint()
             return  # never consume new signal rights at their availability quote
         prior_intent_state=self.policy_state
-        decision = decide(self.config.policy,f,s,self.policy_state,terminal=terminal or self._liquidating,now_ns=now)
+        decision = mandatory if mandatory is not None and not terminal and not self._liquidating else decide(self.config.policy,f,s,self.policy_state,terminal=terminal or self._liquidating,now_ns=now)
         self.policy_state = decision.state
         CM2Strategy._update_drain(self,now,s,decision)
         if getattr(self,"_drain",None) and self._drain["reconcile_required"]:
@@ -266,9 +291,10 @@ class CM2Strategy(Strategy):
                 cancel_increases=True,reason="DRAIN_DEADLINE_RECONCILE_REQUIRED")
         if decision.cancel_increases:
             revoked=[]
-            for order in self._orders(self.config.btc_id):
+            scoped_ids = (self.config.btc_id,) if decision.reason.startswith("ORDINARY_INTENT_REVOKED:") else (self.config.btc_id,self.config.sol_id)
+            for order in [o for iid in scoped_ids for o in self._orders(iid)]:
                 context=self._order_audit.get(str(order.client_order_id),{})
-                if context.get("admission",{}).get("intent") in ("INITIAL_ENTRY","FAVORABLE_ADD","POSITIVE_HARVEST"):
+                if not getattr(order,"is_reduce_only",False) or context.get("admission",{}).get("intent")=="POSITIVE_HARVEST":
                     self.cancel_order(order)
                     revoked.append(str(order.client_order_id))
             if revoked:
@@ -284,7 +310,7 @@ class CM2Strategy(Strategy):
                 replace(s,data_known=s.data_known and quote_known),before,now_ns=now,executable_price=executable)
             if not allowed:
                 self.policy_state=checked
-                decision=replace(decision,btc_target=checked.btc_target,sol_target=ZERO,state=checked,
+                decision=replace(decision,btc_target=checked.btc_target,state=checked,
                                  reason="ORDINARY_INTENT_REVOKED:"+permission_reason,cancel_increases=True)
                 self.child_permission_audit.append(self._permission_context(now,f,s,before,executable,False,permission_reason))
                 # Cancel unsafe working BTC intent even on the SOL quote callback.
@@ -360,7 +386,8 @@ class CM2Strategy(Strategy):
             return
         q = plan.signed_quantity
         reducing = actual*q < 0
-        if decision.cancel_increases and not reducing:
+        if (decision.cancel_increases and not reducing and
+                (tick.instrument_id == self.config.btc_id or not decision.reason.startswith("ORDINARY_INTENT_REVOKED:"))):
             return
         normalized_price = terms.limit_price if harvest else price
         if not reducing and (not s.data_known or not f.valid
@@ -511,7 +538,7 @@ class CM2Strategy(Strategy):
             for order in self._orders(iid):
                 context=self._order_audit.get(str(order.client_order_id),{})
                 if (not order.is_reduce_only or context.get("admission",{}).get("intent") in
-                        ("INITIAL_ENTRY","FAVORABLE_ADD","POSITIVE_HARVEST")):
+                        ("INITIAL_ENTRY","FAVORABLE_ADD","POSITIVE_HARVEST","MATCHED_RESTORE")):
                     self.cancel_order(order)
         CM2Strategy._drain_event(self,self.clock.timestamp_ns(),"DEADLINE_RECONCILE_REQUIRED")
         self._persist_checkpoint()
@@ -590,22 +617,46 @@ class CM2Strategy(Strategy):
     def _admit(self, iid, q, price, s, now):
         account = self.cache.account_for_venue(iid.venue)
         try:
+            if s.unknown_orders or not s.data_known:
+                raise ValueError("NATIVE_INCREASE_RISK_STATE_UNKNOWN")
             free = account.balance_free(account.base_currency).as_decimal()
             # Tier/selected-leverage validation must see aggregate projected
             # inventory, not a small child at an artificially lower tier.
             reserve=ZERO
             initial=ZERO
-            for other,held in ((self.config.btc_id,s.btc_qty),(self.config.sol_id,s.sol_qty)):
-                leaves=sum((abs(o.leaves_qty.as_decimal()) for o in self._orders(other)),ZERO)
+            pending_gross=ZERO
+            native_owned_order_margin=ZERO
+            native_growth_reserve=ZERO
+            for other,held,mark in ((self.config.btc_id,s.btc_qty,s.btc_mark),(self.config.sol_id,s.sol_qty,s.sol_mark)):
+                live = self._orders(other)
+                _,growth = pending_effects(held,tuple(
+                    ((D(1) if o.side == OrderSide.BUY else D(-1))*o.leaves_qty.as_decimal(),o.is_reduce_only)
+                    for o in live))
                 held_initial=self.config.margin_policy.margin_for(other,abs(held),now)[0]
-                projected=abs(held)+leaves+(abs(q) if other==iid else ZERO)
+                native_initial=account.margin_init(other)
+                if native_initial is not None:
+                    native_owned_order_margin += native_initial.as_decimal()
+                projected=abs(held)+growth+(abs(q) if other==iid else ZERO)
                 projected_initial=self.config.margin_policy.margin_for(other,projected,now)[0]
-                before_child=self.config.margin_policy.margin_for(other,abs(held)+leaves,now)[0]
-                reserve += max(ZERO,before_child-held_initial)
+                before_child=self.config.margin_policy.margin_for(other,abs(held)+growth,now)[0]
+                instrument_reserve=max(ZERO,before_child-held_initial)
+                reserve += instrument_reserve
+                native_growth_reserve += min(instrument_reserve,native_initial.as_decimal() if native_initial is not None else ZERO)
                 initial += max(ZERO,projected_initial-before_child)
+                pending_gross += growth*mark
+            # Native locked cash already covers some growth IM. Never give RO credit.
+            locked=account.balance_locked(account.base_currency).as_decimal()
+            if locked < 0 or free < 0:
+                raise ValueError("NATIVE_FREE_LOCKED_UNKNOWN")
+            native_margin=account.total_margin_init(account.base_currency).as_decimal()
+            if native_margin < 0 or native_margin > locked:
+                raise ValueError("NATIVE_ORDER_MARGIN_LOCKED_EQUIVALENCE_UNKNOWN")
+            if native_owned_order_margin < 0 or native_owned_order_margin > native_margin:
+                raise ValueError("NATIVE_OWN_ORDER_MARGIN_UNKNOWN")
+            uncovered=max(ZERO,reserve-native_growth_reserve)
+            pending_fees=pending_gross*self.config.exit_fee_rate
             gross = abs(s.btc_qty*s.btc_mark)+abs(s.sol_qty*s.sol_mark)
-            pending_gross = abs(s.btc_pending*s.btc_mark)+abs(s.sol_pending*s.sol_mark)
-            if initial+abs(q)*price*self.config.exit_fee_rate > free-reserve:
+            if initial+(abs(q)*price)*self.config.exit_fee_rate+pending_fees > free-uncovered:
                 raise ValueError("NATIVE_FREE_MARGIN")
             if self.config.limits.max_gross_notional is not None and gross+pending_gross+abs(q)*price > self.config.limits.max_gross_notional:
                 raise ValueError("EXPLICIT_CAPACITY_GROSS")
@@ -664,8 +715,8 @@ class CM2Strategy(Strategy):
             "reason":context.get("reason","UNKNOWN"),"admission":context.get("admission"),
             "parent_at_fill":self.policy_state.parent,"foreign_parent_quarantine":foreign_parent,
             "policy_intent_at_fill":self.policy_state.btc_intent,
-            "original_intent_revoked_at_fill":admission.get("intent") in ("INITIAL_ENTRY","FAVORABLE_ADD","POSITIVE_HARVEST")
-                and (foreign_parent or self.policy_state.btc_intent not in ("INITIAL_ENTRY","FAVORABLE_ADD","POSITIVE_HARVEST")),
+            "original_intent_revoked_at_fill":admission.get("intent") in ("INITIAL_ENTRY","FAVORABLE_ADD","POSITIVE_HARVEST","MATCHED_RESTORE")
+                and (foreign_parent or self.policy_state.btc_intent not in ("INITIAL_ENTRY","FAVORABLE_ADD","POSITIVE_HARVEST","MATCHED_RESTORE")),
             "permission_scope":"SUBMISSION_PERMISSION_NOT_A_RETROACTIVE_FILL_PROFIT_CLAIM","order_side":getattr(event.order_side,"name",str(event.order_side)),
             "qty":str(event.last_qty.as_decimal()),
             "px":str(event.last_px.as_decimal()),"notional":str(event.last_qty.as_decimal()*event.last_px.as_decimal()),
@@ -748,7 +799,7 @@ class CM2Strategy(Strategy):
             "execution_policy_hash":self.config.execution_policy_hash,"strategy_id":str(self.id),
             "request_model_id":MODEL_ID,"drain_interval_ns":DRAIN_NS,
             "request_contract":CM2Strategy._request_contract_identity(self),
-            "seed_hours_sha256":self._seed_hours_sha256,"exit_fee_rate":self.config.exit_fee_rate,
+            "seed_hours_sha256":self._seed_hours_sha256,"seed_days_sha256":getattr(self,"_seed_days_sha256",sha256(canonical(())).hexdigest()),"exit_fee_rate":self.config.exit_fee_rate,
             "execution_limits":asdict(self.config.limits),"margin_configuration_sha256":sha256(canonical(margin_identity)).hexdigest(),
             "instruments":[str(self.config.btc_id),str(self.config.sol_id)],
             "start_ns":self.config.trading_start_open_ns,"end_ns":self.config.terminal_close_at_ns}
@@ -785,6 +836,7 @@ class CM2Strategy(Strategy):
             "audit_continuity":[len(self.fill_audit),len(self.cm2_audit),len(self._order_audit),self._retained_audit_chain],
             "domain":{"policy_state":asdict(self.policy_state),"features":asdict(self.current_features),
                 "hours":[asdict(h) for h in self.hours],
+                "days":[asdict(d) for d in getattr(self,"days",())],
                 "builder":{"pending":self.hour_builder.pending,"minutes":self.hour_builder.minutes,
                            "last_minute":self.hour_builder.last_minute},
                 "owned":{oid:{**info,"instrument_id":str(info["instrument_id"]),
@@ -854,6 +906,7 @@ class CM2Strategy(Strategy):
         builder.last_minute=domain["builder"]["last_minute"]
         self.policy_state=restored_state;self.current_features=restored_features
         self.hours=restored_hours;self.hour_builder=builder
+        self.days=deque((Day(**d) for d in domain.get("days",[])),maxlen=4000)
         self._owned=owned;self._last_child=last_child
         self._seen_trade_ids=set(domain["seen_trade_ids"])
         self._entry_fees=domain["entry_fees"];self._btc_cost_qty=domain["btc_cost_qty"]

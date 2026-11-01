@@ -1,4 +1,4 @@
-"""CM2 v1 causal joint inventory policy. No native money or fill simulation."""
+"""CM2 v2 causal joint inventory policy. No native money or fill simulation."""
 from __future__ import annotations
 from dataclasses import dataclass, replace
 from decimal import Decimal
@@ -20,7 +20,15 @@ class Config:
     hedge_fraction: float = .45
     buffer: float = .08
     mode: str = "joint"
-    version: str = "cm2-v1"
+    version: str = "cm2-v2"
+    core_signal: str = "h1_breakout"
+    parent_risk_fraction: float | None = None
+    downside_scenarios: tuple[tuple[float, float], ...] = ()
+    # Explicit future exit/funding debit per incremental SOL dollar.
+    hedge_future_cost_rate: float | None = None
+    initial_band_atr: float | None = None
+    restore_band_atr: float | None = None
+    restore_lifetime_ns: int | None = None
     def __post_init__(self):
         for name, lo, hi in (("trend_hours",24,168),("load",1,8),("stop_atr",2,6),
                             ("core",.5,.9),("hedge_trigger",.25,1.5),
@@ -30,6 +38,22 @@ class Config:
                 raise ValueError(name)
         if self.trend_hours != int(self.trend_hours):
             raise ValueError("trend_hours must be integer")
+        if self.core_signal not in ("h1_breakout", "slow_d1_h4"):
+            raise ValueError("core_signal")
+        if self.parent_risk_fraction is not None and not 0 < self.parent_risk_fraction <= 1:
+            raise ValueError("parent_risk_fraction")
+        if self.initial_band_atr is not None and not 0 < self.initial_band_atr:
+            raise ValueError("initial_band_atr")
+        if self.hedge_future_cost_rate is not None and (not isfinite(self.hedge_future_cost_rate) or self.hedge_future_cost_rate < 0):
+            raise ValueError("hedge_future_cost_rate")
+        if any(len(row) != 2 or not all(isfinite(v) for v in row) for row in self.downside_scenarios):
+            raise ValueError("downside_scenarios")
+        if self.version != "cm2-v2":
+            raise ValueError("policy_version")
+        if self.restore_band_atr is not None and (not isfinite(self.restore_band_atr) or self.restore_band_atr <= 0):
+            raise ValueError("restore_band_atr")
+        if self.restore_lifetime_ns is not None and (type(self.restore_lifetime_ns) is not int or self.restore_lifetime_ns <= 0):
+            raise ValueError("restore_lifetime_ns")
         if self.mode not in ("joint", "btc_only", "btc_trim"):
             raise ValueError("mode")
 
@@ -61,6 +85,15 @@ class Features:
     common_loss: float = 0
     residual_loss: float = 0
     hedge_valid: bool = False
+    hedge_data_known: bool = True
+    covariance_ratio: float = 0
+    core_direction: int = 0
+    downside_scenarios: tuple[tuple[float, float], ...] = ()
+    scenario_classes_complete: bool = False
+    daily_atr: float = 0
+    h4_close: float = 0
+    h4_closed_ns: int = 0
+    daily_close: float = 0
 
 def _variance(values):
     avg = mean(values)
@@ -82,9 +115,15 @@ def features(hours: tuple[Hour, ...], cfg: Config, now_ns: int) -> Features:
         return Features(hs[-1].closed_ns, now_ns, False, "HOUR_GAP")
     h = hs[-1]
     if now_ns-h.closed_ns > HOUR_NS or any(
-        not all(isfinite(v) and v > 0 for v in (x.btc_open,x.btc_high,x.btc_low,x.btc_close,x.sol_close))
+        not all(isfinite(v) and v > 0 for v in (x.btc_open,x.btc_high,x.btc_low,x.btc_close))
         for x in hs):
         return Features(h.closed_ns, h.available_ns, False, "STALE_OR_INVALID")
+    previous = [x.btc_close for x in hs[-cfg.trend_hours-1:-1]]
+    tr = [max(b.btc_high-b.btc_low,abs(b.btc_high-a.btc_close),abs(b.btc_low-a.btc_close))
+          for a,b in zip(hs[-25:],hs[-24:])]
+    if any(not isfinite(x.sol_close) or x.sol_close <= 0 for x in hs):
+        return Features(h.closed_ns,h.available_ns,True,"SOL_DATA_UNKNOWN",h.btc_close,
+            max(previous),min(previous),mean(tr),hedge_data_known=False)
     btc = [log(b.btc_close/a.btc_close) for a,b in zip(hs[-169:], hs[-168:])]
     sol = [log(b.sol_close/a.sol_close) for a,b in zip(hs[-169:], hs[-168:])]
     vx, vy = _variance(btc), _variance(sol)
@@ -104,8 +143,20 @@ def features(hours: tuple[Hour, ...], cfg: Config, now_ns: int) -> Features:
     b = max(2*sqrt(vx), _quantile([abs(x) for x in btc]))
     u = max(2*sqrt(vr), _quantile([abs(x) for x in residual]))
     valid = all(isfinite(v) for v in (beta,guard,rho,z,b,u)) and beta > .05 and guard > .05 and rho >= .30 and vr > 1e-12
+    # One fixed six-hour horizon: covariance and downside use the same causal pairs.
+    scenarios = tuple((hs[i].btc_close/hs[i-6].btc_close-1,
+                       hs[i].sol_close/hs[i-6].sol_close-1) for i in range(6,len(hs)))
+    xs,ys = zip(*scenarios)
+    mx6,my6 = mean(xs),mean(ys)
+    vy6 = _variance(ys)
+    cov6 = mean((x-mx6)*(y-my6) for x,y in scenarios)
+    # Require observed adverse, adverse basis divergence, and rebound in either direction.
+    complete = all(any(d*x < 0 for x,y in scenarios) and
+                   any(d*x < 0 and d*y > 0 for x,y in scenarios) and
+                   any(d*x > 0 for x,y in scenarios) for d in (1,-1))
     return Features(h.closed_ns,h.available_ns,True,"",h.btc_close,max(previous),min(previous),
-                    mean(true_ranges),beta,guard,rho,z,sum(btc[-6:]),b,u,valid)
+                    mean(true_ranges),beta,guard,rho,z,sum(btc[-6:]),b,u,valid,True,
+                    cov6/vy6 if vy6 > 1e-12 else 0.,0,scenarios,complete)
 
 @dataclass(frozen=True)
 class Snapshot:
@@ -126,6 +177,11 @@ class Snapshot:
     btc_tick: D = D(".1")
     max_btc_notional: D | None = None
     max_sol_notional: D | None = None
+    btc_reduction_pending: D = ZERO
+    sol_increase_pending: D = ZERO
+    ownership_known: bool = True
+    btc_price_known: bool = True
+    core_data_known: bool | None = None
 
 @dataclass(frozen=True)
 class State:
@@ -150,6 +206,17 @@ class State:
     intent_hour: int = 0
     harvest_target: D | None = None
     harvest_start_qty: D | None = None
+    initial_anchor: D | None = None
+    intent_deadline_ns: int = 0
+    initial_cash_risk: D | None = None
+    core_target_valid: bool = True
+    release_anchor: float = 0
+    release_atr: float = 0
+    release_armed_ns: int = 0
+    release_direction: int = 0
+    restore_target: D | None = None
+    restore_anchor: D | None = None
+    restore_deadline_ns: int = 0
 
 @dataclass(frozen=True)
 class Decision:
@@ -204,22 +271,49 @@ def btc_child_permission(cfg: Config, f: Features, s: Snapshot, st: State, *, no
     are deliberately independent of ordinary entry/add/harvest permission.
     """
     intent = st.btc_intent
-    if intent not in ("INITIAL_ENTRY", "FAVORABLE_ADD", "POSITIVE_HARVEST"):
+    if intent not in ("INITIAL_ENTRY", "FAVORABLE_ADD", "POSITIVE_HARVEST", "MATCHED_RESTORE"):
         if abs(st.btc_target) > abs(s.btc_qty) or st.btc_target*s.btc_qty < 0:
             return False, "NO_CURRENT_ORDINARY_INCREASE_RIGHT"
         return True, "SAFETY_OR_NO_ORDINARY_INTENT"
-    if (not f.valid or not s.data_known or s.unknown_orders
-            or (cfg.mode != "btc_only" and not f.hedge_valid)
+    if (not f.valid or not (s.data_known if s.core_data_known is None else s.core_data_known) or s.unknown_orders
             or not (f.available_ns < now_ns and 0 <= now_ns-f.closed_ns <= HOUR_NS)
             or executable_price <= 0):
         return False, "ORDINARY_FEATURE_OR_NATIVE_STATE_UNKNOWN"
     if intent == "POSITIVE_HARVEST":
         return (positive_harvest(replace(s,btc_mark=executable_price)), "CURRENT_EXECUTABLE_NET_HARVEST")
+    if intent == "MATCHED_RESTORE":
+        if (not st.core_target_valid or st.harvested or core_direction(cfg,f) == -st.direction
+                or _sign(st.btc_target) != st.direction or cfg.parent_risk_fraction is None
+                or cfg.restore_band_atr is None or st.restore_anchor is None
+                or st.restore_target != st.btc_target or now_ns > st.restore_deadline_ns
+                or abs(executable_price-st.restore_anchor) > D(str(cfg.restore_band_atr*f.atr))):
+            return False, "MATCHED_CORE_RESTORE_INVALID"
+        return (st.stop > 0 and stop_cash_risk(st.btc_target,executable_price,D(str(st.stop)),s.exit_fee_rate)
+                <= s.equity*D(str(cfg.parent_risk_fraction))), "MATCHED_CORE_RESTORE_RISK"
     if st.harvested or st.harvest_target is not None or st.intent_hour != f.closed_ns:
         return False, "ADD_RIGHT_EXPIRED_OR_HARVESTED"
+    if cfg.parent_risk_fraction is None:
+        return False, "PARENT_RISK_BUDGET_UNAPPROVED"
+    if st.btc_intent == "INITIAL_ENTRY" and st.initial_anchor is not None:
+        if (cfg.initial_band_atr is None or now_ns > st.intent_deadline_ns
+                or abs(executable_price-st.initial_anchor) > D(str(cfg.initial_band_atr*f.atr))):
+            return False, "INITIAL_COMPLETION_BAND_OR_DEADLINE"
+    if intent == "INITIAL_ENTRY":
+        if (st.initial_cash_risk is None or st.initial_cash_risk <= 0 or st.initial_anchor is None
+                or st.initial_r <= 0 or cfg.initial_band_atr is None):
+            return False, "INITIAL_ACCEPTED_BUDGET_UNKNOWN"
+        boundary = st.initial_anchor-D(_sign(st.btc_target))*D(str(st.initial_r))
+        if _sign(st.btc_target)*(executable_price-boundary) <= 0:
+            return False, "INITIAL_BOUNDARY_ALREADY_CROSSED"
+        risk = stop_cash_risk(st.btc_target,executable_price,boundary,s.exit_fee_rate)
+        if risk > st.initial_cash_risk:
+            return False, "INITIAL_ACCEPTED_CASH_RISK_EXCEEDED"
+    if (intent == "FAVORABLE_ADD" and st.stop > 0 and
+            stop_cash_risk(st.btc_target,executable_price,D(str(st.stop)),s.exit_fee_rate)
+            > s.equity*D(str(cfg.parent_risk_fraction))):
+        return False, "ADD_PROSPECTIVE_CASH_RISK_EXCEEDED"
     direction = _sign(st.btc_target)
-    if not direction or not ((direction > 0 and f.close > f.channel_high)
-                             or (direction < 0 and f.close < f.channel_low)):
+    if not direction or direction != core_direction(cfg,f):
         return False, "CURRENT_AUTHORIZED_BREAKOUT_REQUIRED"
     # Flat initial entry has no basis yet. Every child after an actual fill
     # must remain favorable against the actual native remaining basis.
@@ -229,7 +323,7 @@ def btc_child_permission(cfg: Config, f: Features, s: Snapshot, st: State, *, no
         favorable=direction*(executable_price-s.btc_vwap)
         # Authentic remaining INITIAL_ENTRY budget may fill at the same basis;
         # a new ADD/restoration needs a strictly favorable price.
-        if favorable < 0 or (favorable == 0 and intent != "INITIAL_ENTRY"):
+        if intent != "INITIAL_ENTRY" and favorable <= 0:
             return False, "CURRENT_EXECUTABLE_NOT_FAVORABLE"
     return True, "CURRENT_AUTHORIZED_BREAKOUT_FAVORABLE"
 
@@ -259,7 +353,8 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
     new_hour = f.closed_ns > st.last_hour
     if terminal or st.draining or s.equity <= 0:
         if s.btc_qty == 0 and s.sol_qty == 0 and s.btc_pending == 0 and s.sol_pending == 0 and not s.unknown_orders:
-            clean = State(parent=st.parent,last_hour=f.closed_ns)
+            clean = State(parent=st.parent,last_hour=f.closed_ns,release_anchor=st.release_anchor,
+                release_atr=st.release_atr,release_armed_ns=st.release_armed_ns,release_direction=st.release_direction)
             return Decision(ZERO,ZERO,"TERMINAL_FLAT" if terminal else "DRAIN_COMPLETE",clean,True)
         return Decision(ZERO,ZERO,"TERMINAL_DRAIN" if terminal else "PARENT_DRAIN",
                         replace(st,draining=True,btc_target=ZERO,sol_target=ZERO,btc_intent="RISK_TRIM",
@@ -285,9 +380,14 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
     if d and d != st.direction:
         return Decision(ZERO,ZERO,"UNEXPECTED_FACTOR_FLIP",replace(st,draining=True,btc_target=ZERO,sol_target=ZERO,unhedged_btc_target=ZERO,
                             btc_intent="RISK_TRIM",intent_hour=0,harvest_target=None,harvest_start_qty=None),True)
-    unknown = (not f.valid or not s.data_known or s.unknown_orders
+    mandatory = evaluate_mandatory_risk(s,st,cfg)
+    if mandatory is not None and mandatory.state.draining and cfg.core_signal == "slow_d1_h4":
+        mandatory = replace(mandatory,state=arm_slow_release(mandatory.state,f,now_ns))
+    if mandatory is not None:
+        return mandatory
+    unknown = (not f.valid or not (s.data_known if s.core_data_known is None else s.core_data_known) or s.unknown_orders
                or not (0 <= now_ns-f.closed_ns <= HOUR_NS)
-               or (cfg.mode != "btc_only" and not f.hedge_valid))
+               )
     if unknown:
         # A single finite target is latched. Repeated callbacks never halve again.
         cap = st.safety_cap if st.safety_cap is not None else abs(s.btc_qty)*D(".5")
@@ -301,8 +401,9 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
                                 valid_count=0,hedge_active=False,last_hour=max(st.last_hour,f.closed_ns)),True)
     st, allowed, permission_reason = reconcile_btc_intent(cfg,f,s,st,now_ns=now_ns,executable_price=s.btc_mark)
     if not allowed and not new_hour:
-        return Decision(st.btc_target,ZERO,"ORDINARY_INTENT_REVOKED:"+permission_reason,
-                        replace(st,sol_target=ZERO),True)
+        sol = _held_sol_cap(cfg,f,s,st.sol_target)
+        return Decision(st.btc_target,sol,"ORDINARY_INTENT_REVOKED:"+permission_reason,
+                        replace(st,sol_target=sol),True)
     if not new_hour:
         # Fill/mark rechecks cannot create new signal rights.
         target = st.btc_target
@@ -316,23 +417,34 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
     if d == 0:
         if s.sol_qty or s.sol_pending or s.btc_pending:
             return Decision(st.btc_target,ZERO,"FLAT_WAIT_PENDING",st,True)
-        direction = 1 if f.close > f.channel_high else -1 if f.close < f.channel_low else 0
+        direction = core_direction(cfg,f)
+        if cfg.core_signal == "slow_d1_h4" and st.release_armed_ns:
+            if direction != st.release_direction:
+                st = arm_slow_release(st,f,now_ns)
+            if (f.h4_closed_ns <= st.release_armed_ns or not st.release_atr
+                    or direction*(f.h4_close-st.release_anchor) < .5*st.release_atr):
+                direction = 0
         if direction == 0:
             return Decision(ZERO,ZERO,"NO_BREAKOUT",replace(st,btc_target=ZERO,sol_target=ZERO))
-        notional = _cap(s.equity*D(str(cfg.load)),s.max_btc_notional)
+        if cfg.parent_risk_fraction is None or cfg.initial_band_atr is None:
+            return Decision(ZERO,ZERO,"PARENT_RISK_OR_INITIAL_BAND_UNAPPROVED",st,True)
+        notional = risk_sized_notional(cfg,f,s)
         target = D(direction)*notional/s.btc_mark
         return Decision(target,ZERO,"BTC_BREAKOUT_ENTRY",replace(st,btc_target=target,
                         initial_r=cfg.stop_atr*f.atr,last_add_hour=f.closed_ns,unhedged_btc_target=target,
-                        btc_intent="INITIAL_ENTRY",intent_hour=f.closed_ns))
+                        btc_intent="INITIAL_ENTRY",intent_hour=f.closed_ns,initial_anchor=s.btc_mark,
+                        intent_deadline_ns=f.closed_ns+HOUR_NS,
+                        initial_cash_risk=s.equity*D(str(cfg.parent_risk_fraction)),core_target_valid=True,release_armed_ns=0))
+    if cfg.core_signal == "slow_d1_h4" and f.core_direction == -d:
+        return Decision(ZERO,ZERO,"SLOW_REGIME_EXIT",arm_slow_release(replace(st,draining=True,
+            btc_target=ZERO,sol_target=ZERO,btc_intent="RISK_TRIM",core_target_valid=False),f,now_ns),True)
     previous_extreme = st.extreme
     extreme = max(st.extreme,f.close) if d > 0 else min(st.extreme,f.close)
     proposed = extreme-d*cfg.stop_atr*f.atr
     stop = max(st.stop,proposed) if d > 0 else min(st.stop,proposed)
     st = replace(st,extreme=extreme,stop=stop)
-    if d*(f.close-stop) <= 0:
-        name = "TRAIL_PROFIT" if positive_harvest(s) else "PROTECTIVE_STOP"
-        return Decision(ZERO,ZERO,name,replace(st,btc_target=ZERO,sol_target=ZERO,draining=True,
-            btc_intent="RISK_TRIM",intent_hour=0,harvest_target=None,harvest_start_qty=None),True)
+    # Newly ratcheted boundary is effective from this decision onward, never
+    # retroactively triggered by the already closed bar used to establish it.
     btc = st.btc_target
     reason = "CORE_HOLD"
     if st.harvest_target is not None:
@@ -349,7 +461,7 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
           and ((d > 0 and f.close > f.channel_high) or (d < 0 and f.close < f.channel_low))
           and f.closed_ns > st.last_add_hour):
         # Target, never ADD L*equity on every callback. No adverse averaging.
-        desired = D(d)*_cap(s.equity*D(str(cfg.load)),s.max_btc_notional)/s.btc_mark
+        desired = D(d)*risk_sized_notional(cfg,f,s)/s.btc_mark
         if abs(desired) > abs(btc):
             btc = desired
             reason = "FAVORABLE_BREAKOUT_TARGET"
@@ -362,34 +474,132 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
     active = st.hedge_active
     if ac >= 2: active = True
     if rc >= 2: active = False
+    was_active = st.hedge_active
+    reference = btc
+    if cfg.mode == "btc_trim" and reason == "CORE_HOLD" and (active or was_active):
+        reference = st.unhedged_btc_target if was_active else s.btc_qty
     st = replace(st,activate_count=ac,release_count=rc,hedge_active=active,btc_target=btc,
-                 unhedged_btc_target=(st.unhedged_btc_target if st.hedge_active and cfg.mode == "btc_trim"
-                                     and reason == "CORE_HOLD" else btc))
-    sol = ZERO
+                 unhedged_btc_target=reference)
+    # Hold is the feasible no-change baseline, not an instruction to churn to flat.
+    sol = s.sol_qty if active and cfg.mode == "joint" and f.hedge_valid else ZERO
     if active and cfg.mode != "btc_only":
-        b = abs(st.unhedged_btc_target if cfg.mode == "btc_trim" else s.btc_qty)*s.btc_mark
-        x = D(str(cfg.hedge_fraction))/D(str(f.beta_guard))*b
-        x = _cap(x,s.max_sol_notional)
-        # Common-factor stress + residual stress + roundtrip exit cost.
-        # Guard makes the no-factor-flip inequality stricter than point beta.
-        benefit = D(str(f.common_loss*f.beta-f.residual_loss))*x
-        cost = x*s.exit_fee_rate*2
-        if benefit > cost:
+        reference = st.unhedged_btc_target if cfg.mode == "btc_trim" else s.btc_qty
+        soft, hard = hedge_limits(cfg,f,s,reference)
+        target = -D(d)*min(soft,hard)
+        selected = select_hedge_target(cfg,f,s,target)
+        if cfg.mode == "joint":
+            sol = selected
+        if selected and (selected == s.sol_qty or hedge_change_improves(cfg,f,s,selected)):
+            target = selected
             if cfg.mode == "btc_trim" and st.harvest_target is None:
-                trim_b = max(ZERO,b-D(str(f.beta))*x)
-                btc = D(d)*min(abs(btc),trim_b/s.btc_mark)
+                btc = D(d)*max(ZERO,abs(reference)-D(str(f.beta))*abs(target)*s.sol_mark/s.btc_mark)
                 reason = "MATCHED_BTC_TRIM"
-                # If this new favorable target still grows the trimmed control,
-                # retain its ordinary ADD permission; reductions are safety intent.
                 if abs(btc) <= abs(s.btc_qty):
-                    st = replace(st,btc_intent="RISK_TRIM",intent_hour=0,
-                                 harvest_target=None,harvest_start_qty=None)
+                    st = replace(st,btc_intent="RISK_TRIM",intent_hour=0)
             elif cfg.mode == "joint":
-                sol = -D(d)*x/s.sol_mark
+                sol = target
                 reason = "SELECTIVE_SOL_HEDGE"
+    if cfg.mode == "btc_trim" and not active and was_active:
+        # Restore only with a current favorable core permission, never a stale parent.
+        reference = st.unhedged_btc_target
+        restore = replace(st,btc_target=reference,btc_intent="MATCHED_RESTORE",intent_hour=f.closed_ns,
+            restore_target=reference,restore_anchor=s.btc_mark,
+            restore_deadline_ns=now_ns+(cfg.restore_lifetime_ns or 0))
+        if abs(s.btc_qty) < abs(reference) and cfg.restore_lifetime_ns is not None and btc_child_permission(cfg,f,s,restore,now_ns=now_ns,executable_price=s.btc_mark)[0]:
+            btc = reference
+            st = restore
+            reason = "MATCHED_TRIM_CAUSAL_RESTORE"
     sol = _held_sol_cap(cfg,f,s,sol)
     st = replace(st,btc_target=btc,sol_target=sol)
     return Decision(btc,sol,reason,st,not allowed)
+
+def core_direction(cfg, f):
+    if cfg.core_signal == "slow_d1_h4":
+        return f.core_direction
+    return 1 if f.close > f.channel_high else -1 if f.close < f.channel_low else 0
+
+
+def evaluate_mandatory_risk(s, st, cfg=None):
+    """Previously known boundary on fresh native mark; no new signal is consumed."""
+    d = _sign(s.btc_qty)
+    if (d and d == st.direction and st.stop > 0 and s.btc_price_known
+            and s.ownership_known and not s.unknown_orders and s.btc_mark > 0
+            and d*(s.btc_mark-D(str(st.stop))) <= 0):
+        return Decision(ZERO,ZERO,"PROTECTIVE_STOP",replace(st,draining=True,
+            btc_target=ZERO,sol_target=ZERO,btc_intent="RISK_TRIM",intent_hour=0,
+            harvest_target=None,harvest_start_qty=None,core_target_valid=False),True)
+    if (cfg is not None and cfg.parent_risk_fraction is not None and d and st.stop > 0
+            and not st.draining and s.ownership_known and not s.unknown_orders
+            and s.btc_price_known and s.btc_mark > 0 and s.equity > 0):
+        unit = stop_cash_risk(D(1),s.btc_mark,D(str(st.stop)),s.exit_fee_rate)
+        safe = s.equity*D(str(cfg.parent_risk_fraction))/unit if unit > 0 else abs(s.btc_qty)
+        if abs(s.btc_qty) > safe:
+            target=D(d)*safe
+            return Decision(target,st.sol_target,"HELD_CASH_RISK_TRIM",replace(st,
+                btc_target=target,unhedged_btc_target=target,btc_intent="RISK_TRIM",
+                intent_hour=0,harvest_target=None,harvest_start_qty=None),True)
+    return None
+
+
+def stop_cash_risk(quantity, price, stop, fee):
+    """One conservative cash-loss definition for accepted, held and restored size."""
+    return abs(quantity)*(abs(price-stop)+fee*(price+stop))
+
+
+def risk_sized_notional(cfg, f, s):
+    """Stop distance + adverse execution costs in currency, shared entry/held units."""
+    if cfg.parent_risk_fraction is None or s.btc_mark <= 0 or f.atr <= 0:
+        return ZERO
+    distance = D(str(cfg.stop_atr*f.atr))/s.btc_mark
+    loss_per_notional = stop_cash_risk(D(1),s.btc_mark,s.btc_mark*(1+distance),s.exit_fee_rate)/s.btc_mark
+    return _cap(min(s.equity*D(str(cfg.load)),
+        s.equity*D(str(cfg.parent_risk_fraction))/loss_per_notional),s.max_btc_notional)
+
+
+def hedge_limits(cfg, f, s, btc_qty):
+    """SOL quantities: covariance soft intensity, distinct no-factor-flip hard cap."""
+    if not f.hedge_valid or not f.hedge_data_known or f.beta_guard <= 0 or s.sol_mark <= 0:
+        return ZERO,ZERO
+    b = abs(btc_qty)*s.btc_mark
+    soft = D(str(cfg.hedge_fraction))*D(str(max(0,f.covariance_ratio)))*b/s.sol_mark
+    hard = b/D(str(f.beta_guard))/s.sol_mark
+    if s.max_sol_notional is not None:
+        hard = min(hard,s.max_sol_notional/s.sol_mark)
+    return min(soft,hard),hard
+
+
+def hedge_change_improves(cfg, f, s, target):
+    """One causal horizon of dollar downside; costs apply only to future changes."""
+    scenarios = cfg.downside_scenarios or f.downside_scenarios
+    if not scenarios or (not cfg.downside_scenarios and not f.scenario_classes_complete) or cfg.hedge_future_cost_rate is None:
+        return False
+    current = s.sol_qty
+    if target*current < 0 or not f.hedge_valid:
+        return False
+    b = s.btc_qty*s.btc_mark
+    def loss(q):
+        return max(ZERO,max(-(b*D(str(br))+q*s.sol_mark*D(str(sr)))
+                             for br,sr in scenarios))
+    delta = abs(target-current)*s.sol_mark
+    costs = delta*s.exit_fee_rate+max(ZERO,abs(target)-abs(current))*s.sol_mark*D(str(cfg.hedge_future_cost_rate))
+    return loss(target)+costs < loss(current)
+
+
+def select_hedge_target(cfg,f,s,soft):
+    """Compare hold, zero, and covariance target on the identical causal sample."""
+    scenarios=cfg.downside_scenarios or f.downside_scenarios
+    if (not scenarios or (not cfg.downside_scenarios and not f.scenario_classes_complete)
+            or cfg.hedge_future_cost_rate is None):
+        return s.sol_qty
+    b=s.btc_qty*s.btc_mark
+    def score(q):
+        downside=max(ZERO,max(-(b*D(str(br))+q*s.sol_mark*D(str(sr))) for br,sr in scenarios))
+        execution=abs(q-s.sol_qty)*s.sol_mark*s.exit_fee_rate
+        future=max(ZERO,abs(q)-abs(s.sol_qty))*s.sol_mark*D(str(cfg.hedge_future_cost_rate))
+        return downside+execution+future
+    # Current first breaks equal scores in favor of no trade.
+    return min((s.sol_qty,ZERO,soft),key=score)
+
 
 def _held_sol_cap(cfg, f, s, target):
     if s.btc_qty == 0 or not f.hedge_valid or s.sol_mark <= 0:
@@ -397,12 +607,8 @@ def _held_sol_cap(cfg, f, s, target):
     d = _sign(s.btc_qty)
     if _sign(target) == d:
         return ZERO
-    cap = D(str(cfg.hedge_fraction))/D(str(f.beta_guard))*abs(s.btc_qty)*s.btc_mark/s.sol_mark
-    if s.max_sol_notional is not None:
-        cap = min(cap,s.max_sol_notional/s.sol_mark)
+    _,cap = hedge_limits(cfg,f,s,s.btc_qty)
     desired = -D(d)*min(abs(target),cap)
-    # Economic no-trade band never permits held inventory beyond the hard cap
-    # and never suppresses an explicit release/drain to zero.
     difference=abs(desired-s.sol_qty)*s.sol_mark
     if desired and desired*s.sol_qty > 0 and abs(s.sol_qty) <= cap and difference < D(str(cfg.buffer))*abs(s.btc_qty)*s.btc_mark:
         return s.sol_qty
@@ -442,3 +648,57 @@ class PairedHourBuilder:
         return Hour(closed_ns,max(x[1][s][0] for x in rows for s in ("BTC","SOL")),
                     rows[0][1]["BTC"][1],max(x[1]["BTC"][2] for x in rows),
                     min(x[1]["BTC"][3] for x in rows),rows[-1][1]["BTC"][4],rows[-1][1]["SOL"][4])
+
+
+@dataclass(frozen=True)
+class Day:
+    closed_ns: int
+    available_ns: int
+    open: float
+    high: float
+    low: float
+    close: float
+
+
+def slow_features(base: Features, days: tuple[Day, ...], hours: tuple[Hour, ...], now_ns: int):
+    """ONE clean EMA34 D1 regime, ATR14 D1, closed H4 release reference."""
+    if any(d.available_ns > now_ns or d.available_ns < d.closed_ns for d in days):
+        raise ValueError("D1 availability violation")
+    if len(days) < 35 or any(b.closed_ns-a.closed_ns != 24*HOUR_NS for a,b in zip(days,days[1:])):
+        return replace(base,valid=False,reason="GENUINE_D1_WARMUP_REQUIRED")
+    if days[-1].closed_ns > now_ns or now_ns-days[-1].closed_ns >= 25*HOUR_NS:
+        return replace(base,valid=False,reason="D1_STALE")
+    ema = mean(d.close for d in days[:34])
+    for day in days[34:]:
+        ema += (day.close-ema)*2/35
+    trs = [max(b.high-b.low,abs(b.high-a.close),abs(b.low-a.close)) for a,b in zip(days,days[1:])]
+    atr = mean(trs[:14])
+    for tr in trs[14:]:
+        atr = (atr*13+tr)/14
+    direction = 1 if days[-1].close > ema else -1 if days[-1].close < ema else 0
+    closed_h4 = [h for h in hours if h.closed_ns % (4*HOUR_NS) == 0 and h.available_ns <= now_ns]
+    h4 = closed_h4[-1] if closed_h4 else None
+    return replace(base,atr=atr,core_direction=direction,daily_atr=atr,
+                   h4_close=h4.btc_close if h4 else 0,h4_closed_ns=h4.closed_ns if h4 else 0,daily_close=days[-1].close)
+
+
+def pending_effects(actual, orders):
+    """Reachable reductions and gross increases; no offset/RO credit for growth."""
+    reduction=ZERO
+    growth=ZERO
+    for signed,reduce_only in orders:
+        if actual*signed < 0:
+            reduction += signed
+        if not reduce_only:
+            # Opposite non-RO may fill through flat; reserve conservatively in gross.
+            growth += abs(signed)
+    reduction = D(-_sign(actual))*min(abs(actual),abs(reduction))
+    return reduction,growth
+
+
+def arm_slow_release(st,f,now_ns):
+    if st.draining and st.release_armed_ns:
+        return st
+    return replace(st,release_anchor=f.daily_close,release_atr=f.daily_atr,
+        release_armed_ns=now_ns,release_direction=f.core_direction,core_target_valid=False,
+        restore_target=None,restore_anchor=None,restore_deadline_ns=0)

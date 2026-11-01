@@ -5,7 +5,7 @@ from types import SimpleNamespace as NS
 import unittest
 from coinmaster.strategy.cm2_policy import (
     Config,State,HOUR_NS,decide,btc_child_permission,reconcile_btc_intent,positive_harvest)
-from runtime.tests.test_cm2_policy import feat,snap,state
+from runtime.tests.test_cm2_policy import feat,snap,state,configured
 
 class ChildAdmissionTests(unittest.TestCase):
     def test_unknown_confirmed_trim_never_restores_at_loss_both_sides(self):
@@ -13,12 +13,12 @@ class ChildAdmissionTests(unittest.TestCase):
             s=snap(btc_qty=D(d*40))
             st=state(direction=d,btc_target=s.btc_qty,unhedged_btc_target=s.btc_qty,
                      stop=800 if d>0 else 1200,extreme=1000)
-            a=decide(Config(),feat(hedge_valid=False),s,st)
+            a=decide(configured(),feat(valid=False),s,st)
             self.assertEqual(a.btc_target,D(d*20))
             for i in (1,2):
                 f=feat(t=(200+i)*HOUR_NS,close=980 if d>0 else 1020,channel_high=1030,channel_low=970)
                 s=replace(s,btc_qty=D(d*20),btc_mark=D(str(f.close)))
-                a=decide(Config(),f,s,a.state)
+                a=decide(configured(),f,s,a.state)
             self.assertEqual(a.btc_target,s.btc_qty)
             self.assertEqual(a.state.unhedged_btc_target,s.btc_qty)
     def test_adverse_same_hour_add_revoked_and_late_fill_reduced(self):
@@ -27,15 +27,15 @@ class ChildAdmissionTests(unittest.TestCase):
             s=snap(btc_qty=D(d*20),btc_mark=D(980 if d>0 else 1020))
             st=state(direction=d,btc_target=D(d*40),unhedged_btc_target=D(d*40),
                      btc_intent="FAVORABLE_ADD",intent_hour=f.closed_ns,last_hour=f.closed_ns)
-            a=decide(Config(),f,s,st)
+            a=decide(configured(),f,s,st)
             self.assertEqual(a.btc_target,s.btc_qty)
             self.assertTrue(a.cancel_increases)
             late=replace(s,btc_qty=D(d*25))
-            b=decide(Config(),f,late,a.state)
+            b=decide(configured(),f,late,a.state)
             self.assertEqual(b.btc_target,D(d*20))
             self.assertEqual(b.state.btc_intent,"RISK_TRIM")
     def test_untagged_target_is_no_permission_to_grow(self):
-        a=decide(Config(),feat(),snap(),state(last_hour=200*HOUR_NS,btc_target=D(40)))
+        a=decide(configured(),feat(),snap(),state(last_hour=200*HOUR_NS,btc_target=D(40)))
         self.assertEqual(a.btc_target,D(1))
         self.assertTrue(a.cancel_increases)
     def test_favorable_remaining_child_permitted_current_quote_only(self):
@@ -43,84 +43,85 @@ class ChildAdmissionTests(unittest.TestCase):
             f=feat(close=1020 if d>0 else 980)
             st=state(direction=d,btc_target=D(d*40),btc_intent="FAVORABLE_ADD",intent_hour=f.closed_ns)
             s=snap(btc_qty=D(d*20))
-            self.assertTrue(btc_child_permission(Config(),f,s,st,now_ns=f.closed_ns+1,
+            self.assertTrue(btc_child_permission(configured(),f,s,st,now_ns=f.closed_ns+1,
                 executable_price=D(1001 if d>0 else 999))[0])
-            self.assertFalse(btc_child_permission(Config(),f,s,st,now_ns=f.closed_ns+1,
+            self.assertFalse(btc_child_permission(configured(),f,s,st,now_ns=f.closed_ns+1,
                 executable_price=D(999 if d>0 else 1001))[0])
-            self.assertFalse(btc_child_permission(Config(),f,replace(s,btc_vwap=None),st,
+            self.assertFalse(btc_child_permission(configured(),f,replace(s,btc_vwap=None),st,
                 now_ns=f.closed_ns+1,executable_price=D(1100))[0])
-    def test_authentic_initial_entry_residual_equality_never_adverse(self):
+    def test_authentic_initial_entry_completion_allows_better_price_with_frozen_risk(self):
         for d in (1,-1):
             f=feat(close=1020 if d>0 else 980)
             s=snap(btc_qty=D(d*20))
-            st=state(direction=d,btc_target=D(d*40),btc_intent="INITIAL_ENTRY",intent_hour=f.closed_ns)
-            self.assertTrue(btc_child_permission(Config(),f,s,st,now_ns=f.closed_ns+1,executable_price=D(1000))[0])
-            self.assertFalse(btc_child_permission(Config(),f,s,st,now_ns=f.closed_ns+1,
+            st=state(direction=d,btc_target=D(d*40),btc_intent="INITIAL_ENTRY",intent_hour=f.closed_ns,
+                     initial_anchor=D(1000),initial_cash_risk=D(9000),intent_deadline_ns=f.closed_ns+HOUR_NS)
+            self.assertTrue(btc_child_permission(configured(),f,s,st,now_ns=f.closed_ns+1,executable_price=D(1000))[0])
+            self.assertTrue(btc_child_permission(configured(),f,s,st,now_ns=f.closed_ns+1,
                 executable_price=D(990 if d>0 else 1010))[0])
-            self.assertFalse(btc_child_permission(Config(),f,s,replace(st,btc_intent="FAVORABLE_ADD"),
+            self.assertFalse(btc_child_permission(configured(),f,s,replace(st,btc_intent="FAVORABLE_ADD"),
                 now_ns=f.closed_ns+1,executable_price=D(1000))[0])
     def test_entry_residual_expires_instead_of_restoring_next_hour(self):
         f=feat(close=1020)
-        a=decide(Config(),f,snap(btc_qty=D(0)),State())
+        a=decide(configured(),f,snap(btc_qty=D(0)),State())
         s=snap(btc_qty=D(2),btc_mark=D(1001))
         next_f=feat(t=201*HOUR_NS,close=1000,channel_high=1025)
-        b=decide(Config(),next_f,s,a.state)
+        b=decide(configured(),next_f,s,a.state)
         self.assertEqual(b.btc_target,D(2))
     def test_same_timestamp_stale_missing_feature_block_ordinaries(self):
         f=feat(close=1020)
         for intent in ("FAVORABLE_ADD","POSITIVE_HARVEST"):
             st=state(btc_target=D(2),btc_intent=intent,intent_hour=f.closed_ns)
             for now in (f.available_ns,f.closed_ns+HOUR_NS+1):
-                self.assertFalse(btc_child_permission(Config(),f,snap(btc_mark=D(1200)),st,
+                self.assertFalse(btc_child_permission(configured(),f,snap(btc_mark=D(1200)),st,
                     now_ns=now,executable_price=D(1200))[0])
-        a=decide(Config(),f,snap(),state(),now_ns=f.closed_ns+HOUR_NS+1)
+        a=decide(configured(),f,snap(),state(),now_ns=f.closed_ns+HOUR_NS+1)
         self.assertEqual(a.btc_target,D('.5'))
         self.assertTrue(a.cancel_increases)
     def test_harvest_rechecks_executable_and_does_not_consume_unfilled_right(self):
-        f=feat(close=1070)
-        s=snap(btc_qty=D(40),btc_mark=D(1070))
-        a=decide(Config(),f,s,state(btc_target=D(40),unhedged_btc_target=D(40),initial_r=30))
+        f=feat(close=1070,atr=100)
+        s=snap(equity=D(100000),btc_qty=D(40),btc_mark=D(1070))
+        a=decide(configured(),f,s,state(btc_target=D(40),unhedged_btc_target=D(40),initial_r=30))
         self.assertEqual(a.btc_target,D(30))
         self.assertFalse(a.state.harvested)
         self.assertEqual(a.state.harvest_target,D(30))
         later=replace(s,btc_mark=D(990))
         self.assertFalse(positive_harvest(later))
-        b=decide(Config(),f,later,a.state)
+        b=decide(configured(),f,later,a.state)
         self.assertEqual(b.btc_target,D(40))
         self.assertTrue(b.cancel_increases)
         self.assertFalse(b.state.harvested)
         self.assertIsNone(b.state.harvest_target)
-        checked,allowed,_=reconcile_btc_intent(Config(),f,s,a.state,
+        checked,allowed,_=reconcile_btc_intent(configured(),f,s,a.state,
             now_ns=f.closed_ns+1,executable_price=D(990))
         self.assertFalse(allowed)
         self.assertEqual(checked.btc_target,D(40))
     def test_harvest_partial_consumes_once_complete_uses_native_inventory(self):
-        f=feat(close=1250)
+        f=feat(close=1250,atr=200)
         s=snap(btc_mark=D(1250))
-        a=decide(Config(),f,s,state())
+        a=decide(configured(),f,s,state())
         partial=replace(s,btc_qty=D('.9'),btc_mark=D(990),btc_pending=D('-.1'))
-        b=decide(Config(),f,partial,a.state)
+        b=decide(configured(),f,partial,a.state)
         self.assertTrue(b.state.harvested)
         self.assertEqual(b.btc_target,D('.9'))
         done=replace(s,btc_qty=D('.75'))
-        c=decide(Config(),f,done,a.state)
+        c=decide(configured(),f,done,a.state)
         self.assertTrue(c.state.harvested)
         self.assertIsNone(c.state.harvest_target)
         self.assertEqual(c.btc_target,D('.75'))
     def test_unknown_after_partial_harvest_consumes_once(self):
-        f=feat(close=1250)
-        a=decide(Config(),f,snap(btc_mark=D(1250)),state())
-        b=decide(Config(),replace(f,hedge_valid=False),snap(btc_qty=D('.9')),a.state)
+        f=feat(close=1250,atr=200)
+        a=decide(configured(),f,snap(btc_mark=D(1250)),state())
+        b=decide(configured(),replace(f,hedge_valid=False),snap(btc_qty=D('.9')),a.state)
         self.assertTrue(b.state.harvested)
     def test_harvest_cannot_add_and_safety_stop_remains_immediate(self):
-        f=feat(close=1250)
-        a=decide(Config(),f,snap(btc_mark=D(1250)),state())
-        f2=feat(t=201*HOUR_NS,close=900)
-        b=decide(Config(),f2,snap(btc_mark=D(900)),a.state)
+        f=feat(close=1250,atr=200)
+        a=decide(configured(),f,snap(btc_mark=D(1250)),state())
+        f2=feat(t=201*HOUR_NS,close=790)
+        b=decide(configured(),f2,snap(btc_mark=D(790)),a.state)
         self.assertTrue(b.state.draining)
         self.assertEqual(b.btc_target,D(0))
     def test_btc_trim_release_never_restores_confirmed_reduction(self):
-        cfg=Config(mode="btc_trim")
+        cfg=configured(mode="btc_trim")
         f=feat(residual_z=-2,btc_return6=-.02)
         s=snap()
         a=decide(cfg,f,s,state(activate_count=1))
@@ -143,7 +144,7 @@ class ChildAdmissionTests(unittest.TestCase):
             def as_decimal(self): return D('.01')
             def __str__(self): return '.01'
         instrument=NS(size_increment=Increment(),min_quantity=Increment(),min_notional=None)
-        fake=NS(config=NS(btc_id="BTC",sol_id="SOL",policy=Config(),trading_start_open_ns=0,
+        fake=NS(config=NS(btc_id="BTC",sol_id="SOL",policy=configured(),trading_start_open_ns=0,
                           terminal_close_at_ns=10**25,limits=NS(child_interval_ns=60_000_000_000),execution_policy_hash="fixture",checkpoint_store=None),
             _quotes={},current_features=f,policy_state=st,_liquidating=False,_restore_failed=False,_snapshot=lambda now:s,
             cache=NS(instrument=lambda iid:instrument),_orders=lambda iid:[order] if iid=="BTC" else [],
@@ -168,16 +169,16 @@ class ChildAdmissionTests(unittest.TestCase):
             bid_price=Price(),ask_price=Price()))
         self.assertEqual(canceled,[order])
         self.assertEqual(fake.policy_state.last_hour,f.closed_ns)
-        fresh=decide(Config(),next_f,replace(s,btc_mark=D(1020),btc_pending=D(0)),
+        fresh=decide(configured(),next_f,replace(s,btc_mark=D(1020),btc_pending=D(0)),
             fake.policy_state,now_ns=next_f.available_ns+1)
         self.assertEqual(fresh.reason,"FAVORABLE_BREAKOUT_TARGET")
         self.assertGreater(fresh.btc_target,D(1))
     def test_harvest_and_matched_trim_have_sequential_finite_budgets(self):
         for d in (1,-1):
-            cfg=Config(core=.5,mode="btc_trim")
-            f=feat(close=1070 if d>0 else 930,residual_z=-d*2,btc_return6=-d*.02)
+            cfg=configured(core=.5,mode="btc_trim")
+            f=feat(close=1070 if d>0 else 930,atr=100,residual_z=-d*2,btc_return6=-d*.02)
             q=D(d*40)
-            s=snap(btc_qty=q,btc_mark=D(str(f.close)))
+            s=snap(equity=D(100000),btc_qty=q,btc_mark=D(str(f.close)))
             st=state(direction=d,btc_target=q,unhedged_btc_target=q,hedge_active=True,
                      activate_count=2,initial_r=30,stop=800 if d>0 else 1200)
             a=decide(cfg,f,s,st)
@@ -202,11 +203,11 @@ class ChildAdmissionTests(unittest.TestCase):
     def test_flat_revoked_entry_late_first_fill_preserves_explicit_zero_cap(self):
         for d in (1,-1):
             f=feat(close=1020 if d>0 else 980)
-            entry=decide(Config(),f,snap(btc_qty=D(0)),State())
-            revoked=decide(Config(),f,snap(btc_qty=D(0),data_known=False),entry.state)
+            entry=decide(configured(),f,snap(btc_qty=D(0)),State())
+            revoked=decide(configured(),f,snap(btc_qty=D(0),data_known=False),entry.state)
             self.assertEqual(revoked.btc_target,D(0))
             self.assertEqual(revoked.state.safety_cap,D(0))
-            late=decide(Config(),f,snap(btc_qty=D(d),btc_mark=D(1000)),revoked.state)
+            late=decide(configured(),f,snap(btc_qty=D(d),btc_mark=D(1000)),revoked.state)
             self.assertEqual(late.state.parent,0)
             self.assertTrue(late.state.draining)
             self.assertEqual(late.btc_target,D(0))
@@ -244,8 +245,8 @@ class ChildAdmissionTests(unittest.TestCase):
             self.assertTrue(fake._restore_failed)
             self.assertEqual(fake.fill_audit[0]["actual_harvest_geometry"]["status"],"FAIL" if original_parent==1 else "UNKNOWN")
             if fake._restore_failed:
-                flat=decide(Config(),feat(),snap(btc_qty=D(0)),fake.policy_state,terminal=fake._restore_failed)
-                fresh=decide(Config(),feat(t=201*HOUR_NS,close=1020),snap(btc_qty=D(0)),flat.state,
+                flat=decide(configured(),feat(),snap(btc_qty=D(0)),fake.policy_state,terminal=fake._restore_failed)
+                fresh=decide(configured(),feat(t=201*HOUR_NS,close=1020),snap(btc_qty=D(0)),flat.state,
                     terminal=fake._restore_failed)
                 self.assertEqual(fresh.btc_target,D(0))
                 self.assertEqual(fresh.reason,"TERMINAL_FLAT")
@@ -253,7 +254,7 @@ class ChildAdmissionTests(unittest.TestCase):
                 # independent of the configured future terminal boundary.
                 from unittest.mock import patch
                 fake._quotes={};fake.current_features=feat()
-                fake.config.policy=Config();fake.config.trading_start_open_ns=0
+                fake.config.policy=configured();fake.config.trading_start_open_ns=0
                 fake.config.terminal_close_at_ns=10**25
                 fake._snapshot=lambda now:snap(btc_qty=D(0))
                 with patch("coinmaster.strategy.cm2_native.decide",side_effect=RuntimeError("AT_POLICY_GATE")) as gate:
@@ -267,7 +268,7 @@ class ChildAdmissionTests(unittest.TestCase):
             CM2Strategy.on_order_filled(fake,event("actual-native-like-id"))
             self.assertEqual(once,(fake._entry_fees,fake._parent_funding,fake._btc_cost_qty,len(fake.fill_audit),fake.policy_state))
             if original_parent==1:
-                later=decide(Config(),feat(t=201*HOUR_NS,close=1070),
+                later=decide(configured(),feat(t=201*HOUR_NS,close=1070),
                     snap(btc_qty=D(35),btc_mark=D(1070)),fake.policy_state)
                 self.assertTrue(later.state.harvested)
                 self.assertEqual(later.btc_target,D(0))

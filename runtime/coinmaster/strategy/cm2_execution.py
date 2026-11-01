@@ -1,7 +1,7 @@
 """Pure native-order planning. No matcher, balance, fee or funding engine."""
 from dataclasses import dataclass
 from decimal import Decimal, ROUND_DOWN, ROUND_CEILING
-from coinmaster.strategy.cm2_policy import Decision, Features, Snapshot, D, ZERO
+from coinmaster.strategy.cm2_policy import Decision, Features, Snapshot, D, ZERO, Config, hedge_limits
 
 REDUCE_MIN_NOTIONAL_REASON="CONSERVATIVE_RESEARCH_MIN_NOTIONAL_REDUCE_EXCEPTION_UNKNOWN"
 
@@ -28,18 +28,18 @@ def stage_targets(decision: Decision, s: Snapshot, f: Features, *, sol_step=ZERO
     Emergency exits proceed immediately and carry explicitly measured orphan risk.
     """
     btc, sol = decision.btc_target, decision.sol_target
-    if decision.cancel_increases:
+    if decision.state.draining:
         return btc, sol, False
     reducing = s.btc_qty*btc >= 0 and abs(btc) < abs(s.btc_qty)
     if f.hedge_valid and s.btc_qty:
         # Both proposed targets and all pending reductions can fill first.
-        pending_btc = s.btc_qty+s.btc_pending
+        pending_btc = s.btc_qty+(s.btc_reduction_pending or (s.btc_pending if s.btc_pending*s.btc_qty < 0 else ZERO))
         future_btc = min(abs(s.btc_qty),abs(btc))
         if pending_btc*s.btc_qty >= 0:
             future_btc = min(future_btc,abs(pending_btc))
         else:
             future_btc = ZERO
-        future_cap = future_btc*s.btc_mark/D(str(f.beta_guard))/s.sol_mark
+        _,future_cap = hedge_limits(Config(),f,s,future_btc)
         sign = -1 if s.btc_qty > 0 else 1
         sol = D(sign)*min(abs(sol),future_cap)
         if sol_step > 0:
@@ -56,7 +56,7 @@ def stage_targets(decision: Decision, s: Snapshot, f: Features, *, sol_step=ZERO
                     amount=max(ZERO,held-minimum)
                     amount=(amount/sol_step).to_integral_value(rounding=ROUND_DOWN)*sol_step
             sol=D(sign)*amount
-        worst_sol = abs(s.sol_qty)+abs(s.sol_pending)
+        worst_sol = abs(s.sol_qty)+(s.sol_increase_pending or (abs(s.sol_pending) if s.sol_pending*s.sol_qty >= 0 else ZERO))
         if reducing and worst_sol > future_cap:
             return s.btc_qty, sol, True
     return btc, sol, False

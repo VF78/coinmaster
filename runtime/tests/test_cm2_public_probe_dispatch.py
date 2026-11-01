@@ -11,7 +11,9 @@ from coinmaster.research import cm2_runner as runner
 
 class PublicFixtureProbeDispatchTest(unittest.TestCase):
     def test_public_no_run_probe_dispatch_and_unchanged_paths(self):
-        cases=(("engineering","cm2-residual-dust-native-v1",1),
+        cases=(("engineering","cm2-systematic-repair-trim-native-v4",1),
+               ("engineering","cm2-systematic-repair-native-v4",1),
+               ("engineering","cm2-residual-dust-native-v1",1),
                ("engineering","cm2-current-child-native-v2",1),
                ("engineering","cm2-current-child-native-v3",1),
                ("engineering","cm2-connected-native-v1",0),

@@ -7,7 +7,7 @@ from decimal import Decimal
 import hashlib
 import json
 from pathlib import Path
-from coinmaster.strategy.cm2_policy import Config, Hour, HOUR_NS
+from coinmaster.strategy.cm2_policy import Config, Hour, Day, HOUR_NS
 from coinmaster.strategy.cm2_execution import ExecutionLimits
 
 WARMUP_HASHES = {
@@ -20,6 +20,30 @@ class CM2RunConfig:
     policy: Config
     warmup_root: Path
     absolute_child_limit: Decimal = Decimal("1e100")
+    daily_seed_path: Path | None = None
+    daily_seed_sha256: str | None = None
+    def daily_seed(self,start_ns):
+        if self.policy.core_signal != "slow_d1_h4":
+            return ()
+        if self.daily_seed_path is None or self.daily_seed_sha256 is None:
+            raise ValueError("CM2_GENUINE_PINNED_D1_SEED_REQUIRED")
+        if hashlib.sha256(self.daily_seed_path.read_bytes()).hexdigest() != self.daily_seed_sha256:
+            raise ValueError("CM2_D1_SEED_PIN_MISMATCH")
+        if self.daily_seed_path.suffix == ".parquet":
+            import pyarrow.parquet as pq
+            raw=pq.read_table(self.daily_seed_path,columns=["open_time_ms","open","high","low","close"]).to_pylist()
+        else:
+            with self.daily_seed_path.open() as handle:
+                raw=list(csv.DictReader(handle))
+        # Saved dataset contract: UTC OPEN labels; availability is MODELLED at close.
+        rows=tuple(Day(int(r["open_time_ms"])*1_000_000+24*HOUR_NS,
+                int(r["open_time_ms"])*1_000_000+24*HOUR_NS,
+                *(float(r[k]) for k in ("open","high","low","close"))) for r in raw
+                if int(r["open_time_ms"])*1_000_000+24*HOUR_NS <= start_ns)
+        if len(rows)<35 or rows[-1].closed_ns != start_ns or any(
+            b.closed_ns-a.closed_ns != 24*HOUR_NS for a,b in zip(rows,rows[1:])):
+            raise ValueError("CM2_GENUINE_CONTIGUOUS_PRESTART_D1_REQUIRED")
+        return rows
     def seed(self,start_ns):
         paired={}
         for symbol,expected in WARMUP_HASHES.items():
@@ -51,7 +75,7 @@ def build_strategy(run_config, *, instruments, minute_bars, margin_policy, start
         btc_mark_data_type=mark_types[0],sol_mark_data_type=mark_types[1],mark_client_id=mark_client,
         policy=run_config.policy,limits=ExecutionLimits(run_config.absolute_child_limit),
         margin_policy=margin_policy,trading_start_open_ns=start_ns,terminal_close_at_ns=end_ns,
-        seed_hours=run_config.seed(start_ns),exit_fee_rate=exit_fee_rate,
+        seed_hours=run_config.seed(start_ns),seed_days=run_config.daily_seed(start_ns),exit_fee_rate=exit_fee_rate,
         execution_policy_hash=execution_hash,funding_reader=native_signed_funding,
         checkpoint_store=checkpoint_store,continuity_reader=lambda:observer_continuity(risk_recorder,coherent_observer)))
 
@@ -120,13 +144,21 @@ def preflight(request,receipt):
         path=Path(item["path"])
         if hashlib.sha256(path.read_bytes()).hexdigest()!=item["sha256"]:
             raise ValueError("CM2_FREEZE_MISMATCH:"+str(path))
-    cfg=CM2RunConfig(Config(**request["policy"]),Path(request["warmup_root"]))
+    cfg=CM2RunConfig(Config(**request["policy"]),Path(request["warmup_root"]),
+        daily_seed_path=Path(request["daily_seed_path"]) if request.get("daily_seed_path") else None,
+        daily_seed_sha256=request.get("daily_seed_sha256"))
     if request["stage"]=="engineering":
         fixture=engineering_fixture_module(request)
-        if (request.get("fixture_id"),request.get("start_ns"),request.get("end_ns")) != (fixture.FIXTURE_ID,fixture.START_NS,fixture.END_NS):
+        if (request.get("fixture_id") not in getattr(fixture,"FIXTURE_IDS",(fixture.FIXTURE_ID,))
+                or (request.get("start_ns"),request.get("end_ns")) != (fixture.START_NS,fixture.END_NS)):
             raise ValueError("CM2_EXPLICIT_BOUNDED_FIXTURE_CONTRACT_REQUIRED")
     else:
         cfg.seed(int(request.get("start_ns",1725148800000000000)))
+        cfg.daily_seed(int(request.get("start_ns",1725148800000000000)))
+        if cfg.policy.core_signal == "slow_d1_h4" and not any(
+                Path(item["path"]) == cfg.daily_seed_path and item.get("sha256") == cfg.daily_seed_sha256
+                for item in request["freeze_files"]):
+            raise ValueError("CM2_D1_SEED_MUST_BE_IN_REQUEST_FREEZE")
     return cfg
 
 def engineering_fixture_module(request):
@@ -134,7 +166,9 @@ def engineering_fixture_module(request):
     modules={"cm2-connected-native-v1":"coinmaster.research.cm2_fixture",
              "cm2-current-child-native-v2":"coinmaster.research.cm2_fixture_e04",
              "cm2-current-child-native-v3":"coinmaster.research.cm2_fixture_e08",
-             "cm2-residual-dust-native-v1":"coinmaster.research.cm2_fixture_dust"}
+             "cm2-residual-dust-native-v1":"coinmaster.research.cm2_fixture_dust",
+             "cm2-systematic-repair-native-v4":"coinmaster.research.cm2_fixture_v4",
+             "cm2-systematic-repair-trim-native-v4":"coinmaster.research.cm2_fixture_v4"}
     name=modules.get(request.get("fixture_id"))
     if name is None: raise ValueError("CM2_UNKNOWN_ENGINEERING_FIXTURE")
     return importlib.import_module(name)
@@ -239,7 +273,9 @@ def full_native_kwargs(request, *, artifact_dir=None):
         qualification_deposit_equity_reader=None,qualification_deposit_account_id="",
         trading_start_ms=1725148800000,trading_end_ms=1788220800000,
         initial_active_seed=Decimal("10000"),observe_minute_risk=True,
-        research_cm2=CM2RunConfig(Config(**request["policy"]),Path(request["warmup_root"])),
+        research_cm2=CM2RunConfig(Config(**request["policy"]),Path(request["warmup_root"]),
+        daily_seed_path=Path(request["daily_seed_path"]) if request.get("daily_seed_path") else None,
+        daily_seed_sha256=request.get("daily_seed_sha256")),
         weekly_batch_minutes=1440,cursor_batch_rows=1440)
 
 def full_api_boundary_probe(request,probe_dir):
@@ -431,7 +467,7 @@ def main(argv=None):
         raise SystemExit("CM2_NATIVE_HOLD_NO_RESOURCE_RECEIPT")
     receipt=json.loads(args.resource_receipt.read_text())
     preflight(request,receipt)
-    if request["stage"]!="engineering" or request.get("fixture_id") in ("cm2-current-child-native-v2","cm2-current-child-native-v3","cm2-residual-dust-native-v1"):
+    if request["stage"]!="engineering" or request.get("fixture_id") in ("cm2-current-child-native-v2","cm2-current-child-native-v3","cm2-residual-dust-native-v1","cm2-systematic-repair-native-v4","cm2-systematic-repair-trim-native-v4"):
         import uuid,subprocess
         probe=Path(request.get("api_probe_root",str(Path(request["artifact_dir"]).parent/"api-probes")))/str(uuid.uuid4())
         command,env,cwd=worker_process_spec(

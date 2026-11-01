@@ -112,6 +112,8 @@ class FinalSendTest(unittest.TestCase):
         fake.cache.account_for_venue=lambda venue:N(base_currency="USDC",balance_total=lambda c:N(as_decimal=lambda:D(10000)))
         fake._latest_marks={};fake._risk_unknown=False;fake._sync_funding=lambda:None
         fake._entry_fees=D(0);fake._parent_funding=D(0);fake._parent_cost_known=True
+        fake.cache.orders_open=lambda:[]
+        fake.cache.orders_inflight=lambda:[]
         result=CM2Strategy._snapshot(fake,fake.clock.now)
         self.assertFalse(result.data_known)
         self.assertEqual((result.btc_mark,result.sol_mark),(D(0),D(0)))
