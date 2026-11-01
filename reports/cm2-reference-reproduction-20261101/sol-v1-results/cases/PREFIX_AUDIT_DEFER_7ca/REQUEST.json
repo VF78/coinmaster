@@ -1,0 +1,1038 @@
+{
+  "api_probe_root": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/api-probes",
+  "artifact_dir": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts",
+  "attempt_ledger": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/validation-v2-20261101/trials.jsonl",
+  "budget_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/validation-v2-20261101/BUDGET.json",
+  "current_hl_execution_inputs": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/tests/fixtures/hl-current-20261029",
+  "data_root": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data",
+  "end_ns": 1733011200000000000,
+  "execution_source_commit": "7ca1964662fa5af4ef94396ff2002b7dbc52f811",
+  "execution_source_root": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646",
+  "freeze_files": [
+    {
+      "path": "/Users/vf/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/bin/python3.12",
+      "sha256": "7b05d803bbc1bbfc81644af4faf2b88f0a37b8de96b9f42c1e08033e2cd0848a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/__init__.py",
+      "sha256": "be565ccaf9ead97f5f542cf4cd13f0e492a9c3f88b0b3efccebfbe06531681b1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/api/__init__.py",
+      "sha256": "cb43cb616f8e8c8cb875cb286051116eb49d20e0881570e81622036e1f688ab3"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/api/app.py",
+      "sha256": "b47b87beb7acf76e16b0860a06adef81c67111b5970f69527d990c698dfc3ac8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/api/connections_broker.py",
+      "sha256": "24262e81fda20f58ee4b0f25328bf71537a9fad4b89a3d170c1967b6bc299143"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/api/execution_modes.py",
+      "sha256": "81a94085123cefe3a546523a1ab0e7596e25e26d8d11a18eca3ae988aadf4fa1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/api/gui_auth.py",
+      "sha256": "71a724d2c4b8f1cff52a6ce5d1a0629c5be75fdfc43be34e350ece70f1b45077"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/api/hl_public_candle_budget.py",
+      "sha256": "f6bfd70a0520a10d674365d4355a55876298a644da3830cf94d8808eae36fe45"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/api/hl_public_candles.py",
+      "sha256": "fa19adf55b59ab4dd268541516d17db79eecfc81b51f405656ee5c20f2a151cb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/api/research_jobs.py",
+      "sha256": "007920874a6293fdc4454ac8105d4133abd26eb9fe61cb8064eec133da2ddf0e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/api/runtime_sidecar.py",
+      "sha256": "848eff598477cdc9012deb48fd4c496719ed585c811deacfd825b9f70a9ea9c3"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/domain/__init__.py",
+      "sha256": "b1783d438e3e7c6836a8d621897d80da8e6557555df6237a2aed065776a325d8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/domain/deposit_protection.py",
+      "sha256": "21161559dc898ff404fb3422c5a46f0afceedba7ea0af0931cf2fa6962d8e974"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/domain/wave_overlay.py",
+      "sha256": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ledger/__init__.py",
+      "sha256": "69fe7fe44e1a8d31eb36e1aa4687d376ed6c63a631e494f190d164c245767214"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ledger/journal.py",
+      "sha256": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_info_receipt.py",
+      "sha256": "abf87351f59e7fc8e3c513164e0c0e2b8867eff568af91455cc0f48a02fd5c96"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_live_credential_preflight.py",
+      "sha256": "239abce4f3131859b46ff75fd7879428e008c56431a1122a3b9512d7fc867821"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_live_epoch.py",
+      "sha256": "133f9487c11e534f822c85b0a2e593dbea63bd955049ffd08da5269f9b16ebf5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_live_execution.py",
+      "sha256": "b142b3947db223156a9b28d8b0b24a6e0f3ac111515e735aa606aeb7d7bcadee"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_live_money.py",
+      "sha256": "bdf98b844af73260608208ee7090a004b37426e5b7ea92c3438163eeeb2a57a2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_live_profile.py",
+      "sha256": "b74cbc21bf528c368f32b00d5773a028db1ad40dc79868c7c9794b1fa77f317e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_live_worker.py",
+      "sha256": "005ef5c7e7b586b2f911900c235e114a6228e5042833918421322ced02fca881"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_native_account.py",
+      "sha256": "0dfe92bb18b66da60a380dcbe0510fc2aee5295e433c611edd8b7214210c5ea4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_qualified_reports.py",
+      "sha256": "5e12e65049fd970e84a35541d59dc66332da20d533edea7737f729503ab3f7d1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_readonly_observer.py",
+      "sha256": "7004c5d692deea8601e6183ffe6fa6a79f01b3a2badf98b3ba87668155dd8ccf"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_sandbox_money.py",
+      "sha256": "665f0b05288e4e52f1c617bc2952d197853e4217f4ffb6dcb810a72b53ff2fd0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_unified_account.py",
+      "sha256": "3269a7be6be45df0e7e7ba67bdb5c6fe6dff809b1fe93b0cd96c3ad7ac3378ad"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hl_unified_instruments.py",
+      "sha256": "fbd1e4c9490a0f268d36099c6fbffaf551b5d6c84633676dbd023ad22685b5b9"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hyperliquid_testnet.py",
+      "sha256": "e78393de912df84ef2c15a8891239c81b36c3c3306664b5d969b175004d103bb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/hyperliquid_testnet_worker.py",
+      "sha256": "3b9caf3695009f2eb527becaa2ad1f2d71d80a09b394ff3140b646b7261afcb4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/live_recovery.py",
+      "sha256": "9e18c8718dac0fdfc39c44a1c651a37e63c992e4e8ac454986f3d639492f004e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/native_paper_node.py",
+      "sha256": "43164535ed3baf0927dc8210cb9c26ac5b6e9b5f2f70ddb092677e189c7b108f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/native_sandbox_selftest.py",
+      "sha256": "7ae7d00c0496bb1102072ed9fe1f3f7717210eb1aaa5c909fe85a28ab1764884"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/paper.py",
+      "sha256": "8c9ce0349978562078fd174a7d8826568762fec04ddd2e13bf25412d0dd1904a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/paper_worker.py",
+      "sha256": "7d0b4da9a6bb58c5fe8021b48d925bd3316d936bdfc163f303ee87549798f7f6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/stage_g_config.py",
+      "sha256": "483764644a250dc8068955c18ae3a73b1911fb9cfa94145e202c49599ff2ea38"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/stage_g_refresh.py",
+      "sha256": "46dbbf560a7d5e8148f50d1a5a827e64bfe2c5e6a1fe65a780a28e111a79689e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/ops/stage_g_warmup.py",
+      "sha256": "a5152b56efd031afa5dbcfe860c4af21ec8215e386de5ce131ced9ccb5943682"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/__init__.py",
+      "sha256": "4b89f0f2fa63b8c1e4c455ac5157d490e98ba3035c3bc4fbe629ecb5983d2530"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/bybit_data.py",
+      "sha256": "81d3b048ade5ee7a3ca20954d48efed53f3ab706e9ea8ff8a5de4fa5f07789b6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/bybit_minute.py",
+      "sha256": "db23b1dc96bec935a26e42a7225781ddbb90ab8d795d9f6055dae28b79a3d376"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/catalog.py",
+      "sha256": "3ceb79e1a0a42c7ede11e75ea642f8c5ce46f0d648c07ecfc69f02b484a504d9"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/cm2_batch.py",
+      "sha256": "9ab6bc5161b755cd51009231a62e7c4b6e1df61ea55fb24082519591de0b90b4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/cm2_committed_validation.py",
+      "sha256": "a7d1c597d9f0bb80f1c69bf147f0b34a665f930f461a2dc001b8e3e3714ee775"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/cm2_fixture.py",
+      "sha256": "76f48e5fcf09a2f643838763d2071809be0c988a29f10c67f370a03e84cdc339"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/cm2_fixture_dust.py",
+      "sha256": "1e707a7e8e159c18ad9e3cc17b9fe988bf399f51a226ff37d3a560b8a0aba29e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/cm2_fixture_e04.py",
+      "sha256": "7d70840e68750f5df57b859629a7bc94d9077a331f4847db3103d34ef9b9993d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/cm2_fixture_e08.py",
+      "sha256": "62ee5e52337a050c1d92233ec9e7bc7b62106bc99c8e1e22ffa6de750d1daeaf"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/cm2_fixture_v4.py",
+      "sha256": "fd19ff28b6605d50a01f9ffe6c0bb6756fa2ebdf19861806dbbb3e1cc400200e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/cm2_fixture_validation.py",
+      "sha256": "697135461c6d3247f13ab3b826884ca7cbbb322a6793423e22e9f69079e77789"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/cm2_funding_reader.py",
+      "sha256": "d4963d3f95c695ce61aee3342c272e18c0883912ccb989590737250af75c0214"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/cm2_reference_control_worker.py",
+      "sha256": "fbcd30424ad5ed485f8016eb6ed68e9bbf98eb2168d350e4ed47a9d8a2b5ba50"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/cm2_reference_fixture.py",
+      "sha256": "33b5f344844192cd0de133840b7684c7f72870250380190dd0923bb9a91f81e5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/cm2_runner.py",
+      "sha256": "42fb4572149c98dc556b5bab2e1fd49f007e2b1fde93347f416360cc7bf5d879"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/current_comparison.json",
+      "sha256": "c630d2f03ac82e768d242baf6e9ef86018c356a43aa9b4ec674a76303a1b2a59"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/current_hl_profile.py",
+      "sha256": "b6b0fb4ad45060477bb1dfb62004087a6fb25b0bf126da1789e5fbffbbf058be"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/effective_config.py",
+      "sha256": "08eaf974beac6bab5025f2c948e722503456a07ed6cf82beeb4aca8d5ce83450"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/hyperliquid_data.py",
+      "sha256": "a28d5928fba4fcb8c02cf21a1285ab9ffaa032c48233187f7d0e535a199e7822"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/job_limiter.py",
+      "sha256": "b434ee90c422cf1420b6a3e355abc2c493ac23e11375d7734ab9e9f1abdaec64"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/job_protocol.py",
+      "sha256": "76588a59ac140eea13726b9e6cec49ebe52dfc88186bcf958bab3ee87d998b8e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/job_test_helper.py",
+      "sha256": "8c243a46a9fb11c4b4f310115bb38bfcb825b99a8141fad9aa2200a4cff4dcce"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/minute_risk.py",
+      "sha256": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/native_accounting.py",
+      "sha256": "a723525ca1be2b81635f716108d48a79b888f3704a7c5eb5ab54879f19cebfe1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/native_audit.py",
+      "sha256": "6f19d47653f4510fbcb312b642d7e61a585bb0bd3619503f14c30808d50464a3"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/native_baseline.py",
+      "sha256": "87a9f2a8536843b93de0dacae427de6c672574dbcbb0159c915f8887b1cf2611"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/native_fixture.py",
+      "sha256": "f65a4505d5230cbd1dee421c6e61b47e757497beb3b2b08d9d9efa1bd609b8ab"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/native_full_fill.py",
+      "sha256": "ecd23593316b55e428de909e1168a2cbe3f1cc121b3ca85f0e9ae21ac5147dd8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/native_optimizer.py",
+      "sha256": "a3e1fbd671205dfe331bf8c5357cda0c2c727c09393a98a6ce6cd0e42694a37c"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/native_sequential.py",
+      "sha256": "a47f1456f558655d297c616d4edb57c24961097113e9a59004c63da273972903"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/native_validation.py",
+      "sha256": "b8e4179fd402233ed27a4286d38b74c1491bebd20d2a6a1321d7b52ffe64e141"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/optimizer_job.py",
+      "sha256": "f3b913ee1abfe47061ae904ebb5ba1ee0375b3df36d8a7bca372b70ac078d9db"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/paired_observer.py",
+      "sha256": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/research/qualification_policy.py",
+      "sha256": "92925e82c37eb596f67e7f580b7313b8cbf32041e68b6bb655cedf70fd2af6aa"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/__init__.py",
+      "sha256": "836a0e715d63cc164f8bd76b6685a016c6b8b5c42bb42d2c57b6ad2981fbde9a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/alpha_cushion.py",
+      "sha256": "ef0fbf4664ca6e6382101dc885419cffc62f98e00c255c1de9c12d0949c7df4c"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/c1_inputs.py",
+      "sha256": "e69c50884cbf24884122d9163ee760db5b440f0832c35e9899802163e8b35c4d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/carry_pair.py",
+      "sha256": "7b72df60028d8b87e55b1735a3612c35e2bd7f3bc4fbc03615fa645c50cbb216"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/cm2_checkpoint.py",
+      "sha256": "e59e066d6ac8818126bd6fa24eb879da02bfe829352797f95eb48661c7a37dbb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/cm2_execution.py",
+      "sha256": "1fd74f260ecccbeaf4a6f0d02ad7c6f6f4827d61ccb1627bdf66e7d99447d820"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/cm2_native.py",
+      "sha256": "0238a7b48a8555e2090bac0b37a233c35422461bf0ea274ed7a07ae140a086f5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/cm2_order_contract.py",
+      "sha256": "092eb01216478bc16690e98a3a22867294682892cc45040573bb956a202e7667"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/cm2_policy.py",
+      "sha256": "b21a2a69c35d2beaa7ac41ce3f03eba9975abdf2402b195623b07f18a3b0d1c1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/cm2_reference_policy.py",
+      "sha256": "fae4d3812844df1446cff6f9cf05eec3db22a3e414755721d4cb4c0e0817d5f2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/cm2_sol_policy.py",
+      "sha256": "a85b8c1af05e7b8c719a2f3be4cbf08b139d6749ba6c5643c23df7b2d4ac1985"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/cm2_sol_volatility.py",
+      "sha256": "fcd49f68c1380692700ddd7fa4e500c9c493d5676ec61779daeff959514850ab"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/conditional_hedge.py",
+      "sha256": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/execution_config.py",
+      "sha256": "ab5a9d219428872717b66bc2a11aa72ac85ed470ecd4f62e1dc25fca4c763b9e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/hedge_band.py",
+      "sha256": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/immediate_insurance.py",
+      "sha256": "fcb43bea1d233a9ce9557d1d992e964b2dad23654fa5bb011c68aa405e5daf75"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/live_recovery.py",
+      "sha256": "36bb708b176cf5f208ccd17eef6d63295298790f04a98e2147aef5f643cb66c6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/next_band.py",
+      "sha256": "ba01f1a0bf9a78197a469483c807a73a8089a4ccf2c0e35598b4ae6b9321cef7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/residual_recovery.py",
+      "sha256": "55b4db26540a297a8d53dfe45be446136c7c0df3956ba73005013be7a5112483"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/risk_first_sol.py",
+      "sha256": "6475dd2df2987abfc8fc1e0c8200b9049bb9a15b6e4eba76a857f9c4aa4c1278"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/sol_capital_staging.py",
+      "sha256": "a63fc3b02cd09549c552cb2a06f79e5e61ca9b332e4dc7f4e821988f63f192e0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/split_cover.py",
+      "sha256": "d4c154132e22da548cd3e573abe5713d14c493cee95d9b1ebf5af10b276094d2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/strategy/wave_overlay.py",
+      "sha256": "40178103b51f7a84bf396ce53c3211ed7cf60acf871b1a06eb06247aa0e7433d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/venues/__init__.py",
+      "sha256": "7ca0fa95024781562c10d94040f6d34f3e38be1327b79bac96b6ce7275709799"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/venues/bybit_profile.py",
+      "sha256": "9a26ffc79aa7f4e80d14fb1bb42a91846e153378e83d0b9a79695e46195088e7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/venues/effective_fees.py",
+      "sha256": "f0c54aab2781af7f575b986ddcfab55c8b9b0d5f9fef21c2adcd0f0403d4a2e0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/venues/hyperliquid_profile.py",
+      "sha256": "0d56401ba02de4ca7032c3480f1bdb2be2eac3ee36a6c7260786e496dd084bc1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/venues/margin.py",
+      "sha256": "a9e1e8860ded3450bfa04f5f13a94e2f83b19480e940b46acf766c6a15e397ab"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/venues/margin_policy.py",
+      "sha256": "ca855858ff19791544bb17930721e591e35acb2d33adb257db85bf6b175c1e15"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/venues/marks.py",
+      "sha256": "c783b323164b06dc22ee60d7c329364df7414135b7f1328131ef20fa54f42372"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/venues/production_preflight.py",
+      "sha256": "a5c00a40fa109d2ec60fdd474591c6e255a914be4894b6dfb326f63e3f4cdfa1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/venues/profiles.py",
+      "sha256": "23666adb03477781619782b0f1c3c8ed553d76c4e699284f15160bd7b1e7b5fc"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/coinmaster/venues/signals.py",
+      "sha256": "2548d380be312126bb35e02cc36a8d3654930b15953ff41ff4c450a1fb00b46c"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/pyproject.toml",
+      "sha256": "b0403fbd6bf0fb8919c4d47774be42c3fe2309f5937b8b3572985e03d27186f8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/tests/fixtures/hl-current-20261029/execution-profile-inputs.json",
+      "sha256": "0a3c32cb92c47174911ac834b31a61464b97fc9a602cca537fccde9fe6fc0ed5"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/tests/fixtures/hl-current-20261029/hyperliquid-meta-BTC-SOL-20261029.json",
+      "sha256": "3611d651c7973b61460c2430c95723f992bb69520bd33fb7c76fb354074197cf"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/tests/fixtures/hl-current-20261029/native-btc-sol-raw.json",
+      "sha256": "8b818bff35fe19b1bb43b157453b5acae6ba2c23dbf92f5cbfe58bdae94ab6c4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646/runtime/uv.lock",
+      "sha256": "bcf28c692174edabbb0dd324daa08b6ea2a26f3506e49195d2eb5f98ea5cf500"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/validation-v2-20261101/BUDGET.json",
+      "sha256": "e7d1e9100a6394955671c3a91aae6b5b5da86c219b447cc01f66ca324a19b087"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/accounting/accounts/base.cpython-312-darwin.so",
+      "sha256": "3d4eec3eb59f06cc009b17f05ad70708c569aa50a25f5aaa76fc6af7868281c2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/accounting/accounts/betting.cpython-312-darwin.so",
+      "sha256": "67564012a534c3d321d4c16c111cb43b645326492ee2c6466a9246580971d997"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/accounting/accounts/cash.cpython-312-darwin.so",
+      "sha256": "e23ca4446eca92d9685acfe2d4161fbe6bfee0f5dfe84c6721f72a2ebe66dcd7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/accounting/accounts/margin.cpython-312-darwin.so",
+      "sha256": "8bbd76ebad78a5ffd8c6de50d2c2bf53f35c426c0b4451e002e4f1fd00b7b1cd"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/accounting/calculators.cpython-312-darwin.so",
+      "sha256": "45b537c0959a6147e98e7dd8beeee649390194c4541c682b9a0f7618d2fdf0b9"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/accounting/factory.cpython-312-darwin.so",
+      "sha256": "5e4615ae631800a0ef06cd2c7cdbf7eb8653a55bd7f6b1e126dd48d8e2329daf"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/accounting/manager.cpython-312-darwin.so",
+      "sha256": "f57f7e9c1170bee03a95d6e5ed833cc06e2d5e1658da83ac43975e279dc280b4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/accounting/margin_models.cpython-312-darwin.so",
+      "sha256": "c258cf9394051be50fbdc446c3f4d246fea453dd78263ca96625b192c77c266e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/adapters/betfair/orderbook.cpython-312-darwin.so",
+      "sha256": "ff6a83c53da131bca90a884135e97d83dfb31d60a68adf46660d34b2349e5f33"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/data_client.cpython-312-darwin.so",
+      "sha256": "23c34ab5f7ac09c661ac1fff9262fe82f6e55d3e936b161a9b25914fe34fa4ba"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.cpython-312-darwin.so",
+      "sha256": "fad4155bd5e94d58f95928cfc0b83be78897bd1dfe154bc7de637394e3a4f81a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/execution_client.cpython-312-darwin.so",
+      "sha256": "19418cc2f4ed8c6ea9ec4ab75fca2025cd566ff92c27103f225a71259ac89190"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/models/fee.cpython-312-darwin.so",
+      "sha256": "6f84f5742fdc7578ca2d475b248ed75b8cf35ad17f23f1316c5db679f6c04681"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/models/fill.cpython-312-darwin.so",
+      "sha256": "04c7453ab8753f72fe72a3aab85ae04d5801a1f31157592cece6bff5cfce640e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/models/latency.cpython-312-darwin.so",
+      "sha256": "c0af9ecd7987944fc8db4f0b8f673c47bced19dcf8057c810f21eba789432f85"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/modules.cpython-312-darwin.so",
+      "sha256": "934f3c25e70cebc2d00103168ff212746ac860f6f0157912d2a452c974a49b0d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/cache/base.cpython-312-darwin.so",
+      "sha256": "b34bc12257c71753b1343a9548d8ea122fea6af9588a564a054a1201c73121f9"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/cache/cache.cpython-312-darwin.so",
+      "sha256": "e133277bb8e671dd63fb87943f3cb0b292725c7edf917c7700c4641c518665ed"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/cache/database.cpython-312-darwin.so",
+      "sha256": "60016b2fffc484a9039686fcf5b769558b61bcf0b63e2e555040d46d5f0930eb"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/cache/facade.cpython-312-darwin.so",
+      "sha256": "486fbc0d871ac5a9ae141e4d1f6c2a4beed309b2979f8c41f6a9936497a7f227"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/common/actor.cpython-312-darwin.so",
+      "sha256": "f32c85bc97cb51a247b7b048ae071250760b4ef8af1ac0eed444a4b223308bad"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/common/component.cpython-312-darwin.so",
+      "sha256": "ae42ba8af8ecc903f7bf927af0bf3c175e77f2ad4da0828e809fdda34f72e312"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/common/data_topics.cpython-312-darwin.so",
+      "sha256": "245f7581cadfacf4c594e02b7ed5dc588b55062a2fec8535d5710a214de4bf84"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/common/factories.cpython-312-darwin.so",
+      "sha256": "211b6341bb225423678bb657de509057fc29815596bea2a71b46df2fe17094f3"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/common/generators.cpython-312-darwin.so",
+      "sha256": "c95eed717a69b12dcd168bb75986cd77369dbcaa675cc45e372d0ed882e45d0d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/common/messages.cpython-312-darwin.so",
+      "sha256": "6949479b802c4a3921be0d7522f304f6675053d2d08a638000ff9b20c975c887"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/core/correctness.cpython-312-darwin.so",
+      "sha256": "d230827478493669f80a5a9dfeb558f8c4c8d58cc418479b95f2b36f27cf39ba"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/core/data.cpython-312-darwin.so",
+      "sha256": "26519c8b10af91f5e91cfa4b22fbdf065fc5839eb99ab4b7944c47e2e50729b7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/core/datetime.cpython-312-darwin.so",
+      "sha256": "ad8b3179093c8504f7093e8d1735b26b435d586fbbe34ed0dbe2279d322c6f24"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/core/fsm.cpython-312-darwin.so",
+      "sha256": "7c5dc8cf1465ae488bfdf5adb091f8cdeb0687a2e35618e9a36a59958ae79357"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/core/math.cpython-312-darwin.so",
+      "sha256": "d841d2c32182e5bd018b982fbe160074b9f8a1788d0c986add6fc01d60bab691"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/core/message.cpython-312-darwin.so",
+      "sha256": "8a664284f70a6cbf2ae305f06396e5435c44a28659a55303301f800368378b2d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/core/nautilus_pyo3.cpython-312-darwin.so",
+      "sha256": "1c1bd818656a2b5c4681625f2ba3649c9ab13f4a4cfac59d1a888f489746a6b7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/core/rust/common.cpython-312-darwin.so",
+      "sha256": "93b4cef858b7e4207f6c9301efaf44373d0149d673ab5e35f8ddf83b0bd360ca"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/core/rust/model.cpython-312-darwin.so",
+      "sha256": "5ea48f4aa30345caccb18ac380492241b491bf6439132a86620869883a35132a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/core/stats.cpython-312-darwin.so",
+      "sha256": "eed9378502061aaa20c9fa6215c230cf2e592ea96bcdf61e4b0eef167fd0207a"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/core/uuid.cpython-312-darwin.so",
+      "sha256": "a8144f3ddc7c7ad7df2da87b65f62f582fd14245809e63dcb9bd6bc97d11010e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/data/aggregation.cpython-312-darwin.so",
+      "sha256": "9b7029e8e09b73ec239ccae6bbeb156b3484dfb78681dc64a6cfd6bc7e0e7fae"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/data/client.cpython-312-darwin.so",
+      "sha256": "92397b20e34e61a93053e71c4f6241e9f6aa852d7238551c94295081733117ca"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/data/engine.cpython-312-darwin.so",
+      "sha256": "c0145b34374ac3f4e2075fcaf4cfd183aa9536325b44098b14195a45251e0057"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/data/messages.cpython-312-darwin.so",
+      "sha256": "62a594e742009abd8efb1977896be2d2c8a62abfe5290142fd430acac7b91a9e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/algorithm.cpython-312-darwin.so",
+      "sha256": "491fe6e836e736deba571fcce27dc648a375686a8c36dbe03d5a0a8dbbd137b2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/client.cpython-312-darwin.so",
+      "sha256": "f1094704a0f214bc47fb12881795562a517ea93f1076acbdf24bb455a01495cc"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/emulator.cpython-312-darwin.so",
+      "sha256": "4d12dc53c99716cbdfd0b0820c7e20e4d4d642bfd7238c278789f34a1fb75c6b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/engine.cpython-312-darwin.so",
+      "sha256": "95edb6bd821630cf712fd7fa4827bde5cbc622eb61b2f618f60cc00f3a4c9005"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/manager.cpython-312-darwin.so",
+      "sha256": "7f9aae321f2fb75da1182853d4d5ed1ab5725fad6e3f48ea5fdf646cbc7134e4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/matching_core.cpython-312-darwin.so",
+      "sha256": "2c33bd8a12c77d6c5663c68acfbbdd1c880853c206ea5da52ac59dabbb00cb2f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/messages.cpython-312-darwin.so",
+      "sha256": "dfac9f08c40c7cd44d7d3f34e0c4e6d16f8d43655c6ee6b67b7887cc7c3ff454"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/execution/trailing.cpython-312-darwin.so",
+      "sha256": "f28c7811d7773283252014ed797110947dbe80df1d5b6cfa144bbd9c0d43c76f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/indicators/averages.cpython-312-darwin.so",
+      "sha256": "9c781d555299fe88fcd309971a2a2177697c653478e08a07f7ee9ba257054c13"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/indicators/base.cpython-312-darwin.so",
+      "sha256": "8c1f358f61cdf0476500ba08c29e627aaf9696726a6cd94a67f046e8f90b1e55"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/indicators/fuzzy_candlesticks.cpython-312-darwin.so",
+      "sha256": "d4d0ca8fae0a0cba7ed8dfb6093c730e418a18126066312c7a5076a8f7f9fe9b"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/indicators/fuzzy_enums.cpython-312-darwin.so",
+      "sha256": "acbf767a249789155e0346b2640e2c36699fa83734dc7c7c90d9488498efbecf"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/indicators/momentum.cpython-312-darwin.so",
+      "sha256": "70aba87c618bc8c2f7af08824d83fc3be897e6c11d153c54992ea4e45988242d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/indicators/spread_analyzer.cpython-312-darwin.so",
+      "sha256": "568b5d7658697ddb914405c5cf7852df230981a4f8ea41e683623b1583b9d408"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/indicators/trend.cpython-312-darwin.so",
+      "sha256": "f037bebd5cee25a167442e8d695ad837bb8d974d861b7652f2ed05c436efaa17"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/indicators/volatility.cpython-312-darwin.so",
+      "sha256": "c090d7cb89a855f064210d0279a4bc701ecff7e83e6a10d1e33b459ea7596924"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/indicators/volume.cpython-312-darwin.so",
+      "sha256": "0a7dd9c1d5718396190d5e9e100b7499e810112acaa80c6ff5eee965cff9830f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/book.cpython-312-darwin.so",
+      "sha256": "39fc7ca27153f0917c60bdd4a0901e37bf28f5798a7d96fc11a3b61d845f5d13"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/data.cpython-312-darwin.so",
+      "sha256": "6d43c4178c377a5ac3b170e9da193154869bdf6d42524a95e5c1a7e9d93c34ed"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/events/account.cpython-312-darwin.so",
+      "sha256": "dc28cfef80f1f849cb2683eb9653a9755519d3b7813ff0c669d5d83c3d6d53f0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/events/order.cpython-312-darwin.so",
+      "sha256": "c300feec692d4cd8a2210c69e39667a71e7ebabb93bab202f2237ca8b22f1dae"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/events/position.cpython-312-darwin.so",
+      "sha256": "2c5ca882857d7d4b34905917c119dd64db4233d356dcfd5c68903a1a4e0ceb80"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/functions.cpython-312-darwin.so",
+      "sha256": "ca750c13c0bb71f9be831521c4d0f1eec62fa851f26a7aaba8b4ae491ed7e198"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/greeks.cpython-312-darwin.so",
+      "sha256": "8a25a4e42a0f60b52c91cf284dd44edc280d0242ed27c4fded386723d831b08f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/identifiers.cpython-312-darwin.so",
+      "sha256": "42f938d4ff91814544d5955d0dde92dd52c2f4c2f175d0d7ef9e2d1b6536e37e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/base.cpython-312-darwin.so",
+      "sha256": "441b2899f09cd638e842d5ff929fe81ff3c18c5f1c530e9510520ca064f32926"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/betting.cpython-312-darwin.so",
+      "sha256": "6710fbbe45d9757ab0319c3f077eb265b10249dd68fa5f462317ff220590bac6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/binary_option.cpython-312-darwin.so",
+      "sha256": "5fee8f75559f4451da18282044b7cf9ed28b4c5d60abf9567915c5e4c9d7feb8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/cfd.cpython-312-darwin.so",
+      "sha256": "f0eb5d76dd710f26d126567a6e9d5cad0d7604a0ed1c13cb50b08c7a03f8f0a7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/commodity.cpython-312-darwin.so",
+      "sha256": "ee0c3f39f7a075eadf39a780f346c1a86e7f799570566b1390a3c2e99d047bd7"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/crypto_future.cpython-312-darwin.so",
+      "sha256": "f1da4394d0ead941f5fc270af0585b1b72cafe4feabc75207d0bdc52f0056c79"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/crypto_futures_spread.cpython-312-darwin.so",
+      "sha256": "2590facef9311f53c1cc6519575ba710d92991a005cf162cc905eebf577b3173"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/crypto_option.cpython-312-darwin.so",
+      "sha256": "e0da0284c9a97905669367e6f0d8ae53ceb220a3ed6755b1349b50a805772c91"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/crypto_option_spread.cpython-312-darwin.so",
+      "sha256": "a09951ad68a8cf2202b77848c126b94e1a140b8a045dfb233b4d862ef72d54fa"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/crypto_perpetual.cpython-312-darwin.so",
+      "sha256": "b9a03e28a9c78a7a81a2906064715fe76e8ca2154e64211998fa0332f6727c88"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/currency_pair.cpython-312-darwin.so",
+      "sha256": "c1004f394b0fbea02b693a760ba2bd5138f778ff0b46587e017cb61cec826b97"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/equity.cpython-312-darwin.so",
+      "sha256": "0aa7f08b67d2faba8e24007d053345fa27b4c8c6fb1cc03f2440160d447ddcc3"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/futures_contract.cpython-312-darwin.so",
+      "sha256": "ad6504c1ea339f467b1e27261476c48eb0796455e9de75bfaec95721ca2fae13"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/futures_spread.cpython-312-darwin.so",
+      "sha256": "8fd9d1689dcc679b38a23dfe90ea7901310be1ec1b10c5f5b45b0af6836ee357"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/index.cpython-312-darwin.so",
+      "sha256": "c09ad7a73927c197cff01307a6a32df46d2a7f9d5fed67b6f6e1c6f57874f259"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/option_contract.cpython-312-darwin.so",
+      "sha256": "a7d63e0800b5354489aa6e4bb56a6a3a6969771c115ffb4bf2794c20e3cdc2d8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/option_spread.cpython-312-darwin.so",
+      "sha256": "6f2b8ae48eb80c497c0a78b3c708635102eb1d6a5369043c137112c07966429f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/perpetual_contract.cpython-312-darwin.so",
+      "sha256": "1b3db6fdef57d5b389df891dcb625dba6bafd725f282aa05f2f5a4007b25fd14"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/synthetic.cpython-312-darwin.so",
+      "sha256": "61e7e2b6831a13e746836d6b4fb13b8431ad5bd398aea9a58d24215845ad0bd0"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/instruments/tokenized_asset.cpython-312-darwin.so",
+      "sha256": "d4c73a10c60671c1296b266b7a26767256b462b5a2475776901c83454e0aac28"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/objects.cpython-312-darwin.so",
+      "sha256": "569d120f1f95ebca35e89c309b71f8f22dc3e329b863d8fb87fe78d313c61144"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/base.cpython-312-darwin.so",
+      "sha256": "2079043164b2b9b4a3812c5ffbc5ceab26be8ef277191423aa7a330486f8a523"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/limit.cpython-312-darwin.so",
+      "sha256": "fa327f549cb1feaa4cbbf42788fba39d2c7b78cda162aec16718e76568c85a51"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/limit_if_touched.cpython-312-darwin.so",
+      "sha256": "d32aaa3815027974e869dfde21044ce7c4bdbfe99f6cb2af6ed0bfcb11cb1d6e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/list.cpython-312-darwin.so",
+      "sha256": "d752c3fdf9d42f6d10ee975ff30ed7a224ade701a3f7b2bdc805b902baf0d971"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/market.cpython-312-darwin.so",
+      "sha256": "5e8b5042ef56fddd238aec196ea5a3c602d3b9865519acba03789ce28b7e125c"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/market_if_touched.cpython-312-darwin.so",
+      "sha256": "00bf85c01316dba19d3151c26acd477e69da9267e3279aeb739693f2ab0b1713"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/market_to_limit.cpython-312-darwin.so",
+      "sha256": "d8bd0f48be4db8b33f068554347fae9cd6dca9a2dbe08d39c86d543f45a178bd"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/stop_limit.cpython-312-darwin.so",
+      "sha256": "988506752cfadda1eb5bf95f7fb25cc09e5c2a097fdf36b9caeb27763074c29e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/stop_market.cpython-312-darwin.so",
+      "sha256": "a723bb8fbee273ba136307b89b273d636fa1131c6c7f5f18d44f5d4b106c27ec"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/trailing_stop_limit.cpython-312-darwin.so",
+      "sha256": "cd325ee4c3893313f6bb6936f80eede5de94a846b3681d00aa27058788a30963"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/trailing_stop_market.cpython-312-darwin.so",
+      "sha256": "a6317e1984423404f587c56345cf68ee0954722a1a856110bf92c2e0e2c0ba80"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/orders/unpacker.cpython-312-darwin.so",
+      "sha256": "63833ab350b46302eb1623912730503692dbb6d1db09c6bfddff72f1caf1ba93"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/position.cpython-312-darwin.so",
+      "sha256": "d2c5e346efec53f123614b14a15d3bbb6c54868d7dcc20e0c7cf6b05b262a31f"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/tick_scheme/base.cpython-312-darwin.so",
+      "sha256": "84d83fe63256eb61c33b99cb839138c43cf9730aff109b5d9f9bdd487fe007c1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/tick_scheme/implementations/fixed.cpython-312-darwin.so",
+      "sha256": "3cdb0f1e61793f13b9d521f1631c97e4de068c7b00b4cf6789354270b0bafc9c"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/tick_scheme/implementations/tiered.cpython-312-darwin.so",
+      "sha256": "d42f55ca8fa964b711eca223d0c3663277204924e87d84ff4e631f8818a35074"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/persistence/wranglers.cpython-312-darwin.so",
+      "sha256": "51ac5013b84fa3ea9c7c4e716660d01153367db2a4ff2d9b4383dd1fa3746ce1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/portfolio/base.cpython-312-darwin.so",
+      "sha256": "49851c585286bbe98f6cd29f23c8d9be4c20d3621e7c01d2385709108295bfd1"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/portfolio/portfolio.cpython-312-darwin.so",
+      "sha256": "f619e406803c02629b2f7e0f60ef56b9c3cf5419b8a12c6618b1657d2a2045de"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/risk/engine.cpython-312-darwin.so",
+      "sha256": "7bfd3f07d12e1745c9760ebb423eeb051b2aa5104c8a2b40ef7c962708e290c6"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/risk/sizing.cpython-312-darwin.so",
+      "sha256": "4b7f93615f05a13e0b696cd6983ad48c85b8900c5b21f449ed69884f59376b79"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/serialization/base.cpython-312-darwin.so",
+      "sha256": "88159de913b3c189d9d14027fe713f12610c2b76361a44d751201410f46e1875"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/serialization/serializer.cpython-312-darwin.so",
+      "sha256": "e3e588e51ce3211e4b882e4d6f845d906873046ac9ad8b4c6de44a82a62a62f2"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/trading/strategy.cpython-312-darwin.so",
+      "sha256": "516afc720996683c5ad9f8cfa9328288e3fcdb94740b1f0b76799161b71e21c9"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-daily.parquet",
+      "sha256": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-execution-1m.parquet",
+      "sha256": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-funding.parquet",
+      "sha256": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-BTCUSDT-mark-1m.parquet",
+      "sha256": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-daily.parquet",
+      "sha256": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-execution-1m.parquet",
+      "sha256": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-funding.parquet",
+      "sha256": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/data/normalized/bybit-SOLUSDT-mark-1m.parquet",
+      "sha256": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/private/factorial-optimization-20261030/runner/frozen-24c6021e/reports/factorial-optimization-20261030/harness/factorial_full_runner.py",
+      "sha256": "58b9a047ceb6627108e3bac52a957b231f405fe12b8a6bb1684e3582599682df"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-daily.parquet",
+      "sha256": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-execution-1m.parquet",
+      "sha256": "9c48e97ce1544bb5b7169772eea2d06d8a0c3fefd2522e32ece452c2946c0f88"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-funding.parquet",
+      "sha256": "967d85f74c3664a65f21a63302c499402bce41b7a3c25be562184ca2fd0f9c17"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-BTCUSDT-mark-1m.parquet",
+      "sha256": "5ba0ba602dd832b711d636133a68af7fc6a2aba79cb9ab23a026ade49be10285"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-daily.parquet",
+      "sha256": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-execution-1m.parquet",
+      "sha256": "fd5392f14c42599b54723c5a257a22b4d35729366f9b4ff76033998a6cb655b8"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-funding.parquet",
+      "sha256": "225c18ce942e9ff13e6a018a52804782c5c786e64594cdc13bcf27eb6310c31d"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/sol-conditional-hedge-btc-band-20261023/inputs/data/normalized/bybit-SOLUSDT-mark-1m.parquet",
+      "sha256": "ceeb158d26484803bbaaf2a9aaf84ea02315e9149999eb33b851d3810ac173af"
+    }
+  ],
+  "initial_active_seed": "10000",
+  "orchestrator_source_commit": "7ca1964662fa5af4ef94396ff2002b7dbc52f811",
+  "orchestrator_source_root": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-7ca19646",
+  "policy": {
+    "candidate": {
+      "beta_days": 270,
+      "btc_close_trail_fraction": 0.03,
+      "btc_notional_multiplier": 7.875,
+      "btc_tp_fractions_initial_qty": [
+        0.2125,
+        0.2125,
+        0.575
+      ],
+      "ema_period": 34,
+      "episode_fixed_beta": false,
+      "max_parent_notional": 30000000.0,
+      "relative_days": 65,
+      "sol_entry_z": [
+        1.25,
+        2.5,
+        3.75
+      ],
+      "sol_exit_all_z": 0.125,
+      "sol_exit_half_z": 0.375,
+      "sol_late_entry_after_tp": true,
+      "sol_max_holding_days": 14,
+      "sol_overlay_enabled": false,
+      "sol_size_multipliers_h": [
+        1.75,
+        2.625,
+        3.5
+      ],
+      "sol_timeout_preempts_add": false,
+      "wave_history_days": 730,
+      "wave_min_count": 8,
+      "wave_quantiles": [
+        0.1,
+        0.3,
+        0.6
+      ],
+      "z_history_days": 180
+    },
+    "emergency_drawdown_fraction": null,
+    "flags": {
+      "c1_btc_postcut_d1": true,
+      "c1_first_fresh_h4": true
+    },
+    "sol": {
+      "enabled": true,
+      "model": "CM2_SOL_WAVE_EXHAUSTION_RELATIVE_V1"
+    },
+    "version": "cm2-btc-reference-v1"
+  },
+  "qualified_coverage_source": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/private/factorial-optimization-20261030/runner/frozen-24c6021e/reports/factorial-optimization-20261030/harness/factorial_full_runner.py",
+  "request_execution_model_id": "CM2_BTC_REFERENCE_NATIVE_REQUEST_V1",
+  "run_id": "CM2_SOL_PREFIX_20241201_S2_AUDIT_DEFER",
+  "shared_lock_path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/var/research-jobs/mac-native-research.lock",
+  "source_commit": "7ca1964662fa5af4ef94396ff2002b7dbc52f811",
+  "source_family": "CM2BTCREF",
+  "stage": "qualification",
+  "start_ns": 1725148800000000000
+}

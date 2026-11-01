@@ -1,0 +1,43 @@
+{
+  "status": "FINAL_EXACT_AUDIT_DEFER_SOURCE_ACK_NO_NATIVE_GO",
+  "commit": "7ca1964662fa5af4ef94396ff2002b7dbc52f811",
+  "parent": "c41185054748486d6d41f0ace24e0575c1d68f33",
+  "native_actor_sha256": "0238a7b48a8555e2090bac0b37a233c35422461bf0ea274ed7a07ae140a086f5",
+  "source_receipt_sha256": "c995e76f7d0b53f61445a823237bb2c242a114641600026878b7287ba352f82d",
+  "independent_proof_sha256": "e519ab1b443d2ee39bbb94710c1b7ad3e029bc756e81db886d4d806690beb79a",
+  "independent_probe_script_sha256": "e312fefadb5d7405734cecea96da63097bd9d23f816af99119a8595b14c2169b",
+  "independent_checks": 18,
+  "actual_source_evidence": [
+    "All3exportbytesmatchreceipt.",
+    "Read-onlygitdiffname-list confirmsONLYactor+2focusedtestfiles changed vs c411; runner/nativebaseline/qualifiernotchanged.",
+    "Entireactor ASTidentical aftersubstitutingoldcapitalmethod; allothermethods/imports/fieldsunmodified.",
+    "Allnon-auditresultfield AST+allraisedknownnessguards ASTidentical.",
+    "Actualfrozenold/newmethodLONG/SHORT/FLAT non-auditframes/nativeUPNLkwargs/fundingnote exactlymatch; newrealizedgetterforbidden/notcalled.",
+    "SOLfundingunknown andcashcurrencyunknown stillsameValueError; staticallnativeknownnessguardsidentical.",
+    "AuditDEFERRED andNone valuesexplicit; nativeBTCfunding/UPNLtrading_inputFalse retained.",
+    "Existingterminalrunner/nativebaseline/strictqualifier sourcehashesunchanged."
+  ],
+  "preserved_financial_sources": {
+    "research/cm2_runner.py": "42fb4572149c98dc556b5bab2e1fd49f007e2b1fde93347f416360cc7bf5d879",
+    "research/native_baseline.py": "87a9f2a8536843b93de0dacae427de6c672574dbcbb0159c915f8887b1cf2611",
+    "research/cm2_committed_validation.py": "a7d1c597d9f0bb80f1c69bf147f0b34a665f930f461a2dc001b8e3e3714ee775"
+  },
+  "author_focused_tests_carried": {
+    "passed": 17,
+    "seconds": 2.02,
+    "rerun_by_reviewer": false,
+    "counts_not_additive": true
+  },
+  "remaining_concrete_blockers": [],
+  "limits": [
+    "Exactsource/auditsemanticsACK, notmeasurednewruntimeperformance orfinancialequivalence nativecase.",
+    "Currentc411FULLrun remainsc411/unchanged/preserved; neverrelabel7ca orresumeitscheckpoint undernewsourceidentity.",
+    "Futurefreshprefixequivalence/nativeadmission belongsRootonly; cannotclaimall7WM/fills/fundingexactfromunitprobes."
+  ],
+  "Native_engines": 0,
+  "Native_Strategy_constructors": 0,
+  "Nautilus_imports": 0,
+  "product_edits": 0,
+  "current_run_touched": false,
+  "GO": 0
+}

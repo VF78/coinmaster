@@ -1,0 +1,48 @@
+{
+  "status": "ROOT_FROZEN_RESEARCH_CONTRACT_PENDING_FINAL_TWO_CLAUSE_ACK",
+  "utc": "2026-11-01T20:44:18.188328+00:00",
+  "model": "CM2_SOL_WAVE_EXHAUSTION_RELATIVE_V1",
+  "owner_fixed": [
+    "Sharedactualnativecapital;noBTCmarketlogicchange",
+    "LockedKSTD60formulaandepisodefreeze",
+    "NS=absactualopenBTCnotional/K",
+    "SOLnativeBTC-TPflatmustnotbyitselfexitexistingSOL",
+    "No trade/date/futurePnL filters,secondOMSorPnL"
+  ],
+  "default_scope_while_optional_owner_choice_pending": "NewSOLonlyactualBTCheld; no standaloneBTCflatentry implemented; existingSOLmaycarryafterTPflat",
+  "research_choices_not_owner_requirements": {
+    "entry_family": "ActualBTCfavourablewaveexhaustion plus completedD1SOLrelativedislocation; groundedoriginal25nativeepisodes, notA-Dmomentumgrid",
+    "anchor": "PLANREFonly, knownafteractualcompletednativechild; noq0/VWAPfallback",
+    "exhaustion": "OnepersistedmarketfactperBTCparent setonlyafteranactualBTCquote observationwithPLANREFknownandactualBTCheld: d*(executableBTCexitprice/PLANREF-1)>=firstsourcewaveTPfraction. Zeroislegitimateonlyafterobservation,noinitializedbest_f0permission. Usebidlong/askshort. Recordsource/receiptclock; donotdelayBTCexecution.",
+    "entry": "Afterexhaustionseen, actualBTCheld andsameparent/side, latestcompletedD1z with d*z>=1.25, freshnativeSOLquote andknownnativecapital/collateral; false-to-trueopportunitypreventsunchangedconditionreopeningchurn. UNKNOWNdoesnotbecomefalsetorearm. NoH4/H1/M5newfeed,2Hconfirmation,168Hwarmup,forecastengineorprofitguarantee.",
+    "opening": "Kdailyexact9fcutility andsharedfeaturesigma chosenforfirstacceptedopeningintent; nativeposition/actualfills authority. NS=absactualBTCqty*currentcoherentBTCmark)/K, SOLqtyflooredusingcurrentexecutablesideprice/officiallot. Fullopeningparentmarginadmission beforevenuecappedchild; sameintentpartialcompletionisnotperiodicadd. No arbitrary1000SOLcap or optimizedmultiplier.",
+    "growth_recheck": "Beforeeachremainingopeningchild requireactualBTCstillheldsameparent/side andfreshcoherentnativefacts; remaininggrowthcannotexceedoriginalfrozenbudgetorcurrentactualNB/K. IfBTCshrinks/flat, cancelunfilledgrowthnormallywithoutpretendingACK/collateralfree; actualexistingSOLisnotforce-trimmedjustbecauseBTCquantityshrinks.",
+    "episode": "K/side/sigma/permissionidentity surviveBTC-TPflat untilSOLnativeflatandallSOLownersactualterminal. Abandonedunfilledintentmayrelease. Nativequantity/VWAP/fees/funding remaincache/journalonly.",
+    "own_relative_exit": "UsecurrentcompletedD1relative/mu andfrozenopening sigma: heldSOLside*((relative-mu)/sigma)>=-0.125 =>SOL-onlyROexit; nohalfcreditladder/14dtimeout/trailinggrid.",
+    "market_thesis_end": "PureBTCmarket REGIME/TRAIL end of sponsoringepisode invalidatesSOLhedgethesis, requestsSOL-own scopedexit; triggerispublicmarketdecision,notBTCorderfill/nativeflat. BTC TPflat/partial/C1/ordinaryACK nevertriggersit. Stage7fixed24hcontinuation retainedall22andnegativeoverallmean, so no unsupportedcontinuationgate isadded. Narrowreviewmustcheckthisfitsownercommonmarketlogicandnonautomaticnativeflatconstraint; flagconflictbeforecode.",
+    "safety": "ExistingnativeGLOBALemergency/liquidation/operator/testend remainsauthority. SOLscopeddrain usesexistingexecutor/epochguard,waitsonlyownowners. BTCknownROneverwaitsSOLACK. Unknownnativecash/marks/currency/margin/lots/dust are notrelaxed.",
+    "funding": "No futurefundingforecastgate/newratefeed; onlyactualhistoricalnativefundingcash inqualification; proxybasisexplicit.",
+    "collateral_review": "Existing_admit reservesunfinishedBTCselected_quantity includingpossiblyalreadyTPconsumedinventory; checksystemicallyreachablelogical=absactualBTCheld+max(0,selected-filled) versuspendinggrowthmax,plusactualC1credit; noROcredit, fullSOLparentbeforechild. Anychange mustpreserveBTC-onlyphysicalsemanticsandbesource-reviewed,notasset-specificbypass.",
+    "opening_budget_units": "Atfirstacceptedintent freezeN0=absactualBTCqty*coherentBTCmark/K0(USDC),Q0=floor_SOLlot(N0/P_SOL_executable)(baseSOL). Keepbothfixed; no virtualcash/filledqtybook. TargetsuseDecimal50localcontext andofficiallot.",
+    "partial_completion_exact": "Atnewchilddecision effectiveTOTALQcap=min(Q0,floorlot(N0/currentSOLexecutable),floorlot(currentactualBTCnotional/K0/currentSOLexecutable)). AlreadyactualSOLquantity PLUS allactualreachableSOLgrowthleaves countagainstTOTALQcap. Remaining=max(0,Qcap-absactualSOLquantity-pendinggrowth). AtmostoneSOLopeningchildinflight; noadditionalchildwhileownorderunterminal. Beforevenuecappedchild,admitentireremainingparent withnativeheld/pendingalreadycountedonce. Ifactual+pendingexceednewcap,cancelpendingexcess/remainder,awaitactualterminal; donotforce-trimactualcarrysolelyforBTCshrink. No secondquantity/PnLauthority.",
+    "opening_grant_lifetime": "Initialacceptedfalse-to-trueentrygrant persistsforpartialcompletion withoutrequiringentryz>=1.25eachchild; ownrelativeexitthresholdhysteresisremainsauthority. SameBTCparent/side/actualheld/caps/readinessmuststillhold. No periodicadds/rebalanceafteropeningbudgetcompletedorretired. UNKNOWNdoesnotfalsereseteligibility; causalnewFalse→TruecancreatenewopportunityonlywhenSOLnativeflat+allownersclosed.",
+    "exit_priority": "GLOBALsafety > ownmarket-thesis-end/relativeexit > remainingopeningcompletion > newentry. Anyown/globalexit revokesopeninggrant andcancelsunfilledgrowthBEFOREcompletionattempt; waitrealACK/positionprogress usingexistingdrainexecutor. NativeTPflatneverownexit,butdoesrevokeunfilledopeninggrowthunderactualBTC-onlyscope. Abandonedunfilledgrant doesnotlockfutureepisodeK; nativepartialfilllocksKuntilnativeflat+ownersclosed.",
+    "strict_model_binding": "ExplicittypedSOLmodel enabledonlyvianewboundpolicyconfiguration/modelversion; selectedBTCcandidate.sol_overlay_enabled remainsFalse. NewSOLmodules/config/feedseedstrings/state/auditboundrequest/report/sourcehash/checkpoint. ExistingstrictNativefinancialqualifier/money/coverageguardsunchanged;no alternateeconomicengine.",
+    "exact_daily_prices": "Useoriginalalreadyloadeddailyrowstringsfor61completedpairedseedcloses; doNOTstr(floatseed). CapturefutureDailySignalBarDecimalcloses beforefloatconversion,checkpointlast61exactpairedcloses. SameexistingD1feed,noH1/M5/ratefeed."
+  },
+  "known_differences_from_original_A": [
+    "Actualheldonlyvs13originalflatstarts",
+    "FullownerKsizevsH/earnedfractions/daily1000childstaging",
+    "Oneexhaustionfactvslegacyearned/omittedrightscredits",
+    "FrozenopeningKandsigma,nolegacyStrategy orSOLrights",
+    "NoqualifiedindependentcontinuationaftermarketREGIME/TRAILend; TPflatcarrypreserved"
+  ],
+  "evidence": "SOURCEoriginalnative25cycles23wins/2loss; stage1-7NONEpreserved; thisnewentry/sizecombinationUNVALIDATED",
+  "planned_checks": [
+    "Narrowindependentcontract/sourcefeasibilitybeforeimplementation",
+    "Meaningfulpurecausality/episodeK/size/lifecycle/BTC-noninterference andfulladmissionchecks;no broadmirrortestrewrites",
+    "Oneactualjointnativeengineeringcasefromremainingengineering1slotonlyafterfreeze/review/API0engineprobe",
+    "OnejointprefixandonefullqualificationagainstexistingqualifiedBTCcontrol, noautoretry;expect8/8engineering,9actualqual+2retired=11/12occupiedafterboth"
+  ],
+  "goal_status": "NOT_MET;noedgeorROIclaim;nonewengineadmitted"
+}

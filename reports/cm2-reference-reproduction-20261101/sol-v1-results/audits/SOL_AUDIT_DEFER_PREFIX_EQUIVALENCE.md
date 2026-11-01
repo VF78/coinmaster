@@ -1,0 +1,7 @@
+Оба prefix независимо строго квалифицированы:131039settledWM/3месяца, каждый1actualengine. c411→7ca меняет только hot audit realized query deferral; sourceAST/knownness review сохранён отдельно. Это не исправление убыточной моделиSOL.
+
+Точный native terminalcash в обоих30640.20474264.52fills совпали целиком после явной parentUUID/nativecopymetadataбиекции,107fundingposts буквальны. Все financialblocks/NativePnL/fees/DD/reconciliation равны после только3явно перечисленных runlocal artifactpath differences. Все nonauditcapitalfields,entry/sizing/C1/drain/permissionaudit и прочиеsourcepins совпали. Ни цена, ни время, ни количество, ни комиссия не нормализовались.
+
+Все131039WM совпали по6полям; positionSHA отличается на50461строке. Все262080actualPREQUOTE exportednative states совпали, включая cash/equity/позиции/side/qty/nativeUPNL/sequence. Буквальный7fieldhelper сохраняет HOLD; opaque nativePositionpickle byteidentity NOT_PROVEN, checksum/qualifier не менялся. Отдельный JSON EXPORTED_STATE показывает ограниченное доказательство, не подменяет originalliteralHOLD. Sourceмеханизм/предел доказательства — NATIVE_POSITION_PICKLE_CROSSRUN_IDENTITY_EVIDENCE.json.
+
+Измерено97.64143916592002→79.93873825017363секунды:−18.130315434684007%,1.221453344188954x на данномprefix. Время полного67минутного прогона после7ca не измерено и не прогнозируется как доказанный выигрыш. Старыйc411FULL остаётся c411. Новыхengines/sourceedits данное savedанализирование не делало.

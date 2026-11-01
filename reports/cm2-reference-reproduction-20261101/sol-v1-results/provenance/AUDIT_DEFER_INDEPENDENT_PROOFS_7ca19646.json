@@ -1,0 +1,82 @@
+{
+  "status": "INDEPENDENT_EXACT_AUDIT_DEFER_CHECKS_PASS",
+  "commit": "7ca1964662fa5af4ef94396ff2002b7dbc52f811",
+  "checks": [
+    {
+      "case": "HASH:runtime/coinmaster/strategy/cm2_native.py",
+      "passed": true
+    },
+    {
+      "case": "HASH:runtime/tests/test_cm2_audit_defer_pure.py",
+      "passed": true
+    },
+    {
+      "case": "HASH:runtime/tests/test_cm2_reference_native_pure.py",
+      "passed": true
+    },
+    {
+      "case": "ENTIRE_ACTOR_AST_IDENTICAL_EXCEPT_ONE_METHOD",
+      "passed": true
+    },
+    {
+      "case": "ALL_NONAUDIT_RETURN_FIELDS_AST_IDENTICAL",
+      "passed": true
+    },
+    {
+      "case": "ALL_RAISED_KNOWNNESS_GUARDS_AST_IDENTICAL",
+      "passed": true
+    },
+    {
+      "case": "TRADING_FRAME_GETTERS_NOTES_IDENTICAL:(1, True)",
+      "passed": true
+    },
+    {
+      "case": "DEFERRED_NONE_NOT_ZERO:(1, True)",
+      "passed": true
+    },
+    {
+      "case": "TRADING_FRAME_GETTERS_NOTES_IDENTICAL:(-1, True)",
+      "passed": true
+    },
+    {
+      "case": "DEFERRED_NONE_NOT_ZERO:(-1, True)",
+      "passed": true
+    },
+    {
+      "case": "TRADING_FRAME_GETTERS_NOTES_IDENTICAL:(1, False)",
+      "passed": true
+    },
+    {
+      "case": "DEFERRED_NONE_NOT_ZERO:(1, False)",
+      "passed": true
+    },
+    {
+      "case": "GUARD_ERRORS_SAME:SOL_funding_unknown",
+      "passed": true
+    },
+    {
+      "case": "GUARD_ERRORS_SAME:cash_currency_unknown",
+      "passed": true
+    },
+    {
+      "case": "PRESERVED_TERMINAL_AUTHORITY:research/cm2_runner.py",
+      "passed": true
+    },
+    {
+      "case": "PRESERVED_TERMINAL_AUTHORITY:research/native_baseline.py",
+      "passed": true
+    },
+    {
+      "case": "PRESERVED_TERMINAL_AUTHORITY:research/cm2_committed_validation.py",
+      "passed": true
+    },
+    {
+      "case": "NO_NATIVE_MODULE_IMPORTED",
+      "passed": true
+    }
+  ],
+  "native_engines": 0,
+  "native_Strategy_constructors": 0,
+  "source_edits": 0,
+  "financial_qualification_from_mocks": false
+}

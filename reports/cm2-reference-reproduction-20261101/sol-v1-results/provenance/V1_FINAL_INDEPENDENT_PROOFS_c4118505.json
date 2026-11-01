@@ -1,0 +1,86 @@
+{
+  "status": "TARGETED_CONSTRUCTOR_FREE_PROBES_PASS",
+  "source_commit": "c41185054748486d6d41f0ace24e0575c1d68f33",
+  "checks": [
+    {
+      "case": "HASH:runtime/coinmaster/research/cm2_reference_fixture.py",
+      "passed": true
+    },
+    {
+      "case": "HASH:runtime/coinmaster/research/cm2_runner.py",
+      "passed": true
+    },
+    {
+      "case": "HASH:runtime/coinmaster/research/native_baseline.py",
+      "passed": true
+    },
+    {
+      "case": "HASH:runtime/coinmaster/strategy/cm2_native.py",
+      "passed": true
+    },
+    {
+      "case": "HASH:runtime/coinmaster/strategy/cm2_sol_policy.py",
+      "passed": true
+    },
+    {
+      "case": "HASH:runtime/tests/test_cm2_reference_native_pure.py",
+      "passed": true
+    },
+    {
+      "case": "HASH:runtime/tests/test_cm2_sol_joint_fixture_pure.py",
+      "passed": true
+    },
+    {
+      "case": "HASH:runtime/tests/test_cm2_sol_policy_pure.py",
+      "passed": true
+    },
+    {
+      "case": "COLLATERAL_HOLD_TRUE_UNSPENT_NO_EPISODE",
+      "passed": true
+    },
+    {
+      "case": "PRE_SEND_HOLD_TRUE_UNSPENT_NO_KLOCK",
+      "passed": true
+    },
+    {
+      "case": "LATER_DAY_RETRIES_UNSPENT_TRUE_FREEZES_CURRENT_K",
+      "passed": true
+    },
+    {
+      "case": "INITIAL_GRANT_PROVENANCE_RETAINED",
+      "passed": true
+    },
+    {
+      "case": "ACCEPTED_RETIRED_TRUE_DOES_NOT_REOPEN",
+      "passed": true
+    },
+    {
+      "case": "POSTTERMINAL_KNOWN_SOL_SCOPED_False",
+      "passed": true
+    },
+    {
+      "case": "POSTTERMINAL_KNOWN_SOL_SCOPED_True",
+      "passed": true
+    },
+    {
+      "case": "FIXTURE_MISSING_NATIVE_COMPONENTS_NOT_PASS",
+      "passed": true
+    },
+    {
+      "case": "FIXTURE_EXACT_1E8_CASH_GAP_FAILS",
+      "passed": true
+    },
+    {
+      "case": "FIXTURE_NESTED_RESOURCE_CLEANUP_AST_UNCHANGED",
+      "passed": true
+    },
+    {
+      "case": "NO_NATIVE_MODULE_IMPORTED",
+      "passed": true
+    }
+  ],
+  "native_engines": 0,
+  "native_strategy_constructors": 0,
+  "financial_qualification_from_mocks": false,
+  "actual_joint_fixture_executed": false
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "CM2_BTC_SOL_WAVE_ENGINEERING_V1",
+  "fixture_id": "cm2-btc-sol-wave-native-v1",
+  "interval": [
+    1725148800000000000,
+    1725325200000000000
+  ],
+  "engine_count": 1,
+  "initial_usdc": "10000",
+  "strategy": "ACTUAL_CM2Strategy_SHARED_NATIVE_BTC_SOL_V1",
+  "data": "DECLARED_SYNTHETIC_PRICE_STRINGS_730D_SEED_61_EXACT_PAIRS_AND_CONSISTENT_CLOSED_D1_M1",
+  "fill": "EXISTING_STOCK_NATIVE_ZERO_IMPACT_ORDER_LEAVES",
+  "funding": "ONE_SYNTHETIC_SOL_EVENT_EXISTING_NATIVE_FUNDING_MODULE_ONLY",
+  "mandatory": [
+    "genuine_PLANREF_exhaustion_entry_context",
+    "SOL_current_BTC_over_K_full_parent_lot_permission",
+    "actual_SOL_native_entry",
+    "BTC_TP_flat_SOL_held_quote",
+    "frozen_episode_K",
+    "pure_REGIME_SOL_scoped_exit",
+    "actual_SOL_funding_posting",
+    "native_fee_currency_and_profile",
+    "exact_native_cash_bridge",
+    "new_BTC_GLOBAL_terminal_drain",
+    "terminal_native_flat_orders_zero",
+    "zero_liquidations",
+    "gzip_EOF_CRC_schema"
+  ],
+  "not_claimed": [
+    "actual_partial_fill",
+    "actual_late_fill_after_cancel",
+    "historical_ROI",
+    "live_capacity"
+  ],
+  "missing_component_policy": "NOT_OBSERVED_IS_NOT_PASS;ROOT_CASE_ACCEPTANCE_REQUIRED",
+  "native_constructor_authority": "NONE_FROM_SOURCE_OR_PREPARATION"
+}

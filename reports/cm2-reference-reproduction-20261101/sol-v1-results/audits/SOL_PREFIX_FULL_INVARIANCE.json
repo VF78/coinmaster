@@ -1,0 +1,754 @@
+{
+  "status": "SAME_C411_PREFIX_FULL_CAUSAL_INVARIANCE_AUDIT",
+  "prefix_raw_sha256": "6f2150e4dd80e9fa28ee59d3c45aa8e2a01b018aeb2fbebdd6c0e4f850c748e4",
+  "full_raw_sha256": "9e4c88085579a700de67d1eeb4877569f5b71cf878b62e5fd614f9a9923270f5",
+  "literal_all_fill_fields_equal": false,
+  "literal_first_differences": [
+    {
+      "ordinal": 1,
+      "changes": {
+        "parent_id": {
+          "prefix_present": true,
+          "prefix": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+          "full_present": true,
+          "full": "ff99e57f-fc92-48e0-b302-8d6d886ff259"
+        },
+        "admission": {
+          "prefix_present": true,
+          "prefix": {
+            "episode_entry_signal_index": 730,
+            "intent": "MARKET",
+            "native_quote_ns": 1725235260000000000,
+            "parent_id": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+            "purpose": "ENTRY_IOC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 730,
+            "request_cap": "30000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          },
+          "full_present": true,
+          "full": {
+            "episode_entry_signal_index": 730,
+            "intent": "MARKET",
+            "native_quote_ns": 1725235260000000000,
+            "parent_id": "ff99e57f-fc92-48e0-b302-8d6d886ff259",
+            "purpose": "ENTRY_IOC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 730,
+            "request_cap": "30000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          }
+        }
+      }
+    },
+    {
+      "ordinal": 2,
+      "changes": {
+        "parent_id": {
+          "prefix_present": true,
+          "prefix": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+          "full_present": true,
+          "full": "ff99e57f-fc92-48e0-b302-8d6d886ff259"
+        },
+        "admission": {
+          "prefix_present": true,
+          "prefix": {
+            "episode_entry_signal_index": 730,
+            "intent": "LIMIT",
+            "native_quote_ns": 1725235320000000000,
+            "parent_id": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+            "purpose": "ENTRY_DISCOUNT",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 730,
+            "request_cap": "300000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          },
+          "full_present": true,
+          "full": {
+            "episode_entry_signal_index": 730,
+            "intent": "LIMIT",
+            "native_quote_ns": 1725235320000000000,
+            "parent_id": "ff99e57f-fc92-48e0-b302-8d6d886ff259",
+            "purpose": "ENTRY_DISCOUNT",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 730,
+            "request_cap": "300000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          }
+        }
+      }
+    },
+    {
+      "ordinal": 3,
+      "changes": {
+        "parent_id": {
+          "prefix_present": true,
+          "prefix": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+          "full_present": true,
+          "full": "ff99e57f-fc92-48e0-b302-8d6d886ff259"
+        },
+        "admission": {
+          "prefix_present": true,
+          "prefix": {
+            "episode_entry_signal_index": 730,
+            "intent": "LIMIT",
+            "native_quote_ns": 1725236280000000000,
+            "parent_id": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+            "purpose": "TP_GTC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 730,
+            "request_cap": "300000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": 2
+          },
+          "full_present": true,
+          "full": {
+            "episode_entry_signal_index": 730,
+            "intent": "LIMIT",
+            "native_quote_ns": 1725236280000000000,
+            "parent_id": "ff99e57f-fc92-48e0-b302-8d6d886ff259",
+            "purpose": "TP_GTC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 730,
+            "request_cap": "300000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": 2
+          }
+        }
+      }
+    },
+    {
+      "ordinal": 4,
+      "changes": {
+        "parent_id": {
+          "prefix_present": true,
+          "prefix": "e2c19787-d32c-4400-96d7-59194cd80287",
+          "full_present": true,
+          "full": "db7fcbd0-5737-4d88-ae95-28adec579a3d"
+        },
+        "admission": {
+          "prefix_present": true,
+          "prefix": {
+            "episode_entry_signal_index": 739,
+            "intent": "MARKET",
+            "native_quote_ns": 1726012860000000000,
+            "parent_id": "e2c19787-d32c-4400-96d7-59194cd80287",
+            "purpose": "ENTRY_IOC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 739,
+            "request_cap": "30000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          },
+          "full_present": true,
+          "full": {
+            "episode_entry_signal_index": 739,
+            "intent": "MARKET",
+            "native_quote_ns": 1726012860000000000,
+            "parent_id": "db7fcbd0-5737-4d88-ae95-28adec579a3d",
+            "purpose": "ENTRY_IOC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 739,
+            "request_cap": "30000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          }
+        }
+      }
+    },
+    {
+      "ordinal": 5,
+      "changes": {
+        "parent_id": {
+          "prefix_present": true,
+          "prefix": "e2c19787-d32c-4400-96d7-59194cd80287",
+          "full_present": true,
+          "full": "db7fcbd0-5737-4d88-ae95-28adec579a3d"
+        },
+        "admission": {
+          "prefix_present": true,
+          "prefix": {
+            "episode_entry_signal_index": 739,
+            "intent": "MARKET",
+            "native_quote_ns": 1726027320000000000,
+            "parent_id": "e2c19787-d32c-4400-96d7-59194cd80287",
+            "purpose": "ENTRY_IOC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 739,
+            "request_cap": "30000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          },
+          "full_present": true,
+          "full": {
+            "episode_entry_signal_index": 739,
+            "intent": "MARKET",
+            "native_quote_ns": 1726027320000000000,
+            "parent_id": "db7fcbd0-5737-4d88-ae95-28adec579a3d",
+            "purpose": "ENTRY_IOC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 739,
+            "request_cap": "30000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          }
+        }
+      }
+    },
+    {
+      "ordinal": 6,
+      "changes": {
+        "parent_id": {
+          "prefix_present": true,
+          "prefix": "e2c19787-d32c-4400-96d7-59194cd80287",
+          "full_present": true,
+          "full": "db7fcbd0-5737-4d88-ae95-28adec579a3d"
+        },
+        "admission": {
+          "prefix_present": true,
+          "prefix": {
+            "episode_entry_signal_index": 739,
+            "intent": "LIMIT",
+            "native_quote_ns": 1726027380000000000,
+            "parent_id": "e2c19787-d32c-4400-96d7-59194cd80287",
+            "purpose": "TP_GTC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 739,
+            "request_cap": "300000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": 2
+          },
+          "full_present": true,
+          "full": {
+            "episode_entry_signal_index": 739,
+            "intent": "LIMIT",
+            "native_quote_ns": 1726027380000000000,
+            "parent_id": "db7fcbd0-5737-4d88-ae95-28adec579a3d",
+            "purpose": "TP_GTC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 739,
+            "request_cap": "300000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": 2
+          }
+        }
+      }
+    },
+    {
+      "ordinal": 7,
+      "changes": {
+        "parent_id": {
+          "prefix_present": true,
+          "prefix": "45a0abe4-f093-409d-833d-704bb760d355",
+          "full_present": true,
+          "full": "b7ad28ec-bc7e-44db-8010-ae38e8fae697"
+        },
+        "admission": {
+          "prefix_present": true,
+          "prefix": {
+            "episode_entry_signal_index": 742,
+            "intent": "MARKET",
+            "native_quote_ns": 1726272120000000000,
+            "parent_id": "45a0abe4-f093-409d-833d-704bb760d355",
+            "purpose": "ENTRY_IOC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 742,
+            "request_cap": "30000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          },
+          "full_present": true,
+          "full": {
+            "episode_entry_signal_index": 742,
+            "intent": "MARKET",
+            "native_quote_ns": 1726272120000000000,
+            "parent_id": "b7ad28ec-bc7e-44db-8010-ae38e8fae697",
+            "purpose": "ENTRY_IOC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 742,
+            "request_cap": "30000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          }
+        }
+      }
+    },
+    {
+      "ordinal": 8,
+      "changes": {
+        "parent_id": {
+          "prefix_present": true,
+          "prefix": "45a0abe4-f093-409d-833d-704bb760d355",
+          "full_present": true,
+          "full": "b7ad28ec-bc7e-44db-8010-ae38e8fae697"
+        },
+        "admission": {
+          "prefix_present": true,
+          "prefix": {
+            "episode_entry_signal_index": 742,
+            "intent": "LIMIT",
+            "native_quote_ns": 1726272180000000000,
+            "parent_id": "45a0abe4-f093-409d-833d-704bb760d355",
+            "purpose": "ENTRY_DISCOUNT",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 742,
+            "request_cap": "300000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          },
+          "full_present": true,
+          "full": {
+            "episode_entry_signal_index": 742,
+            "intent": "LIMIT",
+            "native_quote_ns": 1726272180000000000,
+            "parent_id": "b7ad28ec-bc7e-44db-8010-ae38e8fae697",
+            "purpose": "ENTRY_DISCOUNT",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 742,
+            "request_cap": "300000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          }
+        }
+      }
+    },
+    {
+      "ordinal": 9,
+      "changes": {
+        "parent_id": {
+          "prefix_present": true,
+          "prefix": "45a0abe4-f093-409d-833d-704bb760d355",
+          "full_present": true,
+          "full": "b7ad28ec-bc7e-44db-8010-ae38e8fae697"
+        },
+        "admission": {
+          "prefix_present": true,
+          "prefix": {
+            "episode_entry_signal_index": 742,
+            "intent": "MARKET",
+            "native_quote_ns": 1726531200000000000,
+            "parent_id": "45a0abe4-f093-409d-833d-704bb760d355",
+            "purpose": "DRAIN",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 745,
+            "request_cap": "30000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          },
+          "full_present": true,
+          "full": {
+            "episode_entry_signal_index": 742,
+            "intent": "MARKET",
+            "native_quote_ns": 1726531200000000000,
+            "parent_id": "b7ad28ec-bc7e-44db-8010-ae38e8fae697",
+            "purpose": "DRAIN",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 745,
+            "request_cap": "30000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          }
+        }
+      }
+    },
+    {
+      "ordinal": 10,
+      "changes": {
+        "parent_id": {
+          "prefix_present": true,
+          "prefix": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+          "full_present": true,
+          "full": "44873ed9-5298-4615-be98-830015e5cbb8"
+        },
+        "admission": {
+          "prefix_present": true,
+          "prefix": {
+            "episode_entry_signal_index": 746,
+            "intent": "MARKET",
+            "native_quote_ns": 1726617660000000000,
+            "parent_id": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+            "purpose": "ENTRY_IOC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 746,
+            "request_cap": "30000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          },
+          "full_present": true,
+          "full": {
+            "episode_entry_signal_index": 746,
+            "intent": "MARKET",
+            "native_quote_ns": 1726617660000000000,
+            "parent_id": "44873ed9-5298-4615-be98-830015e5cbb8",
+            "purpose": "ENTRY_IOC",
+            "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+            "reference_signal_index": 746,
+            "request_cap": "30000000",
+            "source_policy_version": "cm2-btc-reference-v1",
+            "tp_level": null
+          }
+        }
+      }
+    }
+  ],
+  "fill_all_fields_exact_after_explicit_runlocal_parent_ID_bijection": true,
+  "parent_ID_mapping": {
+    "dee1cee3-12f5-42d6-9b68-27e4412649b3": "ff99e57f-fc92-48e0-b302-8d6d886ff259",
+    "e2c19787-d32c-4400-96d7-59194cd80287": "db7fcbd0-5737-4d88-ae95-28adec579a3d",
+    "45a0abe4-f093-409d-833d-704bb760d355": "b7ad28ec-bc7e-44db-8010-ae38e8fae697",
+    "9fbf6203-0e1f-4105-9a78-03f84fc421ca": "44873ed9-5298-4615-be98-830015e5cbb8",
+    "2ee3ab9d-efff-4e22-9cb9-9f84320cd197": "3c18a6f0-3c74-4033-bf9c-8eb854d67bd2",
+    "a65e8181-1809-48a1-ac77-0bb33088a44d": "6c422e39-353c-4e30-809e-d804ed727851",
+    "e619539d-8ee3-425a-933d-65951468e2fd": "b1675e6a-2457-4f9a-a3f3-92d35de4d7c2",
+    "8215e856-d75e-4f90-b9cd-8b5deeb50cf4": "f8175e20-fc6c-488b-8ed8-a4b63d75472d",
+    "6230f59e-7b11-41f4-9a19-dab0be01762a": "528edd74-99b5-4062-98d3-903cd62cebb3",
+    "17d2bc85-d543-41c2-ae70-688cc2a56fd6": "326248e8-3deb-4476-8e75-8bb973bf2045",
+    "1c7528f2-828a-40ee-a7eb-c2b7890972b8": "6974e4ed-a603-49db-a49c-a14c7f016029",
+    "f81d2305-87e5-42c0-b22c-2e846cb97830": "54bcd14f-fec0-4f89-a18c-c43aeff52b89"
+  },
+  "parent_key_sets_equal": true,
+  "identity_policy": "Allliteralfielddifferencesretained; onlyrunlocalparentUUIDs mappedbijectively bysameactualBTCentrysignal+side+occurrence. Noquantity/price/fee/time/riskpermission fielddiscarded ornormalized.",
+  "first_nonidentity_differences": [],
+  "prefix_interior_fill_count": 52,
+  "full_interior_fill_count": 52,
+  "funding_all_fields_exact": true,
+  "prefix_interior_funding_posts": 107,
+  "full_interior_funding_posts": 107,
+  "committed_WM_all_fields": {
+    "rows": 131039,
+    "all_fields_exact": false,
+    "first_differences": [
+      {
+        "row": 1441,
+        "full": {
+          "source_quote_ns": "1725235260000000000",
+          "receipt_ns": "1725235320000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9989.89490836",
+          "native_positions_sha256": "742caf4311fc2e9ac04be7f96f2e5238c97530dfcbfceb6c1b9f02b6b48dfae8",
+          "native_sequence": "4325"
+        },
+        "prefix": {
+          "source_quote_ns": "1725235260000000000",
+          "receipt_ns": "1725235320000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9989.89490836",
+          "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+          "native_sequence": "4325"
+        }
+      },
+      {
+        "row": 1442,
+        "full": {
+          "source_quote_ns": "1725235320000000000",
+          "receipt_ns": "1725235380000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9998.67190036",
+          "native_positions_sha256": "742caf4311fc2e9ac04be7f96f2e5238c97530dfcbfceb6c1b9f02b6b48dfae8",
+          "native_sequence": "4328"
+        },
+        "prefix": {
+          "source_quote_ns": "1725235320000000000",
+          "receipt_ns": "1725235380000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9998.67190036",
+          "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+          "native_sequence": "4328"
+        }
+      },
+      {
+        "row": 1443,
+        "full": {
+          "source_quote_ns": "1725235380000000000",
+          "receipt_ns": "1725235440000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9993.88804436",
+          "native_positions_sha256": "742caf4311fc2e9ac04be7f96f2e5238c97530dfcbfceb6c1b9f02b6b48dfae8",
+          "native_sequence": "4331"
+        },
+        "prefix": {
+          "source_quote_ns": "1725235380000000000",
+          "receipt_ns": "1725235440000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9993.88804436",
+          "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+          "native_sequence": "4331"
+        }
+      },
+      {
+        "row": 1444,
+        "full": {
+          "source_quote_ns": "1725235440000000000",
+          "receipt_ns": "1725235500000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9971.27345236",
+          "native_positions_sha256": "742caf4311fc2e9ac04be7f96f2e5238c97530dfcbfceb6c1b9f02b6b48dfae8",
+          "native_sequence": "4334"
+        },
+        "prefix": {
+          "source_quote_ns": "1725235440000000000",
+          "receipt_ns": "1725235500000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9971.27345236",
+          "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+          "native_sequence": "4334"
+        }
+      },
+      {
+        "row": 1445,
+        "full": {
+          "source_quote_ns": "1725235500000000000",
+          "receipt_ns": "1725235560000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9991.91124436",
+          "native_positions_sha256": "742caf4311fc2e9ac04be7f96f2e5238c97530dfcbfceb6c1b9f02b6b48dfae8",
+          "native_sequence": "4337"
+        },
+        "prefix": {
+          "source_quote_ns": "1725235500000000000",
+          "receipt_ns": "1725235560000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9991.91124436",
+          "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+          "native_sequence": "4337"
+        }
+      },
+      {
+        "row": 1446,
+        "full": {
+          "source_quote_ns": "1725235560000000000",
+          "receipt_ns": "1725235620000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9964.63140436",
+          "native_positions_sha256": "742caf4311fc2e9ac04be7f96f2e5238c97530dfcbfceb6c1b9f02b6b48dfae8",
+          "native_sequence": "4340"
+        },
+        "prefix": {
+          "source_quote_ns": "1725235560000000000",
+          "receipt_ns": "1725235620000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9964.63140436",
+          "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+          "native_sequence": "4340"
+        }
+      },
+      {
+        "row": 1447,
+        "full": {
+          "source_quote_ns": "1725235620000000000",
+          "receipt_ns": "1725235680000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9958.42425236",
+          "native_positions_sha256": "742caf4311fc2e9ac04be7f96f2e5238c97530dfcbfceb6c1b9f02b6b48dfae8",
+          "native_sequence": "4343"
+        },
+        "prefix": {
+          "source_quote_ns": "1725235620000000000",
+          "receipt_ns": "1725235680000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9958.42425236",
+          "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+          "native_sequence": "4343"
+        }
+      },
+      {
+        "row": 1448,
+        "full": {
+          "source_quote_ns": "1725235680000000000",
+          "receipt_ns": "1725235740000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9994.95551636",
+          "native_positions_sha256": "742caf4311fc2e9ac04be7f96f2e5238c97530dfcbfceb6c1b9f02b6b48dfae8",
+          "native_sequence": "4346"
+        },
+        "prefix": {
+          "source_quote_ns": "1725235680000000000",
+          "receipt_ns": "1725235740000000000",
+          "state_epoch": "1",
+          "cash": "9990.21119636",
+          "paired_close_equity": "9994.95551636",
+          "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+          "native_sequence": "4346"
+        }
+      }
+    ],
+    "full_next_source_ns": "1733011200000000000",
+    "comparison": "STREAMED_FIRST131039_ONLY;NO_FULL_TRACE_RESCAN;ALL_NATIVE_FIELDS_PRESERVED"
+  },
+  "prefix_END_native_settlement_fills_excluded_from_interior": [],
+  "prefix_post_boundary_settlement": {
+    "boundary_timestamp": "2024-12-01T00:00:00+00:00",
+    "convention": "TERMINAL_FILLS_AT_END_EXCLUSIVE_REPORTED_SEPARATELY_EXCLUDED_FROM_INTERVAL_RETURNS",
+    "fill_count": 0,
+    "interval_cash_total_before_settlement": "30640.20474264",
+    "settled_cash_total": "30640.20474264"
+  },
+  "no_fields_dropped_from_WM": true,
+  "new_engines": 0,
+  "committed_WM_complete_field_disposition": {
+    "rows": 131039,
+    "literal_difference_counts": {
+      "native_positions_sha256": 50461
+    },
+    "first_difference_per_field": {
+      "native_positions_sha256": {
+        "row": 1441,
+        "prefix": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+        "full": "742caf4311fc2e9ac04be7f96f2e5238c97530dfcbfceb6c1b9f02b6b48dfae8"
+      }
+    },
+    "all_other_six_fields_literal_exact": true,
+    "old_to_new_opaque_hash_mapping_is_one_to_one": true,
+    "observed_opaque_hash_pairs": {
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855": [
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      ],
+      "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec": [
+        "742caf4311fc2e9ac04be7f96f2e5238c97530dfcbfceb6c1b9f02b6b48dfae8"
+      ],
+      "22b200d4b045a789ca8d9aadae3f3c15c8c09c2e42b66e7004de260c8ebbec01": [
+        "433a26229d40693ce3fb7476436982732e4a0665baf217fcbda4bbb3d358c394"
+      ],
+      "157e2f1ab47f0235a068a2e81b3b5fbb68f5c9d9ab2994911e2171c58a486f56": [
+        "59beaf36ac1ab2fbb0ea0de4c1f70f92906e101db387ab347ca77e4eeec80d8e"
+      ],
+      "eb4829073d137bbd8ce68a16ea3f7b3f200eda695cca39fa0b53f7ff0bff494c": [
+        "3bcda6d257b19d554e0de3efadc96b7d378fcc8491ce91c18730353ef5c3d217"
+      ],
+      "591410ae157515c8596c984f984acadd2fa1d74e313d7a165a39288e9d6bff14": [
+        "d9f40a789c3094bf7ce0e9dd7c87a114f8f588b64a44b87442136b982c5518e0"
+      ],
+      "d5b940269706b1a57f4cdc609afc8a060d096dbc782b62e9cd1c57ed2f220028": [
+        "ee7224f7db96911e169a093837c4045d4d6ee0107fdff21bdfe6eca25a4f83d1"
+      ],
+      "50b7e56e16ac6a9e9a0d9df25b4e12ba622be757c763e332afa2cab1c43f46d7": [
+        "cecc722f492c7e318d22de103f2350dd96731d236bc56941aa569a94baa3c403"
+      ],
+      "8ac3df5cdc83dab83dcb3914fbf26a6a49637fe472c0293b974b4ac2d9e9318f": [
+        "830b7f0508cefcb2a9920f8c8443e3994f033aeed41cb3d2cddd8ab778b97041"
+      ],
+      "21b8255753758e76dd88888a7af7d1b6a0c0a7d884810ba222eeebda81f95f53": [
+        "d1954c3766f00758479e6901b4c4dd4d8831b4a3d357c3e6560e7bcc64099690"
+      ],
+      "8de884e75626a8feb2cafb94b5078fdfdcbac2087689436fdc9f21fd293a1dbd": [
+        "2eae3fb1301b32a80cb3f5c8496167f294a0861738ea1eb316b3f999e0276168"
+      ],
+      "3561fac2ac221b2e85a8f5b2507059f163d3d86fdd7913c35b036e26581d51e1": [
+        "074bee6addc0a7c2a5dafce25b894db87413826e3d53996b46d22fd77c099526"
+      ],
+      "e3341aab9848011143c1edce455ac85f4eded10f65e0c92e27b824d9aaedfe1a": [
+        "c9b241808be8fb7c62eb9bc9aa4cb81b53916ec1ef61ab4ecefba8028ea4895e"
+      ],
+      "1b1ea5ffa7ebf7b4d2af94956c628126797d8361b1ba7e8699faa74b5a05cbba": [
+        "3a9047b5c30f2641acfde83fa2f03df5f958c2e458065d923c6fa5109c650338"
+      ],
+      "f286c0d177dbc95bf27a6d7a7083c574f73aa585eb9c6c4a33af7f2014896046": [
+        "98bd24806a456213e47996aac1ee60e6dc8cc392c5e17b81b0592b63713d9828"
+      ],
+      "19d4d47bb62aaeeeef7e8d087b0ae4931cae934a5a860f9361c711f3dcaeadf8": [
+        "c26e6854140b66642352d28aba51e972311e42b672ce46ba6b0822a8c20a2681"
+      ],
+      "4161337f2c9fbc8a3d4ef31cdf1f10c7ae067fa393d717a6fbbd133f19026ae9": [
+        "d9399646895e1fc3489dd75ed9be5b9e80fc3c1234570dc9b65bf1bd9536781f"
+      ],
+      "b73adaa381a794981b1278f5d3d255e2ec3a93100b84f11a495e86fc65e11404": [
+        "e7ed406049711fca44e3877f67af96514b1f4787d9f9c9ef2b54df1d2d75f7f9"
+      ],
+      "06496dd50e5376e41b3e718ab7273e5dbec716c5cd9286605f09484d53288335": [
+        "28bc80324dd768d3e5577ecf68d55df9175c44942bf2a2d741cd7de9b85e042b"
+      ],
+      "bbdd6cb6d9ab10341090ce4c3e780cd6501f290eb918a2945e44b6ba734dd64c": [
+        "e33dc92352a32cf6e68cd4d41d75f7611d07b0065a21b8dd25958c816d7d5000"
+      ],
+      "97ee0cf78baaff8a077da9ba0f45eb21531246c4620e253a964603b894fa882a": [
+        "5e50aca1313303425c1626e0e992df4ac0896725e6b487a8f9d99cce16635f58"
+      ],
+      "a0eb2517a7c33dd931d6e2581b6dd45d4dddf1d815269afc801eb4d2c649ca66": [
+        "75cb041271c7e82abd928bc59d8696d86b4f2fd3f3006838d14895306860d566"
+      ],
+      "4829dc9cd89bac95d03e2389ad21542b5aa6ef3eacc4d93dad419008ff250297": [
+        "abe7fe05b178e94035d5c480591b5ed4a14bdc10095a40a77b94cbd2d243fdd8"
+      ],
+      "fc58ca310a8bb55c8c598a8419e6beacaea00fe56cf53405e31c23167d92a7ac": [
+        "1928edfb0443e10c2021af7b41a7c97b93921a5229b662b0bf15bc604185efc3"
+      ],
+      "b2e6fb9a4ac4c1d71f420b12d6248e78b86efc0ee1d44c91d0a4abe1330ef8b4": [
+        "eb00dd4acc8a8c47d596aed0d1b35beacedfe0cbe40b03edf3358bf5438c31de"
+      ],
+      "1303da004a1bb44479cbfe9fb930f706faca8804cabfb204ec45ee8c709347ae": [
+        "5942b478fc56c22aad3cb068f4d1a6fb8f04fc1e814debb8bd76962f935ede2a"
+      ],
+      "35f954cd8df4a9ef8dda16d5a2d910d9e83b9d1507f691134a9067b9e1c2e942": [
+        "4f44a6a2dbfc2f94a3a257bb2e38e3b5a0ec2b694571c7f97d78a49c1d443682"
+      ],
+      "2e7e42267dc973a60afb25734d0b800a51ced1b61b6803d9bce4598cb238874e": [
+        "8c93fb0abb64b142a9dc646b4359a1653398d202bbd47db71af964221553c683"
+      ],
+      "8cc670e84555ffe784bf52a4decd2d6159fad1e2895c632e6901d3d2ef98096c": [
+        "52029910d0b9a9063487b3fba0fd0774ba0f0700346557c342bd92eea4bd9368"
+      ],
+      "75148262b2857c07b06922bd8378cf9ea6e895c9dc6b50ec2b8172999930324e": [
+        "d4af18592477a100e5b69a5d8ae09f605a4f50182a275b88ec9e83b64612e284"
+      ],
+      "f6fca08a87e2fdbc6eafa17fda887266772df06f787e1b04e1fae2efc0c4b392": [
+        "da83aea9423db599f7e0a0759fe7da70c99f68b1ebe0c8985077e500110561fc"
+      ],
+      "1a220b6df6b5fc0e08313ea279730075da1d927dbd11a4e3fba4a05841ce6c1e": [
+        "ca77116f1156de9d734c5582dcb07dea9de65ccb01942942ce592de2b8140d4c"
+      ],
+      "c1bc04c736a3f96b268fa620b7cece35b4d688ca7bde48cfab45d9ce1a05f31a": [
+        "8be5fb3c3f07890b97bfcc1255525c3f7bb1f2861afb3a61cce00c8ea7d489b6"
+      ],
+      "97f09e57e76afdeeee5a2778c4a40052e138e4cb484a01f4da46d0d3fdf52a76": [
+        "f5934e08167de0fdcf69ae6a4ab4cb254036d5b7bab7326df38857f10d84f3dc"
+      ],
+      "9b715693e159fdf85be0688d591e91715faf74095c213916d761cca69ff7694a": [
+        "22aefb3914d2bde40f8ae3a85ec3df19e9a7fa5465eaceec2d7e85564b94c4bc"
+      ],
+      "1ea0cd79ef20c401506b5ef0c8e791a0b228d848a3e5740072cc4e613b42792d": [
+        "be769e2e9539efcf0688f2e05c3771d9aee2df8fea58d68a59d44ea0b8cf9695"
+      ],
+      "764c3b5f5ef68ef9eda70c58a86fbbcf88e74fd59ef5a0263f9a480f70718a4c": [
+        "7685ee04b2cb05aa11da29679cac4981bf8d0925eeae3b3ac23f43774ad9fcb0"
+      ]
+    },
+    "hash_authority": "paired_observer._snapshot hashes concatenated stock native Position pickle bytes; same economic exports do not prove serialized byte identity. No hash field excluded or normalized from literal invariant.",
+    "literal_all7_status": "NOT_EQUAL; qualification remains separate and valid; no blanket7WM equivalencePASS"
+  },
+  "exported_native_prefix_PREQUOTE_states": {
+    "rows": 262078,
+    "all_selected_native_fields_exact": true,
+    "fields": [
+      "sequence",
+      "epoch",
+      "event_ns",
+      "receipt_ns",
+      "native_id",
+      "mark_available_ns",
+      "cash",
+      "equity",
+      "positions"
+    ],
+    "first_differences": [],
+    "pickle_bytes_not_exported": "Opaquehashidentity remainsunproven; exportedpositionID/instrument/qty/side/mark/nativeUPNL actuallycompared."
+  }
+}

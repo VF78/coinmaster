@@ -1,0 +1,35 @@
+{
+  "status": "ACK_FROZEN_V1_MARKET_CONTRACT_TWO_CLAUSES_CLOSED",
+  "proposal_sha256": "7a70f615818662676936bde19110229db7e22ee3f189f07c53a0dac0410f1063",
+  "supersedes_review_disposition": "HOLD_TWO_EXECUTABLE_GROWTH_CLARIFICATIONS_ONLY",
+  "closures": {
+    "GROWTH_BUDGET_UNITS": {
+      "resolved": true,
+      "evidence_keys": [
+        "opening_budget_units",
+        "partial_completion_exact"
+      ],
+      "reason": "N0USDC/Q0baseSOL fixed; TOTALeffectivecapminoriginalQ0/originalUSDCatcurrentprice/currentNBKnotional; actualheld+reachablependingdeductedonce; oneinflight; fullremainingnativeadmissionbeforechild; noactualcarrytrim solelyBTCshrink."
+    },
+    "EXIT_PREEMPTS_PARTIAL_COMPLETION": {
+      "resolved": true,
+      "evidence_keys": [
+        "opening_grant_lifetime",
+        "exit_priority"
+      ],
+      "reason": "Initialgrantpersistsbelowentrythresholdonlyuntilownexit/caps/readiness;GLOBAL>market/relativeexit>completion>entry; exitrevokes/cancelsgrowthfirst andwaitsrealACK; noaddsaftercompleted/retired; TPflatstopsunfilledgrowthbutnotactualcarry."
+    }
+  },
+  "owner_semantics": "PurepublicREGIME/TRAILmarketthesisfact isdistinctfrom nativeBTCflat/TP/C1/ACK. Subscribeexistingpuremarketdecision before sideeffects; BTCexecutiondoesnotwaitSOL. No conflict with current owner scope under this distinction.",
+  "data_and_model_binding": "ACK exact61originaldailystrings/currentdecimalcapture/no float seed, explicittypednewSOLmodelbound config/source/checkpoint, legacyBTCsol_overlayFalse andqualifierunchanged.",
+  "remaining_concrete_blockers": [],
+  "interpretation_limits": [
+    "ACKinternalcausalcontractcompleteness, notpredictiveedge/profit/ROIqualification.",
+    "No periodicreopening/adds when price/BTCnotional latermoves aftergrantcompletedorretired, asfrozencontractexplicitlyrequires.",
+    "Nativeimplementationmustpreservependingriskuntilactualterminal andlatefillreconciliation; no secondquantity/cash/PnLauthority."
+  ],
+  "source_implementation_authority": "Root controlsnextsourcework; thisreview doesnotgrant nativeengineGO",
+  "product_edits": 0,
+  "native_engines": 0,
+  "new_tests_or_market_scans": 0
+}

@@ -1,0 +1,394 @@
+{
+  "status": "HOLD_SOL_V1_FINANCIAL_PASS_ECONOMIC_OBJECTIVE_NOT_MET",
+  "source_commit": "c41185054748486d6d41f0ace24e0575c1d68f33",
+  "scope": "READ_ONLY_SAVED_NATIVE_EVIDENCE_AND_SOURCE",
+  "new_native_engines": 0,
+  "product_edits": 0,
+  "tests_run": 0,
+  "financial_upload_to_VPS": false,
+  "native": {
+    "joint_cash": "554765.87924905",
+    "joint_DD_percent": "72.30045502213738684526642663",
+    "SOL_cycles": 16,
+    "SOL_fills": 32,
+    "SOL_wins": 11,
+    "SOL_losses": 5,
+    "SOL_realized_fees_included": "-527869.73956652",
+    "SOL_funding": "2617.41269625",
+    "SOL_net": "-525252.32687027",
+    "SOL_fees_information_only": "5549.34066652",
+    "SOL_gross_algebraic_only": "-522320.39890000",
+    "BTC_joint_net": "1070018.20611932",
+    "BTC_only_cash": "359473.07471552",
+    "joint_minus_BTC_only_cash": "195292.80453353",
+    "BTC_net_difference": "720545.13140380",
+    "decomposition_is_not_isolated_causal_counterfactual": true
+  },
+  "proven": [
+    "All16 native lifecycle/funding joins and initial K/lot/permission/frozen-state checks pass in independent saved audit. Correct opposite actual BTC at accepted entry; no concrete wrong-direction/exit-delay integration defect demonstrated.",
+    "All83 BTC economic entry keys, branches and q0/q1 clocks match BTC-only. C1 14 claims versus13 and354 versus353 BTC fills are observed shared-capital consequences, not a new BTC market path.",
+    "All16 accepted first-wave levels are0.0. Persisted exhaustion is a genuine observed favorable PLANREF crossing but provides no nonzero favourable-wave amplitude screen in this history. This follows the frozen contract.",
+    "All16 V1 cycles uniquely overlap one same-side reference cycle.15 final exit timestamps are identical; only V1 cycle15 exits later because original14d timeout was explicitly removed.",
+    "Cycle15 net is-648143.37796431; other15 total+122891.05109404. V1 held20.329861d versus reference14.335417d; original first1000/max13000SOL staged versus V1 immediate36721.79SOL. Native funding positive, fees too small to explain gross loss.",
+    "Risk concentration differs: V1 cycle14/original21 had882.25SOL versus originalmax22000; V1 cycle15/original23 had36721.79 versus originalmax13000. K scaling/full actualBTC basis and absence of originalH/rights/daily staging yield a different portfolio even with mostly aligned exits.",
+    "Nine unmatched original cycles all began actualBTCflat and collectively earned native+212195.64506236 in originalA. They are descriptive missed episodes, not recoverable profit under new K/capital/eligibility. Four other original-flat cycles overlap earlier V1 held-BTC starts.",
+    "At fixed control DD2/DD5 crossings, opposite SOL was definitely held before9/85; DD10 4/46, DD20 3/18; trough11/85. Worst control drawdown early crossings hadSOLflat. These overlapping labels measure presence, not causal DD prevention."
+  ],
+  "causal_interpretation": [
+    {
+      "status": "SOURCE_AND_NATIVE_SUPPORTED",
+      "finding": "Model/lifecycle risk rather than accounting failure: full immediate NB/K grants plus indefinite TPflat carry until marketend can leave a large outright SOL position after BTC protection is gone. Relative z is spread dislocation, not a forecast of positive standalone SOL price return. STD60 ratio is an amplitude normalization, not proof of alpha/correlation stability."
+    },
+    {
+      "status": "NOT_IDENTIFIED",
+      "finding": "Exact portion of cycle15 loss caused by extra post14d hold versus full early size versus market path cannot be isolated from one joint run. Native cash+UPNL at the exact original timeout and TPflat boundary were not retained by fixed DD extraction: UNKNOWN. No reconstructed pricePnL or counterfactual profit used."
+    },
+    {
+      "status": "NOT_SUPPORTED",
+      "finding": "Reversing SOL direction, changing z threshold/K window, increasing early coverage or reinstating all flat entries is not justified by these results. Original25 profit does not transfer to new constraints."
+    }
+  ],
+  "recommendation": {
+    "disposition": "V1_DEFAULT_OFF_HOLD_NO_MORE_GRID_OR_UNBUDGETED_RUNS",
+    "next_design_if_separately_approved": "Smallest source-grounded candidate only: restore original universal14d maximum age, evaluated on completedD1 and followed by actual scopedRO completion. Keep K60/direction/BTC rules unchanged. This is not approved, implemented or economically validated.",
+    "limits": "Cannot claim14d solves pre-timeout loss, immediate concentration, sparse9/85 DD2 coverage or own-positiveROI. New experiment needs new explicit contract/budget; none granted. Do not silently replace full NB/K or add arbitrary staging/thresholds."
+  },
+  "source_map": [
+    {
+      "file": "cm2_sol_policy.py",
+      "lines": "88-109",
+      "rule": "genuine observed PLANREF firstwave fact; zero valid"
+    },
+    {
+      "file": "cm2_sol_policy.py",
+      "lines": "126-152",
+      "rule": "full NB/K, frozen opening budget/current caps"
+    },
+    {
+      "file": "cm2_sol_policy.py",
+      "lines": "165-179",
+      "rule": "marketend+relative exit; no max-age"
+    },
+    {
+      "file": "cm2_native.py",
+      "lines": "516-576",
+      "rule": "actualheld/latestD1/opposite side/accepted native opening"
+    },
+    {
+      "file": "reference/domain/wave_overlay.py",
+      "lines": "448-468",
+      "rule": "original14d timeout before z half/full"
+    }
+  ],
+  "overlap_pairs": [
+    {
+      "v1_cycle": 1,
+      "reference_cycle": 1,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "0",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "884.82314049",
+      "reference_native_net": "906.73975460",
+      "v1_opening_qty": "302.49",
+      "reference_max_native_qty": "1000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_REGIME",
+      "reference_exit": "REGIME"
+    },
+    {
+      "v1_cycle": 2,
+      "reference_cycle": 4,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "-39",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "4333.42445882",
+      "reference_native_net": "19712.01860000",
+      "v1_opening_qty": "276.56",
+      "reference_max_native_qty": "2000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_REGIME",
+      "reference_exit": "REGIME"
+    },
+    {
+      "v1_cycle": 3,
+      "reference_cycle": 5,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "-1677",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "5633.61075854",
+      "reference_native_net": "49214.68642014",
+      "v1_opening_qty": "356.74",
+      "reference_max_native_qty": "3000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_REGIME",
+      "reference_exit": "REGIME"
+    },
+    {
+      "v1_cycle": 4,
+      "reference_cycle": 6,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "-1438",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "-4438.14510274",
+      "reference_native_net": "2213.26833300",
+      "v1_opening_qty": "439.91",
+      "reference_max_native_qty": "5000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_REGIME",
+      "reference_exit": "REGIME"
+    },
+    {
+      "v1_cycle": 5,
+      "reference_cycle": 7,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "0",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "4480.53601947",
+      "reference_native_net": "9204.77145179",
+      "v1_opening_qty": "451.73",
+      "reference_max_native_qty": "1000",
+      "reference_first_qty": "1000",
+      "v1_exit": "SOL_RELATIVE_CONVERGENCE",
+      "reference_exit": "SOL_Z_FULL_EXIT"
+    },
+    {
+      "v1_cycle": 6,
+      "reference_cycle": 8,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "-5760",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "-6415.01089230",
+      "reference_native_net": "5599.60425818",
+      "v1_opening_qty": "305.09",
+      "reference_max_native_qty": "2000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_TRAIL",
+      "reference_exit": "TRAIL"
+    },
+    {
+      "v1_cycle": 7,
+      "reference_cycle": 9,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "-1438",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "6250.80364393",
+      "reference_native_net": "10005.91244195",
+      "v1_opening_qty": "900.09",
+      "reference_max_native_qty": "1000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_TRAIL",
+      "reference_exit": "TRAIL"
+    },
+    {
+      "v1_cycle": 8,
+      "reference_cycle": 11,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "-939",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "-7248.14972026",
+      "reference_native_net": "468.42986248",
+      "v1_opening_qty": "1284.61",
+      "reference_max_native_qty": "5000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_TRAIL",
+      "reference_exit": "TRAIL"
+    },
+    {
+      "v1_cycle": 9,
+      "reference_cycle": 12,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "0",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "4551.40551243",
+      "reference_native_net": "36997.61898052",
+      "v1_opening_qty": "2444.02",
+      "reference_max_native_qty": "7000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_TRAIL",
+      "reference_exit": "TRAIL"
+    },
+    {
+      "v1_cycle": 10,
+      "reference_cycle": 13,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "-3",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "30008.92269764",
+      "reference_native_net": "19374.95502960",
+      "v1_opening_qty": "1536.16",
+      "reference_max_native_qty": "1000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_REGIME",
+      "reference_exit": "REGIME"
+    },
+    {
+      "v1_cycle": 11,
+      "reference_cycle": 16,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "-42",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "19258.31213259",
+      "reference_native_net": "29130.72446151",
+      "v1_opening_qty": "602.02",
+      "reference_max_native_qty": "1000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_REGIME",
+      "reference_exit": "REGIME"
+    },
+    {
+      "v1_cycle": 12,
+      "reference_cycle": 19,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "0",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "-17117.24397025",
+      "reference_native_net": "-64154.09747440",
+      "v1_opening_qty": "1007.28",
+      "reference_max_native_qty": "7000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_TRAIL",
+      "reference_exit": "TRAIL"
+    },
+    {
+      "v1_cycle": 13,
+      "reference_cycle": 20,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "-240",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "1190.51399597",
+      "reference_native_net": "18729.85619196",
+      "v1_opening_qty": "487.07",
+      "reference_max_native_qty": "3000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_REGIME",
+      "reference_exit": "REGIME"
+    },
+    {
+      "v1_cycle": 14,
+      "reference_cycle": 21,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "-3",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "2773.95255782",
+      "reference_native_net": "394729.58067237",
+      "v1_opening_qty": "882.25",
+      "reference_max_native_qty": "22000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_REGIME",
+      "reference_exit": "REGIME"
+    },
+    {
+      "v1_cycle": 15,
+      "reference_cycle": 23,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "-4",
+      "exit_delta_minutes": "8628",
+      "v1_native_net": "-648143.37796431",
+      "reference_native_net": "-41498.92508802",
+      "v1_opening_qty": "36721.79",
+      "reference_max_native_qty": "13000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_TRAIL",
+      "reference_exit": "SOL_HARD_TIMEOUT"
+    },
+    {
+      "v1_cycle": 16,
+      "reference_cycle": 24,
+      "join": "UNIQUE_SAME_SIDE_POSITIVE_TIME_OVERLAP_NOT_COUNTERFACTUAL_IDENTITY",
+      "entry_delta_minutes": "-525",
+      "exit_delta_minutes": "0",
+      "v1_native_net": "78743.29586189",
+      "reference_native_net": "13650.22401572",
+      "v1_opening_qty": "25864.65",
+      "reference_max_native_qty": "4000",
+      "reference_first_qty": "1000",
+      "v1_exit": "BTC_MARKET_REGIME",
+      "reference_exit": "REGIME"
+    }
+  ],
+  "unmatched_reference": [
+    {
+      "cycle": 2,
+      "BTC_at_start": "FLAT",
+      "native_net": "5964.35606974"
+    },
+    {
+      "cycle": 3,
+      "BTC_at_start": "FLAT",
+      "native_net": "24379.30646773"
+    },
+    {
+      "cycle": 10,
+      "BTC_at_start": "FLAT",
+      "native_net": "12323.46461970"
+    },
+    {
+      "cycle": 14,
+      "BTC_at_start": "FLAT",
+      "native_net": "2069.36289463"
+    },
+    {
+      "cycle": 15,
+      "BTC_at_start": "FLAT",
+      "native_net": "5285.22469928"
+    },
+    {
+      "cycle": 17,
+      "BTC_at_start": "FLAT",
+      "native_net": "21269.03695284"
+    },
+    {
+      "cycle": 18,
+      "BTC_at_start": "FLAT",
+      "native_net": "90240.00444970"
+    },
+    {
+      "cycle": 22,
+      "BTC_at_start": "FLAT",
+      "native_net": "45765.99150665"
+    },
+    {
+      "cycle": 25,
+      "BTC_at_start": "FLAT",
+      "native_net": "4898.89740209"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FULL_NATIVE_ANALYSIS.json",
+      "sha256": "5f3513af2b116c3841fbaf6da6e1422c2946635e5b7de69644cd99b600ff761e"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FULL_NATIVE_SOL_CYCLES.csv",
+      "sha256": "60d9aa4ea5674ed051a92d58854b0880c1b42f34c57ac71b9313ac705960bc89"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FULL_DRAWDOWN_PRESENCE.json",
+      "sha256": "51c12c88c9c35ccbbbcd4dc8649f082d20b32620ffb4cd994f62cf276c9369fd"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_PREFIX_FULL_INVARIANCE.json",
+      "sha256": "0aefd454a21cb15b4fc98ac3fa58da5f8cfeeed06dfc974a376650cba005c757"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/REFERENCE_SOL_NATIVE_CYCLES.csv",
+      "sha256": "d1d401edc7257c5384ee6926a6cea8b94207226628223d8687bd80bfa84db33c"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/REFERENCE_SOL_MECHANISM_AUDIT.json",
+      "sha256": "d4ff14386f90e343e1c1c8746a46612e2e8c382bc898d0ea1dd38b2a3a3c8459"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/V1_SYSTEMATIC_MARKET_CONTRACT_PROPOSAL.json",
+      "sha256": "7a70f615818662676936bde19110229db7e22ee3f189f07c53a0dac0410f1063"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-c4118505/runtime/coinmaster/strategy/cm2_sol_policy.py",
+      "sha256": "a85b8c1af05e7b8c719a2f3be4cbf08b139d6749ba6c5643c23df7b2d4ac1985"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-c4118505/runtime/coinmaster/strategy/cm2_native.py",
+      "sha256": "3c5c2bcdf00c11d96d7cc3d5a6b255a6d2de5b3437f638e9b4fcacd9f7f89c3e"
+    }
+  ]
+}

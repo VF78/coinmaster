@@ -1,0 +1,49 @@
+{
+  "status": "SOURCE_NATIVE_OBJECT_HASH_NOT_CANONICAL_ECONOMIC_STATE_HASH",
+  "sources": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/MAC_PREP/frozen-cm2-c4118505/runtime/coinmaster/research/paired_observer.py",
+      "sha256": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42",
+      "line_evidence": {
+        "80": "            positions.append(pickle.dumps(position,protocol=pickle.HIGHEST_PROTOCOL))",
+        "82": "        position_hash=hashlib.sha256(b\"\".join(positions)).hexdigest()"
+      }
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/position.pxd",
+      "sha256": "1df33dcd00d14a21733f781aa2ea56d0aaa24af80bcdbf245f3b745035f2d87c",
+      "line_evidence": {
+        "38": "    cdef list _events"
+      }
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/position.pyx",
+      "sha256": "f61d6e291a353d736727c081f31cbe152338e06f90111a4c9bbcd0c07031b2a7",
+      "line_evidence": {
+        "573": "        self._events.append(fill)"
+      }
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/model/events/order.pyx",
+      "sha256": "76c80b96879439906f8fcfe9eac87612d7fd1b4c5a8c9a503212e4b112f67a01",
+      "line_evidence": {
+        "4593": "        UUID4 event_id not None,",
+        "4611": "        self._event_id = event_id"
+      }
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+      "line_evidence": {
+        "8523": "        cdef OrderFilled event = OrderFilled(",
+        "8539": "            event_id=UUID4(),"
+      }
+    }
+  ],
+  "mechanism": "Observer SHA256 concatenates highest-protocol pickle bytes of stock native open Position objects. Native Position retains fill events; actual stock backtest constructs OrderFilled with fresh UUID4 event_id. These unexported identities are not canonicalized by observer.",
+  "evidence_limit": "Saved reports/traces do not export original pickle bytes or fill event UUIDs; no exact byte-offset or specific hidden UUID is claimed as proved cause. Literal SHA mismatch is real; exported native economic state equality is separately proved.",
+  "disposition": "No library patch, canonical checksum rewrite, new engine, qualifier weakening or silent exclusion; literal7WM equality remains false/byteidentityNOT_PROVEN.",
+  "same_c411_prefix_full_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_PREFIX_FULL_INVARIANCE.json",
+  "new_engines": 0,
+  "product_edits": 0
+}

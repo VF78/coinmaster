@@ -1,0 +1,1450 @@
+{
+  "status": "FROZEN_REVIEWED_RESEARCH_RESULTS_FINANCIAL_PASS_ECONOMIC_SOL_HOLD",
+  "created_utc": "2026-11-01T23:05:23.221448+00:00",
+  "native_full_source": "c41185054748486d6d41f0ace24e0575c1d68f33",
+  "current_private_source": "7ca1964662fa5af4ef94396ff2002b7dbc52f811",
+  "current_public_source": "2fdaab92c9a666a53edd4e88a65aff3d77fcd935",
+  "financial_artifacts_route": "Mac directly to GitHub, no VPS staging",
+  "pack_original_manifest_sha256": "db9640b11500bced8acf00d43f53a5d7a01de9a31f4c6af4d9b147ce370c508b",
+  "original_pack_inventory": {
+    "created_utc": "2026-11-01T22:15:15.437221+00:00",
+    "status": "LOCAL_PREPARATION_ONLY",
+    "pack_root": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/PUBLICATION_SOL_RESULTS_01",
+    "files": [
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/FIXTURE_PROTOCOL.json",
+        "original_sha256": "adefb2e564276d47122985d3571b324bd610b4dd2c7075012689fe225b6545fd",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/FIXTURE_PROTOCOL.json",
+        "packed_sha256": "adefb2e564276d47122985d3571b324bd610b4dd2c7075012689fe225b6545fd",
+        "original_bytes": 1281,
+        "packed_bytes": 1281,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/REQUEST.json",
+        "original_sha256": "3995d4e8224534c4be7a349baaba31bcf7e68d4016552773785ac8f777ebcf39",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/REQUEST.json",
+        "packed_sha256": "3995d4e8224534c4be7a349baaba31bcf7e68d4016552773785ac8f777ebcf39",
+        "original_bytes": 64027,
+        "packed_bytes": 64027,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/ROOT_GO.json",
+        "original_sha256": "021dbdb7e4d8a6010a5e774cb1b14ada776a2557189a9853549f190841abd3f8",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/ROOT_GO.json",
+        "packed_sha256": "021dbdb7e4d8a6010a5e774cb1b14ada776a2557189a9853549f190841abd3f8",
+        "original_bytes": 1729,
+        "packed_bytes": 1729,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/artifacts/engineering-postchild-proof.json",
+        "original_sha256": "1807eadf57d0c59b201fab9c494d6b60decba19fd640756014d875cb9b33c350",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/engineering-postchild-proof.json",
+        "packed_sha256": "1807eadf57d0c59b201fab9c494d6b60decba19fd640756014d875cb9b33c350",
+        "original_bytes": 1027,
+        "packed_bytes": 1027,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/artifacts/engine-construction-count.json",
+        "original_sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/engine-construction-count.json",
+        "packed_sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+        "original_bytes": 28,
+        "packed_bytes": 28,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/artifacts/native-child-terminal.json",
+        "original_sha256": "5ceb3cf553ded5e27d5eefbdcf0c347ea899d15f67e2eba51dfb258d40f4f7b9",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/native-child-terminal.json",
+        "packed_sha256": "5ceb3cf553ded5e27d5eefbdcf0c347ea899d15f67e2eba51dfb258d40f4f7b9",
+        "original_bytes": 496,
+        "packed_bytes": 496,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/artifacts/coherent-native-events.jsonl.gz",
+        "original_sha256": "ac7ce67432f84fc772e5c8df5d93bb15596276e0bf04cd3412fd1d2de2c74d56",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/coherent-native-events.jsonl.gz",
+        "packed_sha256": "ac7ce67432f84fc772e5c8df5d93bb15596276e0bf04cd3412fd1d2de2c74d56",
+        "original_bytes": 131528,
+        "packed_bytes": 131528,
+        "compression": "none (copied existing gzip)",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/artifacts/minute-native-risk.csv.gz",
+        "original_sha256": "053951a72a76030197234bd96cee00670eaeffe7a548c4f4879e957e782d736c",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/minute-native-risk.csv.gz",
+        "packed_sha256": "053951a72a76030197234bd96cee00670eaeffe7a548c4f4879e957e782d736c",
+        "original_bytes": 63969,
+        "packed_bytes": 63969,
+        "compression": "none (copied existing gzip)",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/artifacts/minute-native-settled-receipts.csv.gz",
+        "original_sha256": "50bc86c733fd371342ed566de709fe53676f57853a3944f96e546620cf2630c1",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/minute-native-settled-receipts.csv.gz",
+        "packed_sha256": "50bc86c733fd371342ed566de709fe53676f57853a3944f96e546620cf2630c1",
+        "original_bytes": 26807,
+        "packed_bytes": 26807,
+        "compression": "none (copied existing gzip)",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/artifacts/fixture-result.json",
+        "original_sha256": "c7835052319329143241d781f3aa01a475500bea81bb98f7de5a4cfcc3cc4eef",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/fixture-result.json.gz",
+        "packed_sha256": "66b94d7c4490162cc24e4ce86003c463b22e1b19d97240a20f5135ed970ed4d5",
+        "original_bytes": 494642,
+        "packed_bytes": 78951,
+        "compression": "gzip mtime=0",
+        "decompressed_hash_verified": true
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/REQUEST.json",
+        "original_sha256": "8f925641c97c2431b0cbe93deee21f52042d72969a93e5b5af6485a4fdfa9dbe",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/REQUEST.json",
+        "packed_sha256": "8f925641c97c2431b0cbe93deee21f52042d72969a93e5b5af6485a4fdfa9dbe",
+        "original_bytes": 68497,
+        "packed_bytes": 68497,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/ROOT_GO.json",
+        "original_sha256": "28ff215ea83e0df62cdb08194d76c27914b33b45aa031a6c4df31ea98c38ced0",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/ROOT_GO.json",
+        "packed_sha256": "28ff215ea83e0df62cdb08194d76c27914b33b45aa031a6c4df31ea98c38ced0",
+        "original_bytes": 2107,
+        "packed_bytes": 2107,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/CM2_SOL_PREFIX_20241201_S1-raw-native.json",
+        "original_sha256": "6f2150e4dd80e9fa28ee59d3c45aa8e2a01b018aeb2fbebdd6c0e4f850c748e4",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/raw-native.json.gz",
+        "packed_sha256": "3f755b70b7cd0f9698239cf826be50e9f9b78c508055cd8536ad1e9c53547fe8",
+        "original_bytes": 1403315,
+        "packed_bytes": 164587,
+        "compression": "gzip mtime=0",
+        "decompressed_hash_verified": true
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/CM2_SOL_PREFIX_20241201_S1-qualified-summary.json",
+        "original_sha256": "6ea37c9341ee89965e736d77d8d542875b6cd08d060416fd7a717cc9aba11a65",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/qualified-summary.json.gz",
+        "packed_sha256": "a89d845d9ebc0b2251b9599fa0fe565f177d1e6405478f4f5039b2947a4871b3",
+        "original_bytes": 899432,
+        "packed_bytes": 158480,
+        "compression": "gzip mtime=0",
+        "decompressed_hash_verified": true
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/CM2_SOL_PREFIX_20241201_S1-fills.csv",
+        "original_sha256": "b3ab2a402934419ca9563c1824fbce59af43fc838f4c81250491017b5f54d0a7",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/fills.csv",
+        "packed_sha256": "b3ab2a402934419ca9563c1824fbce59af43fc838f4c81250491017b5f54d0a7",
+        "original_bytes": 21508,
+        "packed_bytes": 21508,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/CM2_SOL_PREFIX_20241201_S1-orders.csv",
+        "original_sha256": "813eee63ff90b6dfc8c3b8953ee19e6ea84e5deead781f948f9cf1238a13c7e0",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/orders.csv",
+        "packed_sha256": "813eee63ff90b6dfc8c3b8953ee19e6ea84e5deead781f948f9cf1238a13c7e0",
+        "original_bytes": 23435,
+        "packed_bytes": 23435,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/committed-wm-qualification-v1/QUALIFICATION.json",
+        "original_sha256": "4325e83c81aaf44800f43594504a97872412a114190b0cb9b3414bc597d4c1a2",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/committed-wm-qualification-v1/QUALIFICATION.json",
+        "packed_sha256": "4325e83c81aaf44800f43594504a97872412a114190b0cb9b3414bc597d4c1a2",
+        "original_bytes": 12157,
+        "packed_bytes": 12157,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/minute-risk-summary.json",
+        "original_sha256": "0bf2924f9a54f3b997eeee5c1c288eb7327dc35fac46e1c9e9e781d3526a5c19",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/minute-risk-summary.json",
+        "packed_sha256": "0bf2924f9a54f3b997eeee5c1c288eb7327dc35fac46e1c9e9e781d3526a5c19",
+        "original_bytes": 16995,
+        "packed_bytes": 16995,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/engine-construction-count.json",
+        "original_sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/engine-construction-count.json",
+        "packed_sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+        "original_bytes": 28,
+        "packed_bytes": 28,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/native-child-terminal.json",
+        "original_sha256": "b3b42df93356eccefb3df589455116f7d9729bc2613fa9fa4554583f33030d09",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/native-child-terminal.json",
+        "packed_sha256": "b3b42df93356eccefb3df589455116f7d9729bc2613fa9fa4554583f33030d09",
+        "original_bytes": 495,
+        "packed_bytes": 495,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_E08_ROOT_ACCEPTANCE.json",
+        "original_sha256": "97a7c529b13a94ba397f62db39a932f883f9ea63f483be8c5549f3af444348b5",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_E08_ROOT_ACCEPTANCE.json",
+        "packed_sha256": "97a7c529b13a94ba397f62db39a932f883f9ea63f483be8c5549f3af444348b5",
+        "original_bytes": 1504,
+        "packed_bytes": 1504,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_E08_ROOT_INDEPENDENT_ARTIFACT_CHECK.json",
+        "original_sha256": "70558e3bc3f02ec2956c368e460a5e99942a388f32c2e9f26b98ff821ab75a49",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_E08_ROOT_INDEPENDENT_ARTIFACT_CHECK.json",
+        "packed_sha256": "70558e3bc3f02ec2956c368e460a5e99942a388f32c2e9f26b98ff821ab75a49",
+        "original_bytes": 1232,
+        "packed_bytes": 1232,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_PREFIX_NATIVE_ANALYSIS.json",
+        "original_sha256": "a92e6f3e8328e75d4fa39076559651fe90a9f5c34cbbd4438b9fb32b388923cc",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_PREFIX_NATIVE_ANALYSIS.json",
+        "packed_sha256": "a92e6f3e8328e75d4fa39076559651fe90a9f5c34cbbd4438b9fb32b388923cc",
+        "original_bytes": 57757,
+        "packed_bytes": 57757,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_PREFIX_NATIVE_ANALYSIS.md",
+        "original_sha256": "9a315489c81dc73cca1563f58eb5f549fe1a6fed58d645b5a989737b3c6ab008",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_PREFIX_NATIVE_ANALYSIS.md",
+        "packed_sha256": "9a315489c81dc73cca1563f58eb5f549fe1a6fed58d645b5a989737b3c6ab008",
+        "original_bytes": 3729,
+        "packed_bytes": 3729,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_PREFIX_NATIVE_SOL_CYCLES.csv",
+        "original_sha256": "d150a9ea49fe1e64b99e8934b09eca6e504a9ecc57dfc2a8a6839decb8abd6d7",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_PREFIX_NATIVE_SOL_CYCLES.csv",
+        "packed_sha256": "d150a9ea49fe1e64b99e8934b09eca6e504a9ecc57dfc2a8a6839decb8abd6d7",
+        "original_bytes": 1993,
+        "packed_bytes": 1993,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_PREFIX_BTC_FILL_DIFF.csv",
+        "original_sha256": "fc51bd139d374d5d13fe4638766f70a001a289d8b724d9141fc44ee00b05fd70",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_PREFIX_BTC_FILL_DIFF.csv",
+        "packed_sha256": "fc51bd139d374d5d13fe4638766f70a001a289d8b724d9141fc44ee00b05fd70",
+        "original_bytes": 4328,
+        "packed_bytes": 4328,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_PREFIX_BTC_CYCLE_DIFF.csv",
+        "original_sha256": "45e927388ef456e64c95fc39214db45d4b30ed2c46d075b05a62046623702bde",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_PREFIX_BTC_CYCLE_DIFF.csv",
+        "packed_sha256": "45e927388ef456e64c95fc39214db45d4b30ed2c46d075b05a62046623702bde",
+        "original_bytes": 2153,
+        "packed_bytes": 2153,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/V1_FINAL_COMBINED_REVIEW_c4118505.json",
+        "original_sha256": "9ba1c7e34ae5ac8e435b85d1b42ffeca72321d134ffe074f1fe49401cc9efb85",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/V1_FINAL_COMBINED_REVIEW_c4118505.json",
+        "packed_sha256": "9ba1c7e34ae5ac8e435b85d1b42ffeca72321d134ffe074f1fe49401cc9efb85",
+        "original_bytes": 5792,
+        "packed_bytes": 5792,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/V1_FINAL_COMBINED_REVIEW_c4118505.md",
+        "original_sha256": "4f566e19144bc80407c1a9b4156f51d88f02891b8721373f93da6a962ea94988",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/V1_FINAL_COMBINED_REVIEW_c4118505.md",
+        "packed_sha256": "4f566e19144bc80407c1a9b4156f51d88f02891b8721373f93da6a962ea94988",
+        "original_bytes": 1924,
+        "packed_bytes": 1924,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/V1_FINAL_INDEPENDENT_PROOFS_c4118505.json",
+        "original_sha256": "8edb70c918908dfc4c49bd0645c304df67f7bc03bf560dc8fb8544c15c88ea0c",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/V1_FINAL_INDEPENDENT_PROOFS_c4118505.json",
+        "packed_sha256": "8edb70c918908dfc4c49bd0645c304df67f7bc03bf560dc8fb8544c15c88ea0c",
+        "original_bytes": 2080,
+        "packed_bytes": 2080,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/V1_SYSTEMATIC_MARKET_CONTRACT_PROPOSAL.json",
+        "original_sha256": "7a70f615818662676936bde19110229db7e22ee3f189f07c53a0dac0410f1063",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/V1_SYSTEMATIC_MARKET_CONTRACT_PROPOSAL.json",
+        "packed_sha256": "7a70f615818662676936bde19110229db7e22ee3f189f07c53a0dac0410f1063",
+        "original_bytes": 7331,
+        "packed_bytes": 7331,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/V1_SYSTEMATIC_MARKET_CONTRACT_FINAL_ACK.json",
+        "original_sha256": "0c8dcb0af8eb8c304ad45af30d70877031e046e25522d5de3b038b56020efe5b",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/V1_SYSTEMATIC_MARKET_CONTRACT_FINAL_ACK.json",
+        "packed_sha256": "0c8dcb0af8eb8c304ad45af30d70877031e046e25522d5de3b038b56020efe5b",
+        "original_bytes": 2159,
+        "packed_bytes": 2159,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/REFERENCE_SOL_MECHANISM_AUDIT.json",
+        "original_sha256": "d4ff14386f90e343e1c1c8746a46612e2e8c382bc898d0ea1dd38b2a3a3c8459",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/reference-sol-audit/REFERENCE_SOL_MECHANISM_AUDIT.json",
+        "packed_sha256": "d4ff14386f90e343e1c1c8746a46612e2e8c382bc898d0ea1dd38b2a3a3c8459",
+        "original_bytes": 57362,
+        "packed_bytes": 57362,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/REFERENCE_SOL_MECHANISM_AUDIT.md",
+        "original_sha256": "adf22b63bedd2919ee5734b50e3cbe325f289c2beddd41e48a1e85a1081d7cd1",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/reference-sol-audit/REFERENCE_SOL_MECHANISM_AUDIT.md",
+        "packed_sha256": "adf22b63bedd2919ee5734b50e3cbe325f289c2beddd41e48a1e85a1081d7cd1",
+        "original_bytes": 12225,
+        "packed_bytes": 12225,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/REFERENCE_SOL_MECHANISM_AUDIT_CYCLES.csv",
+        "original_sha256": "9a95d34cc5cf038ce20428e9532ac23102e1ddf4d78bc1942ffbc34544efc9bb",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/reference-sol-audit/REFERENCE_SOL_MECHANISM_AUDIT_CYCLES.csv",
+        "packed_sha256": "9a95d34cc5cf038ce20428e9532ac23102e1ddf4d78bc1942ffbc34544efc9bb",
+        "original_bytes": 4389,
+        "packed_bytes": 4389,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/REFERENCE_SOL_NATIVE_ECONOMICS.json",
+        "original_sha256": "2600e2c09aceae153e93281ce9f871e5448a292d5e4ddb52de5f80207c0f6b9b",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/reference-sol-audit/REFERENCE_SOL_NATIVE_ECONOMICS.json",
+        "packed_sha256": "2600e2c09aceae153e93281ce9f871e5448a292d5e4ddb52de5f80207c0f6b9b",
+        "original_bytes": 64688,
+        "packed_bytes": 64688,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/REFERENCE_SOL_NATIVE_ECONOMICS.md",
+        "original_sha256": "ea859b4401cfdfa8cbe14344f69835132b7535398a4014e5e3f2b1de2a79ce54",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/reference-sol-audit/REFERENCE_SOL_NATIVE_ECONOMICS.md",
+        "packed_sha256": "ea859b4401cfdfa8cbe14344f69835132b7535398a4014e5e3f2b1de2a79ce54",
+        "original_bytes": 9074,
+        "packed_bytes": 9074,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/REFERENCE_SOL_NATIVE_CYCLES.csv",
+        "original_sha256": "d1d401edc7257c5384ee6926a6cea8b94207226628223d8687bd80bfa84db33c",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/reference-sol-audit/REFERENCE_SOL_NATIVE_CYCLES.csv",
+        "packed_sha256": "d1d401edc7257c5384ee6926a6cea8b94207226628223d8687bd80bfa84db33c",
+        "original_bytes": 15577,
+        "packed_bytes": 15577,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/REQUEST.json",
+        "original_sha256": "f559d499a290c452793dd5dfe14b1451a5bc5d097aa4de6f4553b6d37ba5b1f1",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/REQUEST.json",
+        "packed_sha256": "f559d499a290c452793dd5dfe14b1451a5bc5d097aa4de6f4553b6d37ba5b1f1",
+        "original_bytes": 68491,
+        "packed_bytes": 68491,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/ROOT_GO.json",
+        "original_sha256": "0a1d8dfd9e2bcae9cc5512d6bcb7e40cb431e0c4f1d71e8ab08d7133bf14c071",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/ROOT_GO.json",
+        "packed_sha256": "0a1d8dfd9e2bcae9cc5512d6bcb7e40cb431e0c4f1d71e8ab08d7133bf14c071",
+        "original_bytes": 2575,
+        "packed_bytes": 2575,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/artifacts/CM2_SOL_FULL_20260901_S1-raw-native.json",
+        "original_sha256": "9e4c88085579a700de67d1eeb4877569f5b71cf878b62e5fd614f9a9923270f5",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/raw-native.json.gz",
+        "packed_sha256": "8e749bc590eec1352cc6b797d6911bd51e05d2c1e17b37d1fc9d5e40ac27bd4e",
+        "original_bytes": 5713321,
+        "packed_bytes": 539495,
+        "compression": "gzip mtime=0",
+        "decompressed_hash_verified": true
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/artifacts/CM2_SOL_FULL_20260901_S1-qualified-summary.json",
+        "original_sha256": "57fa00f376e2ef495295d560dd232776bcbe350314bd2ba2a056128b206a9b28",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/qualified-summary.json.gz",
+        "packed_sha256": "307efc2f6d7ba5f83c309f0972c669e95d937aefc5dc1e4c76a4551ffd874140",
+        "original_bytes": 4088084,
+        "packed_bytes": 519639,
+        "compression": "gzip mtime=0",
+        "decompressed_hash_verified": true
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/artifacts/CM2_SOL_FULL_20260901_S1-fills.csv",
+        "original_sha256": "07f998be31a6b4514f30611553fbc9a2180119b5d94005f032aeb6f4a1fa8694",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/fills.csv",
+        "packed_sha256": "07f998be31a6b4514f30611553fbc9a2180119b5d94005f032aeb6f4a1fa8694",
+        "original_bytes": 157138,
+        "packed_bytes": 157138,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/artifacts/CM2_SOL_FULL_20260901_S1-orders.csv",
+        "original_sha256": "4cd4da29032dc2ee0779ea7b7d2826d638e1f4df73720374cd107f575019917a",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/orders.csv",
+        "packed_sha256": "4cd4da29032dc2ee0779ea7b7d2826d638e1f4df73720374cd107f575019917a",
+        "original_bytes": 174930,
+        "packed_bytes": 174930,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/artifacts/committed-wm-qualification-v1/QUALIFICATION.json",
+        "original_sha256": "0c0b49cce5c8bc0dc7dbf6c92df97d8c4c8a5a6a5335709d947c3d0fbdfd7275",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/committed-wm-qualification-v1/QUALIFICATION.json",
+        "packed_sha256": "0c0b49cce5c8bc0dc7dbf6c92df97d8c4c8a5a6a5335709d947c3d0fbdfd7275",
+        "original_bytes": 13182,
+        "packed_bytes": 13182,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/artifacts/minute-risk-summary.json",
+        "original_sha256": "a6594168f50c64e04f9f1c2de729c5c5158c28513a6bab7ae917f01603aac732",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/minute-risk-summary.json",
+        "packed_sha256": "a6594168f50c64e04f9f1c2de729c5c5158c28513a6bab7ae917f01603aac732",
+        "original_bytes": 16981,
+        "packed_bytes": 16981,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/artifacts/engine-construction-count.json",
+        "original_sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/engine-construction-count.json",
+        "packed_sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+        "original_bytes": 28,
+        "packed_bytes": 28,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/artifacts/native-child-terminal.json",
+        "original_sha256": "970598c6e80617ed51ae3ba75f8231d4a472e4fb38096ee7e5cc1a33091d8f8c",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/native-child-terminal.json",
+        "packed_sha256": "970598c6e80617ed51ae3ba75f8231d4a472e4fb38096ee7e5cc1a33091d8f8c",
+        "original_bytes": 494,
+        "packed_bytes": 494,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/REQUEST.json",
+        "original_sha256": "3f4d1bd2c727b726e7402e17abb3c19294e8e790a9cc1de78374fe464ef7ec8d",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/REQUEST.json",
+        "packed_sha256": "3f4d1bd2c727b726e7402e17abb3c19294e8e790a9cc1de78374fe464ef7ec8d",
+        "original_bytes": 68521,
+        "packed_bytes": 68521,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/ROOT_GO.json",
+        "original_sha256": "f8a5a4b7065de9c5816c407cfa79cc6ad08ae364c0d82b818864e6748cd775d4",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/ROOT_GO.json",
+        "packed_sha256": "f8a5a4b7065de9c5816c407cfa79cc6ad08ae364c0d82b818864e6748cd775d4",
+        "original_bytes": 2464,
+        "packed_bytes": 2464,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/CM2_SOL_PREFIX_20241201_S2_AUDIT_DEFER-raw-native.json",
+        "original_sha256": "69c69199e5ce7126893b4b200a1d9d527b4a7dfc0a07e9c21b08b343c6d2526c",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/raw-native.json.gz",
+        "packed_sha256": "b579702a125bbffcaff363dc3e00c31f256381e15864b12a3ee082da03b66fdb",
+        "original_bytes": 1403411,
+        "packed_bytes": 164631,
+        "compression": "gzip mtime=0",
+        "decompressed_hash_verified": true
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/CM2_SOL_PREFIX_20241201_S2_AUDIT_DEFER-qualified-summary.json",
+        "original_sha256": "b4431ab19295005891869e0f97ca0c5b61a767f52b88dbca8eccbd356e2896c4",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/qualified-summary.json.gz",
+        "packed_sha256": "77d1d6a263b983cd9d2a2b47fccbc76485f4b58ec15bd8849f3696cc20c36219",
+        "original_bytes": 899540,
+        "packed_bytes": 158572,
+        "compression": "gzip mtime=0",
+        "decompressed_hash_verified": true
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/CM2_SOL_PREFIX_20241201_S2_AUDIT_DEFER-fills.csv",
+        "original_sha256": "55ba78972e0442fa2c253797e51b175d11b3f87ad91d5686efd136112e1b6cb9",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/fills.csv",
+        "packed_sha256": "55ba78972e0442fa2c253797e51b175d11b3f87ad91d5686efd136112e1b6cb9",
+        "original_bytes": 21508,
+        "packed_bytes": 21508,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/CM2_SOL_PREFIX_20241201_S2_AUDIT_DEFER-orders.csv",
+        "original_sha256": "233d27444594448b98fed35b0f4a72923e8afd95acef496068e70f922bba9abb",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/orders.csv",
+        "packed_sha256": "233d27444594448b98fed35b0f4a72923e8afd95acef496068e70f922bba9abb",
+        "original_bytes": 23435,
+        "packed_bytes": 23435,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/committed-wm-qualification-v1/QUALIFICATION.json",
+        "original_sha256": "88abeed8375476274086f913e8895b54a478376f4f57439339fd36d300c38255",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/committed-wm-qualification-v1/QUALIFICATION.json",
+        "packed_sha256": "88abeed8375476274086f913e8895b54a478376f4f57439339fd36d300c38255",
+        "original_bytes": 12205,
+        "packed_bytes": 12205,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/native-child-terminal.json",
+        "original_sha256": "61390794896a6f2d614660201207e60627aa7ace2baf3c268a926f61a52a9f6f",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/native-child-terminal.json",
+        "packed_sha256": "61390794896a6f2d614660201207e60627aa7ace2baf3c268a926f61a52a9f6f",
+        "original_bytes": 507,
+        "packed_bytes": 507,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/engine-construction-count.json",
+        "original_sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/engine-construction-count.json",
+        "packed_sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+        "original_bytes": 28,
+        "packed_bytes": 28,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/minute-risk-summary.json",
+        "original_sha256": "6d21a8530933cbfe450bf058dcd3e7d4e06ce7edabab7d1933dc601b8e071458",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/minute-risk-summary.json",
+        "packed_sha256": "6d21a8530933cbfe450bf058dcd3e7d4e06ce7edabab7d1933dc601b8e071458",
+        "original_bytes": 17007,
+        "packed_bytes": 17007,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FULL_ROOT_FINANCIAL_ACCEPTANCE.json",
+        "original_sha256": "49d07e461cb8e13c677a2fd20c72aeffc4c06e8da3edbaa8401a7706855b308b",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_ROOT_FINANCIAL_ACCEPTANCE.json",
+        "packed_sha256": "49d07e461cb8e13c677a2fd20c72aeffc4c06e8da3edbaa8401a7706855b308b",
+        "original_bytes": 1022,
+        "packed_bytes": 1022,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FULL_NATIVE_SOL_CYCLES.csv",
+        "original_sha256": "60d9aa4ea5674ed051a92d58854b0880c1b42f34c57ac71b9313ac705960bc89",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_NATIVE_SOL_CYCLES.csv",
+        "packed_sha256": "60d9aa4ea5674ed051a92d58854b0880c1b42f34c57ac71b9313ac705960bc89",
+        "original_bytes": 22817,
+        "packed_bytes": 22817,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FULL_BTC_CYCLE_DIFF.csv",
+        "original_sha256": "983f5e9567d004f12930d7ee0e336a9c92ed21afaf0dea7b04024cf90d9d2f33",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_BTC_CYCLE_DIFF.csv",
+        "packed_sha256": "983f5e9567d004f12930d7ee0e336a9c92ed21afaf0dea7b04024cf90d9d2f33",
+        "original_bytes": 21469,
+        "packed_bytes": 21469,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FULL_BTC_FILL_DIFF.csv",
+        "original_sha256": "bc87ad2646b5849642bad9c2e828900e95879a739df889637047c14228affbd1",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_BTC_FILL_DIFF.csv",
+        "packed_sha256": "bc87ad2646b5849642bad9c2e828900e95879a739df889637047c14228affbd1",
+        "original_bytes": 48626,
+        "packed_bytes": 48626,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FULL_DRAWDOWN_PRESENCE.json",
+        "original_sha256": "51c12c88c9c35ccbbbcd4dc8649f082d20b32620ffb4cd994f62cf276c9369fd",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_DRAWDOWN_PRESENCE.json",
+        "packed_sha256": "51c12c88c9c35ccbbbcd4dc8649f082d20b32620ffb4cd994f62cf276c9369fd",
+        "original_bytes": 538302,
+        "packed_bytes": 538302,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FULL_DRAWDOWN_PRESENCE_ALL85.csv",
+        "original_sha256": "add6f22347737e4a543c6a126baf9dd4b19edc7ae5817f0abcdb1cb195d4fb70",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_DRAWDOWN_PRESENCE_ALL85.csv",
+        "packed_sha256": "add6f22347737e4a543c6a126baf9dd4b19edc7ae5817f0abcdb1cb195d4fb70",
+        "original_bytes": 210710,
+        "packed_bytes": 210710,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_VOLATILITY_LOCK/IMMUTABLE_CONTRACT.json",
+        "original_sha256": "424d8c42a8466c0120bdf85fdfc99f0d24542a1ee5ebb82b5fb3cd2d7af9d12a",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/volatility/IMMUTABLE_CONTRACT.json",
+        "packed_sha256": "424d8c42a8466c0120bdf85fdfc99f0d24542a1ee5ebb82b5fb3cd2d7af9d12a",
+        "original_bytes": 2905,
+        "packed_bytes": 2905,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_VOLATILITY_LOCK/REQUESTED_15_ROWS.csv",
+        "original_sha256": "8bc695a48a351e3cd4b15d181613df5b57fe577b37b637b5b684bed4a7f4b691",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/volatility/REQUESTED_15_ROWS.csv",
+        "packed_sha256": "8bc695a48a351e3cd4b15d181613df5b57fe577b37b637b5b684bed4a7f4b691",
+        "original_bytes": 7034,
+        "packed_bytes": 7034,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_VOLATILITY_LOCK/RESULT.md",
+        "original_sha256": "3b9e9397e43e8e4bb4bb332925d5b443560270187415d01231e5e2e19f63ed17",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/volatility/RESULT.md",
+        "packed_sha256": "3b9e9397e43e8e4bb4bb332925d5b443560270187415d01231e5e2e19f63ed17",
+        "original_bytes": 8612,
+        "packed_bytes": 8612,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/AUDIT_DEFER_FINAL_REVIEW_7ca19646.json",
+        "original_sha256": "2b6509b0fcfd2b735006aaf533c9469a52f44a5234278764e6a0dc1460ae87f7",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_FINAL_REVIEW_7ca19646.json",
+        "packed_sha256": "2b6509b0fcfd2b735006aaf533c9469a52f44a5234278764e6a0dc1460ae87f7",
+        "original_bytes": 2462,
+        "packed_bytes": 2462,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/AUDIT_DEFER_FINAL_REVIEW_7ca19646.md",
+        "original_sha256": "bae1af8984d72cffa9d06334c5264b248db6d485e2152a2851ad9317eabbcdc5",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_FINAL_REVIEW_7ca19646.md",
+        "packed_sha256": "bae1af8984d72cffa9d06334c5264b248db6d485e2152a2851ad9317eabbcdc5",
+        "original_bytes": 1316,
+        "packed_bytes": 1316,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/AUDIT_DEFER_INDEPENDENT_PROOFS_7ca19646.json",
+        "original_sha256": "e519ab1b443d2ee39bbb94710c1b7ad3e029bc756e81db886d4d806690beb79a",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_INDEPENDENT_PROOFS_7ca19646.json",
+        "packed_sha256": "e519ab1b443d2ee39bbb94710c1b7ad3e029bc756e81db886d4d806690beb79a",
+        "original_bytes": 1982,
+        "packed_bytes": 1982,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/AUDIT_DEFER_INDEPENDENT_PROBES_7ca19646.py",
+        "original_sha256": "e312fefadb5d7405734cecea96da63097bd9d23f816af99119a8595b14c2169b",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_INDEPENDENT_PROBES_7ca19646.py",
+        "packed_sha256": "e312fefadb5d7405734cecea96da63097bd9d23f816af99119a8595b14c2169b",
+        "original_bytes": 4561,
+        "packed_bytes": 4561,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/AUDIT_DEFER_7ca19646_RECEIPT.json",
+        "original_sha256": "c995e76f7d0b53f61445a823237bb2c242a114641600026878b7287ba352f82d",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_7ca19646_RECEIPT.json",
+        "packed_sha256": "c995e76f7d0b53f61445a823237bb2c242a114641600026878b7287ba352f82d",
+        "original_bytes": 3186,
+        "packed_bytes": 3186,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/AUDIT_DEFER_7ca19646.diff",
+        "original_sha256": "5b14e6b41bb4cb863d8137b0f38e16426d4c0f2697da0c2006a148d53b16f7b1",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_7ca19646.diff",
+        "packed_sha256": "5b14e6b41bb4cb863d8137b0f38e16426d4c0f2697da0c2006a148d53b16f7b1",
+        "original_bytes": 13533,
+        "packed_bytes": 13533,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/AUDIT_DEFER_7ca19646_TEST.log",
+        "original_sha256": "f2d5efb7f80581087718899934dfa9b91b8c9904d5e686f8a6aca23445c5d072",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_7ca19646_TEST.log",
+        "packed_sha256": "f2d5efb7f80581087718899934dfa9b91b8c9904d5e686f8a6aca23445c5d072",
+        "original_bytes": 99,
+        "packed_bytes": 99,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FULL_NATIVE_ANALYSIS.json",
+        "original_sha256": "5f3513af2b116c3841fbaf6da6e1422c2946635e5b7de69644cd99b600ff761e",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_NATIVE_ANALYSIS.json",
+        "packed_sha256": "5f3513af2b116c3841fbaf6da6e1422c2946635e5b7de69644cd99b600ff761e",
+        "original_bytes": 488223,
+        "packed_bytes": 488223,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FULL_NATIVE_ANALYSIS.md",
+        "original_sha256": "73ee7514f60bc33e462f6cb62fff931eba4e22b02e694112903753252272b498",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_NATIVE_ANALYSIS.md",
+        "packed_sha256": "73ee7514f60bc33e462f6cb62fff931eba4e22b02e694112903753252272b498",
+        "original_bytes": 6077,
+        "packed_bytes": 6077,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FULL_DRAWDOWN_PRESENCE.md",
+        "original_sha256": "9a2e3f2f445617c9ba957c4efc7efa1eadb6b2b32450a67817955861b150612a",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_DRAWDOWN_PRESENCE.md",
+        "packed_sha256": "9a2e3f2f445617c9ba957c4efc7efa1eadb6b2b32450a67817955861b150612a",
+        "original_bytes": 1576,
+        "packed_bytes": 1576,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_PREFIX_FULL_INVARIANCE.json",
+        "original_sha256": "0aefd454a21cb15b4fc98ac3fa58da5f8cfeeed06dfc974a376650cba005c757",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_PREFIX_FULL_INVARIANCE.json",
+        "packed_sha256": "0aefd454a21cb15b4fc98ac3fa58da5f8cfeeed06dfc974a376650cba005c757",
+        "original_bytes": 30719,
+        "packed_bytes": 30719,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/NATIVE_POSITION_PICKLE_CROSSRUN_IDENTITY_EVIDENCE.json",
+        "original_sha256": "979ed062c341ceb45fbc1dce4593b89626962d7ae7c06ecbf82703b4665b4ad7",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/NATIVE_POSITION_PICKLE_CROSSRUN_IDENTITY_EVIDENCE.json",
+        "packed_sha256": "979ed062c341ceb45fbc1dce4593b89626962d7ae7c06ecbf82703b4665b4ad7",
+        "original_bytes": 2936,
+        "packed_bytes": 2936,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/NATIVE_POSITION_PICKLE_CROSSRUN_IDENTITY_README.md",
+        "original_sha256": "7c3a7847e8e147d11a4490aad3a78e115484e145e146be4286244d5ac5dfa045",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/NATIVE_POSITION_PICKLE_CROSSRUN_IDENTITY_README.md",
+        "packed_sha256": "7c3a7847e8e147d11a4490aad3a78e115484e145e146be4286244d5ac5dfa045",
+        "original_bytes": 1465,
+        "packed_bytes": 1465,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_AUDIT_DEFER_PREFIX_EQUIVALENCE.json",
+        "original_sha256": "6b9b1fa9f87fcb612b7ee88ac59641c02cb2c7952041e5b1033546019cae4c12",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_AUDIT_DEFER_PREFIX_EQUIVALENCE.json",
+        "packed_sha256": "6b9b1fa9f87fcb612b7ee88ac59641c02cb2c7952041e5b1033546019cae4c12",
+        "original_bytes": 37512,
+        "packed_bytes": 37512,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_AUDIT_DEFER_PREFIX_EQUIVALENCE_EXPORTED_STATE.json",
+        "original_sha256": "f1738a590e39027a3bf977d4a77187f3e6d22d0537a8611138cac70b1dcf19e8",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_AUDIT_DEFER_PREFIX_EQUIVALENCE_EXPORTED_STATE.json",
+        "packed_sha256": "f1738a590e39027a3bf977d4a77187f3e6d22d0537a8611138cac70b1dcf19e8",
+        "original_bytes": 4971,
+        "packed_bytes": 4971,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_AUDIT_DEFER_PREFIX_EQUIVALENCE.md",
+        "original_sha256": "45a7289fd8a3ac23dba7b261c1dfe531defcca360da62124102f84dc52354a43",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_AUDIT_DEFER_PREFIX_EQUIVALENCE.md",
+        "packed_sha256": "45a7289fd8a3ac23dba7b261c1dfe531defcca360da62124102f84dc52354a43",
+        "original_bytes": 2064,
+        "packed_bytes": 2064,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FINAL_NATIVE_ANALYSIS_RECEIPT.json",
+        "original_sha256": "1cce0ffe5cf58534be5e451d18edd7904cf9a6ed3e8b86f45d5e93fb3cffa8e6",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FINAL_NATIVE_ANALYSIS_RECEIPT.json",
+        "packed_sha256": "1cce0ffe5cf58534be5e451d18edd7904cf9a6ed3e8b86f45d5e93fb3cffa8e6",
+        "original_bytes": 1905,
+        "packed_bytes": 1905,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/SOL_V1_FULL_MODEL_DIAGNOSIS.json",
+        "original_sha256": "61016746e51d73272fa0cc745cd9748a2bf627b1f9b4621b7c3f466b519acc24",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_V1_FULL_MODEL_DIAGNOSIS.json",
+        "packed_sha256": "61016746e51d73272fa0cc745cd9748a2bf627b1f9b4621b7c3f466b519acc24",
+        "original_bytes": 16614,
+        "packed_bytes": 16614,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/SOL_V1_FULL_MODEL_DIAGNOSIS.md",
+        "original_sha256": "bfd304ea7e05c29fad4107c4e146922d387774e64b202e797dd3dfb6ab25ae1e",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_V1_FULL_MODEL_DIAGNOSIS.md",
+        "packed_sha256": "bfd304ea7e05c29fad4107c4e146922d387774e64b202e797dd3dfb6ab25ae1e",
+        "original_bytes": 5832,
+        "packed_bytes": 5832,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FINAL_SOL_V1_REPORT_RU.md",
+        "original_sha256": "b3fc9d4269c20fffca731544c0f8a8579a155f112e0c750b64240e26f893a3db",
+        "pack_path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/README.md",
+        "packed_sha256": "b3fc9d4269c20fffca731544c0f8a8579a155f112e0c750b64240e26f893a3db",
+        "original_bytes": 14800,
+        "packed_bytes": 14800,
+        "compression": "none",
+        "decompressed_hash_verified": null
+      }
+    ],
+    "omitted_finished_prefix_gzip": [
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/coherent-native-events.jsonl.gz",
+        "sha256": "943d555d4772b71f379e1a3a55a3594249faddd6e887129d41d68ef30593fc33",
+        "bytes": 7810572,
+        "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/minute-native-risk.csv.gz",
+        "sha256": "29a4653e3426a8569e838fb56704d7a97f2b097576d66630368820902c6ec5fb",
+        "bytes": 7595270,
+        "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/minute-native-settled-receipts.csv.gz",
+        "sha256": "ec107f67783da4547af65260ce1784dc5f3f86ba602847078a13e0d2f96e4fb5",
+        "bytes": 3686084,
+        "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/committed-wm-qualification-v1/minute-native-settled-receipts.csv.gz",
+        "sha256": "882e3c27b391a547eabca438ba26dfa4575e9eb85735378488cc157389ac9972",
+        "bytes": 1478661,
+        "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+      }
+    ],
+    "strict_json_key_scan": {
+      "key_names": [
+        "access_token",
+        "api_key",
+        "mnemonic",
+        "password",
+        "private_key",
+        "refresh_token"
+      ],
+      "counts": {
+        "access_token": 0,
+        "api_key": 0,
+        "mnemonic": 0,
+        "password": 0,
+        "private_key": 0,
+        "refresh_token": 0
+      },
+      "total_matches": 0,
+      "json_files_scanned": 53,
+      "values_reported": false
+    },
+    "verification": {
+      "copied_hashes_match": true,
+      "gzip_decompressed_hashes_match": true,
+      "originals_unchanged": true
+    },
+    "pack_file_count": 87,
+    "pack_bytes": 4558590,
+    "omitted_finished_full_gzip": [
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/artifacts/coherent-native-events.jsonl.gz",
+        "sha256": "d4c361d3e11c7048947cb54da5bca275cc4df9b14b08b934fca1331ad612b98d",
+        "bytes": 68487658,
+        "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/artifacts/minute-native-risk.csv.gz",
+        "sha256": "4740d5c9f420ef745d33a2e3fb657b59db13d1ebfc06896ac7c808b9fe4850ac",
+        "bytes": 73188799,
+        "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/artifacts/minute-native-settled-receipts.csv.gz",
+        "sha256": "d49d3aae05803528c45fd6c48356dff68a63d3b59984140791e31a2c408af158",
+        "bytes": 36279173,
+        "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_FULL_01/artifacts/committed-wm-qualification-v1/minute-native-settled-receipts.csv.gz",
+        "sha256": "8356e107cde0ce2eb808a7eb9cf4f104cefe0b6b41769c4548e29bf7cdf793c0",
+        "bytes": 12546696,
+        "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+      }
+    ],
+    "updated_utc": "2026-11-01T23:04:43.763638+00:00",
+    "prior_manifest_sha256": "978107420abea3e495f70c6a34911852494c054479ae03b4199bac8667cdb904",
+    "prior_manifest_preserved_as": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/PUBLICATION_SOL_RESULTS_01/MANIFEST_INITIAL.json",
+    "omitted_finished_prefix_7ca_gzip": [
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/coherent-native-events.jsonl.gz",
+        "sha256": "7c79d7172174f95fa1b22529809e1b988719d4b4f4d3510ece8142a87d45fedb",
+        "bytes": 7809880,
+        "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/minute-native-risk.csv.gz",
+        "sha256": "7dfe6812ea11b067a2f02c453892b7e2f1a19ed03cd169b2cd43908a0929cda8",
+        "bytes": 7595270,
+        "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/minute-native-settled-receipts.csv.gz",
+        "sha256": "d46179cb02b83554431a7697e701e72871c850ef5f6ff29d4f2703f5c167479e",
+        "bytes": 3686084,
+        "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+      },
+      {
+        "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/committed-wm-qualification-v1/minute-native-settled-receipts.csv.gz",
+        "sha256": "f3c64d8f6e53d2689f5fc5bf10d153b686ba65957280461aa1e1b9631e1403ab",
+        "bytes": 1478671,
+        "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+      }
+    ],
+    "previous_manifest_sha256": "92059bfcb8c36839480adc0d714bac5fcf2bd4e16bb6ddce75852ef2d56aaf83",
+    "previous_manifest_preserved_as": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/PUBLICATION_SOL_RESULTS_01/MANIFEST_BEFORE_FINAL_ANALYSIS.json",
+    "pending": [],
+    "final_analysis_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/SOL_FINAL_NATIVE_ANALYSIS_RECEIPT.json",
+    "final_analysis_receipt_sha256": "1cce0ffe5cf58534be5e451d18edd7904cf9a6ed3e8b86f45d5e93fb3cffa8e6",
+    "all_14_analysis_receipt_hashes_verified": true,
+    "receipt_artifacts_previously_packed": [
+      "SOL_FULL_DRAWDOWN_PRESENCE.json",
+      "SOL_FULL_DRAWDOWN_PRESENCE_ALL85.csv",
+      "SOL_FULL_NATIVE_SOL_CYCLES.csv",
+      "SOL_FULL_BTC_CYCLE_DIFF.csv",
+      "SOL_FULL_BTC_FILL_DIFF.csv"
+    ]
+  },
+  "files": [
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/ARTIFACT_INDEX.md",
+      "sha256": "c813111926fd3c6ab13f0abea036ddf0a3686381074aa0540513529d68f2b261",
+      "bytes": 2475
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/README.md",
+      "sha256": "b3fc9d4269c20fffca731544c0f8a8579a155f112e0c750b64240e26f893a3db",
+      "bytes": 14800
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/NATIVE_POSITION_PICKLE_CROSSRUN_IDENTITY_EVIDENCE.json",
+      "sha256": "979ed062c341ceb45fbc1dce4593b89626962d7ae7c06ecbf82703b4665b4ad7",
+      "bytes": 2936
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/NATIVE_POSITION_PICKLE_CROSSRUN_IDENTITY_README.md",
+      "sha256": "7c3a7847e8e147d11a4490aad3a78e115484e145e146be4286244d5ac5dfa045",
+      "bytes": 1465
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_AUDIT_DEFER_PREFIX_EQUIVALENCE.json",
+      "sha256": "6b9b1fa9f87fcb612b7ee88ac59641c02cb2c7952041e5b1033546019cae4c12",
+      "bytes": 37512
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_AUDIT_DEFER_PREFIX_EQUIVALENCE.md",
+      "sha256": "45a7289fd8a3ac23dba7b261c1dfe531defcca360da62124102f84dc52354a43",
+      "bytes": 2064
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_AUDIT_DEFER_PREFIX_EQUIVALENCE_EXPORTED_STATE.json",
+      "sha256": "f1738a590e39027a3bf977d4a77187f3e6d22d0537a8611138cac70b1dcf19e8",
+      "bytes": 4971
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_E08_ROOT_ACCEPTANCE.json",
+      "sha256": "97a7c529b13a94ba397f62db39a932f883f9ea63f483be8c5549f3af444348b5",
+      "bytes": 1504
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_E08_ROOT_INDEPENDENT_ARTIFACT_CHECK.json",
+      "sha256": "70558e3bc3f02ec2956c368e460a5e99942a388f32c2e9f26b98ff821ab75a49",
+      "bytes": 1232
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FINAL_NATIVE_ANALYSIS_RECEIPT.json",
+      "sha256": "1cce0ffe5cf58534be5e451d18edd7904cf9a6ed3e8b86f45d5e93fb3cffa8e6",
+      "bytes": 1905
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_BTC_CYCLE_DIFF.csv",
+      "sha256": "983f5e9567d004f12930d7ee0e336a9c92ed21afaf0dea7b04024cf90d9d2f33",
+      "bytes": 21469
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_BTC_FILL_DIFF.csv",
+      "sha256": "bc87ad2646b5849642bad9c2e828900e95879a739df889637047c14228affbd1",
+      "bytes": 48626
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_DRAWDOWN_PRESENCE.json",
+      "sha256": "51c12c88c9c35ccbbbcd4dc8649f082d20b32620ffb4cd994f62cf276c9369fd",
+      "bytes": 538302
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_DRAWDOWN_PRESENCE.md",
+      "sha256": "9a2e3f2f445617c9ba957c4efc7efa1eadb6b2b32450a67817955861b150612a",
+      "bytes": 1576
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_DRAWDOWN_PRESENCE_ALL85.csv",
+      "sha256": "add6f22347737e4a543c6a126baf9dd4b19edc7ae5817f0abcdb1cb195d4fb70",
+      "bytes": 210710
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_NATIVE_ANALYSIS.json",
+      "sha256": "5f3513af2b116c3841fbaf6da6e1422c2946635e5b7de69644cd99b600ff761e",
+      "bytes": 488223
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_NATIVE_ANALYSIS.md",
+      "sha256": "73ee7514f60bc33e462f6cb62fff931eba4e22b02e694112903753252272b498",
+      "bytes": 6077
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_NATIVE_SOL_CYCLES.csv",
+      "sha256": "60d9aa4ea5674ed051a92d58854b0880c1b42f34c57ac71b9313ac705960bc89",
+      "bytes": 22817
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_FULL_ROOT_FINANCIAL_ACCEPTANCE.json",
+      "sha256": "49d07e461cb8e13c677a2fd20c72aeffc4c06e8da3edbaa8401a7706855b308b",
+      "bytes": 1022
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_PREFIX_BTC_CYCLE_DIFF.csv",
+      "sha256": "45e927388ef456e64c95fc39214db45d4b30ed2c46d075b05a62046623702bde",
+      "bytes": 2153
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_PREFIX_BTC_FILL_DIFF.csv",
+      "sha256": "fc51bd139d374d5d13fe4638766f70a001a289d8b724d9141fc44ee00b05fd70",
+      "bytes": 4328
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_PREFIX_FULL_INVARIANCE.json",
+      "sha256": "0aefd454a21cb15b4fc98ac3fa58da5f8cfeeed06dfc974a376650cba005c757",
+      "bytes": 30719
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_PREFIX_NATIVE_ANALYSIS.json",
+      "sha256": "a92e6f3e8328e75d4fa39076559651fe90a9f5c34cbbd4438b9fb32b388923cc",
+      "bytes": 57757
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_PREFIX_NATIVE_ANALYSIS.md",
+      "sha256": "9a315489c81dc73cca1563f58eb5f549fe1a6fed58d645b5a989737b3c6ab008",
+      "bytes": 3729
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_PREFIX_NATIVE_SOL_CYCLES.csv",
+      "sha256": "d150a9ea49fe1e64b99e8934b09eca6e504a9ecc57dfc2a8a6839decb8abd6d7",
+      "bytes": 1993
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_V1_FULL_MODEL_DIAGNOSIS.json",
+      "sha256": "61016746e51d73272fa0cc745cd9748a2bf627b1f9b4621b7c3f466b519acc24",
+      "bytes": 16614
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/audits/SOL_V1_FULL_MODEL_DIAGNOSIS.md",
+      "sha256": "bfd304ea7e05c29fad4107c4e146922d387774e64b202e797dd3dfb6ab25ae1e",
+      "bytes": 5832
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/FIXTURE_PROTOCOL.json",
+      "sha256": "adefb2e564276d47122985d3571b324bd610b4dd2c7075012689fe225b6545fd",
+      "bytes": 1281
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/REQUEST.json",
+      "sha256": "3995d4e8224534c4be7a349baaba31bcf7e68d4016552773785ac8f777ebcf39",
+      "bytes": 64027
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/ROOT_GO.json",
+      "sha256": "021dbdb7e4d8a6010a5e774cb1b14ada776a2557189a9853549f190841abd3f8",
+      "bytes": 1729
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/coherent-native-events.jsonl.gz",
+      "sha256": "ac7ce67432f84fc772e5c8df5d93bb15596276e0bf04cd3412fd1d2de2c74d56",
+      "bytes": 131528
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/engine-construction-count.json",
+      "sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+      "bytes": 28
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/engineering-postchild-proof.json",
+      "sha256": "1807eadf57d0c59b201fab9c494d6b60decba19fd640756014d875cb9b33c350",
+      "bytes": 1027
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/fixture-result.json.gz",
+      "sha256": "66b94d7c4490162cc24e4ce86003c463b22e1b19d97240a20f5135ed970ed4d5",
+      "bytes": 78951
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/minute-native-risk.csv.gz",
+      "sha256": "053951a72a76030197234bd96cee00670eaeffe7a548c4f4879e957e782d736c",
+      "bytes": 63969
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/minute-native-settled-receipts.csv.gz",
+      "sha256": "50bc86c733fd371342ed566de709fe53676f57853a3944f96e546620cf2630c1",
+      "bytes": 26807
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/E08_Synthetic/native-child-terminal.json",
+      "sha256": "5ceb3cf553ded5e27d5eefbdcf0c347ea899d15f67e2eba51dfb258d40f4f7b9",
+      "bytes": 496
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/REQUEST.json",
+      "sha256": "f559d499a290c452793dd5dfe14b1451a5bc5d097aa4de6f4553b6d37ba5b1f1",
+      "bytes": 68491
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/ROOT_GO.json",
+      "sha256": "0a1d8dfd9e2bcae9cc5512d6bcb7e40cb431e0c4f1d71e8ab08d7133bf14c071",
+      "bytes": 2575
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/committed-wm-qualification-v1/QUALIFICATION.json",
+      "sha256": "0c0b49cce5c8bc0dc7dbf6c92df97d8c4c8a5a6a5335709d947c3d0fbdfd7275",
+      "bytes": 13182
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/engine-construction-count.json",
+      "sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+      "bytes": 28
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/fills.csv",
+      "sha256": "07f998be31a6b4514f30611553fbc9a2180119b5d94005f032aeb6f4a1fa8694",
+      "bytes": 157138
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/minute-risk-summary.json",
+      "sha256": "a6594168f50c64e04f9f1c2de729c5c5158c28513a6bab7ae917f01603aac732",
+      "bytes": 16981
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/native-child-terminal.json",
+      "sha256": "970598c6e80617ed51ae3ba75f8231d4a472e4fb38096ee7e5cc1a33091d8f8c",
+      "bytes": 494
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/orders.csv",
+      "sha256": "4cd4da29032dc2ee0779ea7b7d2826d638e1f4df73720374cd107f575019917a",
+      "bytes": 174930
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/qualified-summary.json.gz",
+      "sha256": "307efc2f6d7ba5f83c309f0972c669e95d937aefc5dc1e4c76a4551ffd874140",
+      "bytes": 519639
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/FULL/raw-native.json.gz",
+      "sha256": "8e749bc590eec1352cc6b797d6911bd51e05d2c1e17b37d1fc9d5e40ac27bd4e",
+      "bytes": 539495
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/REQUEST.json",
+      "sha256": "8f925641c97c2431b0cbe93deee21f52042d72969a93e5b5af6485a4fdfa9dbe",
+      "bytes": 68497
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/ROOT_GO.json",
+      "sha256": "28ff215ea83e0df62cdb08194d76c27914b33b45aa031a6c4df31ea98c38ced0",
+      "bytes": 2107
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/committed-wm-qualification-v1/QUALIFICATION.json",
+      "sha256": "4325e83c81aaf44800f43594504a97872412a114190b0cb9b3414bc597d4c1a2",
+      "bytes": 12157
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/engine-construction-count.json",
+      "sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+      "bytes": 28
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/fills.csv",
+      "sha256": "b3ab2a402934419ca9563c1824fbce59af43fc838f4c81250491017b5f54d0a7",
+      "bytes": 21508
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/minute-risk-summary.json",
+      "sha256": "0bf2924f9a54f3b997eeee5c1c288eb7327dc35fac46e1c9e9e781d3526a5c19",
+      "bytes": 16995
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/native-child-terminal.json",
+      "sha256": "b3b42df93356eccefb3df589455116f7d9729bc2613fa9fa4554583f33030d09",
+      "bytes": 495
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/orders.csv",
+      "sha256": "813eee63ff90b6dfc8c3b8953ee19e6ea84e5deead781f948f9cf1238a13c7e0",
+      "bytes": 23435
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/qualified-summary.json.gz",
+      "sha256": "a89d845d9ebc0b2251b9599fa0fe565f177d1e6405478f4f5039b2947a4871b3",
+      "bytes": 158480
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX/raw-native.json.gz",
+      "sha256": "3f755b70b7cd0f9698239cf826be50e9f9b78c508055cd8536ad1e9c53547fe8",
+      "bytes": 164587
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/REQUEST.json",
+      "sha256": "3f4d1bd2c727b726e7402e17abb3c19294e8e790a9cc1de78374fe464ef7ec8d",
+      "bytes": 68521
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/ROOT_GO.json",
+      "sha256": "f8a5a4b7065de9c5816c407cfa79cc6ad08ae364c0d82b818864e6748cd775d4",
+      "bytes": 2464
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/committed-wm-qualification-v1/QUALIFICATION.json",
+      "sha256": "88abeed8375476274086f913e8895b54a478376f4f57439339fd36d300c38255",
+      "bytes": 12205
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/engine-construction-count.json",
+      "sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+      "bytes": 28
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/fills.csv",
+      "sha256": "55ba78972e0442fa2c253797e51b175d11b3f87ad91d5686efd136112e1b6cb9",
+      "bytes": 21508
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/minute-risk-summary.json",
+      "sha256": "6d21a8530933cbfe450bf058dcd3e7d4e06ce7edabab7d1933dc601b8e071458",
+      "bytes": 17007
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/native-child-terminal.json",
+      "sha256": "61390794896a6f2d614660201207e60627aa7ace2baf3c268a926f61a52a9f6f",
+      "bytes": 507
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/orders.csv",
+      "sha256": "233d27444594448b98fed35b0f4a72923e8afd95acef496068e70f922bba9abb",
+      "bytes": 23435
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/qualified-summary.json.gz",
+      "sha256": "77d1d6a263b983cd9d2a2b47fccbc76485f4b58ec15bd8849f3696cc20c36219",
+      "bytes": 158572
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/cases/PREFIX_AUDIT_DEFER_7ca/raw-native.json.gz",
+      "sha256": "b579702a125bbffcaff363dc3e00c31f256381e15864b12a3ee082da03b66fdb",
+      "bytes": 164631
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_7ca19646.diff",
+      "sha256": "5b14e6b41bb4cb863d8137b0f38e16426d4c0f2697da0c2006a148d53b16f7b1",
+      "bytes": 13533
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_7ca19646_RECEIPT.json",
+      "sha256": "c995e76f7d0b53f61445a823237bb2c242a114641600026878b7287ba352f82d",
+      "bytes": 3186
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_7ca19646_TEST.log",
+      "sha256": "f2d5efb7f80581087718899934dfa9b91b8c9904d5e686f8a6aca23445c5d072",
+      "bytes": 99
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_FINAL_REVIEW_7ca19646.json",
+      "sha256": "2b6509b0fcfd2b735006aaf533c9469a52f44a5234278764e6a0dc1460ae87f7",
+      "bytes": 2462
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_FINAL_REVIEW_7ca19646.md",
+      "sha256": "bae1af8984d72cffa9d06334c5264b248db6d485e2152a2851ad9317eabbcdc5",
+      "bytes": 1316
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_INDEPENDENT_PROBES_7ca19646.py",
+      "sha256": "e312fefadb5d7405734cecea96da63097bd9d23f816af99119a8595b14c2169b",
+      "bytes": 4561
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/AUDIT_DEFER_INDEPENDENT_PROOFS_7ca19646.json",
+      "sha256": "e519ab1b443d2ee39bbb94710c1b7ad3e029bc756e81db886d4d806690beb79a",
+      "bytes": 1982
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/V1_FINAL_COMBINED_REVIEW_c4118505.json",
+      "sha256": "9ba1c7e34ae5ac8e435b85d1b42ffeca72321d134ffe074f1fe49401cc9efb85",
+      "bytes": 5792
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/V1_FINAL_COMBINED_REVIEW_c4118505.md",
+      "sha256": "4f566e19144bc80407c1a9b4156f51d88f02891b8721373f93da6a962ea94988",
+      "bytes": 1924
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/V1_FINAL_INDEPENDENT_PROOFS_c4118505.json",
+      "sha256": "8edb70c918908dfc4c49bd0645c304df67f7bc03bf560dc8fb8544c15c88ea0c",
+      "bytes": 2080
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/V1_SYSTEMATIC_MARKET_CONTRACT_FINAL_ACK.json",
+      "sha256": "0c8dcb0af8eb8c304ad45af30d70877031e046e25522d5de3b038b56020efe5b",
+      "bytes": 2159
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/provenance/V1_SYSTEMATIC_MARKET_CONTRACT_PROPOSAL.json",
+      "sha256": "7a70f615818662676936bde19110229db7e22ee3f189f07c53a0dac0410f1063",
+      "bytes": 7331
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/reference-sol-audit/REFERENCE_SOL_MECHANISM_AUDIT.json",
+      "sha256": "d4ff14386f90e343e1c1c8746a46612e2e8c382bc898d0ea1dd38b2a3a3c8459",
+      "bytes": 57362
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/reference-sol-audit/REFERENCE_SOL_MECHANISM_AUDIT.md",
+      "sha256": "adf22b63bedd2919ee5734b50e3cbe325f289c2beddd41e48a1e85a1081d7cd1",
+      "bytes": 12225
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/reference-sol-audit/REFERENCE_SOL_MECHANISM_AUDIT_CYCLES.csv",
+      "sha256": "9a95d34cc5cf038ce20428e9532ac23102e1ddf4d78bc1942ffbc34544efc9bb",
+      "bytes": 4389
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/reference-sol-audit/REFERENCE_SOL_NATIVE_CYCLES.csv",
+      "sha256": "d1d401edc7257c5384ee6926a6cea8b94207226628223d8687bd80bfa84db33c",
+      "bytes": 15577
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/reference-sol-audit/REFERENCE_SOL_NATIVE_ECONOMICS.json",
+      "sha256": "2600e2c09aceae153e93281ce9f871e5448a292d5e4ddb52de5f80207c0f6b9b",
+      "bytes": 64688
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/reference-sol-audit/REFERENCE_SOL_NATIVE_ECONOMICS.md",
+      "sha256": "ea859b4401cfdfa8cbe14344f69835132b7535398a4014e5e3f2b1de2a79ce54",
+      "bytes": 9074
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/volatility/IMMUTABLE_CONTRACT.json",
+      "sha256": "424d8c42a8466c0120bdf85fdfc99f0d24542a1ee5ebb82b5fb3cd2d7af9d12a",
+      "bytes": 2905
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/volatility/REQUESTED_15_ROWS.csv",
+      "sha256": "8bc695a48a351e3cd4b15d181613df5b57fe577b37b637b5b684bed4a7f4b691",
+      "bytes": 7034
+    },
+    {
+      "path": "reports/cm2-reference-reproduction-20261101/sol-v1-results/volatility/RESULT.md",
+      "sha256": "3b9e9397e43e8e4bb4bb332925d5b443560270187415d01231e5e2e19f63ed17",
+      "bytes": 8612
+    }
+  ]
+}

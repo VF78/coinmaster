@@ -1,0 +1,116 @@
+{
+  "status": "FINAL_EXACT_COMBINED_SOURCE_ACK_NO_NATIVE_GO",
+  "commit": "c41185054748486d6d41f0ace24e0575c1d68f33",
+  "core_commit": "f24878c360924299296533b0dc3fae40ff8c724e",
+  "contract_sha256": "7a70f615818662676936bde19110229db7e22ee3f189f07c53a0dac0410f1063",
+  "bindings": [
+    {
+      "path": "coinmaster/research/cm2_reference_fixture.py",
+      "sha256": "33b5f344844192cd0de133840b7684c7f72870250380190dd0923bb9a91f81e5",
+      "source_export_match": true,
+      "full_runtime_match": true
+    },
+    {
+      "path": "coinmaster/research/cm2_runner.py",
+      "sha256": "42fb4572149c98dc556b5bab2e1fd49f007e2b1fde93347f416360cc7bf5d879",
+      "source_export_match": true,
+      "full_runtime_match": true
+    },
+    {
+      "path": "coinmaster/research/native_baseline.py",
+      "sha256": "87a9f2a8536843b93de0dacae427de6c672574dbcbb0159c915f8887b1cf2611",
+      "source_export_match": true,
+      "full_runtime_match": true
+    },
+    {
+      "path": "coinmaster/strategy/cm2_native.py",
+      "sha256": "3c5c2bcdf00c11d96d7cc3d5a6b255a6d2de5b3437f638e9b4fcacd9f7f89c3e",
+      "source_export_match": true,
+      "full_runtime_match": true
+    },
+    {
+      "path": "coinmaster/strategy/cm2_sol_policy.py",
+      "sha256": "a85b8c1af05e7b8c719a2f3be4cbf08b139d6749ba6c5643c23df7b2d4ac1985",
+      "source_export_match": true,
+      "full_runtime_match": true
+    },
+    {
+      "path": "tests/test_cm2_reference_native_pure.py",
+      "sha256": "4daae7223b7a238a1d530fec730e64b8817dc69832b82a838178f4184c8fc334",
+      "source_export_match": true,
+      "full_runtime_match": "TEST_ONLY_NOT_PACKAGED_EXPECTED"
+    },
+    {
+      "path": "tests/test_cm2_sol_joint_fixture_pure.py",
+      "sha256": "c0185bfd0e63d1f2cb5a518df04ca8dfa5306efbefb1c10e0228056be1c27608",
+      "source_export_match": true,
+      "full_runtime_match": "TEST_ONLY_NOT_PACKAGED_EXPECTED"
+    },
+    {
+      "path": "tests/test_cm2_sol_policy_pure.py",
+      "sha256": "7de20be5df21471652c279c850c734775143cac2f26b187d0bd7dbae55061515",
+      "source_export_match": true,
+      "full_runtime_match": "TEST_ONLY_NOT_PACKAGED_EXPECTED"
+    }
+  ],
+  "unchanged_BTC_K_feature_financial_guards": {
+    "coinmaster/strategy/cm2_reference_policy.py": "fae4d3812844df1446cff6f9cf05eec3db22a3e414755721d4cb4c0e0817d5f2",
+    "coinmaster/strategy/cm2_sol_volatility.py": "fcd49f68c1380692700ddd7fa4e500c9c493d5676ec61779daeff959514850ab",
+    "coinmaster/research/cm2_committed_validation.py": "a7d1c597d9f0bb80f1c69bf147f0b34a665f930f461a2dc001b8e3e3714ee775",
+    "coinmaster/domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531"
+  },
+  "closed_findings": {
+    "preaccept_HOLD": "gate_truth/gate_spent separate; pre-admit/sendHOLD preservesunspentTRUE andnoepisode; laterD1canacceptfreshK, acceptedretiredgrantunchangedTRUEcannotreopen.",
+    "known_postterminal_SOL_fill": "Retainedorder_audit independent_owned validatesepisodeidentity; knownmismatch/noepisode SOL_SUBORDINATE, nofakeadoption/globalBTCclose. TrulycontextNone unchanged.",
+    "initial_permission_provenance": "Exhaustion/source/receipt/PLANREF andD1relative/mu/sigma/z/availabletime/nativeBTCquantity/mark/notional retainedepisode/order/report/checkpoint."
+  },
+  "fixture_review": {
+    "id": "cm2-btc-sol-wave-native-v1",
+    "hours": 49,
+    "mandatory_actual_computed_gates": [
+      "genuine_PLANREF_exhaustion_entry_context",
+      "SOL_current_BTC_over_K_full_parent_lot_permission",
+      "actual_SOL_native_entry",
+      "BTC_TP_flat_SOL_held_quote",
+      "frozen_episode_K",
+      "pure_REGIME_SOL_scoped_exit",
+      "actual_SOL_funding_posting",
+      "native_fee_currency_and_profile",
+      "exact_native_cash_bridge",
+      "new_BTC_GLOBAL_terminal_drain",
+      "terminal_native_flat_orders_zero",
+      "zero_liquidations",
+      "gzip_EOF_CRC_schema"
+    ],
+    "shared_actual_call_path": "run_fixture→fixture_strategy_inputs→build_strategy→CM2StrategyConfig→nativeStrategy; sameleafspiedbeforeNativeconstructors. ActualRootAPI0constructorrequest3995d4e... supplied.",
+    "postengine_integrity": "Nested risk→observer→engine→journal cleanup ASTunchanged; jointfinalizer AFTER cleanup streams3gzipEOF/CRC/schema/count/terminal viaunchangedengineering_artifact_integrity, thenactualnativefactpredicates; false/errorraises andfailedresultpreserved.",
+    "legacy_F01_E07_preserved": true,
+    "actual_case": "NOT_EXECUTED_BY_REVIEWER_NO_PASS_CLAIM",
+    "partial_late_native_coverage": "NOT_CLAIMED"
+  },
+  "independent_proof": {
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/V1_FINAL_INDEPENDENT_PROOFS_c4118505.json",
+    "sha256": "8edb70c918908dfc4c49bd0645c304df67f7bc03bf560dc8fb8544c15c88ea0c",
+    "checks": 19,
+    "method": "8exactchangedfilehashes+11actualAST/puremethod/stubnegative/cleanupcases; noNautilusmoduleimport.",
+    "script_sha256": "c592a19f071a56901fb97eb9c96935f5e8e84884302ba592de1e301bfa88328f",
+    "synthetic_checks_are_not_financial_qualification": true
+  },
+  "carried_tests": {
+    "author_core": "85PASS3.55s notrerun",
+    "integrated_fixture": "8PASS3.92s notrerun",
+    "counts_not_additive": true,
+    "Root_API0constructor_request_sha256": "3995d4e8224534c4be7a349baaba31bcf7e68d4016552773785ac8f777ebcf39"
+  },
+  "remaining_concrete_blockers": [],
+  "limits": [
+    "ACKfrozeninternalcontract/source only, noSOLedge/ROI/liveclaim.",
+    "RootalonecontrolsNativeengineeringadmission; thisACKisnotGO.",
+    "Source unitfilesomittedfrom111runtimeblobfreeze areexpected; independentlybound8fileexportcontainsalltests."
+  ],
+  "native_engines": 0,
+  "native_strategy_constructors": 0,
+  "product_edits": 0,
+  "financial_Mac_to_VPS": false,
+  "GO": 0
+}

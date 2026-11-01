@@ -1,0 +1,20 @@
+{
+  "status": "FULL_NATIVE_FINANCIAL_PASS_ECONOMIC_GOAL_NOT_MET",
+  "utc": "2026-11-01T22:58:41.300476+00:00",
+  "run_id": "CM2_SOL_FULL_20260901_S1",
+  "source_commit": "c41185054748486d6d41f0ace24e0575c1d68f33",
+  "request_sha256": "f559d499a290c452793dd5dfe14b1451a5bc5d097aa4de6f4553b6d37ba5b1f1",
+  "terminal_sha256": "970598c6e80617ed51ae3ba75f8231d4a472e4fb38096ee7e5cc1a33091d8f8c",
+  "qualification_sha256": "0c0b49cce5c8bc0dc7dbf6c92df97d8c4c8a5a6a5335709d947c3d0fbdfd7275",
+  "derived_report_sha256": "1117d9026d244badff02d77fd71b3098c679c432d0136799fda2f929de9c8fb0",
+  "cash_USDC": "554765.87924905",
+  "equity_max_drawdown_percent": "72.30045502213738684526642663",
+  "fills": 386,
+  "liquidations": 0,
+  "end_open_positions": 0,
+  "elapsed_seconds": 4026.6963550001383,
+  "all_money_gates_qualifier_preserved": true,
+  "goal_met": false,
+  "not_a_successful_hedge_claim": true,
+  "analysis": "Perasset nativePnL and fixedBTC-DDcoverage separate analyst audit in progress; nofuturelookup/parameterretune."
+}

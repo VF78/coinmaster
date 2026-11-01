@@ -1,0 +1,14 @@
+{
+  "elapsed_seconds": 3.2156475842930377,
+  "exit_code": 0,
+  "native_child_pid": 66885,
+  "parent_pid": 66875,
+  "request_sha256": "3995d4e8224534c4be7a349baaba31bcf7e68d4016552773785ac8f777ebcf39",
+  "rss_basis": "WAIT4_EXACT_NATIVE_CHILD_RUSAGE_MAXRSS",
+  "run_id": "CM2_SOL_WAVE_ENGINEERING_E08",
+  "scope_version": "CM2_VALIDATION_V2_20261101",
+  "spawn_utc": "2026-11-01T21:33:40.076534+00:00",
+  "stage": "engineering",
+  "status": "COMPLETED",
+  "true_child_peak_rss_bytes": 283377664
+}

@@ -1,0 +1,13 @@
+causal_signal_key,control_cycle,joint_cycle,control_fills_in_scope,joint_fills_in_scope,branch_equal,q0q1_equal,roles_equal,plan_changes
+730:SELL:1,1,1,3,3,True,True,True,{}
+739:SELL:1,2,2,3,3,True,True,True,{}
+742:BUY:1,3,3,3,3,True,True,True,{}
+746:BUY:1,4,4,5,5,True,True,True,{}
+760:SELL:1,5,5,3,3,True,True,True,{}
+764:BUY:1,6,6,5,5,True,True,True,"{""reference_btc_qty"": [""1.01455"", ""1.09214""], ""reference_target_lots"": [{""0"": 21559, ""1"": 21559, ""2"": 58337}, {""0"": 23207, ""1"": 23207, ""2"": 62800}], ""net_submitted_btc_qty"": [""1.01455"", ""1.09214""]}"
+768:SELL:1,7,7,5,5,True,True,True,"{""reference_btc_qty"": [""1.34449"", ""1.44731""], ""reference_target_lots"": [{""0"": 28570, ""1"": 28570, ""2"": 77309}, {""0"": 30755, ""1"": 30755, ""2"": 83221}], ""net_submitted_btc_qty"": [""1.34449"", ""1.44731""]}"
+770:BUY:1,8,8,3,3,True,True,True,"{""reference_btc_qty"": [""1.03057"", ""1.10939""], ""reference_target_lots"": [{""0"": 21899, ""1"": 21899, ""2"": 59259}, {""0"": 23574, ""1"": 23574, ""2"": 63791}], ""net_submitted_btc_qty"": [""0.59259"", ""0.63791""]}"
+783:BUY:1,9,9,5,5,True,True,True,"{""reference_btc_qty"": [""1.09221"", ""1.17574""], ""reference_target_lots"": [{""0"": 23209, ""1"": 23209, ""2"": 62803}, {""0"": 24984, ""1"": 24984, ""2"": 67606}], ""net_submitted_btc_qty"": [""1.09221"", ""1.17574""]}"
+791:BUY:1,10,10,5,5,True,True,True,"{""reference_btc_qty"": [""1.28535"", ""1.38365""], ""reference_target_lots"": [{""0"": 27313, ""1"": 27313, ""2"": 73909}, {""0"": 29402, ""1"": 29402, ""2"": 79561}], ""net_submitted_btc_qty"": [""1.28535"", ""1.38365""]}"
+805:BUY:1,11,11,5,5,True,True,True,"{""reference_btc_qty"": [""1.23595"", ""1.33047""], ""reference_target_lots"": [{""0"": 26263, ""1"": 26263, ""2"": 71069}, {""0"": 28272, ""1"": 28272, ""2"": 76503}], ""net_submitted_btc_qty"": [""1.23595"", ""1.33047""]}"
+816:BUY:1,12,12,5,5,True,True,True,"{""reference_btc_qty"": [""1.41094"", ""1.51885""], ""reference_target_lots"": [{""0"": 29982, ""1"": 29982, ""2"": 81130}, {""0"": 32275, ""1"": 32275, ""2"": 87335}], ""net_submitted_btc_qty"": [""1.41094"", ""1.51885""]}"

@@ -1,0 +1,40 @@
+{
+  "status": "ROOT_ACCEPTED_ACTUAL_JOINT_ENGINEERING_13_GATES_PASS",
+  "utc": "2026-11-01T21:36:20.938426+00:00",
+  "run_id": "CM2_SOL_WAVE_ENGINEERING_E08",
+  "source_commit": "c41185054748486d6d41f0ace24e0575c1d68f33",
+  "request_sha256": "3995d4e8224534c4be7a349baaba31bcf7e68d4016552773785ac8f777ebcf39",
+  "actual_native_engines": 1,
+  "elapsed_seconds": 3.2156475842930377,
+  "true_child_peak_rss_bytes": 283377664,
+  "checks": {
+    "BTC_TP_flat_SOL_held_quote": true,
+    "SOL_current_BTC_over_K_full_parent_lot_permission": true,
+    "actual_SOL_funding_posting": true,
+    "actual_SOL_native_entry": true,
+    "exact_native_cash_bridge": true,
+    "frozen_episode_K": true,
+    "genuine_PLANREF_exhaustion_entry_context": true,
+    "gzip_EOF_CRC_schema": true,
+    "native_fee_currency_and_profile": true,
+    "new_BTC_GLOBAL_terminal_drain": true,
+    "pure_REGIME_SOL_scoped_exit": true,
+    "terminal_native_flat_orders_zero": true,
+    "zero_liquidations": true
+  },
+  "fixture_result_sha256": "c7835052319329143241d781f3aa01a475500bea81bb98f7de5a4cfcc3cc4eef",
+  "terminal_sha256": "5ceb3cf553ded5e27d5eefbdcf0c347ea899d15f67e2eba51dfb258d40f4f7b9",
+  "not_ROI": true,
+  "not_claimed": [
+    "actualpartialfill",
+    "actuallatefill",
+    "livecapacity",
+    "historicalprofitability"
+  ],
+  "all_next_GO": false,
+  "actual_started_total_after": 17,
+  "engineering_started_after": 8,
+  "engineering_cap": 8,
+  "qualification_started": 7,
+  "retired_unstarted_qualification_capacity": 2
+}

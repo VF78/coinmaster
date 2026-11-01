@@ -1,0 +1,61 @@
+{
+  "schema": "CM2_AUDIT_DEFER_SOURCE_FREEZE_V1",
+  "status": "CLEAN_SOURCE_ONLY_FOCUSED_PASS_PENDING_EXACT_DELTA_REVIEW_NOT_NATIVE_GO",
+  "commit": "7ca1964662fa5af4ef94396ff2002b7dbc52f811",
+  "parent": "c41185054748486d6d41f0ace24e0575c1d68f33",
+  "worktree_clean": true,
+  "files": [
+    {
+      "path": "runtime/coinmaster/strategy/cm2_native.py",
+      "sha256": "0238a7b48a8555e2090bac0b37a233c35422461bf0ea274ed7a07ae140a086f5",
+      "git_blob": "bed4628c92db8d6e6b672c0baec4141ce8b27878",
+      "bytes": 82726
+    },
+    {
+      "path": "runtime/tests/test_cm2_audit_defer_pure.py",
+      "sha256": "f4d9a8eca3ad74e1a8ea7e5f354a6ae6fd745db050906c51a6f19d8e2b05b026",
+      "git_blob": "9e4ebf567b9ad916f928be97cc8836ab60346345",
+      "bytes": 8852
+    },
+    {
+      "path": "runtime/tests/test_cm2_reference_native_pure.py",
+      "sha256": "d63181363fe73e197fc2bcc5f6fce0bf1d89dc7634f0a993cdea67db5604ad15",
+      "git_blob": "b3400bfe778ebcb4bde3706b26f551e292915167",
+      "bytes": 17511
+    }
+  ],
+  "runtime_delta": "Only _native_btc_capital removes audit-only cumulative realized queries/derived bridge; hotstatusDEFERRED_TO_NATIVE_TERMINAL_RECONCILIATION andNoneunsampledfields; no owncache/NativeSDKpatch.",
+  "static_proof": {
+    "all_other_CM2Strategy_methods_AST_identical": true,
+    "all_nonaudit_capital_result_field_AST_identical": true,
+    "embedded_frozen_c411_method_AST_exact": true,
+    "method_original_ast_sha256": "fa860836f6f1acacd202de882e0c36bef425e2f0f568d263c0150bac6ce639fa"
+  },
+  "focused_tests": {
+    "passed": 17,
+    "seconds": 2.02,
+    "command": "PYTHONPATH=.:.. python -m pytest tests/test_cm2_audit_defer_pure.py tests/test_cm2_reference_native_pure.py::test_total_actual_equity_sizing_and_attribution_audit_do_not_create_sleeve -q",
+    "log": "AUDIT_DEFER_7ca19646_TEST.log",
+    "claims": [
+      "ExactsyntheticLONG/SHORT/FLATnon-auditfields/nativeUPNLcalls/BTCfundingnote matchc411",
+      "Hotrealizedgetter forbidden andnotcalled",
+      "12nativeknownnessfailures sameValueErrormessage",
+      "Terminalrunner/nativebaseline/qualifier byteSHA unchanged"
+    ],
+    "native_engine_constructions": 0,
+    "native_strategy_constructions": 0
+  },
+  "intentional_test_expectation": "Existing nativeequity12345/trading_inputFalse/journalUNKNOWNassertionsunchanged; only auditstatus expectation nowDEFERRED.",
+  "preserved_financial_sources": {
+    "research/cm2_runner.py": "42fb4572149c98dc556b5bab2e1fd49f007e2b1fde93347f416360cc7bf5d879",
+    "research/native_baseline.py": "87a9f2a8536843b93de0dacae427de6c672574dbcbb0159c915f8887b1cf2611",
+    "research/cm2_committed_validation.py": "a7d1c597d9f0bb80f1c69bf147f0b34a665f930f461a2dc001b8e3e3714ee775"
+  },
+  "current_Mac_FULL": "Immutablec411rununtouched/resultmustremainc411;notrelabelled7ca",
+  "physical_attempts": 0,
+  "financial_qualification": "NOT_EXECUTED",
+  "push": false,
+  "source": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_REVIEW/AUDIT_DEFER_SOURCE_7ca19646",
+  "diff": "AUDIT_DEFER_7ca19646.diff",
+  "next": "Rootbyte-review/freshfreeze andseparateadmissionifwanted; no nativeGO conveyed"
+}

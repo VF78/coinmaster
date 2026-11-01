@@ -1,0 +1,28 @@
+{
+  "status": "ROOT_INDEPENDENT_E08_CASH_AND_3_GZIP_PASS",
+  "native_engines": 1,
+  "native_realized": "6196.93532181",
+  "signed_funding": "-3.21169500",
+  "cash_bridge": "0",
+  "integrity": [
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/artifacts/coherent-native-events.jsonl.gz",
+      "rows": 8840,
+      "sha256": "ac7ce67432f84fc772e5c8df5d93bb15596276e0bf04cd3412fd1d2de2c74d56",
+      "full_EOF_CRC_schema": "PASS"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/artifacts/minute-native-risk.csv.gz",
+      "rows": 8820,
+      "sha256": "053951a72a76030197234bd96cee00670eaeffe7a548c4f4879e957e782d736c",
+      "full_EOF_CRC_schema": "PASS"
+    },
+    {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_JOINT_E08/artifacts/minute-native-settled-receipts.csv.gz",
+      "rows": 2939,
+      "sha256": "50bc86c733fd371342ed566de709fe53676f57853a3944f96e546620cf2630c1",
+      "full_EOF_CRC_schema": "PASS"
+    }
+  ],
+  "not_ROI": true
+}

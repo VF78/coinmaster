@@ -1,0 +1,1023 @@
+{
+  "status": "HOLD_SAVED_PREFIX_DIFFERENCE_REQUIRES_CAUSE",
+  "old_commit": "c41185054748486d6d41f0ace24e0575c1d68f33",
+  "new_commit": "7ca1964662fa5af4ef94396ff2002b7dbc52f811",
+  "old_authority": {
+    "raw_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/CM2_SOL_PREFIX_20241201_S1-raw-native.json",
+    "raw_sha256": "6f2150e4dd80e9fa28ee59d3c45aa8e2a01b018aeb2fbebdd6c0e4f850c748e4",
+    "qualification_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/committed-wm-qualification-v1/QUALIFICATION.json",
+    "qualification_sha256": "4325e83c81aaf44800f43594504a97872412a114190b0cb9b3414bc597d4c1a2",
+    "derived_report_sha256": "e146e5c6553163b05af51f137d9180ccc36f5e7894b283aa30c025d60481492a",
+    "derived_csv_sha256": "882e3c27b391a547eabca438ba26dfa4575e9eb85735378488cc157389ac9972",
+    "qualified_summary_sha256": "6ea37c9341ee89965e736d77d8d542875b6cd08d060416fd7a717cc9aba11a65",
+    "terminal_sha256": "b3b42df93356eccefb3df589455116f7d9729bc2613fa9fa4554583f33030d09",
+    "request_sha256": "8f925641c97c2431b0cbe93deee21f52042d72969a93e5b5af6485a4fdfa9dbe",
+    "actor_sha256": "3c5c2bcdf00c11d96d7cc3d5a6b255a6d2de5b3437f638e9b4fcacd9f7f89c3e",
+    "interval_ns": [
+      1725148800000000000,
+      1733011200000000000
+    ],
+    "scope": "PREFIX",
+    "full_24months": false,
+    "elapsed_seconds": 97.64143916592002
+  },
+  "new_authority": {
+    "raw_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/CM2_SOL_PREFIX_20241201_S2_AUDIT_DEFER-raw-native.json",
+    "raw_sha256": "69c69199e5ce7126893b4b200a1d9d527b4a7dfc0a07e9c21b08b343c6d2526c",
+    "qualification_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/committed-wm-qualification-v1/QUALIFICATION.json",
+    "qualification_sha256": "88abeed8375476274086f913e8895b54a478376f4f57439339fd36d300c38255",
+    "derived_report_sha256": "5a663cba6ce3957f3c22548fb811d29a83b222dd751530064812d1e63e1b2b25",
+    "derived_csv_sha256": "f3c64d8f6e53d2689f5fc5bf10d153b686ba65957280461aa1e1b9631e1403ab",
+    "qualified_summary_sha256": "b4431ab19295005891869e0f97ca0c5b61a767f52b88dbca8eccbd356e2896c4",
+    "terminal_sha256": "61390794896a6f2d614660201207e60627aa7ace2baf3c268a926f61a52a9f6f",
+    "request_sha256": "3f4d1bd2c727b726e7402e17abb3c19294e8e790a9cc1de78374fe464ef7ec8d",
+    "actor_sha256": "0238a7b48a8555e2090bac0b37a233c35422461bf0ea274ed7a07ae140a086f5",
+    "interval_ns": [
+      1725148800000000000,
+      1733011200000000000
+    ],
+    "scope": "PREFIX",
+    "full_24months": false,
+    "elapsed_seconds": 79.93873825017363
+  },
+  "checks": {
+    "all_seven_committed_WM_fields": {
+      "passed": false,
+      "rows_compared": 131039,
+      "all_fields": [
+        "source_quote_ns",
+        "receipt_ns",
+        "state_epoch",
+        "cash",
+        "paired_close_equity",
+        "native_positions_sha256",
+        "native_sequence"
+      ],
+      "first_differences": [
+        {
+          "ordinal": 1441,
+          "old": {
+            "source_quote_ns": "1725235260000000000",
+            "receipt_ns": "1725235320000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9989.89490836",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4325"
+          },
+          "new": {
+            "source_quote_ns": "1725235260000000000",
+            "receipt_ns": "1725235320000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9989.89490836",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4325"
+          }
+        },
+        {
+          "ordinal": 1442,
+          "old": {
+            "source_quote_ns": "1725235320000000000",
+            "receipt_ns": "1725235380000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9998.67190036",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4328"
+          },
+          "new": {
+            "source_quote_ns": "1725235320000000000",
+            "receipt_ns": "1725235380000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9998.67190036",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4328"
+          }
+        },
+        {
+          "ordinal": 1443,
+          "old": {
+            "source_quote_ns": "1725235380000000000",
+            "receipt_ns": "1725235440000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9993.88804436",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4331"
+          },
+          "new": {
+            "source_quote_ns": "1725235380000000000",
+            "receipt_ns": "1725235440000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9993.88804436",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4331"
+          }
+        },
+        {
+          "ordinal": 1444,
+          "old": {
+            "source_quote_ns": "1725235440000000000",
+            "receipt_ns": "1725235500000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9971.27345236",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4334"
+          },
+          "new": {
+            "source_quote_ns": "1725235440000000000",
+            "receipt_ns": "1725235500000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9971.27345236",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4334"
+          }
+        },
+        {
+          "ordinal": 1445,
+          "old": {
+            "source_quote_ns": "1725235500000000000",
+            "receipt_ns": "1725235560000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9991.91124436",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4337"
+          },
+          "new": {
+            "source_quote_ns": "1725235500000000000",
+            "receipt_ns": "1725235560000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9991.91124436",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4337"
+          }
+        },
+        {
+          "ordinal": 1446,
+          "old": {
+            "source_quote_ns": "1725235560000000000",
+            "receipt_ns": "1725235620000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9964.63140436",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4340"
+          },
+          "new": {
+            "source_quote_ns": "1725235560000000000",
+            "receipt_ns": "1725235620000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9964.63140436",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4340"
+          }
+        },
+        {
+          "ordinal": 1447,
+          "old": {
+            "source_quote_ns": "1725235620000000000",
+            "receipt_ns": "1725235680000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9958.42425236",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4343"
+          },
+          "new": {
+            "source_quote_ns": "1725235620000000000",
+            "receipt_ns": "1725235680000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9958.42425236",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4343"
+          }
+        },
+        {
+          "ordinal": 1448,
+          "old": {
+            "source_quote_ns": "1725235680000000000",
+            "receipt_ns": "1725235740000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9994.95551636",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4346"
+          },
+          "new": {
+            "source_quote_ns": "1725235680000000000",
+            "receipt_ns": "1725235740000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9994.95551636",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4346"
+          }
+        },
+        {
+          "ordinal": 1449,
+          "old": {
+            "source_quote_ns": "1725235740000000000",
+            "receipt_ns": "1725235800000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "10023.26329236",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4349"
+          },
+          "new": {
+            "source_quote_ns": "1725235740000000000",
+            "receipt_ns": "1725235800000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "10023.26329236",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4349"
+          }
+        },
+        {
+          "ordinal": 1450,
+          "old": {
+            "source_quote_ns": "1725235800000000000",
+            "receipt_ns": "1725235860000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "10008.79311636",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4352"
+          },
+          "new": {
+            "source_quote_ns": "1725235800000000000",
+            "receipt_ns": "1725235860000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "10008.79311636",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4352"
+          }
+        },
+        {
+          "ordinal": 1451,
+          "old": {
+            "source_quote_ns": "1725235860000000000",
+            "receipt_ns": "1725235920000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "10007.56750036",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4355"
+          },
+          "new": {
+            "source_quote_ns": "1725235860000000000",
+            "receipt_ns": "1725235920000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "10007.56750036",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4355"
+          }
+        },
+        {
+          "ordinal": 1452,
+          "old": {
+            "source_quote_ns": "1725235920000000000",
+            "receipt_ns": "1725235980000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9987.91810836",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4358"
+          },
+          "new": {
+            "source_quote_ns": "1725235920000000000",
+            "receipt_ns": "1725235980000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9987.91810836",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4358"
+          }
+        },
+        {
+          "ordinal": 1453,
+          "old": {
+            "source_quote_ns": "1725235980000000000",
+            "receipt_ns": "1725236040000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9966.48959636",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4361"
+          },
+          "new": {
+            "source_quote_ns": "1725235980000000000",
+            "receipt_ns": "1725236040000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9966.48959636",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4361"
+          }
+        },
+        {
+          "ordinal": 1454,
+          "old": {
+            "source_quote_ns": "1725236040000000000",
+            "receipt_ns": "1725236100000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9949.60772436",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4364"
+          },
+          "new": {
+            "source_quote_ns": "1725236040000000000",
+            "receipt_ns": "1725236100000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9949.60772436",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4364"
+          }
+        },
+        {
+          "ordinal": 1455,
+          "old": {
+            "source_quote_ns": "1725236100000000000",
+            "receipt_ns": "1725236160000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9952.92874836",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4367"
+          },
+          "new": {
+            "source_quote_ns": "1725236100000000000",
+            "receipt_ns": "1725236160000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9952.92874836",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4367"
+          }
+        },
+        {
+          "ordinal": 1456,
+          "old": {
+            "source_quote_ns": "1725236160000000000",
+            "receipt_ns": "1725236220000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9956.60559636",
+            "native_positions_sha256": "fb98341b3a77cccc3cd70ccf22bd428722c687f56313d788802d0ea82b47c8ec",
+            "native_sequence": "4370"
+          },
+          "new": {
+            "source_quote_ns": "1725236160000000000",
+            "receipt_ns": "1725236220000000000",
+            "state_epoch": "1",
+            "cash": "9990.21119636",
+            "paired_close_equity": "9956.60559636",
+            "native_positions_sha256": "91f74383722e561b3137e014d2d60c8713f23ab496bc96d38c1598ec8fb4da0e",
+            "native_sequence": "4370"
+          }
+        },
+        {
+          "ordinal": 1457,
+          "old": {
+            "source_quote_ns": "1725236220000000000",
+            "receipt_ns": "1725236280000000000",
+            "state_epoch": "2",
+            "cash": "9986.94003782",
+            "paired_close_equity": "9917.11929382",
+            "native_positions_sha256": "22b200d4b045a789ca8d9aadae3f3c15c8c09c2e42b66e7004de260c8ebbec01",
+            "native_sequence": "4375"
+          },
+          "new": {
+            "source_quote_ns": "1725236220000000000",
+            "receipt_ns": "1725236280000000000",
+            "state_epoch": "2",
+            "cash": "9986.94003782",
+            "paired_close_equity": "9917.11929382",
+            "native_positions_sha256": "d62ddf4666f76569224f2e468e7146cfa43285699d504ef9208a4119ea9e3b41",
+            "native_sequence": "4375"
+          }
+        },
+        {
+          "ordinal": 1458,
+          "old": {
+            "source_quote_ns": "1725236280000000000",
+            "receipt_ns": "1725236340000000000",
+            "state_epoch": "2",
+            "cash": "9986.94003782",
+            "paired_close_equity": "9962.03275782",
+            "native_positions_sha256": "22b200d4b045a789ca8d9aadae3f3c15c8c09c2e42b66e7004de260c8ebbec01",
+            "native_sequence": "4378"
+          },
+          "new": {
+            "source_quote_ns": "1725236280000000000",
+            "receipt_ns": "1725236340000000000",
+            "state_epoch": "2",
+            "cash": "9986.94003782",
+            "paired_close_equity": "9962.03275782",
+            "native_positions_sha256": "d62ddf4666f76569224f2e468e7146cfa43285699d504ef9208a4119ea9e3b41",
+            "native_sequence": "4378"
+          }
+        },
+        {
+          "ordinal": 1459,
+          "old": {
+            "source_quote_ns": "1725236340000000000",
+            "receipt_ns": "1725236400000000000",
+            "state_epoch": "2",
+            "cash": "9986.94003782",
+            "paired_close_equity": "9962.03275782",
+            "native_positions_sha256": "22b200d4b045a789ca8d9aadae3f3c15c8c09c2e42b66e7004de260c8ebbec01",
+            "native_sequence": "4381"
+          },
+          "new": {
+            "source_quote_ns": "1725236340000000000",
+            "receipt_ns": "1725236400000000000",
+            "state_epoch": "2",
+            "cash": "9986.94003782",
+            "paired_close_equity": "9962.03275782",
+            "native_positions_sha256": "d62ddf4666f76569224f2e468e7146cfa43285699d504ef9208a4119ea9e3b41",
+            "native_sequence": "4381"
+          }
+        },
+        {
+          "ordinal": 1460,
+          "old": {
+            "source_quote_ns": "1725236400000000000",
+            "receipt_ns": "1725236460000000000",
+            "state_epoch": "2",
+            "cash": "9986.94003782",
+            "paired_close_equity": "9963.29792582",
+            "native_positions_sha256": "22b200d4b045a789ca8d9aadae3f3c15c8c09c2e42b66e7004de260c8ebbec01",
+            "native_sequence": "4384"
+          },
+          "new": {
+            "source_quote_ns": "1725236400000000000",
+            "receipt_ns": "1725236460000000000",
+            "state_epoch": "2",
+            "cash": "9986.94003782",
+            "paired_close_equity": "9963.29792582",
+            "native_positions_sha256": "d62ddf4666f76569224f2e468e7146cfa43285699d504ef9208a4119ea9e3b41",
+            "native_sequence": "4384"
+          }
+        }
+      ],
+      "comparison": "LITERAL_ALL_FIELDS_NO_NORMALIZATION_OR_TOLERANCE"
+    },
+    "all_fill_fields_after_metadata_only_bijection": {
+      "passed": true,
+      "first_differences": []
+    },
+    "all_actual_funding_post_fields_LITERAL": {
+      "passed": true,
+      "first_differences": []
+    },
+    "native_financial_blocks_including_terminal_PnL_DD_reconciliation": {
+      "passed": false,
+      "first_differences": [
+        {
+          "path": "$.minute_risk_observations.settled_native_close_receipts.trace_path",
+          "old": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/minute-native-settled-receipts.csv.gz",
+          "new": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/minute-native-settled-receipts.csv.gz"
+        },
+        {
+          "path": "$.minute_risk_observations.summary_path",
+          "old": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/minute-risk-summary.json",
+          "new": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/minute-risk-summary.json"
+        },
+        {
+          "path": "$.minute_risk_observations.trace_path",
+          "old": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/minute-native-risk.csv.gz",
+          "new": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_EQUIV_02/artifacts/minute-native-risk.csv.gz"
+        }
+      ]
+    },
+    "all_nonaudit_capital_fields": {
+      "passed": true,
+      "first_differences": []
+    },
+    "policy_and_market_data_hashes": {
+      "passed": true,
+      "first_differences": []
+    },
+    "all_other_source_pins_including_financial_qualifier": {
+      "passed": true,
+      "first_differences": []
+    },
+    "raw_entry_sizing_audit": {
+      "passed": true,
+      "first_differences": []
+    },
+    "raw_native_order_events": {
+      "passed": true,
+      "first_differences": []
+    },
+    "raw_native_order_rejections": {
+      "passed": true,
+      "first_differences": []
+    },
+    "raw_pre_submit_tier_margin_gate_blocks": {
+      "passed": true,
+      "first_differences": []
+    },
+    "raw_liquidation_lockout": {
+      "passed": true,
+      "first_differences": []
+    },
+    "cm2_audit": {
+      "passed": true,
+      "first_differences": []
+    },
+    "cm2_btc_reference": {
+      "passed": true,
+      "first_differences": []
+    },
+    "cm2_c1_audit": {
+      "passed": true,
+      "first_differences": []
+    },
+    "cm2_child_permission_audit": {
+      "passed": true,
+      "first_differences": []
+    },
+    "cm2_drain_lifecycle": {
+      "passed": true,
+      "first_differences": []
+    },
+    "cm2_drain_state": {
+      "passed": true,
+      "first_differences": []
+    },
+    "cm2_order_admission_audit": {
+      "passed": true,
+      "first_differences": []
+    },
+    "cm2_sol_staging_harvest_context": {
+      "passed": true,
+      "first_differences": []
+    },
+    "cm2_target_blockers": {
+      "passed": true,
+      "first_differences": []
+    },
+    "cm2_capital_unknown": {
+      "passed": true,
+      "first_differences": []
+    },
+    "cm2_checkpoint_revision": {
+      "passed": true,
+      "first_differences": []
+    }
+  },
+  "literal_fill_all_fields_equal": false,
+  "literal_fill_first_differences": [
+    {
+      "path": "$[0].admission.parent_id",
+      "old": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+      "new": "ebdaf947-3d1e-4ce1-bf09-3a577143cc0f"
+    },
+    {
+      "path": "$[0].parent_id",
+      "old": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+      "new": "ebdaf947-3d1e-4ce1-bf09-3a577143cc0f"
+    },
+    {
+      "path": "$[1].admission.parent_id",
+      "old": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+      "new": "ebdaf947-3d1e-4ce1-bf09-3a577143cc0f"
+    },
+    {
+      "path": "$[1].parent_id",
+      "old": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+      "new": "ebdaf947-3d1e-4ce1-bf09-3a577143cc0f"
+    },
+    {
+      "path": "$[2].admission.parent_id",
+      "old": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+      "new": "ebdaf947-3d1e-4ce1-bf09-3a577143cc0f"
+    },
+    {
+      "path": "$[2].parent_id",
+      "old": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+      "new": "ebdaf947-3d1e-4ce1-bf09-3a577143cc0f"
+    },
+    {
+      "path": "$[3].admission.parent_id",
+      "old": "e2c19787-d32c-4400-96d7-59194cd80287",
+      "new": "6979ab0f-e801-45c3-bdcf-3cf1705c9703"
+    },
+    {
+      "path": "$[3].parent_id",
+      "old": "e2c19787-d32c-4400-96d7-59194cd80287",
+      "new": "6979ab0f-e801-45c3-bdcf-3cf1705c9703"
+    },
+    {
+      "path": "$[4].admission.parent_id",
+      "old": "e2c19787-d32c-4400-96d7-59194cd80287",
+      "new": "6979ab0f-e801-45c3-bdcf-3cf1705c9703"
+    },
+    {
+      "path": "$[4].parent_id",
+      "old": "e2c19787-d32c-4400-96d7-59194cd80287",
+      "new": "6979ab0f-e801-45c3-bdcf-3cf1705c9703"
+    },
+    {
+      "path": "$[5].admission.parent_id",
+      "old": "e2c19787-d32c-4400-96d7-59194cd80287",
+      "new": "6979ab0f-e801-45c3-bdcf-3cf1705c9703"
+    },
+    {
+      "path": "$[5].parent_id",
+      "old": "e2c19787-d32c-4400-96d7-59194cd80287",
+      "new": "6979ab0f-e801-45c3-bdcf-3cf1705c9703"
+    },
+    {
+      "path": "$[6].admission.parent_id",
+      "old": "45a0abe4-f093-409d-833d-704bb760d355",
+      "new": "34d92278-7978-4acc-92a4-205f98173b84"
+    },
+    {
+      "path": "$[6].parent_id",
+      "old": "45a0abe4-f093-409d-833d-704bb760d355",
+      "new": "34d92278-7978-4acc-92a4-205f98173b84"
+    },
+    {
+      "path": "$[7].admission.parent_id",
+      "old": "45a0abe4-f093-409d-833d-704bb760d355",
+      "new": "34d92278-7978-4acc-92a4-205f98173b84"
+    },
+    {
+      "path": "$[7].parent_id",
+      "old": "45a0abe4-f093-409d-833d-704bb760d355",
+      "new": "34d92278-7978-4acc-92a4-205f98173b84"
+    },
+    {
+      "path": "$[8].admission.parent_id",
+      "old": "45a0abe4-f093-409d-833d-704bb760d355",
+      "new": "34d92278-7978-4acc-92a4-205f98173b84"
+    },
+    {
+      "path": "$[8].parent_id",
+      "old": "45a0abe4-f093-409d-833d-704bb760d355",
+      "new": "34d92278-7978-4acc-92a4-205f98173b84"
+    },
+    {
+      "path": "$[9].admission.parent_id",
+      "old": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+      "new": "7322e3a4-ef73-42bc-bfde-17965fb79812"
+    },
+    {
+      "path": "$[9].parent_id",
+      "old": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+      "new": "7322e3a4-ef73-42bc-bfde-17965fb79812"
+    },
+    {
+      "path": "$[10].admission.parent_id",
+      "old": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+      "new": "7322e3a4-ef73-42bc-bfde-17965fb79812"
+    },
+    {
+      "path": "$[10].parent_id",
+      "old": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+      "new": "7322e3a4-ef73-42bc-bfde-17965fb79812"
+    },
+    {
+      "path": "$[11].admission.parent_id",
+      "old": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+      "new": "7322e3a4-ef73-42bc-bfde-17965fb79812"
+    },
+    {
+      "path": "$[11].parent_id",
+      "old": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+      "new": "7322e3a4-ef73-42bc-bfde-17965fb79812"
+    },
+    {
+      "path": "$[12].admission.parent_id",
+      "old": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+      "new": "7322e3a4-ef73-42bc-bfde-17965fb79812"
+    },
+    {
+      "path": "$[12].parent_id",
+      "old": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+      "new": "7322e3a4-ef73-42bc-bfde-17965fb79812"
+    },
+    {
+      "path": "$[13].admission.parent_id",
+      "old": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+      "new": "7322e3a4-ef73-42bc-bfde-17965fb79812"
+    },
+    {
+      "path": "$[13].parent_id",
+      "old": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+      "new": "7322e3a4-ef73-42bc-bfde-17965fb79812"
+    },
+    {
+      "path": "$[14].admission.parent_id",
+      "old": "2ee3ab9d-efff-4e22-9cb9-9f84320cd197",
+      "new": "29772c0d-9736-4052-abe5-96bf656c058a"
+    },
+    {
+      "path": "$[14].parent_id",
+      "old": "2ee3ab9d-efff-4e22-9cb9-9f84320cd197",
+      "new": "29772c0d-9736-4052-abe5-96bf656c058a"
+    }
+  ],
+  "metadata_only_bijection": [
+    {
+      "kind": "RUNLOCAL_BTC_PARENT_UUID",
+      "natural_key": [
+        730,
+        "SELL",
+        1
+      ],
+      "old": "dee1cee3-12f5-42d6-9b68-27e4412649b3",
+      "new": "ebdaf947-3d1e-4ce1-bf09-3a577143cc0f"
+    },
+    {
+      "kind": "RUNLOCAL_BTC_PARENT_UUID",
+      "natural_key": [
+        739,
+        "SELL",
+        1
+      ],
+      "old": "e2c19787-d32c-4400-96d7-59194cd80287",
+      "new": "6979ab0f-e801-45c3-bdcf-3cf1705c9703"
+    },
+    {
+      "kind": "RUNLOCAL_BTC_PARENT_UUID",
+      "natural_key": [
+        742,
+        "BUY",
+        1
+      ],
+      "old": "45a0abe4-f093-409d-833d-704bb760d355",
+      "new": "34d92278-7978-4acc-92a4-205f98173b84"
+    },
+    {
+      "kind": "RUNLOCAL_BTC_PARENT_UUID",
+      "natural_key": [
+        746,
+        "BUY",
+        1
+      ],
+      "old": "9fbf6203-0e1f-4105-9a78-03f84fc421ca",
+      "new": "7322e3a4-ef73-42bc-bfde-17965fb79812"
+    },
+    {
+      "kind": "RUNLOCAL_BTC_PARENT_UUID",
+      "natural_key": [
+        760,
+        "SELL",
+        1
+      ],
+      "old": "2ee3ab9d-efff-4e22-9cb9-9f84320cd197",
+      "new": "29772c0d-9736-4052-abe5-96bf656c058a"
+    },
+    {
+      "kind": "RUNLOCAL_BTC_PARENT_UUID",
+      "natural_key": [
+        764,
+        "BUY",
+        1
+      ],
+      "old": "a65e8181-1809-48a1-ac77-0bb33088a44d",
+      "new": "b5991b6a-10dc-4446-9978-aa16fabb75ca"
+    },
+    {
+      "kind": "RUNLOCAL_BTC_PARENT_UUID",
+      "natural_key": [
+        768,
+        "SELL",
+        1
+      ],
+      "old": "e619539d-8ee3-425a-933d-65951468e2fd",
+      "new": "2a8200eb-8317-4c15-8ec1-4f298e2db9a1"
+    },
+    {
+      "kind": "RUNLOCAL_BTC_PARENT_UUID",
+      "natural_key": [
+        770,
+        "BUY",
+        1
+      ],
+      "old": "8215e856-d75e-4f90-b9cd-8b5deeb50cf4",
+      "new": "805f1137-85c6-45e0-ae12-b1cfecf10f0b"
+    },
+    {
+      "kind": "RUNLOCAL_BTC_PARENT_UUID",
+      "natural_key": [
+        783,
+        "BUY",
+        1
+      ],
+      "old": "6230f59e-7b11-41f4-9a19-dab0be01762a",
+      "new": "a7fc833f-6d23-4546-ba16-c8452eb84447"
+    },
+    {
+      "kind": "RUNLOCAL_BTC_PARENT_UUID",
+      "natural_key": [
+        791,
+        "BUY",
+        1
+      ],
+      "old": "17d2bc85-d543-41c2-ae70-688cc2a56fd6",
+      "new": "3cea0666-f014-4cd5-90f1-cdf5600c70bb"
+    },
+    {
+      "kind": "RUNLOCAL_BTC_PARENT_UUID",
+      "natural_key": [
+        805,
+        "BUY",
+        1
+      ],
+      "old": "1c7528f2-828a-40ee-a7eb-c2b7890972b8",
+      "new": "0952ac86-a031-4f1f-a89c-3fa42917cce7"
+    },
+    {
+      "kind": "RUNLOCAL_BTC_PARENT_UUID",
+      "natural_key": [
+        816,
+        "BUY",
+        1
+      ],
+      "old": "f81d2305-87e5-42c0-b22c-2e846cb97830",
+      "new": "c41b22e3-f99b-4886-a08f-05035b826e88"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "BTC-USD-PERP.HYPERLIQUID",
+        "1725235260000000000",
+        "1725634080000000000",
+        "O-20240902-000100-001-000-1"
+      ],
+      "old": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-05075a2e-b25e-4967-b5fc-20c6b641be4c",
+      "new": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-237184aa-c165-407c-81dd-6302a8f55b71"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "BTC-USD-PERP.HYPERLIQUID",
+        "1726012860000000000",
+        "1726063200000000000",
+        "O-20240911-000100-001-000-4"
+      ],
+      "old": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-916363c5-c215-4a0f-9c03-2090735a86e6",
+      "new": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-7e57a51e-7102-4af7-abad-adc7f840a0b4"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "BTC-USD-PERP.HYPERLIQUID",
+        "1726272120000000000",
+        "1726531200000000000",
+        "O-20240914-000200-001-000-8"
+      ],
+      "old": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-475ff546-1b88-4700-80a7-11364a7f1431",
+      "new": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-bc2bb86f-5afe-4713-b153-2aa6b6ef796f"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "BTC-USD-PERP.HYPERLIQUID",
+        "1726617660000000000",
+        "1726747620000000000",
+        "O-20240918-000100-001-000-12"
+      ],
+      "old": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-b6bb32df-7ea8-4155-9431-bd096e0d299d",
+      "new": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-90022c13-5b2b-4c6d-82f1-d79e95e9524d"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "BTC-USD-PERP.HYPERLIQUID",
+        "1727827260000000000",
+        "1728086400000000000",
+        "O-20241002-000100-001-000-17"
+      ],
+      "old": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-4c669412-e450-4a9d-9542-f9c895359007",
+      "new": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-d314d976-b8f4-497e-9cec-694fec80022a"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "BTC-USD-PERP.HYPERLIQUID",
+        "1728230520000000000",
+        "1728518400000000000",
+        "O-20241006-160200-001-000-23"
+      ],
+      "old": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-a2fac5f9-5a87-4d7c-9ca0-ddd50f8f030d",
+      "new": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-f34646b7-c480-4523-bee8-31ee534bd21f"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "BTC-USD-PERP.HYPERLIQUID",
+        "1728518520000000000",
+        "1728604800000000000",
+        "O-20241010-000200-001-000-29"
+      ],
+      "old": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-2a93f8b4-2323-4b36-9f95-56c03d2dc284",
+      "new": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-5794de9c-95f5-43d0-b926-13eeaa76e615"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "BTC-USD-PERP.HYPERLIQUID",
+        "1728720120000000000",
+        "1728916020000000000",
+        "O-20241012-080200-001-000-34"
+      ],
+      "old": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-79524d9e-7d63-4642-90d5-b6fabac6c772",
+      "new": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-a0c5c4fb-6676-44b3-9b2b-f621dda4a4c3"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "BTC-USD-PERP.HYPERLIQUID",
+        "1729814460000000000",
+        "1730210520000000000",
+        "O-20241025-000100-001-000-38"
+      ],
+      "old": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-e4e28480-71d8-4483-9b4d-3159a2a2a5cb",
+      "new": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-0666cc4a-24a4-4dc3-ae63-e1876a5c713c"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "BTC-USD-PERP.HYPERLIQUID",
+        "1730505660000000000",
+        "1730937600000000000",
+        "O-20241102-000100-001-000-43"
+      ],
+      "old": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-ced8c64d-0fd3-4969-b3b1-929d54aeb1d4",
+      "new": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-4e793647-0ba3-48ea-991a-c04029f1b957"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "BTC-USD-PERP.HYPERLIQUID",
+        "1731715260000000000",
+        "1732161180000000000",
+        "O-20241116-000100-001-000-49"
+      ],
+      "old": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-928e9499-f03d-4593-9386-dbc424ab51f0",
+      "new": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-cdb14371-2f54-409d-b1a2-bacd02ee7a75"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "BTC-USD-PERP.HYPERLIQUID",
+        "1732665660000000000",
+        "1732752000000000000",
+        "O-20241127-000100-001-000-55"
+      ],
+      "old": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+      "new": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000"
+    },
+    {
+      "kind": "RUNLOCAL_NATIVE_ARCHIVE_COPY_ID",
+      "natural_key": [
+        "SOL-USD-PERP.HYPERLIQUID",
+        "1727913600000000000",
+        "1728086400000000000",
+        "O-20241003-000000-001-000-20"
+      ],
+      "old": "SOL-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+      "new": "SOL-USD-PERP.HYPERLIQUID-CM2Strategy-000"
+    }
+  ],
+  "identity_policy": "Literal differences retained. Only explicit parent UUID/native archive copy IDs mapped by natural lifecycle/entry keys. No trade ID, quantity, price, fee, clock, cash, risk or WM field dropped.",
+  "elapsed_diagnostic": {
+    "old_seconds": 97.64143916592002,
+    "new_seconds": 79.93873825017363,
+    "new_over_old_ratio": 0.8186968456531599,
+    "full_runtime_prediction": "NOT_PROVEN_BY_PREFIX"
+  },
+  "native_fill_counts": [
+    52,
+    52
+  ],
+  "funding_post_counts": [
+    107,
+    107
+  ],
+  "new_engines_constructed_by_analysis": 0,
+  "product_edits": 0,
+  "full_24months_equivalence": "NOT_CLAIMED_FROM_PREFIX",
+  "current_c411_full_relabelled": false,
+  "financial_qualification_authority": "Existing independent strict saved receipts; this comparator creates no financial qualification."
+}

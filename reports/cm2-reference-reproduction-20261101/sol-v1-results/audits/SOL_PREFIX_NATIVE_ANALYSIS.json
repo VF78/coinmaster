@@ -1,0 +1,1616 @@
+{
+  "status": "QUALIFIED_PREFIX_JOINT_NATIVE_ACCOUNTING_PASS_FULL_RESULT_PENDING",
+  "scope": "PREFIX",
+  "joint_authority": {
+    "raw_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/CM2_SOL_PREFIX_20241201_S1-raw-native.json",
+    "raw_sha256": "6f2150e4dd80e9fa28ee59d3c45aa8e2a01b018aeb2fbebdd6c0e4f850c748e4",
+    "qualification_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/committed-wm-qualification-v1/QUALIFICATION.json",
+    "qualification_sha256": "4325e83c81aaf44800f43594504a97872412a114190b0cb9b3414bc597d4c1a2",
+    "derived_report_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/committed-wm-qualification-v1/COMMITTED_QUALIFIED_NATIVE_REPORT.json",
+    "derived_report_sha256": "e146e5c6553163b05af51f137d9180ccc36f5e7894b283aa30c025d60481492a",
+    "derived_csv": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_SOL_PREFIX_01/artifacts/committed-wm-qualification-v1/minute-native-settled-receipts.csv.gz",
+    "derived_csv_sha256": "882e3c27b391a547eabca438ba26dfa4575e9eb85735378488cc157389ac9972",
+    "qualified_summary_sha256": "6ea37c9341ee89965e736d77d8d542875b6cd08d060416fd7a717cc9aba11a65",
+    "physical_terminal_sha256": "b3b42df93356eccefb3df589455116f7d9729bc2613fa9fa4554583f33030d09",
+    "scope": "PREFIX",
+    "interval_ns": [
+      1725148800000000000,
+      1733011200000000000
+    ],
+    "full_24months": false,
+    "source_rows": 131040,
+    "settled_WM_rows": 131039,
+    "months": 3,
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+    "source_hashes": {
+      "domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+      "research/cm2_committed_validation.py": "a7d1c597d9f0bb80f1c69bf147f0b34a665f930f461a2dc001b8e3e3714ee775",
+      "research/cm2_funding_reader.py": "d4963d3f95c695ce61aee3342c272e18c0883912ccb989590737250af75c0214",
+      "research/cm2_runner.py": "42fb4572149c98dc556b5bab2e1fd49f007e2b1fde93347f416360cc7bf5d879",
+      "strategy/cm2_checkpoint.py": "e59e066d6ac8818126bd6fa24eb879da02bfe829352797f95eb48661c7a37dbb",
+      "strategy/cm2_execution.py": "1fd74f260ecccbeaf4a6f0d02ad7c6f6f4827d61ccb1627bdf66e7d99447d820",
+      "strategy/cm2_native.py": "3c5c2bcdf00c11d96d7cc3d5a6b255a6d2de5b3437f638e9b4fcacd9f7f89c3e",
+      "strategy/cm2_order_contract.py": "092eb01216478bc16690e98a3a22867294682892cc45040573bb956a202e7667",
+      "strategy/cm2_policy.py": "b21a2a69c35d2beaa7ac41ce3f03eba9975abdf2402b195623b07f18a3b0d1c1",
+      "strategy/cm2_reference_policy.py": "fae4d3812844df1446cff6f9cf05eec3db22a3e414755721d4cb4c0e0817d5f2",
+      "strategy/cm2_sol_policy.py": "a85b8c1af05e7b8c719a2f3be4cbf08b139d6749ba6c5643c23df7b2d4ac1985",
+      "strategy/cm2_sol_volatility.py": "fcd49f68c1380692700ddd7fa4e500c9c493d5676ec61779daeff959514850ab"
+    },
+    "input_hashes": {
+      "coherent_trace": "943d555d4772b71f379e1a3a55a3594249faddd6e887129d41d68ef30593fc33",
+      "coverage_source": "58b9a047ceb6627108e3bac52a957b231f405fe12b8a6bb1684e3582599682df",
+      "funding_sqlite": "df32a83db1088be0cc69850a91b3e93406b3b5fc738b048d5e91edec507f00de",
+      "legacy_csv": "ec107f67783da4547af65260ce1784dc5f3f86ba602847078a13e0d2f96e4fb5",
+      "native_DD_source": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad",
+      "native_observer_source": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42",
+      "qualifier_source": "a7d1c597d9f0bb80f1c69bf147f0b34a665f930f461a2dc001b8e3e3714ee775"
+    },
+    "profile": {
+      "dd_sha256": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad",
+      "observer_sha256": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42",
+      "request_sha256": "8f925641c97c2431b0cbe93deee21f52042d72969a93e5b5af6485a4fdfa9dbe",
+      "source_family": "CM2BTCREF"
+    },
+    "physical": {
+      "elapsed_seconds": 97.64143916592002,
+      "exit_code": 0,
+      "native_child_pid": 67427,
+      "parent_pid": 67419,
+      "request_sha256": "8f925641c97c2431b0cbe93deee21f52042d72969a93e5b5af6485a4fdfa9dbe",
+      "rss_basis": "WAIT4_EXACT_NATIVE_CHILD_RUSAGE_MAXRSS",
+      "run_id": "CM2_SOL_PREFIX_20241201_S1",
+      "scope_version": "CM2_VALIDATION_V2_20261101",
+      "spawn_utc": "2026-11-01T21:40:38.868424+00:00",
+      "stage": "qualification",
+      "status": "COMPLETED",
+      "true_child_peak_rss_bytes": 440418304
+    },
+    "raw_status_preserved": "NOT_FAITHFUL_DIAGNOSTIC"
+  },
+  "BTC_only_control_authority": {
+    "raw_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/CM2_NEW_FULL_20260901_B_R3-raw-native.json",
+    "raw_sha256": "1c0a2f75f2733f7fd37087fd25cba2cc313ca576dd86545a4ee8147cc9086e5f",
+    "qualification_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/committed-wm-qualification-v1/QUALIFICATION.json",
+    "qualification_sha256": "b623bf0f8350f4d5a2e75cf89790b05eac1a0663a34e6d30cbdac03ec4e6ba1e",
+    "derived_report_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/committed-wm-qualification-v1/COMMITTED_QUALIFIED_NATIVE_REPORT.json",
+    "derived_report_sha256": "cb6370e80ad16432037c1b47826d0cca65ec89f587c475c9d32fa0db6f95818a",
+    "derived_csv": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/committed-wm-qualification-v1/minute-native-settled-receipts.csv.gz",
+    "derived_csv_sha256": "5cc9c271a4e3eb1b8dce39592d27f65c1909ae6467c96858dcb8dd4e48416778",
+    "qualified_summary_sha256": "845ea363b607422cdbf6f45b28b553b7af1f26edfb08ff72d1f97270db4da1b7",
+    "physical_terminal_sha256": "1580d535070085bfef434c0d93a9a4b9cd73e8619f6b22e0d65671466bcf3613",
+    "scope": "FULL_24M",
+    "interval_ns": [
+      1725148800000000000,
+      1788220800000000000
+    ],
+    "full_24months": true,
+    "source_rows": 1051200,
+    "settled_WM_rows": 1051199,
+    "months": 24,
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+    "source_hashes": {
+      "domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+      "research/cm2_committed_validation.py": "a7d1c597d9f0bb80f1c69bf147f0b34a665f930f461a2dc001b8e3e3714ee775",
+      "research/cm2_funding_reader.py": "d4963d3f95c695ce61aee3342c272e18c0883912ccb989590737250af75c0214",
+      "research/cm2_runner.py": "6bf14cfd945438bb1c410716f3c9dadaa991ba6b403cfbdfb75f8662fe936100",
+      "strategy/cm2_checkpoint.py": "e59e066d6ac8818126bd6fa24eb879da02bfe829352797f95eb48661c7a37dbb",
+      "strategy/cm2_execution.py": "1fd74f260ecccbeaf4a6f0d02ad7c6f6f4827d61ccb1627bdf66e7d99447d820",
+      "strategy/cm2_native.py": "32abcd0a2eafc226ba9d4b3113fa6159c480541364d451b08abb1f3f50fdd929",
+      "strategy/cm2_order_contract.py": "092eb01216478bc16690e98a3a22867294682892cc45040573bb956a202e7667",
+      "strategy/cm2_policy.py": "b21a2a69c35d2beaa7ac41ce3f03eba9975abdf2402b195623b07f18a3b0d1c1",
+      "strategy/cm2_reference_policy.py": "fae4d3812844df1446cff6f9cf05eec3db22a3e414755721d4cb4c0e0817d5f2"
+    },
+    "input_hashes": {
+      "coherent_trace": "48add5befb8c86b7863a2628f546d1b2c97e1ee989de4f94d1955bf71aae7d83",
+      "coverage_source": "58b9a047ceb6627108e3bac52a957b231f405fe12b8a6bb1684e3582599682df",
+      "funding_sqlite": "7b2e2497076325027e3506faa157eaf72a261dfc6aa7cc778c5f62c9590f1549",
+      "legacy_csv": "88b9daef835b442747f03683a9a29e51408b854cd40085186788fdf25bfc33dd",
+      "native_DD_source": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad",
+      "native_observer_source": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42",
+      "qualifier_source": "a7d1c597d9f0bb80f1c69bf147f0b34a665f930f461a2dc001b8e3e3714ee775"
+    },
+    "profile": {
+      "dd_sha256": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad",
+      "observer_sha256": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42",
+      "request_sha256": "65d9817f5886f9d5d71f0ec3e53b3e0bcbee6b5e04d09aa85c83ffc9abaffac9",
+      "source_family": "CM2BTCREF"
+    },
+    "physical": {
+      "elapsed_seconds": 723.6660924591124,
+      "exit_code": 0,
+      "native_child_pid": 58944,
+      "parent_pid": 58824,
+      "request_sha256": "65d9817f5886f9d5d71f0ec3e53b3e0bcbee6b5e04d09aa85c83ffc9abaffac9",
+      "rss_basis": "WAIT4_EXACT_NATIVE_CHILD_RUSAGE_MAXRSS",
+      "run_id": "CM2_NEW_FULL_20260901_B_R3",
+      "scope_version": "CM2_VALIDATION_V2_20261101",
+      "spawn_utc": "2026-11-01T20:01:12.842172+00:00",
+      "stage": "qualification",
+      "status": "COMPLETED",
+      "true_child_peak_rss_bytes": 427524096
+    },
+    "raw_status_preserved": "NOT_FAITHFUL_DIAGNOSTIC"
+  },
+  "native_ledgers": {
+    "assets": {
+      "BTC": {
+        "native_cycles": 12,
+        "native_fills": 50,
+        "native_realized_including_fees": "20399.50804270",
+        "fees_information_only": "590.45159932",
+        "actual_signed_funding": "-644.12644055",
+        "native_net": "19755.38160215",
+        "native_gross_algebraic_reconciliation_only": "20989.95964202"
+      },
+      "SOL": {
+        "native_cycles": 1,
+        "native_fills": 2,
+        "native_realized_including_fees": "885.58322715",
+        "fees_information_only": "37.01127285",
+        "actual_signed_funding": "-0.76008666",
+        "native_net": "884.82314049",
+        "native_gross_algebraic_reconciliation_only": "922.59450000"
+      }
+    },
+    "cycles": {
+      "BTC": [
+        {
+          "asset": "BTC",
+          "cycle": 1,
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "native_position_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-05075a2e-b25e-4967-b5fc-20c6b641be4c",
+          "native_lifecycle_fill_hash": "79a24a1a61997ad5f56098c881ef581acd7d298bc657b360997b2c3427760e81",
+          "opened_ns": "1725235260000000000",
+          "closed_ns": "1725634080000000000",
+          "opening_order_id": "O-20240902-000100-001-000-1",
+          "side": "SELL",
+          "fills": 3,
+          "entry_action": "ENTRY_IOC",
+          "entry_reason": "BTC_SPLIT",
+          "exit_action": "TP_GTC",
+          "exit_reason": "BTC_RESTING_TP",
+          "native_realized_including_fees": "2091.56435778",
+          "native_fees_information_only": "19.29009222",
+          "native_gross_realized_algebraic_reconciliation_only": "2110.85445000",
+          "actual_signed_funding": "2.33801443",
+          "funding_post_count": 13,
+          "native_realized_plus_actual_funding": "2093.90237221"
+        },
+        {
+          "asset": "BTC",
+          "cycle": 2,
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "native_position_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-916363c5-c215-4a0f-9c03-2090735a86e6",
+          "native_lifecycle_fill_hash": "54cc62c4572a957338d6656e0405e4dc266f6248fdb62692dd033a3b3e4e96c8",
+          "opened_ns": "1726012860000000000",
+          "closed_ns": "1726063200000000000",
+          "opening_order_id": "O-20240911-000100-001-000-4",
+          "side": "SELL",
+          "fills": 3,
+          "entry_action": "ENTRY_IOC",
+          "entry_reason": "BTC_SPLIT",
+          "exit_action": "TP_GTC",
+          "exit_reason": "BTC_RESTING_TP",
+          "native_realized_including_fees": "1331.31149772",
+          "native_fees_information_only": "31.11557228",
+          "native_gross_realized_algebraic_reconciliation_only": "1362.42707000",
+          "actual_signed_funding": "0.93099621",
+          "funding_post_count": 1,
+          "native_realized_plus_actual_funding": "1332.24249393"
+        },
+        {
+          "asset": "BTC",
+          "cycle": 3,
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "native_position_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-475ff546-1b88-4700-80a7-11364a7f1431",
+          "native_lifecycle_fill_hash": "2aaf9ebe0e90ec793c2a49f1025f4b67134e9506a28f29154b36eeed5f237541",
+          "opened_ns": "1726272120000000000",
+          "closed_ns": "1726531200000000000",
+          "opening_order_id": "O-20240914-000200-001-000-8",
+          "side": "BUY",
+          "fills": 3,
+          "entry_action": "ENTRY_IOC",
+          "entry_reason": "BTC_SPLIT",
+          "exit_action": "DRAIN",
+          "exit_reason": "REGIME",
+          "native_realized_including_fees": "-2798.06053396",
+          "native_fees_information_only": "51.94486696",
+          "native_gross_realized_algebraic_reconciliation_only": "-2746.11566700",
+          "actual_signed_funding": "-23.08174298",
+          "funding_post_count": 9,
+          "native_realized_plus_actual_funding": "-2821.14227694"
+        },
+        {
+          "asset": "BTC",
+          "cycle": 4,
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "native_position_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-b6bb32df-7ea8-4155-9431-bd096e0d299d",
+          "native_lifecycle_fill_hash": "c4b0e17df4dbb91408085ae510556c521c6764f1cebcf1414b66649a80a072fa",
+          "opened_ns": "1726617660000000000",
+          "closed_ns": "1726747620000000000",
+          "opening_order_id": "O-20240918-000100-001-000-12",
+          "side": "BUY",
+          "fills": 5,
+          "entry_action": "ENTRY_IOC",
+          "entry_reason": "BTC_SPLIT",
+          "exit_action": "TP_GTC",
+          "exit_reason": "BTC_RESTING_TP",
+          "native_realized_including_fees": "2105.18863745",
+          "native_fees_information_only": "32.80590855",
+          "native_gross_realized_algebraic_reconciliation_only": "2137.99454600",
+          "actual_signed_funding": "-16.45437734",
+          "funding_post_count": 4,
+          "native_realized_plus_actual_funding": "2088.73426011"
+        },
+        {
+          "asset": "BTC",
+          "cycle": 5,
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "native_position_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-4c669412-e450-4a9d-9542-f9c895359007",
+          "native_lifecycle_fill_hash": "169c18c1942414d8c26b26af476e2ff388e49251a2e185d48fdaa1fd127c6cdc",
+          "opened_ns": "1727827260000000000",
+          "closed_ns": "1728086400000000000",
+          "opening_order_id": "O-20241002-000100-001-000-17",
+          "side": "SELL",
+          "fills": 3,
+          "entry_action": "ENTRY_IOC",
+          "entry_reason": "BTC_SPLIT",
+          "exit_action": "DRAIN",
+          "exit_reason": "REGIME",
+          "native_realized_including_fees": "-1154.63308472",
+          "native_fees_information_only": "41.92161272",
+          "native_gross_realized_algebraic_reconciliation_only": "-1112.71147200",
+          "actual_signed_funding": "29.82251601",
+          "funding_post_count": 9,
+          "native_realized_plus_actual_funding": "-1124.81056871"
+        },
+        {
+          "asset": "BTC",
+          "cycle": 6,
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "native_position_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-a2fac5f9-5a87-4d7c-9ca0-ddd50f8f030d",
+          "native_lifecycle_fill_hash": "59e497a7d8529479621e754de866dd182189185e64890adf9269fd9dddf83170",
+          "opened_ns": "1728230520000000000",
+          "closed_ns": "1728518400000000000",
+          "opening_order_id": "O-20241006-160200-001-000-23",
+          "side": "BUY",
+          "fills": 5,
+          "entry_action": "ENTRY_IOC",
+          "entry_reason": "BTC_SPLIT",
+          "exit_action": "DRAIN",
+          "exit_reason": "REGIME",
+          "native_realized_including_fees": "-1294.15854309",
+          "native_fees_information_only": "48.75961109",
+          "native_gross_realized_algebraic_reconciliation_only": "-1245.39893200",
+          "actual_signed_funding": "-11.73748401",
+          "funding_post_count": 10,
+          "native_realized_plus_actual_funding": "-1305.89602710"
+        },
+        {
+          "asset": "BTC",
+          "cycle": 7,
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "native_position_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-2a93f8b4-2323-4b36-9f95-56c03d2dc284",
+          "native_lifecycle_fill_hash": "fa02509957d2f75dc1d89161d44b7f2e13c9899fdb0fd5183cd6affc02742ab1",
+          "opened_ns": "1728518520000000000",
+          "closed_ns": "1728604800000000000",
+          "opening_order_id": "O-20241010-000200-001-000-29",
+          "side": "SELL",
+          "fills": 5,
+          "entry_action": "ENTRY_IOC",
+          "entry_reason": "BTC_SPLIT",
+          "exit_action": "TP_IOC",
+          "exit_reason": "BTC_CONDITIONAL_TP",
+          "native_realized_including_fees": "1494.67102655",
+          "native_fees_information_only": "48.38010345",
+          "native_gross_realized_algebraic_reconciliation_only": "1543.05113000",
+          "actual_signed_funding": "10.59673887",
+          "funding_post_count": 3,
+          "native_realized_plus_actual_funding": "1505.26776542"
+        },
+        {
+          "asset": "BTC",
+          "cycle": 8,
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "native_position_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-79524d9e-7d63-4642-90d5-b6fabac6c772",
+          "native_lifecycle_fill_hash": "5103655ee2d7661dc6e88331cd1394a2e3a12b234d12d7ef33a46ccfd8902a54",
+          "opened_ns": "1728720120000000000",
+          "closed_ns": "1728916020000000000",
+          "opening_order_id": "O-20241012-080200-001-000-34",
+          "side": "BUY",
+          "fills": 3,
+          "entry_action": "ENTRY_IOC",
+          "entry_reason": "BTC_SPLIT",
+          "exit_action": "TP_GTC",
+          "exit_reason": "BTC_RESTING_TP",
+          "native_realized_including_fees": "1938.09308778",
+          "native_fees_information_only": "23.35200122",
+          "native_gross_realized_algebraic_reconciliation_only": "1961.44508900",
+          "actual_signed_funding": "-18.10798685",
+          "funding_post_count": 6,
+          "native_realized_plus_actual_funding": "1919.98510093"
+        },
+        {
+          "asset": "BTC",
+          "cycle": 9,
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "native_position_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-e4e28480-71d8-4483-9b4d-3159a2a2a5cb",
+          "native_lifecycle_fill_hash": "e5712ea3a4ba767deaa16c02dc905c7b4f1d689e3aa01fb2a7b39bb15c1c478f",
+          "opened_ns": "1729814460000000000",
+          "closed_ns": "1730210520000000000",
+          "opening_order_id": "O-20241025-000100-001-000-38",
+          "side": "BUY",
+          "fills": 5,
+          "entry_action": "ENTRY_IOC",
+          "entry_reason": "BTC_SPLIT",
+          "exit_action": "TP_GTC",
+          "exit_reason": "BTC_RESTING_TP",
+          "native_realized_including_fees": "2986.20429567",
+          "native_fees_information_only": "40.09144033",
+          "native_gross_realized_algebraic_reconciliation_only": "3026.29573600",
+          "actual_signed_funding": "-76.02067642",
+          "funding_post_count": 13,
+          "native_realized_plus_actual_funding": "2910.18361925"
+        },
+        {
+          "asset": "BTC",
+          "cycle": 10,
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "native_position_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-ced8c64d-0fd3-4969-b3b1-929d54aeb1d4",
+          "native_lifecycle_fill_hash": "e34e7b2f1d0d67424ea54dfe80f54d2e9ea800eaa80ed759dda6869cda820082",
+          "opened_ns": "1730505660000000000",
+          "closed_ns": "1730937600000000000",
+          "opening_order_id": "O-20241102-000100-001-000-43",
+          "side": "BUY",
+          "fills": 5,
+          "entry_action": "ENTRY_IOC",
+          "entry_reason": "BTC_SPLIT",
+          "exit_action": "TP_IOC",
+          "exit_reason": "BTC_CONDITIONAL_TP",
+          "native_realized_including_fees": "4654.95028804",
+          "native_fees_information_only": "68.42942497",
+          "native_gross_realized_algebraic_reconciliation_only": "4723.37971301",
+          "actual_signed_funding": "-94.66520667",
+          "funding_post_count": 15,
+          "native_realized_plus_actual_funding": "4560.28508137"
+        },
+        {
+          "asset": "BTC",
+          "cycle": 11,
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "native_position_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000-928e9499-f03d-4593-9386-dbc424ab51f0",
+          "native_lifecycle_fill_hash": "eef7afb2b808df3b22e9bec63cb334521440145f2ca1829566f4606f149ea43f",
+          "opened_ns": "1731715260000000000",
+          "closed_ns": "1732161180000000000",
+          "opening_order_id": "O-20241116-000100-001-000-49",
+          "side": "BUY",
+          "fills": 5,
+          "entry_action": "ENTRY_IOC",
+          "entry_reason": "BTC_SPLIT",
+          "exit_action": "TP_GTC",
+          "exit_reason": "BTC_RESTING_TP",
+          "native_realized_including_fees": "3754.43601317",
+          "native_fees_information_only": "85.47433183",
+          "native_gross_realized_algebraic_reconciliation_only": "3839.91034500",
+          "actual_signed_funding": "-384.71630793",
+          "funding_post_count": 15,
+          "native_realized_plus_actual_funding": "3369.71970524"
+        },
+        {
+          "asset": "BTC",
+          "cycle": 12,
+          "instrument_id": "BTC-USD-PERP.HYPERLIQUID",
+          "native_position_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "BTC-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_lifecycle_fill_hash": "07efab7acf4b3c5c212f8883f968bcd5151df5deb80675e511e5750420c57518",
+          "opened_ns": "1732665660000000000",
+          "closed_ns": "1732752000000000000",
+          "opening_order_id": "O-20241127-000100-001-000-55",
+          "side": "BUY",
+          "fills": 5,
+          "entry_action": "ENTRY_IOC",
+          "entry_reason": "BTC_SPLIT",
+          "exit_action": "TP_IOC",
+          "exit_reason": "BTC_CONDITIONAL_TP",
+          "native_realized_including_fees": "5289.94100031",
+          "native_fees_information_only": "98.88663370",
+          "native_gross_realized_algebraic_reconciliation_only": "5388.82763401",
+          "actual_signed_funding": "-63.03092387",
+          "funding_post_count": 3,
+          "native_realized_plus_actual_funding": "5226.91007644"
+        }
+      ],
+      "SOL": [
+        {
+          "asset": "SOL",
+          "cycle": 1,
+          "instrument_id": "SOL-USD-PERP.HYPERLIQUID",
+          "native_position_id": "SOL-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_copy_id": "SOL-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+          "native_lifecycle_fill_hash": "059aac0bd81f63b7ef8c11c5f4a1022852d8bf01e4752cd41e5f709cb1f10978",
+          "opened_ns": "1727913600000000000",
+          "closed_ns": "1728086400000000000",
+          "opening_order_id": "O-20241003-000000-001-000-20",
+          "side": "BUY",
+          "fills": 2,
+          "entry_action": "SOL_OPEN",
+          "entry_reason": "SOL_V1_ACCEPTED_OPENING",
+          "exit_action": "DRAIN",
+          "exit_reason": "BTC_MARKET_REGIME",
+          "native_realized_including_fees": "885.58322715",
+          "native_fees_information_only": "37.01127285",
+          "native_gross_realized_algebraic_reconciliation_only": "922.59450000",
+          "actual_signed_funding": "-0.76008666",
+          "funding_post_count": 6,
+          "native_realized_plus_actual_funding": "884.82314049"
+        }
+      ]
+    },
+    "shared_account": {
+      "seed": "10000",
+      "native_cash": "30640.20474264",
+      "native_realized_including_fees": "21285.09126985",
+      "actual_signed_funding": "-644.88652721",
+      "fee_information_only": "627.46287217",
+      "exact_cash_bridge": "0E-8",
+      "native_terminal_UPNL": "0_NATIVE_FLAT_REQUIRED",
+      "terminal_open_positions": 0,
+      "terminal_open_orders": 0,
+      "liquidations": 0
+    }
+  },
+  "SOL_episode_permission_and_carry": [
+    {
+      "asset": "SOL",
+      "cycle": 1,
+      "instrument_id": "SOL-USD-PERP.HYPERLIQUID",
+      "native_position_id": "SOL-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+      "native_copy_id": "SOL-USD-PERP.HYPERLIQUID-CM2Strategy-000",
+      "native_lifecycle_fill_hash": "059aac0bd81f63b7ef8c11c5f4a1022852d8bf01e4752cd41e5f709cb1f10978",
+      "opened_ns": "1727913600000000000",
+      "closed_ns": "1728086400000000000",
+      "opening_order_id": "O-20241003-000000-001-000-20",
+      "side": "BUY",
+      "fills": 2,
+      "entry_action": "SOL_OPEN",
+      "entry_reason": "SOL_V1_ACCEPTED_OPENING",
+      "exit_action": "DRAIN",
+      "exit_reason": "BTC_MARKET_REGIME",
+      "native_realized_including_fees": "885.58322715",
+      "native_fees_information_only": "37.01127285",
+      "native_gross_realized_algebraic_reconciliation_only": "922.59450000",
+      "actual_signed_funding": "-0.76008666",
+      "funding_post_count": 6,
+      "native_realized_plus_actual_funding": "884.82314049",
+      "opening_K": "1.3525692288588918104825495154156815007348050486126",
+      "opening_sigma": "0.09611627521838921",
+      "N0": "42376.255603238802282926801613226502643324775947079",
+      "Q0": "302.49",
+      "accepted_ns": 1727913600000000000,
+      "sponsor": "2ee3ab9d-efff-4e22-9cb9-9f84320cd197",
+      "permission": {
+        "actual_btc_notional": "57316.8193632",
+        "actual_btc_qty": "-0.94554",
+        "coherent_btc_mark": "60618.08",
+        "daily_available_ns": 1727913600000000000,
+        "daily_close_ns": 1727913600000000000,
+        "decision_ns": 1727913600000000000,
+        "exhaustion": {
+          "executable_price": "60800",
+          "level": "0.0",
+          "parent_id": "2ee3ab9d-efff-4e22-9cb9-9f84320cd197",
+          "planref": "60811.2",
+          "receipt_ns": 1727827320000000000,
+          "side": -1,
+          "source_ns": 1727827320000000000
+        },
+        "mu": 0.008644167166502013,
+        "relative": -0.15108371989531916,
+        "sigma": 0.09611627521838921,
+        "z": -1.6618193609656404
+      },
+      "opening_child_quantity": "302.49",
+      "K_notional_exact": true,
+      "official_SOL_lot": "0.01",
+      "Q0_official_lot_same_time_native_price_consistent": true,
+      "same_time_native_opening_price": "140.09",
+      "frozen_order_observations": 2,
+      "native_BTCflat_carry_minutes": "0",
+      "native_same_direction_currentBTC_minutes": "0",
+      "overlapped_BTC_native_cycles": [
+        5
+      ],
+      "BTC_at_SOL_start_time_boundary_ambiguous": false,
+      "native_entry_expected_position_proof": "PermissioncontainsactualnativeBTCqtyatacceptedgrant; exactsame-nsactualfillstate notinferredfromtimestamp alone."
+    }
+  ],
+  "BTC_comparison": {
+    "control_authority": "SavedqualifiedBTC_ONLY8857R3; fullphysicalrun, prefixcaseusesinteriorslice, notnewprefixengine",
+    "control_BTC_fills_in_scope": 50,
+    "joint_BTC_fills": 50,
+    "control_entry_keys": 12,
+    "joint_entry_keys": 12,
+    "unmatched_control_keys": [],
+    "unmatched_joint_keys": [],
+    "aligned_cycles": [
+      {
+        "causal_signal_key": "730:SELL:1",
+        "control_cycle": 1,
+        "joint_cycle": 1,
+        "control_fills_in_scope": 3,
+        "joint_fills_in_scope": 3,
+        "branch_equal": true,
+        "q0q1_equal": true,
+        "roles_equal": true,
+        "plan_changes": {}
+      },
+      {
+        "causal_signal_key": "739:SELL:1",
+        "control_cycle": 2,
+        "joint_cycle": 2,
+        "control_fills_in_scope": 3,
+        "joint_fills_in_scope": 3,
+        "branch_equal": true,
+        "q0q1_equal": true,
+        "roles_equal": true,
+        "plan_changes": {}
+      },
+      {
+        "causal_signal_key": "742:BUY:1",
+        "control_cycle": 3,
+        "joint_cycle": 3,
+        "control_fills_in_scope": 3,
+        "joint_fills_in_scope": 3,
+        "branch_equal": true,
+        "q0q1_equal": true,
+        "roles_equal": true,
+        "plan_changes": {}
+      },
+      {
+        "causal_signal_key": "746:BUY:1",
+        "control_cycle": 4,
+        "joint_cycle": 4,
+        "control_fills_in_scope": 5,
+        "joint_fills_in_scope": 5,
+        "branch_equal": true,
+        "q0q1_equal": true,
+        "roles_equal": true,
+        "plan_changes": {}
+      },
+      {
+        "causal_signal_key": "760:SELL:1",
+        "control_cycle": 5,
+        "joint_cycle": 5,
+        "control_fills_in_scope": 3,
+        "joint_fills_in_scope": 3,
+        "branch_equal": true,
+        "q0q1_equal": true,
+        "roles_equal": true,
+        "plan_changes": {}
+      },
+      {
+        "causal_signal_key": "764:BUY:1",
+        "control_cycle": 6,
+        "joint_cycle": 6,
+        "control_fills_in_scope": 5,
+        "joint_fills_in_scope": 5,
+        "branch_equal": true,
+        "q0q1_equal": true,
+        "roles_equal": true,
+        "plan_changes": {
+          "reference_btc_qty": [
+            "1.01455",
+            "1.09214"
+          ],
+          "reference_target_lots": [
+            {
+              "0": 21559,
+              "1": 21559,
+              "2": 58337
+            },
+            {
+              "0": 23207,
+              "1": 23207,
+              "2": 62800
+            }
+          ],
+          "net_submitted_btc_qty": [
+            "1.01455",
+            "1.09214"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "768:SELL:1",
+        "control_cycle": 7,
+        "joint_cycle": 7,
+        "control_fills_in_scope": 5,
+        "joint_fills_in_scope": 5,
+        "branch_equal": true,
+        "q0q1_equal": true,
+        "roles_equal": true,
+        "plan_changes": {
+          "reference_btc_qty": [
+            "1.34449",
+            "1.44731"
+          ],
+          "reference_target_lots": [
+            {
+              "0": 28570,
+              "1": 28570,
+              "2": 77309
+            },
+            {
+              "0": 30755,
+              "1": 30755,
+              "2": 83221
+            }
+          ],
+          "net_submitted_btc_qty": [
+            "1.34449",
+            "1.44731"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "770:BUY:1",
+        "control_cycle": 8,
+        "joint_cycle": 8,
+        "control_fills_in_scope": 3,
+        "joint_fills_in_scope": 3,
+        "branch_equal": true,
+        "q0q1_equal": true,
+        "roles_equal": true,
+        "plan_changes": {
+          "reference_btc_qty": [
+            "1.03057",
+            "1.10939"
+          ],
+          "reference_target_lots": [
+            {
+              "0": 21899,
+              "1": 21899,
+              "2": 59259
+            },
+            {
+              "0": 23574,
+              "1": 23574,
+              "2": 63791
+            }
+          ],
+          "net_submitted_btc_qty": [
+            "0.59259",
+            "0.63791"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "783:BUY:1",
+        "control_cycle": 9,
+        "joint_cycle": 9,
+        "control_fills_in_scope": 5,
+        "joint_fills_in_scope": 5,
+        "branch_equal": true,
+        "q0q1_equal": true,
+        "roles_equal": true,
+        "plan_changes": {
+          "reference_btc_qty": [
+            "1.09221",
+            "1.17574"
+          ],
+          "reference_target_lots": [
+            {
+              "0": 23209,
+              "1": 23209,
+              "2": 62803
+            },
+            {
+              "0": 24984,
+              "1": 24984,
+              "2": 67606
+            }
+          ],
+          "net_submitted_btc_qty": [
+            "1.09221",
+            "1.17574"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "791:BUY:1",
+        "control_cycle": 10,
+        "joint_cycle": 10,
+        "control_fills_in_scope": 5,
+        "joint_fills_in_scope": 5,
+        "branch_equal": true,
+        "q0q1_equal": true,
+        "roles_equal": true,
+        "plan_changes": {
+          "reference_btc_qty": [
+            "1.28535",
+            "1.38365"
+          ],
+          "reference_target_lots": [
+            {
+              "0": 27313,
+              "1": 27313,
+              "2": 73909
+            },
+            {
+              "0": 29402,
+              "1": 29402,
+              "2": 79561
+            }
+          ],
+          "net_submitted_btc_qty": [
+            "1.28535",
+            "1.38365"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "805:BUY:1",
+        "control_cycle": 11,
+        "joint_cycle": 11,
+        "control_fills_in_scope": 5,
+        "joint_fills_in_scope": 5,
+        "branch_equal": true,
+        "q0q1_equal": true,
+        "roles_equal": true,
+        "plan_changes": {
+          "reference_btc_qty": [
+            "1.23595",
+            "1.33047"
+          ],
+          "reference_target_lots": [
+            {
+              "0": 26263,
+              "1": 26263,
+              "2": 71069
+            },
+            {
+              "0": 28272,
+              "1": 28272,
+              "2": 76503
+            }
+          ],
+          "net_submitted_btc_qty": [
+            "1.23595",
+            "1.33047"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "816:BUY:1",
+        "control_cycle": 12,
+        "joint_cycle": 12,
+        "control_fills_in_scope": 5,
+        "joint_fills_in_scope": 5,
+        "branch_equal": true,
+        "q0q1_equal": true,
+        "roles_equal": true,
+        "plan_changes": {
+          "reference_btc_qty": [
+            "1.41094",
+            "1.51885"
+          ],
+          "reference_target_lots": [
+            {
+              "0": 29982,
+              "1": 29982,
+              "2": 81130
+            },
+            {
+              "0": 32275,
+              "1": 32275,
+              "2": 87335
+            }
+          ],
+          "net_submitted_btc_qty": [
+            "1.41094",
+            "1.51885"
+          ]
+        }
+      }
+    ],
+    "fill_differences": [
+      {
+        "causal_signal_key": "764:BUY:1",
+        "fill_in_cycle": 1,
+        "control_class": "INITIAL_ENTRY",
+        "joint_class": "INITIAL_ENTRY",
+        "changes": {
+          "qty": [
+            "0.50727",
+            "0.54607"
+          ],
+          "commission": [
+            "13.75225852",
+            "14.80413943"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "764:BUY:1",
+        "fill_in_cycle": 2,
+        "control_class": "ENTRY_COMPLETION",
+        "joint_class": "ENTRY_COMPLETION",
+        "changes": {
+          "qty": [
+            "0.50728",
+            "0.54607"
+          ],
+          "commission": [
+            "4.57267874",
+            "4.92233614"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "764:BUY:1",
+        "fill_in_cycle": 3,
+        "control_class": "TP_LEVEL_1",
+        "joint_class": "TP_LEVEL_1",
+        "changes": {
+          "qty": [
+            "0.21559",
+            "0.23207"
+          ],
+          "commission": [
+            "5.84820921",
+            "6.29525447"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "764:BUY:1",
+        "fill_in_cycle": 4,
+        "control_class": "TP_LEVEL_2",
+        "joint_class": "TP_LEVEL_2",
+        "changes": {
+          "qty": [
+            "0.21559",
+            "0.23207"
+          ],
+          "commission": [
+            "5.84820921",
+            "6.29525447"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "764:BUY:1",
+        "fill_in_cycle": 5,
+        "control_class": "REGIME",
+        "joint_class": "REGIME",
+        "changes": {
+          "qty": [
+            "0.58337",
+            "0.628"
+          ],
+          "commission": [
+            "15.27410043",
+            "16.44262658"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "768:SELL:1",
+        "fill_in_cycle": 1,
+        "control_class": "INITIAL_ENTRY",
+        "joint_class": "INITIAL_ENTRY",
+        "changes": {
+          "qty": [
+            "0.67224",
+            "0.72365"
+          ],
+          "commission": [
+            "17.59870541",
+            "18.94457808"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "768:SELL:1",
+        "fill_in_cycle": 2,
+        "control_class": "ENTRY_COMPLETION",
+        "joint_class": "ENTRY_COMPLETION",
+        "changes": {
+          "qty": [
+            "0.67225",
+            "0.72366"
+          ],
+          "commission": [
+            "5.88103661",
+            "6.33078609"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "768:SELL:1",
+        "fill_in_cycle": 3,
+        "control_class": "TP_LEVEL_3",
+        "joint_class": "TP_LEVEL_3",
+        "changes": {
+          "qty": [
+            "0.77309",
+            "0.83221"
+          ],
+          "commission": [
+            "6.57963911",
+            "7.0827995"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "768:SELL:1",
+        "fill_in_cycle": 4,
+        "control_class": "TP_LEVEL_1",
+        "joint_class": "TP_LEVEL_1",
+        "changes": {
+          "qty": [
+            "0.2857",
+            "0.30755"
+          ],
+          "commission": [
+            "7.44182766",
+            "8.01096989"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "768:SELL:1",
+        "fill_in_cycle": 5,
+        "control_class": "TP_LEVEL_2",
+        "joint_class": "TP_LEVEL_2",
+        "changes": {
+          "qty": [
+            "0.2857",
+            "0.30755"
+          ],
+          "commission": [
+            "7.44182766",
+            "8.01096989"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "770:BUY:1",
+        "fill_in_cycle": 1,
+        "control_class": "INITIAL_ENTRY",
+        "joint_class": "INITIAL_ENTRY",
+        "changes": {
+          "qty": [
+            "0.29629",
+            "0.31895"
+          ],
+          "commission": [
+            "8.02892378",
+            "8.64296885"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "770:BUY:1",
+        "fill_in_cycle": 2,
+        "control_class": "ENTRY_COMPLETION",
+        "joint_class": "ENTRY_COMPLETION",
+        "changes": {
+          "qty": [
+            "0.2963",
+            "0.31896"
+          ],
+          "commission": [
+            "8.04401735",
+            "8.659196"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "770:BUY:1",
+        "fill_in_cycle": 3,
+        "control_class": "TP_LEVEL_3",
+        "joint_class": "TP_LEVEL_3",
+        "changes": {
+          "qty": [
+            "0.59259",
+            "0.63791"
+          ],
+          "commission": [
+            "5.62002875",
+            "6.04983637"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "783:BUY:1",
+        "fill_in_cycle": 1,
+        "control_class": "INITIAL_ENTRY",
+        "joint_class": "INITIAL_ENTRY",
+        "changes": {
+          "qty": [
+            "0.5461",
+            "0.58787"
+          ],
+          "commission": [
+            "16.09470114",
+            "17.32574979"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "783:BUY:1",
+        "fill_in_cycle": 2,
+        "control_class": "ENTRY_COMPLETION",
+        "joint_class": "ENTRY_COMPLETION",
+        "changes": {
+          "qty": [
+            "0.54611",
+            "0.58787"
+          ],
+          "commission": [
+            "5.35159839",
+            "5.76082501"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "783:BUY:1",
+        "fill_in_cycle": 3,
+        "control_class": "TP_LEVEL_2",
+        "joint_class": "TP_LEVEL_2",
+        "changes": {
+          "qty": [
+            "0.23209",
+            "0.24984"
+          ],
+          "commission": [
+            "2.28268499",
+            "2.45726234"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "783:BUY:1",
+        "fill_in_cycle": 4,
+        "control_class": "TP_LEVEL_1",
+        "joint_class": "TP_LEVEL_1",
+        "changes": {
+          "qty": [
+            "0.23209",
+            "0.24984"
+          ],
+          "commission": [
+            "7.01314783",
+            "7.54950602"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "783:BUY:1",
+        "fill_in_cycle": 5,
+        "control_class": "TP_LEVEL_3",
+        "joint_class": "TP_LEVEL_3",
+        "changes": {
+          "qty": [
+            "0.62803",
+            "0.67606"
+          ],
+          "commission": [
+            "6.50092443",
+            "6.99809717"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "791:BUY:1",
+        "fill_in_cycle": 1,
+        "control_class": "INITIAL_ENTRY",
+        "joint_class": "INITIAL_ENTRY",
+        "changes": {
+          "qty": [
+            "0.64267",
+            "0.69182"
+          ],
+          "commission": [
+            "19.30413072",
+            "20.78046853"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "791:BUY:1",
+        "fill_in_cycle": 2,
+        "control_class": "ENTRY_COMPLETION",
+        "joint_class": "ENTRY_COMPLETION",
+        "changes": {
+          "qty": [
+            "0.64268",
+            "0.69183"
+          ],
+          "commission": [
+            "19.3293352",
+            "20.8075776"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "791:BUY:1",
+        "fill_in_cycle": 3,
+        "control_class": "TP_LEVEL_2",
+        "joint_class": "TP_LEVEL_2",
+        "changes": {
+          "qty": [
+            "0.27313",
+            "0.29402"
+          ],
+          "commission": [
+            "8.21689143",
+            "8.8453499"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "791:BUY:1",
+        "fill_in_cycle": 4,
+        "control_class": "TP_LEVEL_3",
+        "joint_class": "TP_LEVEL_3",
+        "changes": {
+          "qty": [
+            "0.73909",
+            "0.79561"
+          ],
+          "commission": [
+            "7.7973049",
+            "8.39358366"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "791:BUY:1",
+        "fill_in_cycle": 5,
+        "control_class": "TP_LEVEL_1",
+        "joint_class": "TP_LEVEL_1",
+        "changes": {
+          "qty": [
+            "0.27313",
+            "0.29402"
+          ],
+          "commission": [
+            "8.9201955",
+            "9.60244528"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "805:BUY:1",
+        "fill_in_cycle": 1,
+        "control_class": "INITIAL_ENTRY",
+        "joint_class": "INITIAL_ENTRY",
+        "changes": {
+          "qty": [
+            "0.61797",
+            "0.66523"
+          ],
+          "commission": [
+            "24.34716273",
+            "26.20914132"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "805:BUY:1",
+        "fill_in_cycle": 2,
+        "control_class": "ENTRY_COMPLETION",
+        "joint_class": "ENTRY_COMPLETION",
+        "changes": {
+          "qty": [
+            "0.61798",
+            "0.66524"
+          ],
+          "commission": [
+            "24.40185788",
+            "26.26798915"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "805:BUY:1",
+        "fill_in_cycle": 3,
+        "control_class": "TP_LEVEL_2",
+        "joint_class": "TP_LEVEL_2",
+        "changes": {
+          "qty": [
+            "0.26263",
+            "0.28272"
+          ],
+          "commission": [
+            "10.3574015",
+            "11.14969559"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "805:BUY:1",
+        "fill_in_cycle": 4,
+        "control_class": "TP_LEVEL_1",
+        "joint_class": "TP_LEVEL_1",
+        "changes": {
+          "qty": [
+            "0.26263",
+            "0.28272"
+          ],
+          "commission": [
+            "10.47670065",
+            "11.27812058"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "805:BUY:1",
+        "fill_in_cycle": 5,
+        "control_class": "TP_LEVEL_3",
+        "joint_class": "TP_LEVEL_3",
+        "changes": {
+          "qty": [
+            "0.71069",
+            "0.76503"
+          ],
+          "commission": [
+            "9.81864288",
+            "10.56938519"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "816:BUY:1",
+        "fill_in_cycle": 1,
+        "control_class": "INITIAL_ENTRY",
+        "joint_class": "INITIAL_ENTRY",
+        "changes": {
+          "qty": [
+            "0.70547",
+            "0.75942"
+          ],
+          "commission": [
+            "28.0726379",
+            "30.21946033"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "816:BUY:1",
+        "fill_in_cycle": 2,
+        "control_class": "ENTRY_COMPLETION",
+        "joint_class": "ENTRY_COMPLETION",
+        "changes": {
+          "qty": [
+            "0.70547",
+            "0.75943"
+          ],
+          "commission": [
+            "28.09738466",
+            "30.24649784"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "816:BUY:1",
+        "fill_in_cycle": 3,
+        "control_class": "TP_LEVEL_2",
+        "joint_class": "TP_LEVEL_2",
+        "changes": {
+          "qty": [
+            "0.29982",
+            "0.32275"
+          ],
+          "commission": [
+            "11.9479215",
+            "12.86168923"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "816:BUY:1",
+        "fill_in_cycle": 4,
+        "control_class": "TP_LEVEL_3",
+        "joint_class": "TP_LEVEL_3",
+        "changes": {
+          "qty": [
+            "0.8113",
+            "0.87335"
+          ],
+          "commission": [
+            "11.32078933",
+            "12.18662808"
+          ]
+        }
+      },
+      {
+        "causal_signal_key": "816:BUY:1",
+        "fill_in_cycle": 5,
+        "control_class": "TP_LEVEL_1",
+        "joint_class": "TP_LEVEL_1",
+        "changes": {
+          "qty": [
+            "0.29982",
+            "0.32275"
+          ],
+          "commission": [
+            "12.42230966",
+            "13.37235822"
+          ]
+        }
+      }
+    ],
+    "control_C1_in_scope": {
+      "event_counts": {},
+      "claims": [],
+      "quarter_checks": [],
+      "actual_fill_credit_events": [],
+      "native_cut_restore_fills": [],
+      "native_cut_quantity": "0",
+      "native_restore_quantity": "0"
+    },
+    "joint_C1": {
+      "event_counts": {},
+      "claims": [],
+      "quarter_checks": [],
+      "actual_fill_credit_events": [],
+      "native_cut_restore_fills": [],
+      "native_cut_quantity": "0",
+      "native_restore_quantity": "0",
+      "full_events": []
+    },
+    "C1_capital_interpretation": "Sharedactualnativecapital lawfullychangesBTCsizes/HWM/C1. Nativecashdecompositionisobservedaccounting,notisolatedcausalcounterfactual."
+  },
+  "native_metrics": {
+    "seed": "10000",
+    "native_cash": "30640.20474264",
+    "native_realized_including_fees": "21285.09126985",
+    "native_fees": "627.46287217",
+    "native_signed_funding": "-644.88652721",
+    "cash_bridge_residual": "0E-8",
+    "native_fill_count": 52,
+    "native_closed_lifecycle_count": 13,
+    "event_drawdown": {
+      "maximum_loss_below_seed_amount": "1910.83154945",
+      "maximum_loss_below_seed_percent": "19.108315494500",
+      "minimum": {
+        "equity": "8089.16845055",
+        "sequence_id": "9050",
+        "timestamp_ns": "1725329640000000000"
+      },
+      "samples": 262398,
+      "top3_distinct_excursions": [
+        {
+          "drawdown_amount": "3889.20392699",
+          "drawdown_peak_percent": "28.88635504383867849532545631",
+          "peak": {
+            "equity": "13463.80988909",
+            "sequence_id": "45757",
+            "timestamp_ns": "1726063200000000000"
+          },
+          "recovery": {
+            "equity": "13464.73356522",
+            "sequence_id": "137539",
+            "timestamp_ns": "1727897820000000000"
+          },
+          "trough": {
+            "equity": "9574.6059621",
+            "sequence_id": "76405",
+            "timestamp_ns": "1726675500000000000"
+          }
+        },
+        {
+          "drawdown_amount": "3294.36529391",
+          "drawdown_peak_percent": "24.30668428130362434573719237",
+          "peak": {
+            "equity": "13553.33066322",
+            "sequence_id": "137567",
+            "timestamp_ns": "1727898360000000000"
+          },
+          "recovery": {
+            "equity": "13660.62651028",
+            "sequence_id": "171908",
+            "timestamp_ns": "1728583800000000000"
+          },
+          "trough": {
+            "equity": "10258.96536931",
+            "sequence_id": "170805",
+            "timestamp_ns": "1728561780000000000"
+          }
+        },
+        {
+          "drawdown_amount": "2075.52840627",
+          "drawdown_peak_percent": "20.41898972006651532447289517",
+          "peak": {
+            "equity": "10164.69685682",
+            "sequence_id": "4482",
+            "timestamp_ns": "1725238380000000000"
+          },
+          "recovery": {
+            "equity": "10210.21602149",
+            "sequence_id": "13154",
+            "timestamp_ns": "1725411600000000000"
+          },
+          "trough": {
+            "equity": "8089.16845055",
+            "sequence_id": "9050",
+            "timestamp_ns": "1725329640000000000"
+          }
+        }
+      ]
+    },
+    "settled_drawdown": {
+      "maximum_loss_below_seed_amount": "1910.83154945",
+      "maximum_loss_below_seed_percent": "19.108315494500",
+      "minimum": {
+        "equity": "8089.16845055",
+        "timestamp_ns": "1725329640000000000"
+      },
+      "samples": 131040,
+      "top3_distinct_excursions": [
+        {
+          "drawdown_amount": "3872.26684755",
+          "drawdown_peak_percent": "28.79678347794819918559799851",
+          "peak": {
+            "equity": "13446.87280965",
+            "timestamp_ns": "1726273140000000000"
+          },
+          "recovery": {
+            "equity": "13464.73356522",
+            "timestamp_ns": "1727897820000000000"
+          },
+          "trough": {
+            "equity": "9574.6059621",
+            "timestamp_ns": "1726675500000000000"
+          }
+        },
+        {
+          "drawdown_amount": "3294.36529391",
+          "drawdown_peak_percent": "24.30668428130362434573719237",
+          "peak": {
+            "equity": "13553.33066322",
+            "timestamp_ns": "1727898360000000000"
+          },
+          "recovery": {
+            "equity": "13588.20159074",
+            "timestamp_ns": "1728878220000000000"
+          },
+          "trough": {
+            "equity": "10258.96536931",
+            "timestamp_ns": "1728561780000000000"
+          }
+        },
+        {
+          "drawdown_amount": "2075.52840627",
+          "drawdown_peak_percent": "20.41898972006651532447289517",
+          "peak": {
+            "equity": "10164.69685682",
+            "timestamp_ns": "1725238380000000000"
+          },
+          "recovery": {
+            "equity": "10210.21602149",
+            "timestamp_ns": "1725411600000000000"
+          },
+          "trough": {
+            "equity": "8089.16845055",
+            "timestamp_ns": "1725329640000000000"
+          }
+        }
+      ]
+    },
+    "cash_transitions": {
+      "exact_bridge": "0E-8",
+      "native_fill_cash_delta_total": "21285.09126985",
+      "native_funding_cash_delta_total": "-644.88652721",
+      "seed": "10000",
+      "status": "EXACT_OBSERVED_NATIVE_TRANSITIONS",
+      "terminal_cash": "30640.20474264",
+      "tolerance": null,
+      "trace_fields": "POST_FILL_COMMITTED_NATIVE/POST_FUNDING_ACCOUNT_NATIVE native_cash_delta; actual cash, no PnL reconstruction"
+    },
+    "liquidations": 0,
+    "terminal_open_positions": 0,
+    "terminal_open_orders": 0
+  },
+  "BTC_only_control_scope_metrics": {
+    "basis": "QualifiedBTC_ONLYfullR3first131039WM leftlimit, notseparateprefixphysicalrun",
+    "source_ns": "1733011140000000000",
+    "receipt_ns": "1733011200000000000",
+    "observed_native_cash": "28463.40640027",
+    "observed_native_marked_equity": "28463.40640027",
+    "native_positions_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "full_lifecycle_PnL_after_prefix_not_used": true
+  },
+  "E08_engineering_authority_sha256": "97a7c529b13a94ba397f62db39a932f883f9ea63f483be8c5549f3af444348b5",
+  "new_native_engines": 0,
+  "product_edits": 0,
+  "old_reports_rewritten": false,
+  "economic_acceptance": "PREFIX_ONLY: oneprofitableSOLcycle, fullROI/robustnessnotaccepted; waitalreadyplannedFULLresult, no strategychange ornewGO fromanalysis.",
+  "limits": [
+    "No perassetseed/wallet orpricePnLengine; nativefees alreadyincluded inpositionrealized.",
+    "FundingjoinedONLYsameinstrument anduniqueactualnativelifecycle; ambiguoussame-nsjoinraisesUNKNOWN/failure.",
+    "BTC_ONLYcontrolfullsource8857 differsfromjointsourcec411; pureBTCmarketmath pinned butSOLsharedcapital feedbackauthorized.",
+    "Timestamp-onlysame-ns BTCentry state ismarkedambiguous; permissionacceptedstateisnotfabricatedaslaterfillstate.",
+    "No partial/late nativecoverage orliveROIclaim."
+  ],
+  "prefix_observed_cash_comparison": {
+    "joint_native_terminal_cash": "30640.20474264",
+    "BTC_R3full_native_WM_prefix_leftlimit_cash": "28463.40640027",
+    "control_native_flat_at_prefix_leftlimit": true,
+    "delta_actual_cash_same_interval": "2176.79834237",
+    "observed_SOL_net": "884.82314049",
+    "observed_BTC_component_net_difference": "1291.97520188",
+    "not_isolated_causal_counterfactual": true,
+    "no_new_BTC_R3_prefix_engine_claim": true
+  },
+  "older_4e_BTC_prefix_changed_source_diagnostic": {
+    "authority": {
+      "raw_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_PREFIX_RECHECK_01/artifacts/CM2_NEW_PREFIX_20241201_B_R2-raw-native.json",
+      "raw_sha256": "2b98e85a6159c7d373c3b290f64cb49093158dd0ae87b33f7a2006ad9ef4e871",
+      "qualification_receipt": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_PREFIX_RECHECK_01/artifacts/committed-wm-qualification-v1/QUALIFICATION.json",
+      "qualification_sha256": "8c8d057b07cfd37ab8c689224db3c68430bb62ddbac17e08eedcb920455f43ef",
+      "derived_report_sha256": "aa175fdc8cda2ec55b8d1d2b22b406e44990a7c19538dd0ce2db9aa6bc1bcecd",
+      "derived_csv_sha256": "9c00c75e275fd705c8213e73de0bdc4e7be00735a75892a3a62017178980c609",
+      "physical_terminal_status_preserved": "COMPLETED",
+      "physical_terminal_sha256": "76db286837cbabaa52d3e1270efcd9cd1a35858ba63384d6fb65575d1f18e368",
+      "qualified_status": "FINANCIAL_QUALIFICATION_PASS",
+      "scope": "PREFIX",
+      "interval_ns": [
+        1725148800000000000,
+        1733011200000000000
+      ],
+      "full_24months": false,
+      "coverage": {
+        "first_source_ns": 1725148860000000000,
+        "full": false,
+        "interval_complete": true,
+        "last_receipt_ns": 1733011200000000000,
+        "month_counts_complete": true,
+        "month_rows": {
+          "2024-09": 43199,
+          "2024-10": 44640,
+          "2024-11": 43200
+        },
+        "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_PREFIX_RECHECK_01/artifacts/committed-wm-qualification-v1/minute-native-settled-receipts.csv.gz",
+        "rows": 131039,
+        "scope": "PREFIX",
+        "sha256": "9c00c75e275fd705c8213e73de0bdc4e7be00735a75892a3a62017178980c609",
+        "source_calendar_months": 3
+      },
+      "measurer_source_profile": {
+        "dd_sha256": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad",
+        "observer_sha256": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42",
+        "request_sha256": "29a0ededb92fac8e5bc399d3b21f8966cd7adceb4c30f76fa48634482cb8aa63",
+        "source_family": "CM2BTCREF"
+      },
+      "native_watermark_proof": {
+        "wm_rows": 131039,
+        "trace_rows": 393422,
+        "exact_interval_DD_parity": true,
+        "boundary_left_limit_proven": true
+      }
+    },
+    "native_cash": "28559.68460617",
+    "delta_joint_cash": "2080.52013647",
+    "disposition": "CHANGED_SOURCE_DIAGNOSTIC_ONLY; supersededearlyH4phasevariant, notprimaryBTCparitycontrol"
+  },
+  "analysis_code_sha256": "87922c15529815af700ba71379fad853bb48d933c4bf7f44342756cfdb0c2936",
+  "analysis_code_sha256_at_prefix_main_run": "6c7f8ed64743e6f92dbec064ff57a872b0ff48facb238361bfeea539906d75d5",
+  "analysis_code_update": "OnlyunusedFULLinvariance andadditionalactualNB/officiallotpermissionproof improvedafterprefixmain; financecash/quantitynativeledger unchanged."
+}

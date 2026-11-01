@@ -1,0 +1,14 @@
+{
+  "elapsed_seconds": 4026.6963550001383,
+  "exit_code": 0,
+  "native_child_pid": 67800,
+  "parent_pid": 67790,
+  "request_sha256": "f559d499a290c452793dd5dfe14b1451a5bc5d097aa4de6f4553b6d37ba5b1f1",
+  "rss_basis": "WAIT4_EXACT_NATIVE_CHILD_RUSAGE_MAXRSS",
+  "run_id": "CM2_SOL_FULL_20260901_S1",
+  "scope_version": "CM2_VALIDATION_V2_20261101",
+  "spawn_utc": "2026-11-01T21:46:33.668348+00:00",
+  "stage": "qualification",
+  "status": "COMPLETED",
+  "true_child_peak_rss_bytes": 436224000
+}

@@ -1,0 +1,5 @@
+Native position SHA — это хеш pickle stock Position, а не канонический хеш экономических полей. Frozen paired_observer.py:80–82 сериализует весь объект. Stock1.231 Position хранит fill events (position.pxd:38;position.pyx:573), а native backtest создаёт OrderFilled с UUID4 event_id (backtest/engine.pyx:8523–8539;events/order.pyx:4593–4611). Точные файлы/SHA/строки сохранены в JSON рядом.
+
+Для одинакового c411 prefix/full 50461 из131039 WM имеют разные positionSHA; прочие6полей равны на всех строках. Все262078 PREQUOTE exported native states совпадают по cash/equity,positionID,instrument,qty,side,mark,nativeUPNL,sequence/epoch.52fill audit после явной биекции parentUUID и107funding posts совпадают.
+
+Исходные pickle bytes/eventUUID не сохранены, поэтому конкретный изменившийся байт/UUID не объявляется доказанным. Это ограничение сравнения непрозрачного состояния, не финансовый residual. Literal7PASS не выдан, никакой checksum не нормализован, qualifier не менялся. Отдельные строгие financialPASS обоих запусков действительны.
