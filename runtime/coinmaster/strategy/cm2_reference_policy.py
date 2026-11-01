@@ -237,6 +237,7 @@ class ReferenceBtcPolicy:
         self._h4_release_daily_ns: int | None = None
         self._trail_block_index = -1
         self._last_h4_ns = 0
+        self._h4_reentry_facts=[]
 
     @property
     def parent(self) -> BtcParent | None:
@@ -620,10 +621,8 @@ class ReferenceBtcPolicy:
             raise ValueError("CAUSAL_CLOSED_H4_REQUIRED")
         if close_ns <= self._last_h4_ns:return
         self._last_h4_ns=close_ns
-        if self._wait_regime and self._parent is None and close_ns > self._regime_latch_ns:
-            atr=self._atr_reentry()
-            if atr is not None and self._signals[-1].side*(float(close)-self._features.ema)/atr >= .5:
-                self._h4_release_daily_ns=_ns(self._features.bars[-1].close_time)
+        # C1 receives the accepted fact now; E4 is evaluated at quote tail.
+        self._h4_reentry_facts.append((close_ns,available_ns,close))
         t=self.c1
         if t is None or close_ns <= t.last_h4_ns:return
         t.last_h4_ns=close_ns;t.deferred_h4=None
@@ -638,6 +637,18 @@ class ReferenceBtcPolicy:
             t.deferred_h4=dict(open_ns=open_ns,close_ns=close_ns,close=close,
                 available_ns=available_ns,identity=self._c1_identity())
             self._c1_log("CLOSED_4H_DEFERRED_NO_MONEY",receipt_ns)
+
+    def consume_h4_reentry_facts(self,decision_ns: int) -> bool:
+        ready=[f for f in self._h4_reentry_facts if f[1]<=decision_ns]
+        self._h4_reentry_facts=[f for f in self._h4_reentry_facts if f[1]>decision_ns]
+        released=False
+        for close_ns,_available_ns,close in ready:
+            if self._wait_regime and self._parent is None and close_ns>self._regime_latch_ns:
+                atr=self._atr_reentry()
+                if atr is not None and self._signals[-1].side*(float(close)-self._features.ema)/atr>=.5:
+                    self._h4_release_daily_ns=_ns(self._features.bars[-1].close_time)
+                    released=True
+        return released
 
     def _c1_identity(self):
         t=self.c1
@@ -776,7 +787,8 @@ class ReferenceBtcPolicy:
             revision=self._btc_revision,funding_version=self._funding_version,c1_peak=self._c1_peak,
             c1=asdict(self.c1) if self.c1 else None,c1_money=asdict(self._c1_money) if self._c1_money else None,
             wait_regime=self._wait_regime,regime_latch_ns=self._regime_latch_ns,
-            h4_release_daily_ns=self._h4_release_daily_ns,trail_block_index=self._trail_block_index,last_h4_ns=self._last_h4_ns)
+            h4_release_daily_ns=self._h4_release_daily_ns,trail_block_index=self._trail_block_index,last_h4_ns=self._last_h4_ns,
+            h4_reentry_facts=list(self._h4_reentry_facts))
 
     def restore_state(self, state):
         # Native owner validates source/config/cache/observer/feed continuity
@@ -805,6 +817,11 @@ class ReferenceBtcPolicy:
                 or (parent is not None and (self._held(parent)<0 or parent.filled_quantity<0
                     or parent.selected_quantity is not None and parent.filled_quantity>parent.selected_quantity))):
             raise ValueError("REFERENCE_STATE_LOT_OR_CYCLE_INVALID")
+        facts=[tuple(f) for f in state['h4_reentry_facts']]
+        if (any(len(f)!=3 or type(f[0]) is not int or type(f[1]) is not int or f[0]>f[1]
+                or f[0]>state['last_h4_ns'] or not _positive(f[2]) for f in facts)
+                or any(b[0]<=a[0] for a,b in zip(facts,facts[1:]))):
+            raise ValueError('REFERENCE_H4_FACT_CONTINUITY')
         self._features=rebuilt;self._signals=signals;self._ohlc=ohlc;self._parent=parent
         last=state['last_entry_attempt'];self._last_entry_attempt=tuple(last) if last is not None else None
         self._fills={k:tuple(v) for k,v in state['fills'].items()}
@@ -812,7 +829,7 @@ class ReferenceBtcPolicy:
         self._c1_peak=state['c1_peak'];self.c1=cycle;self._c1_money=money
         self._wait_regime=state['wait_regime'];self._regime_latch_ns=state['regime_latch_ns']
         self._h4_release_daily_ns=state['h4_release_daily_ns'];self._trail_block_index=state['trail_block_index']
-        self._last_h4_ns=state['last_h4_ns']
+        self._last_h4_ns=state['last_h4_ns'];self._h4_reentry_facts=facts
 
     def retry_native_tp_permission(self,parent_id: str,*,level: int,decision_index: int,
                                    ready_ns: int) -> TargetPlan | None:

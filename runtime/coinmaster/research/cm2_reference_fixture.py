@@ -14,13 +14,31 @@ from coinmaster.domain.wave_overlay import DailyBar,FeatureState,completed_wave_
 from coinmaster.strategy.cm2_reference_policy import selected_btc_candidate,DAY,HOUR
 
 FIXTURE_ID='cm2-btc-reference-cycle-native-v1'
-FIXTURE_IDS=(FIXTURE_ID,)
+TERMINAL_FIXTURE_ID='cm2-btc-reference-terminal-native-v1'
+FIXTURE_IDS=(FIXTURE_ID,TERMINAL_FIXTURE_ID)
 START_NS=1_725_148_800_000_000_000
 END_NS=START_NS+4*DAY
 MINUTE=60_000_000_000
 
 
-def fixture_protocol():
+def fixture_interval(fixture_id):
+    if fixture_id not in FIXTURE_IDS:raise ValueError("UNKNOWN_BTC_REFERENCE_FIXTURE")
+    return START_NS,START_NS+DAY+HOUR if fixture_id==TERMINAL_FIXTURE_ID else END_NS
+
+
+def fixture_protocol(fixture_id=FIXTURE_ID):
+    if fixture_id==TERMINAL_FIXTURE_ID:
+        return {"schema":"CM2_BTC_REFERENCE_ENGINEERING_TERMINAL_V1","fixture_id":fixture_id,
+            "interval":list(fixture_interval(fixture_id)),"engine_count":1,"initial_usdc":"10000",
+            "strategy":"ACTUAL_CM2Strategy_NO_NEW_QUOTES_AFTER_END",
+            "data":"EXISTING_SYNTHETIC_PAIRED_D1_SEED_AND_M1_MARK_QUOTES",
+            "mandatory":["position_open_before_boundary","standing_protection_canceled_at_boundary",
+                "native_callback_progress","actual_RO_drain_fill_at_boundary","no_quote_after_boundary",
+                "terminal_native_flat_orders_zero","native_fee_currency_and_profile","exact_native_cash_bridge","zero_liquidations"],
+            "not_claimed":["actual_partial_fill","actual_late_fill_after_cancel","historical_ROI","new_C1_evidence"],
+            "missing_component_policy":"NOT_OBSERVED_IS_NOT_PASS;ROOT_CASE_ACCEPTANCE_REQUIRED",
+            "native_constructor_authority":"NONE_FROM_THIS_SOURCE_OR_PREPARATION"}
+    if fixture_id!=FIXTURE_ID:raise ValueError("UNKNOWN_BTC_REFERENCE_FIXTURE")
     return {'schema':'CM2_BTC_REFERENCE_ENGINEERING_F01_V1','fixture_id':FIXTURE_ID,
         'interval':[START_NS,END_NS],'engine_count':1,'initial_usdc':'10000',
         'strategy':'ACTUAL_CM2Strategy_ONE_BTC_REFERENCE_OWNER',
@@ -64,9 +82,10 @@ def prepare_plan():
         'candidate':cfg,'live_first':live}
 
 
-def execution_price(plan,minute_index):
+def execution_price(plan,minute_index,terminal_case=False):
     side=plan['side'];base=D(60000);q1=D(str(plan['levels'][1]));q2=D(str(plan['levels'][2]))
     elapsed=minute_index-1440
+    if terminal_case:return base*(1-D(side)*D('.0035')) if elapsed==3 else base
     if elapsed<3:return base
     if elapsed==3:return base*(1-D(side)*D('.0035'))
     if elapsed<60:return base*(1+D(side)*(q1+D('.001')))
@@ -77,7 +96,9 @@ def execution_price(plan,minute_index):
 
 def run_fixture(request):
     from coinmaster.research.cm2_runner import reference_config,CM2RunConfig,build_strategy
-    if request.get('fixture_id')!=FIXTURE_ID or (request.get('start_ns'),request.get('end_ns'))!=(START_NS,END_NS):
+    fixture_id=request.get('fixture_id');start_ns,end_ns=fixture_interval(fixture_id)
+    terminal_case=fixture_id==TERMINAL_FIXTURE_ID
+    if (request.get('start_ns'),request.get('end_ns'))!=(start_ns,end_ns):
         raise ValueError('EXACT_BTC_REFERENCE_FIXTURE_CONTRACT_REQUIRED')
     cfg=CM2RunConfig(reference_config(request['policy']));plan=prepare_plan()
     from coinmaster.research.current_hl_profile import load_current_hl_diagnostic
@@ -107,7 +128,7 @@ def run_fixture(request):
         from nautilus_trader.backtest.models import MakerTakerFeeModel
         from nautilus_trader.model.enums import OmsType,AccountType,BarAggregation,PriceType,AggregationSource
         from nautilus_trader.model.data import BarType,BarSpecification
-        from nautilus_trader.model.identifiers import ClientId
+        from nautilus_trader.model.identifiers import ClientId,ClientOrderId
         from nautilus_trader.model.objects import Money
         btc,sol=current.instruments;venue=btc.id.venue;seed=D(10000)
         journal=NativeEventJournal(str(output/'fixture-funding.sqlite'))
@@ -116,8 +137,8 @@ def run_fixture(request):
         funding=FundingInstruction('F01-SYNTHETIC-BTC-FUNDING',btc.id,D('.0001'),funding_time,
             settlement_mark=funding_mark,basis='synthetic_mid',synthetic=True)
         risk=NativeMinuteRiskRecorder(output/'minute-native-risk.csv.gz',seed,current.instruments,
-            dict(current.selected_leverage),END_NS,margin_policy=current.margin_policy(120_000_000_000))
-        observer=CommittedNativeObserver(output/'coherent-native-events.jsonl.gz',seed,current.instruments,journal,END_NS)
+            dict(current.selected_leverage),end_ns,margin_policy=current.margin_policy(120_000_000_000))
+        observer=CommittedNativeObserver(output/'coherent-native-events.jsonl.gz',seed,current.instruments,journal,end_ns)
         modules=[PerpetualFundingModule((funding,),journal),
             BybitTierMarginModule((),current.selected_leverage,120_000_000_000,
                 margin_policy=current.margin_policy(120_000_000_000),settlement_currency=btc.settlement_currency),observer]
@@ -129,7 +150,7 @@ def run_fixture(request):
         mark_client,signal_client=ClientId('CM2_FIXTURE_MARK'),ClientId('CM2_FIXTURE_SIGNAL')
         minute_bars={i.id:BarType(i.id,BarSpecification(1,BarAggregation.MINUTE,PriceType.LAST),AggregationSource.EXTERNAL) for i in current.instruments}
         strategy=build_strategy(cfg,instruments=current.instruments,minute_bars=minute_bars,
-            margin_policy=current.margin_policy(120_000_000_000),start_ns=START_NS,end_ns=END_NS,
+            margin_policy=current.margin_policy(120_000_000_000),start_ns=START_NS,end_ns=end_ns,
             mark_types=tuple(venue_mark_data_type(i.id) for i in current.instruments),mark_client=mark_client,
             journal=journal,exit_fee_rate=D('.000432'),execution_hash='SYNTHETIC_F01_ZERO_IMPACT',
             seed_days=plan['seed'],seed_ohlc=plan['seed_ohlc'],
@@ -138,8 +159,8 @@ def run_fixture(request):
             risk_recorder=risk,coherent_observer=observer)
         engine.add_strategy(strategy)
         bundles=[];marks=[];signals=[];h4=[];quotes=[];acc=[]
-        for index in range(4*1440):
-            opened=START_NS+index*MINUTE;ns=opened+MINUTE;price=execution_price(plan,index)
+        for index in range((end_ns-START_NS)//MINUTE):
+            opened=START_NS+index*MINUTE;ns=opened+MINUTE;price=execution_price(plan,index,terminal_case)
             b=dict(open=str(price),high=str(price),low=str(price),close=str(price),turnover='1000000000')
             a=dict(open='150',high='150',low='150',close='150',turnover='1000000000')
             bundles.append(SimpleNamespace(open_time_ms=opened//1_000_000,btc_mark=b,sol_mark=a,btc_execution=b,sol_execution=a))
@@ -158,7 +179,7 @@ def run_fixture(request):
         engine.add_data(signals,client_id=signal_client,sort=False)
         engine.add_data(h4,client_id=signal_client,sort=False)
         engine.add_data(quotes,sort=False);engine.sort_data();engine.run();engine.end()
-        coherent=observer.finish_after_engine_end(END_NS);risk_report=risk.close();risk=None
+        coherent=observer.finish_after_engine_end(end_ns);risk_report=risk.close();risk=None
         report=strategy.reporting_state();fills=report['fill_audit'];cycle=report['cm2']['btc_reference']
         cash=engine.cache.account_for_venue(venue).balance_total(btc.settlement_currency).as_decimal()
         life=native_position_lifecycles(engine.cache)
@@ -187,8 +208,30 @@ def run_fixture(request):
             'exact_native_cash_bridge':realized is not None and cash-seed-realized-signed==0,
             'terminal_native_flat_orders_zero':not engine.cache.positions_open() and not engine.cache.orders_open() and not engine.cache.orders_inflight() and not strategy._owned,
             'zero_liquidations':len(strategy.liquidation_audit)==0}
+        if terminal_case:
+            entries=[f for f in fills if f['action'].startswith('ENTRY')]
+            reductions=[f for f in fills if not f['action'].startswith('ENTRY')]
+            protection=[]
+            for oid,info in strategy._order_audit.items():
+                if info['purpose']!='TP_GTC':continue
+                order=engine.cache.order(ClientOrderId(oid))
+                if order is None:continue
+                accepted=any(type(e).__name__=='OrderAccepted' and e.ts_event<end_ns for e in order.events)
+                canceled=any(type(e).__name__=='OrderCanceled' and e.ts_event==end_ns for e in order.events)
+                protection.append(accepted and canceled and order.filled_qty.as_decimal()==0)
+            drains=[f for f in fills if f['action']=='DRAIN']
+            checks={'position_open_before_boundary':bool(entries) and all(int(f['fill_ns'])<end_ns for f in entries)
+                    and not any(int(f['fill_ns'])<end_ns for f in reductions),
+                'standing_protection_canceled_at_boundary':any(protection),
+                'native_callback_progress':any(r['event']=='NATIVE_CALLBACK_PROGRESS' and r['timestamp_ns']==end_ns for r in strategy.drain_audit),
+                'actual_RO_drain_fill_at_boundary':bool(drains) and all(int(f['fill_ns'])==end_ns and
+                    strategy._order_audit[f['client_order_id']]['reduce_only'] is True for f in drains),
+                'no_quote_after_boundary':max(q.ts_event for q in quotes)==end_ns,
+                'terminal_native_flat_orders_zero':checks['terminal_native_flat_orders_zero'],
+                'native_fee_currency_and_profile':checks['native_fee_currency_and_profile'],
+                'exact_native_cash_bridge':checks['exact_native_cash_bridge'],'zero_liquidations':checks['zero_liquidations']}
         result={'status':'CASE_COMPONENT_GATES_PASS' if all(checks.values()) else 'CASE_COMPONENTS_NOT_OBSERVED_OR_FAILED',
-            'fixture_id':FIXTURE_ID,'fixture_protocol':fixture_protocol(),'checks':checks,
+            'fixture_id':fixture_id,'fixture_protocol':fixture_protocol(fixture_id),'checks':checks,
             'native_engine_constructions':1,'terminal_cash':str(cash),'native_realized':str(realized) if realized is not None else None,
             'signed_funding':str(signed),'native_commissions':str(sum((D(f['commission']) for f in fills),D(0))),
             'native_strategy_events':report,'native_position_lifecycles':life,'funding_cash_audit':posted,

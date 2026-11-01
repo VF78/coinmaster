@@ -172,6 +172,7 @@ def test_regime_wait_requires_genuine_ohlc_then_fresh_h4_permission():
     assert not p.reentry_allowed()  # D1 distance from first-seeded EMA is zero.
     p.accept_closed_btc_h4(open_ns=T0+35*DAY,close_ns=T0+35*DAY+4*HOUR,
         available_ns=T0+35*DAY+4*HOUR,receipt_ns=T0+35*DAY+4*HOUR,close=D(100+2*p.signals[-1].side))
+    p.consume_h4_reentry_facts(T0+35*DAY+4*HOUR)  # real quote-tail input phase
     assert p.reentry_allowed()  # Observed exact-float EMA side, one ATR favorable H4.
 
 
@@ -192,6 +193,7 @@ def test_global_h4_watermark_survives_json_and_cannot_relabel_old_reentry_releas
     p._wait_regime=True;p._regime_latch_ns=T0+35*DAY
     end=T0+35*DAY+4*HOUR;price=D(100+2*p.signals[-1].side)
     p.accept_closed_btc_h4(open_ns=end-4*HOUR,close_ns=end,available_ns=end,receipt_ns=end,close=price)
+    p.consume_h4_reentry_facts(end)  # quote tail, before testing later replay
     assert p.reentry_allowed()
     p.accept_closed_day(row(35),receipt_ns=T0+36*DAY,btc_high=101,btc_low=99)
     assert not p.reentry_allowed()

@@ -180,13 +180,13 @@ def preflight(request,receipt):
             raise ValueError('CONTROL_BOOTSTRAP_AND_PREPARATION_FREEZE_REQUIRED')
     if request['stage']=='engineering':
         fixture=engineering_fixture_module(request)
-        if (start,end)!=(fixture.START_NS,fixture.END_NS):raise ValueError('CM2_EXPLICIT_ENGINEERING_INTERVAL_REQUIRED')
+        if (start,end)!=fixture.fixture_interval(request['fixture_id']):raise ValueError('CM2_EXPLICIT_ENGINEERING_INTERVAL_REQUIRED')
     if request.get('initial_active_seed')!='10000':raise ValueError('CM2_FROZEN_BENCHMARK_SEED_REQUIRED')
     return cfg
 
 
 def engineering_fixture_module(request):
-    if request.get('fixture_id')!='cm2-btc-reference-cycle-native-v1':
+    if request.get('fixture_id') not in ('cm2-btc-reference-cycle-native-v1','cm2-btc-reference-terminal-native-v1'):
         raise ValueError('OLD_BREAKOUT_FIXTURE_NOT_QUALIFICATION_FOR_BTC_REFERENCE')
     from coinmaster.research import cm2_reference_fixture
     return cm2_reference_fixture
@@ -371,14 +371,14 @@ def validate_engineering_output(request):
     """Existing engineering leaf's persisted actual gates, not FULL finance."""
     fixture=engineering_fixture_module(request);output=Path(request['artifact_dir'])
     raw=output/'fixture-result.json';before=hashlib.sha256(raw.read_bytes()).hexdigest()
-    result=json.loads(raw.read_text());protocol=fixture.fixture_protocol()
+    result=json.loads(raw.read_text());protocol=fixture.fixture_protocol(request['fixture_id'])
     count=json.loads((output/'engine-construction-count.json').read_text())['engine_constructions']
-    artifacts=engineering_artifact_integrity(output,result,fixture.END_NS)
+    artifacts=engineering_artifact_integrity(output,result,fixture.fixture_interval(request['fixture_id'])[1])
     checks=result['checks'];events=result['native_strategy_events'];life=result['native_position_lifecycles']
     required=set(protocol['mandatory'])
     predicates={
         'actual_one_engine':type(count) is int and count==1 and result['native_engine_constructions']==1,
-        'fixture_identity':result['fixture_id']==fixture.FIXTURE_ID and result['fixture_protocol']==protocol,
+        'fixture_identity':result['fixture_id']==request['fixture_id'] and result['fixture_protocol']==protocol,
         'mandatory_component_evidence':set(checks)==required and all(checks[k] is True for k in required)
             and result['status']=='CASE_COMPONENT_GATES_PASS',
         'terminal_native_flat':events['terminal_lifecycle']['status']=='FLAT' and events['terminal_open_orders']==0,
@@ -390,7 +390,7 @@ def validate_engineering_output(request):
         if value is not True:raise ValueError('CM2_ENGINEERING_EVIDENCE_FAILED:'+key)
     if hashlib.sha256(raw.read_bytes()).hexdigest()!=before:raise ValueError('RAW_ENGINEERING_REPORT_MUTATED')
     proof={'status':'ENGINEERING_COMPONENT_EVIDENCE_VALIDATED_NOT_FULL_FINANCIAL_QUALIFICATION',
-        'fixture_id':fixture.FIXTURE_ID,'raw_sha256':before,'predicates':predicates,
+        'fixture_id':request['fixture_id'],'raw_sha256':before,'predicates':predicates,
         'actual_engine_constructions':count,'unobserved':protocol['not_claimed'],'artifact_integrity':artifacts}
     with (output/'engineering-postchild-proof.json').open('x') as stream:
         stream.write(json.dumps(proof,sort_keys=True)+'\n')

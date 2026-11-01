@@ -89,7 +89,7 @@ class CM2Strategy(Strategy):
         self.safety=SafetyState(emergency_peak_equity=config.active_seed)
         self._latest_marks={};self._quotes={};self._owned={};self._order_audit={};self._seen_trade_ids=set()
         self._days_pending={};self._queued_tp={};self._needs_daily=False;self._tp_ready_ns=0
-        self._drain={};self._risk_unknown=False;self._liquidating=False;self._restore_failed=False
+        self._drain={};self._drain_dispatching=set();self._risk_unknown=False;self._liquidating=False;self._restore_failed=False
         self._btc_source_frame=None;self._capital_last=None;self._capital_unknown=None
         self.fill_audit=[];self.entry_sizing_audit=[];self.pre_submit_gate_blocks=[]
         self.cm2_audit=[];self.child_permission_audit=[];self.drain_audit=[]
@@ -142,8 +142,6 @@ class CM2Strategy(Strategy):
         elif getattr(item,'hours',None)==4 and item.instrument_id==self.config.btc_id:
             self.reference.accept_closed_btc_h4(open_ns=item.open_time_ns,close_ns=item.ts_event,
                 available_ns=item.ts_init,receipt_ns=now,close=D(str(item.close)))
-            if self.reference.parent is None and self.reference._wait_regime and self.reference.reentry_allowed():
-                self._needs_daily=True;self._evaluate_daily(now)
 
     def _native_btc_capital(self,now):
         # Owner binding: the SAME actual shared native capital as reference A.
@@ -402,7 +400,8 @@ class CM2Strategy(Strategy):
             self._begin_drain(now,'GLOBAL',[str(self.config.btc_id),str(self.config.sol_id)],self.safety.reason)
         # A close already owned on arrival consumes this BTC callback even if
         # reconciliation completes it now. The next callback may share its ns.
-        btc_close_phase=tick.instrument_id==self.config.btc_id and 'BTC_ECONOMIC' in self._drain
+        close_phase='BTC_ECONOMIC' in self._drain
+        btc_close_phase=tick.instrument_id==self.config.btc_id and close_phase
         self._reconcile_drains(now)
         scope=self._scope_for(tick.instrument_id)
         if scope is not None:
@@ -424,16 +423,28 @@ class CM2Strategy(Strategy):
                 self._begin_drain(now,'SOL_SUBORDINATE',[str(self.config.sol_id)],'SOL_COMPONENT_INACTIVE')
             self._execute_drain(tick,now,'SOL_SUBORDINATE')
         self._reconcile_drains(now)
+        if (not self.safety.global_latched and not self._restore_failed and not close_phase
+                and not btc_close_phase and 'BTC_ECONOMIC' not in self._drain
+                and self.reference.consume_h4_reentry_facts(now)):
+            self._needs_daily=True;self._evaluate_daily(now)
         self._capture_btc_source(now)
 
     def _execute_drain(self,tick,now,scope):
         iid=tick.instrument_id
-        if self._orders(iid) or any(v['instrument_id']==iid for v in self._owned.values()):return
-        position=self._position(iid)
-        if position is None:return
-        side=-1 if position.is_long else 1
-        self._send(iid,position.quantity.as_decimal(),side,'DRAIN',now,tick,
-            reduce_only=True,reason=self._drain[scope]['reason'])
+        if iid in self._drain_dispatching:return
+        self._drain_dispatching.add(iid)
+        try:
+            while self._scope_for(iid)==scope:
+                if self._orders(iid) or any(v['instrument_id']==iid for v in self._owned.values()):break
+                position=self._position(iid)
+                if position is None:break
+                before=position.quantity.as_decimal();side=-1 if position.is_long else 1
+                if not self._send(iid,before,side,'DRAIN',now,tick,reduce_only=True,reason=self._drain[scope]['reason']):break
+                after=self._position(iid)
+                if after is None:break
+                if after.quantity.as_decimal()>=before:break
+            self._reconcile_drains(now)
+        finally:self._drain_dispatching.remove(iid)
 
     def _execute_entry(self,tick,now):
         p=self.reference.parent
@@ -718,7 +729,17 @@ class CM2Strategy(Strategy):
                     decision_index=info['decision_index'],ready_ns=event.ts_event+60_000_000_000)
                 if retry is not None:self._queued_tp[level]=retry
             self._needs_daily=True
-        self._reconcile_drains(now);self._persist_checkpoint()
+        self._reconcile_drains(now)
+        scope=self._scope_for(info['instrument_id'])
+        filled=getattr(order,'filled_qty',None) if order is not None else None
+        progressed=filled is not None and filled.as_decimal()>0
+        if scope is not None and (purpose!='DRAIN' or progressed):
+            tick=self._quotes.get(info['instrument_id'])
+            if tick is not None:
+                self.drain_audit.append({'timestamp_ns':now,'scope':scope,'event':'NATIVE_CALLBACK_PROGRESS',
+                    'retired_order_id':oid,'purpose':purpose})
+                self._execute_drain(tick,now,scope)
+        self._persist_checkpoint()
 
     def on_order_canceled(self,event):self._terminal_event(event)
     def on_order_denied(self,event):self._terminal_event(event,failed=True)
