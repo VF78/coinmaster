@@ -54,7 +54,7 @@ class ChildAdmissionTests(unittest.TestCase):
             f=feat(close=1020 if d>0 else 980)
             s=snap(btc_qty=D(d*20))
             st=state(direction=d,btc_target=D(d*40),btc_intent="INITIAL_ENTRY",intent_hour=f.closed_ns,
-                     initial_anchor=D(1000),initial_cash_risk=D(9000),intent_deadline_ns=f.closed_ns+HOUR_NS)
+                     initial_anchor=D(1000),initial_band_width=D(1000),initial_cash_risk=D(9000),intent_deadline_ns=f.closed_ns+HOUR_NS)
             self.assertTrue(btc_child_permission(configured(),f,s,st,now_ns=f.closed_ns+1,executable_price=D(1000))[0])
             self.assertTrue(btc_child_permission(configured(),f,s,st,now_ns=f.closed_ns+1,
                 executable_price=D(990 if d>0 else 1010))[0])

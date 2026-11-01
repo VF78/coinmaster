@@ -29,6 +29,8 @@ class Config:
     initial_band_atr: float | None = None
     restore_band_atr: float | None = None
     restore_lifetime_ns: int | None = None
+    # Explicitly disabled in uncensored research; configured by final backend.
+    emergency_drawdown_fraction: float | None = None
     def __post_init__(self):
         for name, lo, hi in (("trend_hours",24,168),("load",1,8),("stop_atr",2,6),
                             ("core",.5,.9),("hedge_trigger",.25,1.5),
@@ -42,7 +44,7 @@ class Config:
             raise ValueError("core_signal")
         if self.parent_risk_fraction is not None and not 0 < self.parent_risk_fraction <= 1:
             raise ValueError("parent_risk_fraction")
-        if self.initial_band_atr is not None and not 0 < self.initial_band_atr:
+        if self.initial_band_atr is not None and (not isfinite(self.initial_band_atr) or self.initial_band_atr <= 0):
             raise ValueError("initial_band_atr")
         if self.hedge_future_cost_rate is not None and (not isfinite(self.hedge_future_cost_rate) or self.hedge_future_cost_rate < 0):
             raise ValueError("hedge_future_cost_rate")
@@ -54,6 +56,8 @@ class Config:
             raise ValueError("restore_band_atr")
         if self.restore_lifetime_ns is not None and (type(self.restore_lifetime_ns) is not int or self.restore_lifetime_ns <= 0):
             raise ValueError("restore_lifetime_ns")
+        if self.emergency_drawdown_fraction is not None and (not isfinite(self.emergency_drawdown_fraction) or not 0 < self.emergency_drawdown_fraction < 1):
+            raise ValueError("emergency_drawdown_fraction")
         if self.mode not in ("joint", "btc_only", "btc_trim"):
             raise ValueError("mode")
 
@@ -94,6 +98,9 @@ class Features:
     h4_close: float = 0
     h4_closed_ns: int = 0
     daily_close: float = 0
+    # Execution geometry always uses the available closed-H1 simple ATR24.
+    # Core stop ATR remains independent (H1 here, D1 for the slow core).
+    execution_atr: float = 0
 
 def _variance(values):
     avg = mean(values)
@@ -123,7 +130,7 @@ def features(hours: tuple[Hour, ...], cfg: Config, now_ns: int) -> Features:
           for a,b in zip(hs[-25:],hs[-24:])]
     if any(not isfinite(x.sol_close) or x.sol_close <= 0 for x in hs):
         return Features(h.closed_ns,h.available_ns,True,"SOL_DATA_UNKNOWN",h.btc_close,
-            max(previous),min(previous),mean(tr),hedge_data_known=False)
+            max(previous),min(previous),mean(tr),hedge_data_known=False,execution_atr=mean(tr))
     btc = [log(b.btc_close/a.btc_close) for a,b in zip(hs[-169:], hs[-168:])]
     sol = [log(b.sol_close/a.sol_close) for a,b in zip(hs[-169:], hs[-168:])]
     vx, vy = _variance(btc), _variance(sol)
@@ -156,7 +163,7 @@ def features(hours: tuple[Hour, ...], cfg: Config, now_ns: int) -> Features:
                    any(d*x > 0 for x,y in scenarios) for d in (1,-1))
     return Features(h.closed_ns,h.available_ns,True,"",h.btc_close,max(previous),min(previous),
                     mean(true_ranges),beta,guard,rho,z,sum(btc[-6:]),b,u,valid,True,
-                    cov6/vy6 if vy6 > 1e-12 else 0.,0,scenarios,complete)
+                    cov6/vy6 if vy6 > 1e-12 else 0.,0,scenarios,complete,execution_atr=mean(true_ranges))
 
 @dataclass(frozen=True)
 class Snapshot:
@@ -217,6 +224,16 @@ class State:
     restore_target: D | None = None
     restore_anchor: D | None = None
     restore_deadline_ns: int = 0
+    # Absolute price widths are accepted once per respective finite epoch.
+    initial_band_width: D | None = None
+    restore_band_width: D | None = None
+    emergency_peak_equity: D | None = None
+    emergency_latched: bool = False
+    emergency_valuation_known: bool = False
+    emergency_trigger_equity: D | None = None
+    emergency_trigger_peak_equity: D | None = None
+    emergency_trigger_ns: int = 0
+    emergency_trigger_fraction: D | None = None
 
 @dataclass(frozen=True)
 class Decision:
@@ -263,6 +280,62 @@ def actual_harvest_geometry(*, signed_before_qty, filled_qty, fill_price, native
         "net_geometry":str(net),"strict_tick_buffer":str(buffer)}
 
 
+def validate_emergency_checkpoint(st, *, enabled):
+    peak=st.emergency_peak_equity
+    if type(st.emergency_latched) is not bool or type(st.emergency_valuation_known) is not bool:
+        raise ValueError("CM2_CHECKPOINT_EMERGENCY_FLAGS_INVALID")
+    if enabled and (not isinstance(peak,D) or not peak.is_finite() or peak <= 0):
+        raise ValueError("CM2_CHECKPOINT_EMERGENCY_PEAK_UNKNOWN")
+    if st.emergency_latched:
+        if (not isinstance(peak,D) or not peak.is_finite() or peak <= 0
+                or not isinstance(st.emergency_trigger_equity,D) or not st.emergency_trigger_equity.is_finite()
+                or not isinstance(st.emergency_trigger_peak_equity,D) or not st.emergency_trigger_peak_equity.is_finite()
+                or st.emergency_trigger_peak_equity <= 0 or st.emergency_trigger_peak_equity > peak
+                or not isinstance(st.emergency_trigger_fraction,D) or not st.emergency_trigger_fraction.is_finite() or not 0 < st.emergency_trigger_fraction < 1
+                or type(st.emergency_trigger_ns) is not int or st.emergency_trigger_ns <= 0
+                or st.emergency_trigger_equity > st.emergency_trigger_peak_equity*(D(1)-st.emergency_trigger_fraction)):
+            raise ValueError("CM2_CHECKPOINT_EMERGENCY_TRIGGER_UNKNOWN")
+    elif (st.emergency_trigger_equity is not None or st.emergency_trigger_peak_equity is not None or st.emergency_trigger_fraction is not None
+            or st.emergency_trigger_ns != 0):
+        raise ValueError("CM2_CHECKPOINT_EMERGENCY_LATCH_INCONSISTENT")
+
+
+def observe_emergency_equity(cfg, st, equity, *, known, now_ns, initial=False):
+    """Observe supplied native valuation; no PnL reconstruction or order effects."""
+    if cfg.emergency_drawdown_fraction is None and not st.emergency_latched:
+        return st
+    valid = known and isinstance(equity,D) and equity.is_finite()
+    peak = st.emergency_peak_equity
+    if peak is None:
+        if not (initial and valid and equity > 0):
+            return replace(st,emergency_valuation_known=False)
+        peak = equity
+    if not isinstance(peak,D) or not peak.is_finite() or peak <= 0 or not valid:
+        return replace(st,emergency_valuation_known=False)
+    peak = max(peak,equity)
+    updated = replace(st,emergency_peak_equity=peak,emergency_valuation_known=True)
+    fraction = cfg.emergency_drawdown_fraction
+    if (not st.emergency_latched and fraction is not None
+            and equity <= peak*(D(1)-D(str(fraction)))):
+        updated = replace(updated,emergency_latched=True,emergency_trigger_equity=equity,emergency_trigger_peak_equity=peak,
+            emergency_trigger_ns=now_ns,emergency_trigger_fraction=D(str(fraction)),
+            draining=True,btc_target=ZERO,sol_target=ZERO,btc_intent="RISK_TRIM",
+            intent_hour=0,harvest_target=None,harvest_start_qty=None,core_target_valid=False)
+    return updated
+
+
+def execution_band_width(multiplier, execution_atr):
+    if (multiplier is None or execution_atr is None
+            or not isfinite(multiplier) or not isfinite(execution_atr)
+            or multiplier <= 0 or execution_atr <= 0):
+        return None
+    return D(str(multiplier))*D(str(execution_atr))
+
+
+def valid_frozen_band(width):
+    return isinstance(width,D) and width.is_finite() and width > 0
+
+
 def btc_child_permission(cfg: Config, f: Features, s: Snapshot, st: State, *, now_ns: int,
                          executable_price: D) -> tuple[bool, str]:
     """Permission for ordinary BTC intent, using current native costs/quote.
@@ -275,6 +348,10 @@ def btc_child_permission(cfg: Config, f: Features, s: Snapshot, st: State, *, no
         if abs(st.btc_target) > abs(s.btc_qty) or st.btc_target*s.btc_qty < 0:
             return False, "NO_CURRENT_ORDINARY_INCREASE_RIGHT"
         return True, "SAFETY_OR_NO_ORDINARY_INTENT"
+    if st.emergency_latched:
+        return False,"EMERGENCY_DRAWDOWN_LATCHED"
+    if cfg.emergency_drawdown_fraction is not None and not st.emergency_valuation_known:
+        return False,"EMERGENCY_EQUITY_UNKNOWN"
     if (not f.valid or not (s.data_known if s.core_data_known is None else s.core_data_known) or s.unknown_orders
             or not (f.available_ns < now_ns and 0 <= now_ns-f.closed_ns <= HOUR_NS)
             or executable_price <= 0):
@@ -284,9 +361,9 @@ def btc_child_permission(cfg: Config, f: Features, s: Snapshot, st: State, *, no
     if intent == "MATCHED_RESTORE":
         if (not st.core_target_valid or st.harvested or core_direction(cfg,f) == -st.direction
                 or _sign(st.btc_target) != st.direction or cfg.parent_risk_fraction is None
-                or cfg.restore_band_atr is None or st.restore_anchor is None
+                or cfg.restore_band_atr is None or not valid_frozen_band(st.restore_band_width) or st.restore_anchor is None
                 or st.restore_target != st.btc_target or now_ns > st.restore_deadline_ns
-                or abs(executable_price-st.restore_anchor) > D(str(cfg.restore_band_atr*f.atr))):
+                or abs(executable_price-st.restore_anchor) > st.restore_band_width):
             return False, "MATCHED_CORE_RESTORE_INVALID"
         return (st.stop > 0 and stop_cash_risk(st.btc_target,executable_price,D(str(st.stop)),s.exit_fee_rate)
                 <= s.equity*D(str(cfg.parent_risk_fraction))), "MATCHED_CORE_RESTORE_RISK"
@@ -295,12 +372,12 @@ def btc_child_permission(cfg: Config, f: Features, s: Snapshot, st: State, *, no
     if cfg.parent_risk_fraction is None:
         return False, "PARENT_RISK_BUDGET_UNAPPROVED"
     if st.btc_intent == "INITIAL_ENTRY" and st.initial_anchor is not None:
-        if (cfg.initial_band_atr is None or now_ns > st.intent_deadline_ns
-                or abs(executable_price-st.initial_anchor) > D(str(cfg.initial_band_atr*f.atr))):
+        if (cfg.initial_band_atr is None or not valid_frozen_band(st.initial_band_width) or now_ns > st.intent_deadline_ns
+                or abs(executable_price-st.initial_anchor) > st.initial_band_width):
             return False, "INITIAL_COMPLETION_BAND_OR_DEADLINE"
     if intent == "INITIAL_ENTRY":
         if (st.initial_cash_risk is None or st.initial_cash_risk <= 0 or st.initial_anchor is None
-                or st.initial_r <= 0 or cfg.initial_band_atr is None):
+                or st.initial_r <= 0 or not valid_frozen_band(st.initial_band_width)):
             return False, "INITIAL_ACCEPTED_BUDGET_UNKNOWN"
         boundary = st.initial_anchor-D(_sign(st.btc_target))*D(str(st.initial_r))
         if _sign(st.btc_target)*(executable_price-boundary) <= 0:
@@ -349,12 +426,17 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
     if any(not v.is_finite() for v in (s.equity,s.btc_qty,s.sol_qty,s.btc_mark,s.sol_mark)):
         raise ValueError("non-finite native snapshot")
     now_ns = max(f.available_ns,f.closed_ns)+1 if now_ns is None else now_ns
+    if st.emergency_latched:
+        return Decision(ZERO,ZERO,"EMERGENCY_DRAWDOWN_DRAIN",replace(st,draining=True,btc_target=ZERO,sol_target=ZERO,btc_intent="RISK_TRIM",intent_hour=0,harvest_target=None,harvest_start_qty=None,core_target_valid=False),True)
     d = _sign(s.btc_qty)
     new_hour = f.closed_ns > st.last_hour
     if terminal or st.draining or s.equity <= 0:
         if s.btc_qty == 0 and s.sol_qty == 0 and s.btc_pending == 0 and s.sol_pending == 0 and not s.unknown_orders:
             clean = State(parent=st.parent,last_hour=f.closed_ns,release_anchor=st.release_anchor,
-                release_atr=st.release_atr,release_armed_ns=st.release_armed_ns,release_direction=st.release_direction)
+                release_atr=st.release_atr,release_armed_ns=st.release_armed_ns,release_direction=st.release_direction,
+                emergency_peak_equity=st.emergency_peak_equity,emergency_latched=st.emergency_latched,
+                emergency_valuation_known=st.emergency_valuation_known,emergency_trigger_equity=st.emergency_trigger_equity,emergency_trigger_peak_equity=st.emergency_trigger_peak_equity,
+                emergency_trigger_ns=st.emergency_trigger_ns,emergency_trigger_fraction=st.emergency_trigger_fraction)
             return Decision(ZERO,ZERO,"TERMINAL_FLAT" if terminal else "DRAIN_COMPLETE",clean,True)
         return Decision(ZERO,ZERO,"TERMINAL_DRAIN" if terminal else "PARENT_DRAIN",
                         replace(st,draining=True,btc_target=ZERO,sol_target=ZERO,btc_intent="RISK_TRIM",
@@ -385,6 +467,8 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
         mandatory = replace(mandatory,state=arm_slow_release(mandatory.state,f,now_ns))
     if mandatory is not None:
         return mandatory
+    if cfg.emergency_drawdown_fraction is not None and not st.emergency_valuation_known:
+        return Decision(s.btc_qty,s.sol_qty,"EMERGENCY_EQUITY_UNKNOWN",replace(st,btc_target=s.btc_qty,sol_target=s.sol_qty,btc_intent="RISK_TRIM",intent_hour=0,harvest_target=None,harvest_start_qty=None),True)
     unknown = (not f.valid or not (s.data_known if s.core_data_known is None else s.core_data_known) or s.unknown_orders
                or not (0 <= now_ns-f.closed_ns <= HOUR_NS)
                )
@@ -428,11 +512,14 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
             return Decision(ZERO,ZERO,"NO_BREAKOUT",replace(st,btc_target=ZERO,sol_target=ZERO))
         if cfg.parent_risk_fraction is None or cfg.initial_band_atr is None:
             return Decision(ZERO,ZERO,"PARENT_RISK_OR_INITIAL_BAND_UNAPPROVED",st,True)
+        width = execution_band_width(cfg.initial_band_atr,f.execution_atr)
+        if width is None:
+            return Decision(ZERO,ZERO,"EXECUTION_ATR_UNKNOWN",st,True)
         notional = risk_sized_notional(cfg,f,s)
         target = D(direction)*notional/s.btc_mark
         return Decision(target,ZERO,"BTC_BREAKOUT_ENTRY",replace(st,btc_target=target,
                         initial_r=cfg.stop_atr*f.atr,last_add_hour=f.closed_ns,unhedged_btc_target=target,
-                        btc_intent="INITIAL_ENTRY",intent_hour=f.closed_ns,initial_anchor=s.btc_mark,
+                        btc_intent="INITIAL_ENTRY",intent_hour=f.closed_ns,initial_anchor=s.btc_mark,initial_band_width=width,
                         intent_deadline_ns=f.closed_ns+HOUR_NS,
                         initial_cash_risk=s.equity*D(str(cfg.parent_risk_fraction)),core_target_valid=True,release_armed_ns=0))
     if cfg.core_signal == "slow_d1_h4" and f.core_direction == -d:
@@ -504,6 +591,7 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
         reference = st.unhedged_btc_target
         restore = replace(st,btc_target=reference,btc_intent="MATCHED_RESTORE",intent_hour=f.closed_ns,
             restore_target=reference,restore_anchor=s.btc_mark,
+            restore_band_width=execution_band_width(cfg.restore_band_atr,f.execution_atr),
             restore_deadline_ns=now_ns+(cfg.restore_lifetime_ns or 0))
         if abs(s.btc_qty) < abs(reference) and cfg.restore_lifetime_ns is not None and btc_child_permission(cfg,f,s,restore,now_ns=now_ns,executable_price=s.btc_mark)[0]:
             btc = reference
@@ -661,7 +749,7 @@ class Day:
 
 
 def slow_features(base: Features, days: tuple[Day, ...], hours: tuple[Hour, ...], now_ns: int):
-    """ONE clean EMA34 D1 regime, ATR14 D1, closed H4 release reference."""
+    """D1 core/stop ATR14, closed H4 release; retain independent H1 execution ATR24."""
     if any(d.available_ns > now_ns or d.available_ns < d.closed_ns for d in days):
         raise ValueError("D1 availability violation")
     if len(days) < 35 or any(b.closed_ns-a.closed_ns != 24*HOUR_NS for a,b in zip(days,days[1:])):
@@ -701,4 +789,4 @@ def arm_slow_release(st,f,now_ns):
         return st
     return replace(st,release_anchor=f.daily_close,release_atr=f.daily_atr,
         release_armed_ns=now_ns,release_direction=f.core_direction,core_target_valid=False,
-        restore_target=None,restore_anchor=None,restore_deadline_ns=0)
+        restore_target=None,restore_anchor=None,restore_band_width=None,restore_deadline_ns=0)

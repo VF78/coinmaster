@@ -65,7 +65,7 @@ def fixed_feature(hour,mode='joint'):
         10:(980,990,870,0,-.01),11:(980,990,870,0,-.01)}
     if mode == 'btc_trim' and hour in (3,4):rows[hour]=(1000,1010,990,0,.01)
     close,hi,lo,z,r=rows[hour];t=START_NS+hour*HOUR_NS
-    return Features(t,t,True,close=close,channel_high=hi,channel_low=lo,atr=10,
+    return Features(t,t,True,close=close,channel_high=hi,channel_low=lo,atr=10,execution_atr=10,
         beta=1,beta_guard=1,rho=.8,residual_z=z,btc_return6=r,hedge_valid=True,
         covariance_ratio=.75)
 

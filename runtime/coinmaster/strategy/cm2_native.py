@@ -19,7 +19,7 @@ from nautilus_trader.model.identifiers import InstrumentId, ClientId, ClientOrde
 from nautilus_trader.trading.strategy import Strategy
 from coinmaster.strategy.cm2_policy import (
     Config, State, Snapshot, Features, Hour, PairedHourBuilder, features, decide, D, ZERO,
-    reconcile_btc_intent, actual_harvest_geometry, btc_child_permission, HOUR_NS, Day, slow_features, evaluate_mandatory_risk, pending_effects, arm_slow_release)
+    reconcile_btc_intent, actual_harvest_geometry, btc_child_permission, HOUR_NS, Day, slow_features, evaluate_mandatory_risk, pending_effects, arm_slow_release, observe_emergency_equity, validate_emergency_checkpoint)
 from coinmaster.strategy.cm2_execution import ExecutionLimits, order_plan, stage_targets, REDUCE_MIN_NOTIONAL_REASON
 from coinmaster.strategy.cm2_checkpoint import KEY, SCHEMA, canonical, decode
 from coinmaster.venues.margin_policy import MarginMark
@@ -123,6 +123,7 @@ class CM2Strategy(Strategy):
                     or canonical(self._feed_checkpoint_binding()) != self._loaded_feed_binding):
                 self._restore_failed=True
                 raise ValueError("CM2_CHECKPOINT_NATIVE_CONTINUITY_CHANGED_BEFORE_START")
+        CM2Strategy._seed_emergency_peak(self)
         for bt in (self.config.btc_bar_type,self.config.sol_bar_type):
             self.subscribe_bars(bt)
         for i,dt in ((self.config.btc_id,self.config.btc_mark_data_type),(self.config.sol_id,self.config.sol_mark_data_type)):
@@ -161,6 +162,7 @@ class CM2Strategy(Strategy):
             if all(self._latest_marks.get(i) is not None and self._latest_marks[i].ts_event==mark.ts_event
                    for i in (self.config.btc_id,self.config.sol_id)):
                 self._check_liquidation(self.clock.timestamp_ns())
+            CM2Strategy._check_emergency_drawdown(self,self.clock.timestamp_ns())
 
     def _orders(self, instrument_id):
         found = {}
@@ -253,6 +255,8 @@ class CM2Strategy(Strategy):
         self._quotes[tick.instrument_id] = tick
         if now < self.config.trading_start_open_ns:
             return
+        # Native cash/inventory can change between marks (fees, funding, fills).
+        CM2Strategy._check_emergency_drawdown(self,now)
         terminal = now >= self.config.terminal_close_at_ns or self._restore_failed
         f = self.current_features
         # A closed-hour signal cannot act on its own same-timestamp quote.
@@ -586,6 +590,52 @@ class CM2Strategy(Strategy):
         return self.order_factory.market(instrument_id=iid,order_side=side,
             quantity=quantity,time_in_force=TimeInForce.IOC,reduce_only=reducing)
 
+    def _seed_emergency_peak(self):
+        # Native initial cash is sufficient only before any position or order.
+        # Failure to seed blocks growth rather than forgetting the first loss.
+        st = self.policy_state
+        if (self.config.policy.emergency_drawdown_fraction is None or st.emergency_peak_equity is not None
+                or self.cache.positions_open() or self.cache.orders_open() or self.cache.orders_inflight()
+                or self._owned):
+            return
+        try:
+            account = self.cache.account_for_venue(self.config.btc_id.venue)
+            if account is None or account.base_currency is None:
+                return
+            cash = account.balance_total(account.base_currency)
+            if cash is None:
+                return
+            self.policy_state = observe_emergency_equity(self.config.policy,st,cash.as_decimal(),
+                known=True,now_ns=self.clock.timestamp_ns(),initial=True)
+        except (ValueError,AttributeError):
+            return
+        if self.policy_state != st:
+            self._persist_checkpoint()
+
+    def _check_emergency_drawdown(self,now):
+        st = self.policy_state
+        if self.config.policy.emergency_drawdown_fraction is None and not st.emergency_latched:
+            return
+        CM2Strategy._seed_emergency_peak(self)
+        st = self.policy_state
+        try:
+            s = self._snapshot(now)
+            marks = [self._latest_marks.get(i) for i in (self.config.btc_id,self.config.sol_id)]
+            known = (s.data_known and not s.unknown_orders and s.ownership_known
+                and all(m is not None for m in marks) and marks[0].ts_event == marks[1].ts_event)
+            equity = s.equity
+        except (ValueError,AttributeError):
+            known,equity = False,None
+        updated = observe_emergency_equity(self.config.policy,st,equity,known=known,now_ns=now)
+        self.policy_state = updated
+        if updated.emergency_latched and not st.emergency_latched:
+            CM2Strategy._begin_drain(self,now,[str(self.config.btc_id),str(self.config.sol_id)])
+            for iid in (self.config.btc_id,self.config.sol_id):
+                for order in self._orders(iid):
+                    self.cancel_order(order)
+        if updated != st:
+            self._persist_checkpoint()
+
     def _check_liquidation(self,now):
         # Reuses the mature mark-first contract: native cash + native marked
         # unrealized PnL <= existing public-tier maintenance. Never synthetic PnL.
@@ -615,8 +665,11 @@ class CM2Strategy(Strategy):
                 self.cancel_order(order)
 
     def _admit(self, iid, q, price, s, now):
+        CM2Strategy._check_emergency_drawdown(self,now)
         account = self.cache.account_for_venue(iid.venue)
         try:
+            if self.policy_state.emergency_latched or (self.config.policy.emergency_drawdown_fraction is not None and not self.policy_state.emergency_valuation_known):
+                raise ValueError("EMERGENCY_DRAWDOWN_GROWTH_HOLD")
             if s.unknown_orders or not s.data_known:
                 raise ValueError("NATIVE_INCREASE_RISK_STATE_UNKNOWN")
             free = account.balance_free(account.base_currency).as_decimal()
@@ -891,7 +944,12 @@ class CM2Strategy(Strategy):
             raise ValueError("CM2_CHECKPOINT_DURABLE_LATEST_REQUIRED")
         domain=document["domain"]
         restored_drain=validate_drain(domain["drain"],(str(self.config.btc_id),str(self.config.sol_id)))
+        emergency_fields=("emergency_peak_equity","emergency_latched","emergency_valuation_known","emergency_trigger_equity","emergency_trigger_peak_equity","emergency_trigger_ns","emergency_trigger_fraction")
+        if ((self.config.policy.emergency_drawdown_fraction is not None or self.policy_state.emergency_latched)
+                and not all(k in domain["policy_state"] for k in emergency_fields)):
+            raise ValueError("CM2_CHECKPOINT_EMERGENCY_STATE_REQUIRED")
         restored_state=State(**domain["policy_state"])
+        validate_emergency_checkpoint(restored_state,enabled=self.config.policy.emergency_drawdown_fraction is not None)
         restored_features=Features(**domain["features"])
         restored_hours=deque((Hour(**h) for h in domain["hours"]),maxlen=170)
         owned={oid:{**info,"instrument_id":InstrumentId.from_str(info["instrument_id"]),
@@ -946,6 +1004,13 @@ class CM2Strategy(Strategy):
         lifecycle={"reason":"TERMINAL_BOUNDARY_SETTLEMENT" if terminal else "NOT_REACHED",
                    "status":"FLAT" if terminal and not positions and not open_orders else "OPEN"}
         return {"liquidations":self.liquidation_audit,"liquidation_lockout":self._liquidating,
+            "emergency_drawdown_control":{"status":"LATCHED" if self.policy_state.emergency_latched else "DISABLED_RESEARCH" if self.config.policy.emergency_drawdown_fraction is None else "ARMED",
+                "configured_fraction":self.config.policy.emergency_drawdown_fraction,"peak_equity":str(self.policy_state.emergency_peak_equity),
+                "valuation_known":self.policy_state.emergency_valuation_known,"trigger_equity":str(self.policy_state.emergency_trigger_equity),
+                "trigger_peak_equity":str(self.policy_state.emergency_trigger_peak_equity),
+                "trigger_threshold":str(self.policy_state.emergency_trigger_peak_equity*(D(1)-self.policy_state.emergency_trigger_fraction)) if self.policy_state.emergency_latched else None,
+                "trigger_ns":self.policy_state.emergency_trigger_ns,"trigger_fraction":str(self.policy_state.emergency_trigger_fraction),
+                "reset":"NO_AUTOMATIC_RESET_GUI_BINDING_DEFERRED"},
                 "terminal_lifecycle":lifecycle,"terminal_open_orders":len(open_orders),
                 "pre_submit_tier_margin_gate_blocks":self.pre_submit_gate_blocks,
                 "marked_equity_checkpoints":[],"fill_audit":self.fill_audit,

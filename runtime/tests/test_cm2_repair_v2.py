@@ -175,7 +175,7 @@ class RepairV2Tests(unittest.TestCase):
         ro=N(side=OrderSide.SELL,leaves_qty=N(as_decimal=lambda:D(10)),is_reduce_only=True)
         projections=[]
         def margin(i,q,t):projections.append(q);return (q*D(1000)/40,ZERO)
-        fake=N(config=N(btc_id=btc,sol_id=sol,exit_fee_rate=D('.000432'),limits=N(max_gross_notional=None),margin_policy=N(margin_for=margin)),
+        fake=N(policy_state=State(),config=N(policy=Config(),btc_id=btc,sol_id=sol,exit_fee_rate=D('.000432'),limits=N(max_gross_notional=None),margin_policy=N(margin_for=margin)),
             cache=N(account_for_venue=lambda venue:account),_orders=lambda iid:[ro] if iid==btc else [],pre_submit_gate_blocks=[])
         self.assertTrue(CM2Strategy._admit(fake,btc,D(4),D(1000),snap(btc_qty=D(40)),1))
         self.assertEqual(max(projections),D(44))

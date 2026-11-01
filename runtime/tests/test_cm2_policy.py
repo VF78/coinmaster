@@ -19,7 +19,7 @@ def configured(**kwargs):
 
 def feat(t=200*HOUR_NS,**kwargs):
     return replace(Features(t,t,True,close=1000,channel_high=1010,channel_low=990,
-        atr=10,beta=1.5,beta_guard=1.8,rho=.8,residual_z=0,btc_return6=.01,
+        atr=10,execution_atr=10,beta=1.5,beta_guard=1.8,rho=.8,residual_z=0,btc_return6=.01,
         common_loss=.02,residual_loss=.001,hedge_valid=True,covariance_ratio=1/1.8),**kwargs)
 
 def snap(**kwargs):
