@@ -430,6 +430,7 @@ class CM2Strategy(Strategy):
         self._capture_btc_source(now)
 
     def _execute_drain(self,tick,now,scope):
+        if tick.ts_event<self._drain[scope]['state']['first_ns']:return
         iid=tick.instrument_id
         if iid in self._drain_dispatching:return
         self._drain_dispatching.add(iid)

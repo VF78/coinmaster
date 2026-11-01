@@ -117,3 +117,15 @@ def test_terminal_engineering_protocol_and_actual_api_boundary(tmp_path,monkeypa
     monkeypatch.setattr(CM2Strategy,'__init__',lambda *a,**k:(_ for _ in ()).throw(AssertionError('NO_STRATEGY')))
     proof=runner.fixture_api_boundary_probe(request,tmp_path/'probe')
     assert proof['boundary_calls']==1 and proof['native_engine_constructions']==0
+
+@pytest.mark.parametrize('scope',["GLOBAL","BTC_ECONOMIC"])
+@pytest.mark.parametrize('quote_ns',[99,100,101])
+def test_drain_requires_quote_at_or_after_persisted_decision_epoch(scope,quote_ns):
+    f,qty,calls,event=drain_adapter();f._owned={}
+    f._drain={scope:f._drain['GLOBAL']}
+    f._quotes['BTC'].ts_event=quote_ns
+    f._send=lambda *a,**kw:calls.append(1) or False
+    f._execute_drain(f._quotes['BTC'],101,scope)
+    assert calls==([1] if quote_ns>=100 else [])
+    assert qty[0]==1 and f._drain[scope]['state']['first_ns']==100
+    assert not f._drain_dispatching
