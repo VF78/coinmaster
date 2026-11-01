@@ -2,7 +2,7 @@
 
 These are saved simulations before systematic repair v2, not results of repaired source c0b8180ee63903cad3673be9127030ee1343645b. Source, model, configuration and executable groups differ; these rows are not matched policy counterfactuals. Four failed broad cases have no qualified terminal TOTAL. A separately recovered nominal report never changes its original physical FAILED status. UNKNOWN is not zero.
 
-Numbers below are preserved from saved reports. Cash attribution does not establish causal dollar loss from a code defect. No live-account data or private infrastructure is included. Repair v2 has zero actual native/economic runs; its source-only checks do not prove profitability or live readiness.
+Numbers below are preserved from saved reports. Cash attribution does not establish causal dollar loss from a code defect. No live-account data or private infrastructure is included. Repair v2 now has three native engineering attempts (one preserved failure and two component passes) and zero economic runs. See [the native component validation](native-components-v2-20261101.md); expected unresolved dust prevents terminal-flat acceptance.
 
 | Case | Physical status | Host | Original source | TOTAL USDC | Coherent DD % | Settled DD % |
 |---|---|---|---|---:|---:|---:|
