@@ -1,0 +1,143 @@
+"""Audit-only deferral: exact frozen c411 trading fields and native knownness.
+
+The embedded original method is immutable source evidence, used only with
+synthetic native getter facts. No Strategy/Engine constructors or PnL engine.
+"""
+from decimal import Decimal as D
+from types import SimpleNamespace as N
+from dataclasses import replace
+from pathlib import Path
+import hashlib
+import pytest
+from coinmaster.strategy.cm2_native import CM2Strategy
+from coinmaster.strategy.cm2_order_contract import FRESH_NS
+from coinmaster.strategy.cm2_execution import NativeExposure
+ZERO=D(0)
+
+def frozen_c411_capital(self,now):
+        # Owner binding: the SAME actual shared native capital as reference A.
+        # Per-BTC attribution below is audit only; never a second account/book.
+        account=self.cache.account_for_venue(self.config.btc_id.venue);reader=self.config.funding_reader
+        if account is None or account.base_currency is None or not callable(reader) or getattr(reader,'journal',None) is None:
+            raise ValueError("NATIVE_CAPITAL_OR_FUNDING_UNKNOWN")
+        currency=account.base_currency;cash=account.balance_total(currency)
+        if cash is None or cash.currency!=currency:raise ValueError("NATIVE_CASH_CURRENCY_UNKNOWN")
+        snapshot=self._snapshot(now)
+        if snapshot.unknown_orders or not snapshot.data_known or not snapshot.equity.is_finite():
+            raise ValueError("ACTUAL_NATIVE_EQUITY_UNKNOWN")
+        realized_total=funding_total=ZERO;btc_realized=btc_funding=ZERO;attribution_known=True
+        for iid in (self.config.btc_id,self.config.sol_id):
+            instrument=self.cache.instrument(iid)
+            if instrument.settlement_currency!=currency:raise ValueError("SETTLEMENT_CURRENCY_UNKNOWN")
+            funding=reader(iid)
+            if not isinstance(funding,D) or not funding.is_finite():raise ValueError("NATIVE_SIGNED_FUNDING_UNKNOWN")
+            funding_total+=funding
+            realized=self.portfolio.realized_pnl(iid,account_id=account.id)
+            if realized is None or realized.currency!=currency:attribution_known=False
+            else:
+                realized_total+=realized.as_decimal()
+                if iid==self.config.btc_id:btc_realized=realized.as_decimal()
+            if iid==self.config.btc_id:btc_funding=funding
+        position=self._position(self.config.btc_id)
+        open_pnl=ZERO
+        if position is not None:
+            mark=self._latest_marks.get(self.config.btc_id)
+            if mark is None or not 0<=now-mark.ts_event<=FRESH_NS:raise ValueError("BTC_CAPITAL_CAUSAL_MARK_UNKNOWN")
+            upnl=self.portfolio.unrealized_pnl(self.config.btc_id,
+                price=self.cache.instrument(self.config.btc_id).make_price(mark.price),account_id=account.id)
+            if upnl is None or upnl.currency!=currency:raise ValueError("NATIVE_BTC_UPNL_UNKNOWN")
+            open_pnl=upnl.as_decimal()
+        bridge=self.config.active_seed+realized_total+funding_total-cash.as_decimal() if attribution_known else None
+        self.reference.note_btc_funding(str(btc_funding))
+        result=dict(equity=snapshot.equity,open_pnl=open_pnl,funding=btc_funding,
+            native_qty=(position.quantity.as_decimal()*(D(1) if position.is_long else D(-1))) if position else ZERO,
+            position_id=str(position.id) if position else '',position_open_ns=position.ts_opened if position else 0,
+            revision=self.reference.btc_revision,currency=str(currency),
+            basis='TOTAL_ACTUAL_NATIVE_CASH_PLUS_HELD_NATIVE_UPNL',
+            btc_attribution_audit={'status':'EXACT' if bridge==0 else 'UNKNOWN_NATIVE_ATTRIBUTION_BRIDGE',
+                'btc_realized':btc_realized if attribution_known else None,'btc_signed_funding':btc_funding,
+                'btc_upnl':open_pnl,'btc_derived_sizing_audit':self.config.active_seed+btc_realized+btc_funding+open_pnl if attribution_known else None,
+                'unallocated_bridge':bridge,'trading_input':False,'fees':'ALREADY_INCLUDED_NATIVE_REALIZED'})
+        self._capital_last=result;self._capital_unknown=None
+        return result
+
+
+class ID(str):
+    venue="V"
+
+
+def native_facts(side=1, held=True, forbid_realized=False):
+    b,so=ID("BTC"),ID("SOL");calls=[];notes=[]
+    money=lambda value,currency="USDC":N(currency=currency,as_decimal=lambda:value)
+    account=N(id="V-001",base_currency="USDC",balance_total=lambda c:money(D(10000)))
+    funding_values={b:D("-.125"),so:D(".375")}
+    def funding(i):
+        calls.append(("funding",i))
+        return funding_values[i]
+    funding.journal=object()
+    current=[NativeExposure(D("12345.12345678"),D(side*2) if held else ZERO,ZERO,
+        D(100),D(10),False,True,{b:True,so:True})]
+    def realized(i,**kw):
+        if forbid_realized:raise AssertionError("REALIZED_AUDIT_MUST_NOT_RUN_HOT")
+        calls.append(("realized",i,kw))
+        return money(D(100) if i==b else D(200))
+    def unrealized(i,**kw):
+        calls.append(("unrealized",i,kw))
+        return money(D("-27.12345678"))
+    pos=N(id="NATIVE-P",is_long=side==1,quantity=N(as_decimal=lambda:D(2)),ts_opened=20) if held else None
+    f=N(config=N(btc_id=b,sol_id=so,funding_reader=funding,active_seed=D(10000)),
+        cache=N(account_for_venue=lambda v:account,instrument=lambda i:N(settlement_currency="USDC",make_price=lambda x:x)),
+        _snapshot=lambda now:current[0],_position=lambda i:pos,_latest_marks={b:N(price=D("100.12345"),ts_event=100)},
+        portfolio=N(realized_pnl=realized,unrealized_pnl=unrealized),
+        reference=N(note_btc_funding=notes.append,btc_revision=7))
+    return f,b,so,calls,notes,current,funding_values
+
+
+@pytest.mark.parametrize("side,held",[(1,True),(-1,True),(1,False)])
+def test_exact_trading_fields_and_getter_calls_match_frozen_c411(side,held):
+    old,b,so,oldcalls,oldnotes,_,_=native_facts(side,held)
+    new,_,_,newcalls,newnotes,_,_=native_facts(side,held,forbid_realized=True)
+    expected=frozen_c411_capital(old,100)
+    actual=CM2Strategy._native_btc_capital(new,100)
+    assert {k:v for k,v in actual.items() if k!="btc_attribution_audit"} == {
+        k:v for k,v in expected.items() if k!="btc_attribution_audit"}
+    assert oldnotes==newnotes==["-0.125"]
+    assert [c for c in oldcalls if c[0]!="realized"]==newcalls
+    assert sum(c[0]=="realized" for c in oldcalls)==2
+    audit=actual["btc_attribution_audit"]
+    assert audit["status"]=="DEFERRED_TO_NATIVE_TERMINAL_RECONCILIATION"
+    assert all(audit[k] is None for k in ("btc_realized","btc_derived_sizing_audit","unallocated_bridge"))
+    assert audit["btc_signed_funding"]==D("-.125") and audit["btc_upnl"]==actual["open_pnl"]
+    assert audit["trading_input"] is False
+
+
+@pytest.mark.parametrize("failure",["journal","cash_currency","cash_missing","orders","marks",
+    "settlement","btc_funding","sol_funding","sol_funding_nonfinite","stale_btc_mark","upnl_missing","upnl_currency"])
+def test_every_native_knownness_guard_matches_original(failure):
+    failures=[]
+    for fn in (frozen_c411_capital,CM2Strategy._native_btc_capital):
+        f,b,so,calls,notes,snapshot,funding_values=native_facts()
+        account=f.cache.account_for_venue("V")
+        if failure=="journal":f.config.funding_reader.journal=None
+        elif failure=="cash_currency":account.balance_total=lambda c:N(currency="OTHER",as_decimal=lambda:D(10000))
+        elif failure=="cash_missing":account.balance_total=lambda c:None
+        elif failure=="orders":snapshot[0]=replace(snapshot[0],unknown_orders=True)
+        elif failure=="marks":snapshot[0]=replace(snapshot[0],data_known=False)
+        elif failure=="settlement":f.cache.instrument=lambda i:N(settlement_currency="OTHER",make_price=lambda x:x)
+        elif failure=="btc_funding":funding_values[b]=None
+        elif failure=="sol_funding":funding_values[so]=None
+        elif failure=="sol_funding_nonfinite":funding_values[so]=D("NaN")
+        elif failure=="stale_btc_mark":f._latest_marks[b].ts_event=100-FRESH_NS-1
+        elif failure=="upnl_missing":f.portfolio.unrealized_pnl=lambda *a,**k:None
+        elif failure=="upnl_currency":f.portfolio.unrealized_pnl=lambda *a,**k:N(currency="OTHER",as_decimal=lambda:D(0))
+        with pytest.raises(ValueError) as error:fn(f,100)
+        failures.append(str(error.value))
+    assert failures[0]==failures[1]
+
+
+def test_terminal_financial_code_byte_unchanged():
+    root=Path(__file__).parents[1]/"coinmaster"
+    expected={"research/cm2_runner.py":"42fb4572149c98dc556b5bab2e1fd49f007e2b1fde93347f416360cc7bf5d879",
+        "research/cm2_committed_validation.py":"a7d1c597d9f0bb80f1c69bf147f0b34a665f930f461a2dc001b8e3e3714ee775",
+        "research/native_baseline.py":"87a9f2a8536843b93de0dacae427de6c672574dbcbb0159c915f8887b1cf2611"}
+    assert {name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in expected}==expected

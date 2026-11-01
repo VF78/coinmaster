@@ -165,18 +165,12 @@ class CM2Strategy(Strategy):
         snapshot=self._snapshot(now)
         if snapshot.unknown_orders or not snapshot.data_known or not snapshot.equity.is_finite():
             raise ValueError("ACTUAL_NATIVE_EQUITY_UNKNOWN")
-        realized_total=funding_total=ZERO;btc_realized=btc_funding=ZERO;attribution_known=True
+        btc_funding=ZERO
         for iid in (self.config.btc_id,self.config.sol_id):
             instrument=self.cache.instrument(iid)
             if instrument.settlement_currency!=currency:raise ValueError("SETTLEMENT_CURRENCY_UNKNOWN")
             funding=reader(iid)
             if not isinstance(funding,D) or not funding.is_finite():raise ValueError("NATIVE_SIGNED_FUNDING_UNKNOWN")
-            funding_total+=funding
-            realized=self.portfolio.realized_pnl(iid,account_id=account.id)
-            if realized is None or realized.currency!=currency:attribution_known=False
-            else:
-                realized_total+=realized.as_decimal()
-                if iid==self.config.btc_id:btc_realized=realized.as_decimal()
             if iid==self.config.btc_id:btc_funding=funding
         position=self._position(self.config.btc_id)
         open_pnl=ZERO
@@ -187,17 +181,16 @@ class CM2Strategy(Strategy):
                 price=self.cache.instrument(self.config.btc_id).make_price(mark.price),account_id=account.id)
             if upnl is None or upnl.currency!=currency:raise ValueError("NATIVE_BTC_UPNL_UNKNOWN")
             open_pnl=upnl.as_decimal()
-        bridge=self.config.active_seed+realized_total+funding_total-cash.as_decimal() if attribution_known else None
         self.reference.note_btc_funding(str(btc_funding))
         result=dict(equity=snapshot.equity,open_pnl=open_pnl,funding=btc_funding,
             native_qty=(position.quantity.as_decimal()*(D(1) if position.is_long else D(-1))) if position else ZERO,
             position_id=str(position.id) if position else '',position_open_ns=position.ts_opened if position else 0,
             revision=self.reference.btc_revision,currency=str(currency),
             basis='TOTAL_ACTUAL_NATIVE_CASH_PLUS_HELD_NATIVE_UPNL',
-            btc_attribution_audit={'status':'EXACT' if bridge==0 else 'UNKNOWN_NATIVE_ATTRIBUTION_BRIDGE',
-                'btc_realized':btc_realized if attribution_known else None,'btc_signed_funding':btc_funding,
-                'btc_upnl':open_pnl,'btc_derived_sizing_audit':self.config.active_seed+btc_realized+btc_funding+open_pnl if attribution_known else None,
-                'unallocated_bridge':bridge,'trading_input':False,'fees':'ALREADY_INCLUDED_NATIVE_REALIZED'})
+            btc_attribution_audit={'status':'DEFERRED_TO_NATIVE_TERMINAL_RECONCILIATION',
+                'btc_realized':None,'btc_signed_funding':btc_funding,
+                'btc_upnl':open_pnl,'btc_derived_sizing_audit':None,
+                'unallocated_bridge':None,'trading_input':False,'fees':'ALREADY_INCLUDED_NATIVE_REALIZED'})
         self._capital_last=result;self._capital_unknown=None
         return result
 

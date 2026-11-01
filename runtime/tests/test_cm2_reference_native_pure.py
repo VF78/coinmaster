@@ -169,7 +169,7 @@ def test_total_actual_equity_sizing_and_attribution_audit_do_not_create_sleeve()
     account=f.cache.account_for_venue('V')
     f.portfolio=N(realized_pnl=lambda *a,**k:N(currency='USDC',as_decimal=lambda:D(0)))
     result=CM2Strategy._native_btc_capital(f,100)
-    assert result['equity']==D(12345) and result['btc_attribution_audit']['status']=='UNKNOWN_NATIVE_ATTRIBUTION_BRIDGE'
+    assert result['equity']==D(12345) and result['btc_attribution_audit']['status']=='DEFERRED_TO_NATIVE_TERMINAL_RECONCILIATION'
     assert result['btc_attribution_audit']['trading_input'] is False
     f.config.funding_reader.journal=None
     with pytest.raises(ValueError,match='FUNDING_UNKNOWN'):CM2Strategy._native_btc_capital(f,100)
