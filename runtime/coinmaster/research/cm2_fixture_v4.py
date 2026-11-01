@@ -12,7 +12,8 @@ from coinmaster.strategy.cm2_policy import Config,Features,HOUR_NS,MINUTE_NS,btc
 
 FIXTURE_ID='cm2-systematic-repair-native-v4'
 TRIM_FIXTURE_ID='cm2-systematic-repair-trim-native-v4'
-FIXTURE_IDS=(FIXTURE_ID,TRIM_FIXTURE_ID)
+EMERGENCY_FIXTURE_ID='cm2-execution-units-emergency-native-v1'
+FIXTURE_IDS=(FIXTURE_ID,TRIM_FIXTURE_ID,EMERGENCY_FIXTURE_ID)
 START_NS=1725148800000000000
 END_NS=START_NS+12*HOUR_NS
 TEST_ONLY_POLICY=Config(load=4,core=.5,hedge_fraction=.45,parent_risk_fraction=.9,
@@ -51,6 +52,8 @@ def witness_clock(mode):
     return dict(submit=182*MINUTE_NS+1,cancel=190*MINUTE_NS,touch=191*MINUTE_NS+1_000_000_000,revert=191*MINUTE_NS+2_000_000_000,price=D(1200))
 
 def test_policy(fixture_id):
+    if fixture_id == EMERGENCY_FIXTURE_ID:
+        return replace(TEST_ONLY_POLICY,emergency_drawdown_fraction=.40)
     if fixture_id == TRIM_FIXTURE_ID:
         return replace(TEST_ONLY_POLICY,mode='btc_trim',restore_band_atr=2,restore_lifetime_ns=HOUR_NS)
     if fixture_id != FIXTURE_ID:raise ValueError('CM2_V4_UNKNOWN_VARIANT')
@@ -81,6 +84,7 @@ def run_fixture(request):
     if fixture_id not in FIXTURE_IDS or (request.get('start_ns'),request.get('end_ns'))!=(START_NS,END_NS):
         raise ValueError('CM2_EXPLICIT_V4_12H_CONTRACT_REQUIRED')
     policy=test_policy(fixture_id);mode=policy.mode
+    emergency_case=fixture_id==EMERGENCY_FIXTURE_ID
     invalid_minute=270 if mode=='btc_trim' else 190
     if json.dumps(request.get('fixture_policy'),sort_keys=True)!=json.dumps(asdict(policy),sort_keys=True):
         raise ValueError('CM2_V4_EXPLICIT_TEST_ONLY_POLICY_REQUIRED')
@@ -122,8 +126,10 @@ def run_fixture(request):
         def ts_init(self):return self.ns
     input_type=DataType(Input)
     class FixtureStrategy(CM2Strategy):
-        def __init__(self,config):super().__init__(config);self.samples={};self.replays=[];self.dust_seed=None;self.late_sentinel=None;self.trim_sentinel=None;self.cancel_requests=[];self.cancel_outcomes=[];self.native_fill_states=[];self.stop_transitions=[]
-        def on_start(self):super().on_start();self.subscribe_data(input_type,client_id=ClientId('CM2_V4'))
+        def __init__(self,config):super().__init__(config);self.samples={};self.replays=[];self.dust_seed=None;self.late_sentinel=None;self.trim_sentinel=None;self.cancel_requests=[];self.cancel_outcomes=[];self.native_fill_states=[];self.stop_transitions=[];self.emergency_observations=[];self.initial_emergency_seed=None
+        def on_start(self):
+            super().on_start();self.subscribe_data(input_type,client_id=ClientId('CM2_V4'))
+            self.initial_emergency_seed=asdict(self.policy_state) if emergency_case else None
         def cancel_order(self,order,*args,**kwargs):
             self.cancel_requests.append({'oid':str(order.client_order_id),'ns':self.clock.timestamp_ns()})
             return super().cancel_order(order,*args,**kwargs)
@@ -134,11 +140,17 @@ def run_fixture(request):
             self.cancel_outcomes.append({'oid':str(event.client_order_id),'ns':event.ts_event,'kind':'CANCEL_REJECTED'})
             super().on_order_cancel_rejected(event)
         def on_order_filled(self,event):
-            self.native_fill_states.append({'oid':str(event.client_order_id),'ns':event.ts_event,'draining':self.policy_state.draining,'parent':self.policy_state.parent})
+            self.native_fill_states.append({'oid':str(event.client_order_id),'ns':event.ts_event,'draining':self.policy_state.draining,'parent':self.policy_state.parent,'initial_band_width':str(self.policy_state.initial_band_width),'execution_atr':self.current_features.execution_atr,'core_stop_atr':self.current_features.atr})
             super().on_order_filled(event)
+        def _observe_emergency_transition(self,before,callback):
+            if emergency_case and not before.emergency_latched and self.policy_state.emergency_latched:
+                self.emergency_observations.append({'native_clock_ns':str(self.clock.timestamp_ns()),'callback':callback,
+                    'state':asdict(self.policy_state),'actual_drain':dict(self._drain) if self._drain else None,
+                    'scope':'AFTER_ACTUAL_PRODUCT_CALLBACK_BEFORE_NEXT_EXTERNAL_EVENT'})
         def on_quote_tick(self,tick):
             before=self.policy_state
             super().on_quote_tick(tick)
+            self._observe_emergency_transition(before,'on_quote_tick')
             if not before.draining and self.policy_state.draining:
                 self.stop_transitions.append({'ns':self.clock.timestamp_ns(),'old_stop':before.stop,'hedge_valid':self.current_features.hedge_valid,'btc_target':str(self.policy_state.btc_target)})
         def _late_harvest(self,now):
@@ -183,7 +195,11 @@ def run_fixture(request):
             self._chain_audit('FIXTURE_SENTINEL',self._order_audit[oid]);self._persist_checkpoint();self.submit_order(order)
         def on_data(self,data):
             value=getattr(data,'data',data)
-            if not isinstance(value,Input):return super().on_data(data)
+            if not isinstance(value,Input):
+                before=self.policy_state
+                result=super().on_data(data)
+                self._observe_emergency_transition(before,'on_data')
+                return result
             if value.feature is not None:self.current_features=value.feature
             if value.action=='LATE_HARVEST':self._late_harvest(value.ns)
             if value.action=='TRIM_PARTIAL':self._trim_partial(value.ns)
@@ -195,7 +211,7 @@ def run_fixture(request):
                 before=canonical(self._checkpoint_document());saved=self.save();native=canonical(self._native_checkpoint_binding())
                 self.load(saved)
                 self.replays.append({'same_domain':before==canonical(self._checkpoint_document()),'same_native':native==canonical(self._native_checkpoint_binding()),'scope':'SAME_ENGINE_RETAINED_FEEDS_NOT_COLD'})
-            if value.action=='DUST_SEED':
+            if value.action=='DUST_SEED' and not emergency_case:
                 s=self._snapshot(value.ns)
                 if s.btc_qty or s.sol_qty or self._orders(btc.id) or self._orders(sol.id):
                     self.dust_seed={'status':'NOT_REACHED','reason':'ACTUAL_INVENTORY_NOT_FLAT'}
@@ -209,7 +225,7 @@ def run_fixture(request):
                     self._chain_audit('FIXTURE_SENTINEL',self._order_audit[oid]);self._persist_checkpoint();self.submit_order(order)
             if value.action in ('SAMPLE','DUST_SEED','REPLAY'):
                 s=self._snapshot(value.ns)
-                self.samples[str((value.ns-START_NS)//MINUTE_NS)]={'btc':str(s.btc_qty),'sol':str(s.sol_qty),'btc_target':str(self.policy_state.btc_target),'sol_target':str(self.policy_state.sol_target),'intent':self.policy_state.btc_intent,'draining':self.policy_state.draining,'blockers':dict(self.target_blockers)}
+                self.samples[str((value.ns-START_NS)//MINUTE_NS)]={'btc':str(s.btc_qty),'sol':str(s.sol_qty),'btc_target':str(self.policy_state.btc_target),'sol_target':str(self.policy_state.sol_target),'intent':self.policy_state.btc_intent,'draining':self.policy_state.draining,'blockers':dict(self.target_blockers),'initial_band_width':str(self.policy_state.initial_band_width),'execution_atr':self.current_features.execution_atr}
     funding=tuple(FundingInstruction('v4-'+str(m)+'-'+str(i.id),i.id,D('.0001'),START_NS+m*MINUTE_NS,prices(m,mode)[0 if i==btc else 1]) for m in (150,450) for i in (btc,sol))
     modules=[PerpetualFundingModule(funding,journal),BybitTierMarginModule((),tuple(selected.items()),120_000_000_000,margin_policy=profile.margin_policy(120_000_000_000),settlement_currency=btc.settlement_currency),observer]
     Observed=observed_neutral_strategy_type(FixtureStrategy,recorder);engine=None
@@ -225,7 +241,7 @@ def run_fixture(request):
         inputs=[CustomData(input_type,Input(START_NS+h*HOUR_NS,feature=fixed_feature(h,mode))) for h in range(12)]
         inputs.append(CustomData(input_type,Input(START_NS+invalid_minute*MINUTE_NS,feature=replace(fixed_feature(4 if mode=='btc_trim' else 3,mode),available_ns=START_NS+invalid_minute*MINUTE_NS,hedge_valid=False,hedge_data_known=False,reason='TESTONLY_OPTIONAL_SOL_UNAVAILABLE'))))
         for m in (120,121,122,123,150,181,190,191,192,240,241,250,260,270,271,272,400,450,481,570,571,574,719):
-            action='REPLAY' if m==400 else 'DUST_SEED' if m==570 else 'SAMPLE'
+            action='REPLAY' if m==400 else 'DUST_SEED' if m==570 and not emergency_case else 'SAMPLE'
             inputs.append(CustomData(input_type,Input(START_NS+m*MINUTE_NS+1,action=action)))
         clock=witness_clock(mode)
         if mode=='joint':inputs.append(CustomData(input_type,Input(START_NS+clock['submit'],action='LATE_HARVEST')))
@@ -270,9 +286,37 @@ def run_fixture(request):
         if mode=='btc_trim':coverage['canceled_ADD_retained_actual_hedge']='NOT_APPLICABLE_NO_SOL_HEDGE_COMPARATOR'
         required=('mandatory_stop_between_H1_with_SOL_unavailable','native_partial_cancel','bounded_replay','actual_funding','actual_dust_deadline_unresolved', 'matched_trim_restore' if mode=='btc_trim' else 'canceled_ADD_retained_actual_hedge')
         if mode=='joint':required=(*required,'forced_native_late_fill')
+        emergency_state=asdict(strategy.policy_state) if emergency_case else None
+        if emergency_case:
+            st=strategy.policy_state;fraction=D(str(policy.emergency_drawdown_fraction))
+            trigger_peak=st.emergency_trigger_peak_equity;trigger_equity=st.emergency_trigger_equity
+            coverage['seed_initialized_peak']=observed(strategy.initial_emergency_seed['emergency_peak_equity']==seed)
+            coverage['dynamic_HWM_emergency_latch']=observed(st.emergency_latched and trigger_peak is not None and trigger_peak>seed
+                and trigger_equity is not None and seed*(1-fraction)<trigger_equity<=trigger_peak*(1-fraction)
+                and st.emergency_trigger_ns>START_NS and st.emergency_trigger_fraction==fraction)
+            coverage['actual_DD_begin_drain']=observed(any(D(o['native_clock_ns'])==st.emergency_trigger_ns
+                and o['state']['btc_target']==0 and o['state']['sol_target']==0 and o['actual_drain']
+                and set(o['actual_drain']['scoped_zero_ids'])=={str(btc.id),str(sol.id)} for o in strategy.emergency_observations))
+            initial_ids={f['client_order_id'] for f in fills if f.get('admission',{}).get('intent')=='INITIAL_ENTRY'}
+            coverage['actual_frozen_execution_band']=observed(any(o['oid'] in initial_ids and o['execution_atr']>0
+                and D(o['initial_band_width'])==D(str(policy.initial_band_atr))*D(str(o['execution_atr'])) for o in strategy.native_fill_states))
+            native_by_id={str(o.client_order_id):o for o in orders}
+            reductions={f['instrument'] for f in fills if int(f['fill_ns'])>=st.emergency_trigger_ns
+                and native_by_id[f['client_order_id']].is_reduce_only}
+            coverage['actual_both_symbol_RO_drain']=observed(reductions=={str(btc.id),str(sol.id)} and residue.btc_qty==0 and residue.sol_qty==0
+                and not engine.cache.orders_open() and not engine.cache.orders_inflight())
+            after_trigger=[o for o in state['cm2']['order_admission_audit'] if int(o['submit_ns'])>=st.emergency_trigger_ns]
+            coverage['post_trigger_no_new_growth_submissions']=observed(bool(after_trigger) and all(o['reduce_only'] for o in after_trigger))
+            coverage['native_cash_bridge']=observed(coherent['native_cash_transitions']['status']=='EXACT_OBSERVED_NATIVE_TRANSITIONS')
+            coverage['actual_dust_deadline_unresolved']='NOT_APPLICABLE_EMERGENCY_CASE_NO_DUST_SEED'
+            coverage['between_mark_cash_trigger']='NOT_OBSERVED_NATIVE_PURE_COUNTEREXAMPLE_CLOSED'
+            coverage['same_valuation_MM_breach']='NOT_OBSERVED_NATIVE_PURE_CALLBACK_CASE_CLOSED'
+            required=('seed_initialized_peak','dynamic_HWM_emergency_latch','actual_DD_begin_drain','actual_frozen_execution_band',
+                'native_partial_cancel','forced_native_late_fill','actual_both_symbol_RO_drain','post_trigger_no_new_growth_submissions',
+                'bounded_replay','actual_funding','native_cash_bridge')
         reached=all(coverage[k]=='PASS' for k in required)
-        native_orders=[{'client_order_id':str(o.client_order_id),'status':o.status.name,'quantity':str(o.quantity),'filled_qty':str(o.filled_qty),'leaves_qty':str(o.leaves_qty),'events':[{'type':type(e).__name__,'ts_event':str(e.ts_event),'last_qty':str(getattr(e,'last_qty','')),'last_px':str(getattr(e,'last_px',''))} for e in o.events]} for o in orders]
-        report={'native_orders':native_orders,'trim_sentinel':strategy.trim_sentinel,'fixture_model_identity':'TESTONLY_STOCK_LIMIT_PARTIAL5_TOUCH1_ZEROIMPACT_MARKET_UNCHANGED','fixture_id':fixture_id,'variant':mode,'status':'PASS_COMPONENTS_EXPECTED_DUST_BLOCKED_NOT_TERMINAL' if reached else 'FAIL_COMPONENT_NOT_REACHED','ranking_eligible':False,'engine_constructors':1,'fixture_policy_test_only':asdict(policy),'coverage':coverage,'samples':strategy.samples,'replays':strategy.replays,'stop_transitions':strategy.stop_transitions,'late_sentinel':strategy.late_sentinel,'cancel_requests':strategy.cancel_requests,'cancel_outcomes':strategy.cancel_outcomes,'native_fill_states':strategy.native_fill_states,'dust_seed':strategy.dust_seed,'native_cash':str(account.balance_total(btc.settlement_currency).as_decimal()),'signed_native_funding':str(signed),'native_residual':{'btc':str(residue.btc_qty),'sol':str(residue.sol_qty),'btc_mark':str(residue.btc_mark),'sol_mark':str(residue.sol_mark)},'terminal_cash_bridge':'UNKNOWN_NON_FLAT_NO_TERMINAL_TOTAL','native_lifecycles':native_position_lifecycles(engine.cache),'native_adapter':state,'coherent_native_observer':coherent,'minute_native_risk':minute_summary}
+        native_orders=[{'client_order_id':str(o.client_order_id),'status':o.status.name,'instrument':str(o.instrument_id),'reduce_only':o.is_reduce_only,'quantity':str(o.quantity),'filled_qty':str(o.filled_qty),'leaves_qty':str(o.leaves_qty),'events':[{'type':type(e).__name__,'ts_event':str(e.ts_event),'last_qty':str(getattr(e,'last_qty','')),'last_px':str(getattr(e,'last_px',''))} for e in o.events]} for o in orders]
+        report={'emergency_state':emergency_state,'initial_emergency_seed':strategy.initial_emergency_seed,'emergency_observations':strategy.emergency_observations,'coincident_protective_stop_fills':stop_fills if emergency_case else [],'required_coverage':required,'native_orders':native_orders,'trim_sentinel':strategy.trim_sentinel,'fixture_model_identity':'TESTONLY_STOCK_LIMIT_PARTIAL5_TOUCH1_ZEROIMPACT_MARKET_UNCHANGED','fixture_id':fixture_id,'variant':mode,'status':('PASS_EMERGENCY_COMPONENTS_ENGINEERING_ONLY' if emergency_case else 'PASS_COMPONENTS_EXPECTED_DUST_BLOCKED_NOT_TERMINAL') if reached else 'FAIL_COMPONENT_NOT_REACHED','ranking_eligible':False,'engine_constructors':1,'fixture_policy_test_only':asdict(policy),'coverage':coverage,'samples':strategy.samples,'replays':strategy.replays,'stop_transitions':strategy.stop_transitions,'late_sentinel':strategy.late_sentinel,'cancel_requests':strategy.cancel_requests,'cancel_outcomes':strategy.cancel_outcomes,'native_fill_states':strategy.native_fill_states,'dust_seed':strategy.dust_seed,'native_cash':str(account.balance_total(btc.settlement_currency).as_decimal()),'signed_native_funding':str(signed),'native_residual':{'btc':str(residue.btc_qty),'sol':str(residue.sol_qty),'btc_mark':str(residue.btc_mark),'sol_mark':str(residue.sol_mark)},'terminal_cash_bridge':coherent['native_cash_transitions'] if emergency_case else 'UNKNOWN_NON_FLAT_NO_TERMINAL_TOTAL','native_lifecycles':native_position_lifecycles(engine.cache),'native_adapter':state,'coherent_native_observer':coherent,'minute_native_risk':minute_summary}
         (output/'engineering-report.json').write_text(json.dumps(report,sort_keys=True,default=str)+'\n')
         if not reached:raise ValueError('CM2_V4_REQUIRED_NATIVE_COMPONENT_NOT_REACHED')
         return report

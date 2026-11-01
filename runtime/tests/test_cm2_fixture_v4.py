@@ -90,6 +90,24 @@ class FixtureV4PrepTest(unittest.TestCase):
             self.assertLess(c['cancel'],c['touch'])
             self.assertLess(c['touch'],c['revert'])
             self.assertLess(c['revert'],c['cancel']+fixture.CANCEL_LATENCY_NS)
+    def test_emergency_selector_has_immutable_explicit_test_only_threshold(self):
+        from coinmaster.research import cm2_fixture_v4 as fixture
+        with patch('nautilus_trader.backtest.engine.BacktestEngine',side_effect=AssertionError('NO_ACTUAL_ENGINE')) as native:
+            module=runner.engineering_fixture_module({'fixture_id':fixture.EMERGENCY_FIXTURE_ID})
+            cfg=module.test_policy(fixture.EMERGENCY_FIXTURE_ID)
+            self.assertEqual(cfg.emergency_drawdown_fraction,.40)
+            self.assertEqual(cfg.mode,'joint')
+            self.assertIsNone(Config().emergency_drawdown_fraction)
+            for other in (fixture.FIXTURE_ID,fixture.TRIM_FIXTURE_ID):
+                self.assertIsNone(module.test_policy(other).emergency_drawdown_fraction)
+            for h in range(12):self.assertEqual(module.fixed_feature(h).execution_atr,10)
+            native.assert_not_called()
+    def test_emergency_wrong_policy_fails_before_any_constructor(self):
+        from coinmaster.research import cm2_fixture_v4 as fixture
+        with patch('nautilus_trader.backtest.engine.BacktestEngine',side_effect=AssertionError('NO_ACTUAL_ENGINE')) as native:
+            with self.assertRaisesRegex(ValueError,'TEST_ONLY_POLICY_REQUIRED'):
+                fixture.run_fixture({'fixture_id':fixture.EMERGENCY_FIXTURE_ID,'start_ns':fixture.START_NS,'end_ns':fixture.END_NS,'fixture_policy':asdict(fixture.TEST_ONLY_POLICY)})
+            native.assert_not_called()
     def test_script_is_finite_and_feature_available_at_own_clock(self):
         module=runner.engineering_fixture_module({'fixture_id':'cm2-systematic-repair-native-v4'})
         for hour in range(12):
