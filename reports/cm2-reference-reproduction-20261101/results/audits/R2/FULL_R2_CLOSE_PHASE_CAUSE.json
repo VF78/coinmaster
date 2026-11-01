@@ -1,0 +1,275 @@
+[
+  {
+    "newcycle": 7,
+    "key": "768:SELL:1",
+    "clocks": [
+      "1728518460000000000",
+      "1728518400000000000"
+    ],
+    "prior": {
+      "REFERENCE": {
+        "action": "FORCED_CLOSE",
+        "reason": "REGIME",
+        "fill_ns": "1728518400000000000",
+        "quote_ns": "1728518400000000000",
+        "px": "60607.7",
+        "qty": "0.58337",
+        "admission": {}
+      },
+      "CM2": {
+        "action": "DRAIN",
+        "reason": "REGIME",
+        "fill_ns": "1728518400000000000",
+        "quote_ns": null,
+        "px": "60607.6",
+        "qty": "0.58235",
+        "admission": {
+          "episode_entry_signal_index": 764,
+          "intent": "MARKET",
+          "native_quote_ns": 1728518340000000000,
+          "parent_id": "f7ae5fc0-b150-4981-9eec-7f330bb7a596",
+          "purpose": "DRAIN",
+          "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+          "reference_signal_index": 768,
+          "request_cap": "30000000",
+          "source_policy_version": "cm2-btc-reference-v1",
+          "tp_level": null
+        }
+      }
+    }
+  },
+  {
+    "newcycle": 16,
+    "key": "844:BUY:1",
+    "clocks": [
+      "1735084860000000000",
+      "1735084800000000000"
+    ],
+    "prior": {
+      "REFERENCE": {
+        "action": "FORCED_CLOSE",
+        "reason": "REGIME",
+        "fill_ns": "1735084800000000000",
+        "quote_ns": "1735084800000000000",
+        "px": "98628.3",
+        "qty": "1.48001",
+        "admission": {}
+      },
+      "CM2": {
+        "action": "DRAIN",
+        "reason": "REGIME",
+        "fill_ns": "1735084800000000000",
+        "quote_ns": null,
+        "px": "98713.9",
+        "qty": "1.45398",
+        "admission": {
+          "episode_entry_signal_index": 842,
+          "intent": "MARKET",
+          "native_quote_ns": 1735084740000000000,
+          "parent_id": "de1d0f1a-5453-4dd4-99a7-6eb38bb9fc59",
+          "purpose": "DRAIN",
+          "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+          "reference_signal_index": 844,
+          "request_cap": "30000000",
+          "source_policy_version": "cm2-btc-reference-v1",
+          "tp_level": null
+        }
+      }
+    }
+  },
+  {
+    "newcycle": 23,
+    "key": "884:SELL:1",
+    "clocks": [
+      "1738540860000000000",
+      "1738540800000000000"
+    ],
+    "prior": {
+      "REFERENCE": {
+        "action": "FORCED_CLOSE",
+        "reason": "REGIME",
+        "fill_ns": "1738540800000000000",
+        "quote_ns": "1738540800000000000",
+        "px": "97645.7",
+        "qty": "1.00906",
+        "admission": {}
+      },
+      "CM2": {
+        "action": "DRAIN",
+        "reason": "REGIME",
+        "fill_ns": "1738540800000000000",
+        "quote_ns": null,
+        "px": "97670",
+        "qty": "1.00367",
+        "admission": {
+          "episode_entry_signal_index": 878,
+          "intent": "MARKET",
+          "native_quote_ns": 1738540740000000000,
+          "parent_id": "74987847-90fb-4b1f-ae09-09d5fbd4cb7e",
+          "purpose": "DRAIN",
+          "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+          "reference_signal_index": 884,
+          "request_cap": "30000000",
+          "source_policy_version": "cm2-btc-reference-v1",
+          "tp_level": null
+        }
+      }
+    }
+  },
+  {
+    "newcycle": 34,
+    "key": "1007:SELL:1",
+    "clocks": [
+      "1749168060000000000",
+      "1749168000000000000"
+    ],
+    "prior": {
+      "REFERENCE": {
+        "action": "FORCED_CLOSE",
+        "reason": "REGIME",
+        "fill_ns": "1749168000000000000",
+        "quote_ns": "1749168000000000000",
+        "px": "101455.2",
+        "qty": "1.3078",
+        "admission": {}
+      },
+      "CM2": {
+        "action": "DRAIN",
+        "reason": "REGIME",
+        "fill_ns": "1749168000000000000",
+        "quote_ns": null,
+        "px": "101450.4",
+        "qty": "1.38025",
+        "admission": {
+          "episode_entry_signal_index": 995,
+          "intent": "MARKET",
+          "native_quote_ns": 1749167940000000000,
+          "parent_id": "b79daf2b-3d00-4d6c-9764-0e22e1c3140f",
+          "purpose": "DRAIN",
+          "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+          "reference_signal_index": 1007,
+          "request_cap": "30000000",
+          "source_policy_version": "cm2-btc-reference-v1",
+          "tp_level": null
+        }
+      }
+    }
+  },
+  {
+    "newcycle": 46,
+    "key": "1116:SELL:1",
+    "clocks": [
+      "1758585660000000000",
+      "1758585600000000000"
+    ],
+    "prior": {
+      "REFERENCE": {
+        "action": "FORCED_CLOSE",
+        "reason": "REGIME",
+        "fill_ns": "1758585600000000000",
+        "quote_ns": "1758585600000000000",
+        "px": "112600.7",
+        "qty": "2.17982",
+        "admission": {}
+      },
+      "CM2": {
+        "action": "DRAIN",
+        "reason": "REGIME",
+        "fill_ns": "1758585600000000000",
+        "quote_ns": null,
+        "px": "112623.3",
+        "qty": "2.12347",
+        "admission": {
+          "episode_entry_signal_index": 1104,
+          "intent": "MARKET",
+          "native_quote_ns": 1758585540000000000,
+          "parent_id": "b67149d9-7f93-465b-880f-f3d166407d8a",
+          "purpose": "DRAIN",
+          "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+          "reference_signal_index": 1116,
+          "request_cap": "30000000",
+          "source_policy_version": "cm2-btc-reference-v1",
+          "tp_level": null
+        }
+      }
+    }
+  },
+  {
+    "newcycle": 56,
+    "key": "1236:SELL:1",
+    "clocks": [
+      "1768953660000000000",
+      "1768953600000000000"
+    ],
+    "prior": {
+      "REFERENCE": {
+        "action": "FORCED_CLOSE",
+        "reason": "REGIME",
+        "fill_ns": "1768953600000000000",
+        "quote_ns": "1768953600000000000",
+        "px": "88379.9",
+        "qty": "5.61633",
+        "admission": {}
+      },
+      "CM2": {
+        "action": "DRAIN",
+        "reason": "REGIME",
+        "fill_ns": "1768953600000000000",
+        "quote_ns": null,
+        "px": "88390.2",
+        "qty": "5.5376",
+        "admission": {
+          "episode_entry_signal_index": 1235,
+          "intent": "MARKET",
+          "native_quote_ns": 1768953540000000000,
+          "parent_id": "6290d4fe-046b-478a-893d-1c54fa3e8ba0",
+          "purpose": "DRAIN",
+          "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+          "reference_signal_index": 1236,
+          "request_cap": "30000000",
+          "source_policy_version": "cm2-btc-reference-v1",
+          "tp_level": null
+        }
+      }
+    }
+  },
+  {
+    "newcycle": 74,
+    "key": "1411:BUY:1",
+    "clocks": [
+      "1784073660000000000",
+      "1784073600000000000"
+    ],
+    "prior": {
+      "REFERENCE": {
+        "action": "FORCED_CLOSE",
+        "reason": "REGIME",
+        "fill_ns": "1784073600000000000",
+        "quote_ns": "1784073600000000000",
+        "px": "65013.4",
+        "qty": "56.55267",
+        "admission": {}
+      },
+      "CM2": {
+        "action": "DRAIN",
+        "reason": "REGIME",
+        "fill_ns": "1784073600000000000",
+        "quote_ns": null,
+        "px": "64994.3",
+        "qty": "52.66619",
+        "admission": {
+          "episode_entry_signal_index": 1409,
+          "intent": "MARKET",
+          "native_quote_ns": 1784073540000000000,
+          "parent_id": "4763577f-5d57-470d-8c40-94dc398db7c9",
+          "purpose": "DRAIN",
+          "reduce_floor_policy": "CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN",
+          "reference_signal_index": 1411,
+          "request_cap": "30000000",
+          "source_policy_version": "cm2-btc-reference-v1",
+          "tp_level": null
+        }
+      }
+    }
+  }
+]

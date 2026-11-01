@@ -1,0 +1,42 @@
+{
+  "schema": "CM2_SOL_RELATIVE_DAILY_VOLATILITY_LOCK_V1",
+  "status": "DIRECT_OWNER_CONFIRMED_LOCKED",
+  "recorded_utc": "2026-11-01T19:50:54.441256+00:00",
+  "owner_confirmation": "User confirmed \u03c3SOL/\u03c3BTC60 and SOLnotional=BTCnotional/K; no further experiment changes",
+  "formula": "K(t)=sample_std(simple_daily_returns_SOL,last60completedpairedUTCdays)/sample_std(simple_daily_returns_BTC,same60days)",
+  "returns": "close_d/close_previous_day-1",
+  "lookback_days": 60,
+  "ddof": 1,
+  "calculation_precision": "Decimal50;ROUND_HALF_EVEN;positiveexactinputclose strings",
+  "data_availability": "OnlycompletedUTCdays withclose_time<=decisiontime; require60pairedreturns/61prices; nofuture/forwardfill/nearzeroBTCreturn ratios",
+  "zero_or_unknown": "zeroBTCvolatility/nonfinite/missingpairedhistory => UNKNOWN, no substitute0/1 orepsilon",
+  "update": "RecalculateaftereachcompletedUTCday",
+  "episode_freeze": "KselectedforfirstacceptedSOLopeningintent, remainsfixedonceanynativefill untilSOLnativeflat+ordersclosed; anunfilledabandonedintentdoesnotfreezefutureepisodes. ExistingSOLcarryafterBTCclosekeepssameK.",
+  "size": "target_SOL_notional_USDC=abs(actual_open_BTC_notional_USDC)/K_episode; SOLbaseqty=target/SOLcurrent_executable_price, flooronlytoofficiallot; venue/marginguards mayconstrainactualadmissionwithexplicitreason",
+  "no_extra_multiplier": "No covariance/optimizedcoefficient silently multiplies thisowner-definednotionalformula",
+  "not_BTC_formula": "DoesnotalterreferenceBTCsignalbeta270/entryrules/C1/capital authority",
+  "immutability": "N/formula/returntype/dailytimebasis/episodelockfixedforallfutureexperiments; onlyfreshownerdirectinstructioncanreplace",
+  "selection_evidence": "SOL_VOLATILITY_LOCK/RESULT.json andKVOL_DIAGNOSTIC_RANKING.csv",
+  "audited_snapshots": {
+    "2024-09-01": {
+      "K": "1.5372105123860708116381182134145561640093433642869",
+      "BTC_1000_USDC_SOL_target_before_lot_rounding": "650.52898867299038178116127369037974457660179445922",
+      "last_completed_daily_close_ms": 1725148800000
+    },
+    "2025-09-01": {
+      "K": "2.4851539106406952552476663851696799469272836061760",
+      "BTC_1000_USDC_SOL_target_before_lot_rounding": "402.38956457316195567814979546383611682380477284348",
+      "last_completed_daily_close_ms": 1756684800000
+    },
+    "2026-09-01": {
+      "K": "1.3830543059005534376357391359382963346832841965511",
+      "BTC_1000_USDC_SOL_target_before_lot_rounding": "723.03740766626381817083660557832815088424123368783",
+      "last_completed_daily_close_ms": 1788220800000
+    }
+  },
+  "input_daily_sha256": {
+    "BTCUSDT": "71270c5b9aadad1a2d46003060e04882eaa6a0544802f4c1f025bd7253ea7545",
+    "SOLUSDT": "897b89d1e93d5b961e769321edf4bb44981384fad280d8e62e8b9fca64431ab4"
+  },
+  "implementation_status": "Contractlocked; SOLruntimeimplementationnotyetenabled; codeusesrollingformula,nodatehardcodes"
+}

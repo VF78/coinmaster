@@ -1,0 +1,642 @@
+{
+  "created_utc": "2026-11-01T20:19:02.387889+00:00",
+  "status": "LOCAL_PREPARATION_ONLY",
+  "pack_root": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/PUBLICATION_RESULTS_01",
+  "files": [
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/REFERENCE/artifacts/CM2_REF_FULL_20260901_A_R1-fills.csv",
+      "original_sha256": "47d3d617a428a15b351ca8611cf94294945f02803a2e371e072dea4e75e38766",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/REFERENCE/fills.csv",
+      "packed_sha256": "47d3d617a428a15b351ca8611cf94294945f02803a2e371e072dea4e75e38766",
+      "original_bytes": 149508,
+      "packed_bytes": 149508,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/REFERENCE/artifacts/CM2_REF_FULL_20260901_A_R1-orders.csv",
+      "original_sha256": "6b55650d9ae49de3376f27b025c924c29cf7a2bbf7a164bd38452916eef787b3",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/REFERENCE/orders.csv",
+      "packed_sha256": "6b55650d9ae49de3376f27b025c924c29cf7a2bbf7a164bd38452916eef787b3",
+      "original_bytes": 170551,
+      "packed_bytes": 170551,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/REFERENCE/artifacts/committed-wm-qualification-v1/QUALIFICATION.json",
+      "original_sha256": "e79e5f5bbf77ff561c340186aa3298d730f91865959f6b975cb95cb567f64669",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/REFERENCE/committed-wm-qualification-v1/QUALIFICATION.json",
+      "packed_sha256": "e79e5f5bbf77ff561c340186aa3298d730f91865959f6b975cb95cb567f64669",
+      "original_bytes": 13164,
+      "packed_bytes": 13164,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/REFERENCE/artifacts/native-child-terminal.json",
+      "original_sha256": "2aa7a1e17227e7f0a3b488aeff343987702725bbe1f93ff81ef6c6cfb62dbf47",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/REFERENCE/native-child-terminal.json",
+      "packed_sha256": "2aa7a1e17227e7f0a3b488aeff343987702725bbe1f93ff81ef6c6cfb62dbf47",
+      "original_bytes": 577,
+      "packed_bytes": 577,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/REFERENCE/artifacts/engine-construction-count.json",
+      "original_sha256": "dc4ed679f9623d77c867dd31dccd17ac34ed163c83bd3c99f6b490605496078d",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/REFERENCE/engine-construction-count.json",
+      "packed_sha256": "dc4ed679f9623d77c867dd31dccd17ac34ed163c83bd3c99f6b490605496078d",
+      "original_bytes": 88,
+      "packed_bytes": 88,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/REFERENCE/artifacts/CM2_REF_FULL_20260901_A_R1-raw-native.json",
+      "original_sha256": "883d01ec80d6eb4520ee838858166905a854a4a9b155556960a043ece84a4e5d",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/REFERENCE/raw-native.json.gz",
+      "packed_sha256": "5380ecf7eb20a6359df7ce6a2b7e2996ba750197fdae92067291ce8c040036d8",
+      "original_bytes": 9229133,
+      "packed_bytes": 552871,
+      "compression": "gzip mtime=0",
+      "decompressed_hash_verified": true
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/REFERENCE/artifacts/CM2_REF_FULL_20260901_A_R1-qualified-summary.json",
+      "original_sha256": "c90243e5f9272dadc098ce8f977593a78f9cb267c4bd540638748cf92eecfc40",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/REFERENCE/qualified-summary.json.gz",
+      "packed_sha256": "7776af7268c9fb1cf629343be42a2dddd6a7a3d820452bf8aa039bbc9a888cc8",
+      "original_bytes": 7327335,
+      "packed_bytes": 543145,
+      "compression": "gzip mtime=0",
+      "decompressed_hash_verified": true
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_01/artifacts/CM2_NEW_FULL_20260901_B_R2-fills.csv",
+      "original_sha256": "8db9a12c2d51457c83297611f988e527d55a867a57b4a31b80d92415c7e8db59",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R2/fills.csv",
+      "packed_sha256": "8db9a12c2d51457c83297611f988e527d55a867a57b4a31b80d92415c7e8db59",
+      "original_bytes": 142590,
+      "packed_bytes": 142590,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_01/artifacts/CM2_NEW_FULL_20260901_B_R2-orders.csv",
+      "original_sha256": "d3c97cf3197d5cfa933b4e518296ce8333bd4a13a69cd02c392c33e42617f0c3",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R2/orders.csv",
+      "packed_sha256": "d3c97cf3197d5cfa933b4e518296ce8333bd4a13a69cd02c392c33e42617f0c3",
+      "original_bytes": 161450,
+      "packed_bytes": 161450,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_01/artifacts/committed-wm-qualification-v1/QUALIFICATION.json",
+      "original_sha256": "944c27e189d625b610678ef382ffc7e6d30443e2e12cba5011a76822500c3f54",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R2/committed-wm-qualification-v1/QUALIFICATION.json",
+      "packed_sha256": "944c27e189d625b610678ef382ffc7e6d30443e2e12cba5011a76822500c3f54",
+      "original_bytes": 12993,
+      "packed_bytes": 12993,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_01/artifacts/native-child-terminal.json",
+      "original_sha256": "b752699916e41aa6ae3d500ffc4020ceab92d8f7a147fd187234e3a87decfad2",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R2/native-child-terminal.json",
+      "packed_sha256": "b752699916e41aa6ae3d500ffc4020ceab92d8f7a147fd187234e3a87decfad2",
+      "original_bytes": 495,
+      "packed_bytes": 495,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_01/artifacts/engine-construction-count.json",
+      "original_sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R2/engine-construction-count.json",
+      "packed_sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+      "original_bytes": 28,
+      "packed_bytes": 28,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_01/artifacts/CM2_NEW_FULL_20260901_B_R2-raw-native.json",
+      "original_sha256": "2db9443ee531794fea8de3926062b9759e67db8ebb067134cff534971cc0282c",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R2/raw-native.json.gz",
+      "packed_sha256": "c13b718ad32aa589f9657acf3eca57b4fccf7a04be53df3051b95785b416f86e",
+      "original_bytes": 5140254,
+      "packed_bytes": 487939,
+      "compression": "gzip mtime=0",
+      "decompressed_hash_verified": true
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_01/artifacts/CM2_NEW_FULL_20260901_B_R2-qualified-summary.json",
+      "original_sha256": "1a7252a4fad4d0701a2cea63ca34336481d83d8caef70d9371595441a545556f",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R2/qualified-summary.json.gz",
+      "packed_sha256": "fa70bc379b4fd0ccd7314c87de61915120bcc2fc5b072804e1a5d2c7a17f9356",
+      "original_bytes": 3656522,
+      "packed_bytes": 469023,
+      "compression": "gzip mtime=0",
+      "decompressed_hash_verified": true
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/CM2_NEW_FULL_20260901_B_R3-fills.csv",
+      "original_sha256": "37960af93fc6a03ef75958aafb360236865bb312b6bc65accc00a607d6e58137",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R3/fills.csv",
+      "packed_sha256": "37960af93fc6a03ef75958aafb360236865bb312b6bc65accc00a607d6e58137",
+      "original_bytes": 143852,
+      "packed_bytes": 143852,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/CM2_NEW_FULL_20260901_B_R3-orders.csv",
+      "original_sha256": "4449b3a1eb3cbdc702e708e9017483d70ab22bd6cae5bd90c5044344971600d3",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R3/orders.csv",
+      "packed_sha256": "4449b3a1eb3cbdc702e708e9017483d70ab22bd6cae5bd90c5044344971600d3",
+      "original_bytes": 162676,
+      "packed_bytes": 162676,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/committed-wm-qualification-v1/QUALIFICATION.json",
+      "original_sha256": "b623bf0f8350f4d5a2e75cf89790b05eac1a0663a34e6d30cbdac03ec4e6ba1e",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R3/committed-wm-qualification-v1/QUALIFICATION.json",
+      "packed_sha256": "b623bf0f8350f4d5a2e75cf89790b05eac1a0663a34e6d30cbdac03ec4e6ba1e",
+      "original_bytes": 12993,
+      "packed_bytes": 12993,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/native-child-terminal.json",
+      "original_sha256": "1580d535070085bfef434c0d93a9a4b9cd73e8619f6b22e0d65671466bcf3613",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R3/native-child-terminal.json",
+      "packed_sha256": "1580d535070085bfef434c0d93a9a4b9cd73e8619f6b22e0d65671466bcf3613",
+      "original_bytes": 495,
+      "packed_bytes": 495,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/engine-construction-count.json",
+      "original_sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R3/engine-construction-count.json",
+      "packed_sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b",
+      "original_bytes": 28,
+      "packed_bytes": 28,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/CM2_NEW_FULL_20260901_B_R3-raw-native.json",
+      "original_sha256": "1c0a2f75f2733f7fd37087fd25cba2cc313ca576dd86545a4ee8147cc9086e5f",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R3/raw-native.json.gz",
+      "packed_sha256": "f467e18e10c8bd81b87547f98365a0e6596a78a3a2b891ff87f4508112114e13",
+      "original_bytes": 5161083,
+      "packed_bytes": 489383,
+      "compression": "gzip mtime=0",
+      "decompressed_hash_verified": true
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/CM2_NEW_FULL_20260901_B_R3-qualified-summary.json",
+      "original_sha256": "845ea363b607422cdbf6f45b28b553b7af1f26edfb08ff72d1f97270db4da1b7",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/CM2_R3/qualified-summary.json.gz",
+      "packed_sha256": "0401be10f3c701cf4f679be69ddf73a25a85030c989028ea51b9958e60f8698e",
+      "original_bytes": 3672765,
+      "packed_bytes": 470412,
+      "compression": "gzip mtime=0",
+      "decompressed_hash_verified": true
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/CM2/artifacts/CM2_NEW_FULL_20260901_B_R1-raw-native.json",
+      "original_sha256": "b2de69565ab9de3f4fe082c9edb8ab9ce2e49230a76e27a8fb2c098b67757f2a",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/FAILED_CM2_R1/raw-native.json.gz",
+      "packed_sha256": "06f399586b835738566e0581691c26ec6389a535d5137b0d84fa50009bb9de56",
+      "original_bytes": 2588827,
+      "packed_bytes": 215825,
+      "compression": "gzip mtime=0",
+      "decompressed_hash_verified": true
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/CM2/artifacts/native-child-terminal.json",
+      "original_sha256": "7d1478088be1209ecedf37002e67a14d7a56615b2e7759ddc3f26fb9f1f68585",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/cases/FAILED_CM2_R1/native-child-terminal.json",
+      "packed_sha256": "7d1478088be1209ecedf37002e67a14d7a56615b2e7759ddc3f26fb9f1f68585",
+      "original_bytes": 573,
+      "packed_bytes": 573,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R2_BTC_ANALYSIS.md",
+      "original_sha256": "8b14f2ef3710fe2078d76057afffe029b14cb31b0af1ea0060447a0ae2d0e316",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R2/FULL_R2_BTC_ANALYSIS.md",
+      "packed_sha256": "8b14f2ef3710fe2078d76057afffe029b14cb31b0af1ea0060447a0ae2d0e316",
+      "original_bytes": 5666,
+      "packed_bytes": 5666,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R2_BTC_ANALYSIS.json",
+      "original_sha256": "9b8b67f168c4d374c1551df86af0b23632a5590cb17a67999b808511f32fea2c",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R2/FULL_R2_BTC_ANALYSIS.json",
+      "packed_sha256": "9b8b67f168c4d374c1551df86af0b23632a5590cb17a67999b808511f32fea2c",
+      "original_bytes": 1432946,
+      "packed_bytes": 1432946,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R2_BTC_CM2_FILLS.csv",
+      "original_sha256": "f6593777eef9e86477d18a69a8bbf6d4ba175db7d52a05ed371911e005997bfb",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R2/FULL_R2_BTC_CM2_FILLS.csv",
+      "packed_sha256": "f6593777eef9e86477d18a69a8bbf6d4ba175db7d52a05ed371911e005997bfb",
+      "original_bytes": 93219,
+      "packed_bytes": 93219,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R2_BTC_CYCLE_DIFF.csv",
+      "original_sha256": "1a80444b8d8c959a8781bf025912e31ccc1b7101c8b097ed19f87829de48e628",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R2/FULL_R2_BTC_CYCLE_DIFF.csv",
+      "packed_sha256": "1a80444b8d8c959a8781bf025912e31ccc1b7101c8b097ed19f87829de48e628",
+      "original_bytes": 18257,
+      "packed_bytes": 18257,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R2_BTC_FILL_DIFF.csv",
+      "original_sha256": "6ab0c5ec8c3c635509828c3914c335c50e9c1fbefcf6bb72264c2adc8b44ea56",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R2/FULL_R2_BTC_FILL_DIFF.csv",
+      "packed_sha256": "6ab0c5ec8c3c635509828c3914c335c50e9c1fbefcf6bb72264c2adc8b44ea56",
+      "original_bytes": 76667,
+      "packed_bytes": 76667,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R2_BTC_REFERENCE_FILLS.csv",
+      "original_sha256": "97fc981ae8c354d4c46223177312f5e3c06920aa5425e84489a202a35b0aa2d2",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R2/FULL_R2_BTC_REFERENCE_FILLS.csv",
+      "packed_sha256": "97fc981ae8c354d4c46223177312f5e3c06920aa5425e84489a202a35b0aa2d2",
+      "original_bytes": 92038,
+      "packed_bytes": 92038,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R2_BTC_STRUCTURAL_DIFF.csv",
+      "original_sha256": "dbe8d542e4c8c6c16e79176c6956a0825a40663489ae12da0af016aca739f021",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R2/FULL_R2_BTC_STRUCTURAL_DIFF.csv",
+      "packed_sha256": "dbe8d542e4c8c6c16e79176c6956a0825a40663489ae12da0af016aca739f021",
+      "original_bytes": 64251,
+      "packed_bytes": 64251,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R3_BTC_ANALYSIS.md",
+      "original_sha256": "9e976c20c06b906089131280428adadd3d2acb7e5ab8476084806e8f6b8e4737",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R3/FULL_R3_BTC_ANALYSIS.md",
+      "packed_sha256": "9e976c20c06b906089131280428adadd3d2acb7e5ab8476084806e8f6b8e4737",
+      "original_bytes": 5768,
+      "packed_bytes": 5768,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R3_BTC_ANALYSIS.json",
+      "original_sha256": "6d65f22070bc8e07f7a01e8336073fd0ee75db5bca21551d8ea3c9ad291229ec",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R3/FULL_R3_BTC_ANALYSIS.json",
+      "packed_sha256": "6d65f22070bc8e07f7a01e8336073fd0ee75db5bca21551d8ea3c9ad291229ec",
+      "original_bytes": 990880,
+      "packed_bytes": 990880,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R3_BTC_CM2_FILLS.csv",
+      "original_sha256": "96a0dc54c93349b120f9f951239d76136180a5675b95fbe110aa0ba5903de4a3",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R3/FULL_R3_BTC_CM2_FILLS.csv",
+      "packed_sha256": "96a0dc54c93349b120f9f951239d76136180a5675b95fbe110aa0ba5903de4a3",
+      "original_bytes": 93983,
+      "packed_bytes": 93983,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R3_BTC_CYCLE_DIFF.csv",
+      "original_sha256": "23926257cc5f338ff8cb059ec4f27e8502c7606e24858f08eb8b5cfaae83af5a",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R3/FULL_R3_BTC_CYCLE_DIFF.csv",
+      "packed_sha256": "23926257cc5f338ff8cb059ec4f27e8502c7606e24858f08eb8b5cfaae83af5a",
+      "original_bytes": 18037,
+      "packed_bytes": 18037,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R3_BTC_FILL_DIFF.csv",
+      "original_sha256": "1da1773fd94ec1e6af643de9acc000fd8ea40d801cb5130a383cc0967f72ec76",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R3/FULL_R3_BTC_FILL_DIFF.csv",
+      "packed_sha256": "1da1773fd94ec1e6af643de9acc000fd8ea40d801cb5130a383cc0967f72ec76",
+      "original_bytes": 59337,
+      "packed_bytes": 59337,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R3_BTC_REFERENCE_FILLS.csv",
+      "original_sha256": "97fc981ae8c354d4c46223177312f5e3c06920aa5425e84489a202a35b0aa2d2",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R3/FULL_R3_BTC_REFERENCE_FILLS.csv",
+      "packed_sha256": "97fc981ae8c354d4c46223177312f5e3c06920aa5425e84489a202a35b0aa2d2",
+      "original_bytes": 92038,
+      "packed_bytes": 92038,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R3_BTC_STRUCTURAL_DIFF.csv",
+      "original_sha256": "90d000b9f3d466e3facef00ca4c32e795d4eb7cc3df872e3cfd47bc162521c07",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R3/FULL_R3_BTC_STRUCTURAL_DIFF.csv",
+      "packed_sha256": "90d000b9f3d466e3facef00ca4c32e795d4eb7cc3df872e3cfd47bc162521c07",
+      "original_bytes": 59745,
+      "packed_bytes": 59745,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R2_DRAIN_CAUSAL_AUDIT.json",
+      "original_sha256": "3a023a57b47411a19f8d695264bfdaff1337c73a47a91c03098374e60f146b2f",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R2/FULL_R2_DRAIN_CAUSAL_AUDIT.json",
+      "packed_sha256": "3a023a57b47411a19f8d695264bfdaff1337c73a47a91c03098374e60f146b2f",
+      "original_bytes": 7883,
+      "packed_bytes": 7883,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R2_CLOSE_PHASE_CAUSE.json",
+      "original_sha256": "bc58d634682fa0286eba5a270488e8f66fe0af00da145296249817bbc07deb7b",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R2/FULL_R2_CLOSE_PHASE_CAUSE.json",
+      "packed_sha256": "bc58d634682fa0286eba5a270488e8f66fe0af00da145296249817bbc07deb7b",
+      "original_bytes": 7769,
+      "packed_bytes": 7769,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/FULL_R3_CAUSAL_FILL_CLASSIFICATION.json",
+      "original_sha256": "dbf783915473a7b9bc546bea069fbfc3085723b185a8d5eeb5a44c04554d7947",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/audits/R3/FULL_R3_CAUSAL_FILL_CLASSIFICATION.json",
+      "packed_sha256": "dbf783915473a7b9bc546bea069fbfc3085723b185a8d5eeb5a44c04554d7947",
+      "original_bytes": 8638,
+      "packed_bytes": 8638,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_VOLATILITY_LOCK/IMMUTABLE_CONTRACT.json",
+      "original_sha256": "424d8c42a8466c0120bdf85fdfc99f0d24542a1ee5ebb82b5fb3cd2d7af9d12a",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/volatility/IMMUTABLE_CONTRACT.json",
+      "packed_sha256": "424d8c42a8466c0120bdf85fdfc99f0d24542a1ee5ebb82b5fb3cd2d7af9d12a",
+      "original_bytes": 2905,
+      "packed_bytes": 2905,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_VOLATILITY_LOCK/RESULT.md",
+      "original_sha256": "3b9e9397e43e8e4bb4bb332925d5b443560270187415d01231e5e2e19f63ed17",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/volatility/RESULT.md",
+      "packed_sha256": "3b9e9397e43e8e4bb4bb332925d5b443560270187415d01231e5e2e19f63ed17",
+      "original_bytes": 8612,
+      "packed_bytes": 8612,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_VOLATILITY_LOCK/RESULT.json",
+      "original_sha256": "2178c9445463c409319315b67d9677d7846c6d8a1e2051ae3138f82bd36c299b",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/volatility/RESULT.json",
+      "packed_sha256": "2178c9445463c409319315b67d9677d7846c6d8a1e2051ae3138f82bd36c299b",
+      "original_bytes": 24702,
+      "packed_bytes": 24702,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_VOLATILITY_LOCK/REQUESTED_15_ROWS.csv",
+      "original_sha256": "8bc695a48a351e3cd4b15d181613df5b57fe577b37b637b5b684bed4a7f4b691",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/volatility/REQUESTED_15_ROWS.csv",
+      "packed_sha256": "8bc695a48a351e3cd4b15d181613df5b57fe577b37b637b5b684bed4a7f4b691",
+      "original_bytes": 7034,
+      "packed_bytes": 7034,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_VOLATILITY_LOCK/POOLED_RANKING.csv",
+      "original_sha256": "c81ff92cd03ec7acb0cfd4242d02165da5637fd3692faa08d60ac25ccb0b5b2f",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/volatility/POOLED_RANKING.csv",
+      "packed_sha256": "c81ff92cd03ec7acb0cfd4242d02165da5637fd3692faa08d60ac25ccb0b5b2f",
+      "original_bytes": 552,
+      "packed_bytes": 552,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_VOLATILITY_LOCK/KVOL_DIAGNOSTIC_RANKING.csv",
+      "original_sha256": "3ccf17abde7b5d12900d37d3deac745378f70c614b9e6c8287451d5b80f405bc",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/volatility/KVOL_DIAGNOSTIC_RANKING.csv",
+      "packed_sha256": "3ccf17abde7b5d12900d37d3deac745378f70c614b9e6c8287451d5b80f405bc",
+      "original_bytes": 426,
+      "packed_bytes": 426,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/SOL_VOLATILITY_LOCK/ROOT_REAL_ANCHORS_CHECK_9fc2ad4b.json",
+      "original_sha256": "276703895a8b46b7b4d4f53651673e860b4e11dedc7d215efe5d9422926989ff",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/volatility/ROOT_REAL_ANCHORS_CHECK_9fc2ad4b.json",
+      "packed_sha256": "276703895a8b46b7b4d4f53651673e860b4e11dedc7d215efe5d9422926989ff",
+      "original_bytes": 1195,
+      "packed_bytes": 1195,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/PUBLICATION_SOURCE_8857_ROOT_PUSH_SUCCESS.json",
+      "original_sha256": "3ad9d44a24bd7ded25eaabfb9245960cffbf8e4e5ca509cce625cce43f9ddc6b",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/provenance/PUBLICATION_SOURCE_8857_ROOT_PUSH_SUCCESS.json",
+      "packed_sha256": "3ad9d44a24bd7ded25eaabfb9245960cffbf8e4e5ca509cce625cce43f9ddc6b",
+      "original_bytes": 1075,
+      "packed_bytes": 1075,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/PUBLICATION_SOURCE_8857_PREP_READY.json",
+      "original_sha256": "f416bc133e645be6c98861fa6af7b1d4869e44d61367e3a389b2b9261c148bc8",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/provenance/PUBLICATION_SOURCE_8857_PREP_READY.json",
+      "packed_sha256": "f416bc133e645be6c98861fa6af7b1d4869e44d61367e3a389b2b9261c148bc8",
+      "original_bytes": 15179,
+      "packed_bytes": 15179,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    },
+    {
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/ROOT/PUBLICATION_SOURCE_9FC2_PREP_READY.json",
+      "original_sha256": "18aeb50fa1e256a0c6dbd4476750e752646b302fa0136f38049cebd2ef9c87b1",
+      "pack_path": "reports/cm2-reference-reproduction-20261101/results/provenance/PUBLICATION_SOURCE_9FC2_PREP_READY.json",
+      "packed_sha256": "18aeb50fa1e256a0c6dbd4476750e752646b302fa0136f38049cebd2ef9c87b1",
+      "original_bytes": 9867,
+      "packed_bytes": 9867,
+      "compression": "none",
+      "decompressed_hash_verified": null
+    }
+  ],
+  "omitted_artifacts": [
+    {
+      "case": "REFERENCE",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/REFERENCE/artifacts/coherent-native-events.jsonl.gz",
+      "sha256": "3a1806dd4ed8c1d9fee0944b23ce2c36e0ba4c042593d226c55858b48556023b",
+      "bytes": 63046200,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "REFERENCE",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/REFERENCE/artifacts/minute-native-risk.csv.gz",
+      "sha256": "008914d32295ecd810d651a65eb6037962f2eeb6787c7c82ea5f529eb6582dc7",
+      "bytes": 61005468,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "REFERENCE",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/REFERENCE/artifacts/minute-native-settled-receipts.csv.gz",
+      "sha256": "7d2dcb2c988b559710307d5e203fcef41043debb02110296efdeaf8ddae323c3",
+      "bytes": 29543031,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "REFERENCE",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/REFERENCE/artifacts/committed-wm-qualification-v1/minute-native-settled-receipts.csv.gz",
+      "sha256": "eb16a4835f8f3c44d265e7e45d54712e37b2b8174418139f157a2c7c7907671e",
+      "bytes": 12140129,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "REFERENCE",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_PAIR_R1/REFERENCE/artifacts/committed-wm-qualification-v1/COMMITTED_QUALIFIED_NATIVE_REPORT.json",
+      "sha256": "4ace8fcc9aed8a004bcc3535bc57a56b464096b0721947a5b3637388b709c10b",
+      "bytes": 7327344,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "CM2_R2",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_01/artifacts/coherent-native-events.jsonl.gz",
+      "sha256": "c3765eea873dcf84d284a8ec6650006c6a890e39414de56bd3ae4f2b2854ff52",
+      "bytes": 62880625,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "CM2_R2",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_01/artifacts/minute-native-risk.csv.gz",
+      "sha256": "9b4025d83f678e40c4f714da49fdc3d59fde37ec9a30dc4f696a300ee539419c",
+      "bytes": 60783332,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "CM2_R2",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_01/artifacts/minute-native-settled-receipts.csv.gz",
+      "sha256": "ae8f7e2ce6baccccc8ab67f6e6adb8e29948a0f98c0e6fd65748c0520fae123b",
+      "bytes": 29385427,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "CM2_R2",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_01/artifacts/committed-wm-qualification-v1/minute-native-settled-receipts.csv.gz",
+      "sha256": "a137d6b471f8046a4df5727b82d206d2beb0b746028f1713f70078c54c57c641",
+      "bytes": 12119978,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "CM2_R2",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_01/artifacts/committed-wm-qualification-v1/COMMITTED_QUALIFIED_NATIVE_REPORT.json",
+      "sha256": "43cbe02d18f770f8b306f72b9dad294b03210204a4769fb78143f9e7038e0505",
+      "bytes": 3656679,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "CM2_R3",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/coherent-native-events.jsonl.gz",
+      "sha256": "48add5befb8c86b7863a2628f546d1b2c97e1ee989de4f94d1955bf71aae7d83",
+      "bytes": 63008525,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "CM2_R3",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/minute-native-risk.csv.gz",
+      "sha256": "c6e3e69b0a276535b5f8081d0c12c32e75a49df66200329a12f4e9a389b216c8",
+      "bytes": 61047954,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "CM2_R3",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/minute-native-settled-receipts.csv.gz",
+      "sha256": "88b9daef835b442747f03683a9a29e51408b854cd40085186788fdf25bfc33dd",
+      "bytes": 29513159,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "CM2_R3",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/committed-wm-qualification-v1/minute-native-settled-receipts.csv.gz",
+      "sha256": "5cc9c271a4e3eb1b8dce39592d27f65c1909ae6467c96858dcb8dd4e48416778",
+      "bytes": 12138487,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    },
+    {
+      "case": "CM2_R3",
+      "source_absolute_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/committed-wm-qualification-v1/COMMITTED_QUALIFIED_NATIVE_REPORT.json",
+      "sha256": "cb6370e80ad16432037c1b47826d0cca65ec89f587c475c9d32fa0db6f95818a",
+      "bytes": 3672922,
+      "status": "PRESERVED_LOCAL_NOT_PUBLISHED"
+    }
+  ],
+  "strict_json_key_scan": {
+    "key_names": [
+      "access_token",
+      "api_key",
+      "mnemonic",
+      "password",
+      "private_key",
+      "refresh_token"
+    ],
+    "counts": {
+      "access_token": 0,
+      "api_key": 0,
+      "mnemonic": 0,
+      "password": 0,
+      "private_key": 0,
+      "refresh_token": 0
+    },
+    "total_matches": 0,
+    "json_files_scanned": 28,
+    "values_reported": false
+  },
+  "verification": {
+    "copied_hashes_match": true,
+    "gzip_decompressed_hashes_match": true,
+    "originals_unchanged": true
+  },
+  "pack_file_count": 50,
+  "pack_bytes": 7399328
+}

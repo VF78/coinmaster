@@ -1,0 +1,33 @@
+{
+  "status": "ROOT_REAL_MARKET_ANCHORS_AND_FRESHNESS_PASS",
+  "source_commit": "9fc2ad4b98c9bfb767120a766d978189adbd5087",
+  "utility_sha256": "fcd49f68c1380692700ddd7fa4e500c9c493d5676ec61779daeff959514850ab",
+  "rows": [
+    {
+      "date": "2024-09-01",
+      "actual_K": "1.5372105123860708116381182134145561640093433642869",
+      "expected_K": "1.5372105123860708116381182134145561640093433642869",
+      "exact": true,
+      "missing_latest_day_unavailable": true,
+      "within_sameUTCday_invariant": true
+    },
+    {
+      "date": "2025-09-01",
+      "actual_K": "2.4851539106406952552476663851696799469272836061760",
+      "expected_K": "2.4851539106406952552476663851696799469272836061760",
+      "exact": true,
+      "missing_latest_day_unavailable": true,
+      "within_sameUTCday_invariant": true
+    },
+    {
+      "date": "2026-09-01",
+      "actual_K": "1.3830543059005534376357391359382963346832841965511",
+      "expected_K": "1.3830543059005534376357391359382963346832841965511",
+      "exact": true,
+      "missing_latest_day_unavailable": true,
+      "within_sameUTCday_invariant": true
+    }
+  ],
+  "native_engine_constructions": 0,
+  "datebranches_in_utility": false
+}

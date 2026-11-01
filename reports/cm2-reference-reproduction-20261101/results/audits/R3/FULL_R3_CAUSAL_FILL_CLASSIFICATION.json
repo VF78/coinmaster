@@ -1,0 +1,367 @@
+{
+  "first_global_fill_difference": 66,
+  "difference_fields": {
+    "submit_ns": 7,
+    "fill_ns": 7,
+    "px": 7,
+    "commission": 287,
+    "qty": 286
+  },
+  "nonamount_differences": [
+    {
+      "fill": 66,
+      "cycle": "16",
+      "class": "C1_RESIDUAL_CUT",
+      "changes": {
+        "submit_ns": [
+          "1735208040000000000",
+          "1735208100000000000"
+        ],
+        "fill_ns": [
+          "1735208040000000000",
+          "1735208100000000000"
+        ],
+        "px": [
+          "95165",
+          "95260"
+        ],
+        "commission": [
+          "7.46539734",
+          "7.47284979"
+        ]
+      }
+    },
+    {
+      "fill": 143,
+      "cycle": "33",
+      "class": "C1_RESIDUAL_CUT",
+      "changes": {
+        "submit_ns": [
+          "1749154500000000000",
+          "1749154560000000000"
+        ],
+        "fill_ns": [
+          "1749154500000000000",
+          "1749154560000000000"
+        ],
+        "px": [
+          "101570.4",
+          "101415.1"
+        ],
+        "qty": [
+          "0.43593",
+          "0.4363"
+        ],
+        "commission": [
+          "19.12791649",
+          "19.11488031"
+        ]
+      }
+    },
+    {
+      "fill": 148,
+      "cycle": "34",
+      "class": "C1_RESIDUAL_CUT",
+      "changes": {
+        "submit_ns": [
+          "1749194820000000000",
+          "1749193860000000000"
+        ],
+        "fill_ns": [
+          "1749194820000000000",
+          "1749193860000000000"
+        ],
+        "px": [
+          "103369.9",
+          "103167.6"
+        ],
+        "qty": [
+          "0.5394",
+          "0.53911"
+        ],
+        "commission": [
+          "24.08733679",
+          "24.02727185"
+        ]
+      }
+    },
+    {
+      "fill": 220,
+      "cycle": "53",
+      "class": "C1_RESIDUAL_CUT",
+      "changes": {
+        "submit_ns": [
+          "1764210540000000000",
+          "1764210600000000000"
+        ],
+        "fill_ns": [
+          "1764210540000000000",
+          "1764210600000000000"
+        ],
+        "px": [
+          "91341.5",
+          "91414.5"
+        ],
+        "qty": [
+          "2.70693",
+          "2.7124"
+        ],
+        "commission": [
+          "106.81418013",
+          "107.11556199"
+        ]
+      }
+    },
+    {
+      "fill": 319,
+      "cycle": "75",
+      "class": "C1_RESIDUAL_CUT",
+      "changes": {
+        "submit_ns": [
+          "1784314200000000000",
+          "1784314260000000000"
+        ],
+        "fill_ns": [
+          "1784314200000000000",
+          "1784314260000000000"
+        ],
+        "px": [
+          "64292.7",
+          "64282.2"
+        ],
+        "qty": [
+          "10.65619",
+          "10.6628"
+        ],
+        "commission": [
+          "295.96977798",
+          "296.10500061"
+        ]
+      }
+    },
+    {
+      "fill": 323,
+      "cycle": "76",
+      "class": "C1_RESIDUAL_CUT",
+      "changes": {
+        "submit_ns": [
+          "1784557440000000000",
+          "1784557500000000000"
+        ],
+        "fill_ns": [
+          "1784557440000000000",
+          "1784557500000000000"
+        ],
+        "px": [
+          "64235.8",
+          "64303.8"
+        ],
+        "qty": [
+          "11.50956",
+          "11.51906"
+        ],
+        "commission": [
+          "319.38874312",
+          "319.99075074"
+        ]
+      }
+    },
+    {
+      "fill": 329,
+      "cycle": "77",
+      "class": "C1_RESIDUAL_CUT",
+      "changes": {
+        "submit_ns": [
+          "1785192180000000000",
+          "1785192240000000000"
+        ],
+        "fill_ns": [
+          "1785192180000000000",
+          "1785192240000000000"
+        ],
+        "px": [
+          "64155",
+          "64213"
+        ],
+        "qty": [
+          "6.34044",
+          "6.35515"
+        ],
+        "commission": [
+          "175.72504098",
+          "176.29196268"
+        ]
+      }
+    }
+  ],
+  "C1_native_pairs": [
+    {
+      "fill": 66,
+      "cycle": "16",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1735208040000000000",
+      "candidate_ns": "1735208100000000000",
+      "delay_ns": 60000000000,
+      "reference_price": "95165",
+      "candidate_price": "95260",
+      "reference_qty": "0.18159",
+      "candidate_qty": "0.18159"
+    },
+    {
+      "fill": 143,
+      "cycle": "33",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1749154500000000000",
+      "candidate_ns": "1749154560000000000",
+      "delay_ns": 60000000000,
+      "reference_price": "101570.4",
+      "candidate_price": "101415.1",
+      "reference_qty": "0.43593",
+      "candidate_qty": "0.4363"
+    },
+    {
+      "fill": 148,
+      "cycle": "34",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1749194820000000000",
+      "candidate_ns": "1749193860000000000",
+      "delay_ns": -960000000000,
+      "reference_price": "103369.9",
+      "candidate_price": "103167.6",
+      "reference_qty": "0.5394",
+      "candidate_qty": "0.53911"
+    },
+    {
+      "fill": 220,
+      "cycle": "53",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1764210540000000000",
+      "candidate_ns": "1764210600000000000",
+      "delay_ns": 60000000000,
+      "reference_price": "91341.5",
+      "candidate_price": "91414.5",
+      "reference_qty": "2.70693",
+      "candidate_qty": "2.7124"
+    },
+    {
+      "fill": 221,
+      "cycle": "53",
+      "class": "RESTORE",
+      "reference_ns": "1764374520000000000",
+      "candidate_ns": "1764374520000000000",
+      "delay_ns": 0,
+      "reference_price": "90858.4",
+      "candidate_price": "90858.4",
+      "reference_qty": "2.70693",
+      "candidate_qty": "2.7124"
+    },
+    {
+      "fill": 319,
+      "cycle": "75",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1784314200000000000",
+      "candidate_ns": "1784314260000000000",
+      "delay_ns": 60000000000,
+      "reference_price": "64292.7",
+      "candidate_price": "64282.2",
+      "reference_qty": "10.65619",
+      "candidate_qty": "10.6628"
+    },
+    {
+      "fill": 323,
+      "cycle": "76",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1784557440000000000",
+      "candidate_ns": "1784557500000000000",
+      "delay_ns": 60000000000,
+      "reference_price": "64235.8",
+      "candidate_price": "64303.8",
+      "reference_qty": "11.50956",
+      "candidate_qty": "11.51906"
+    },
+    {
+      "fill": 329,
+      "cycle": "77",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1785192180000000000",
+      "candidate_ns": "1785192240000000000",
+      "delay_ns": 60000000000,
+      "reference_price": "64155",
+      "candidate_price": "64213",
+      "reference_qty": "6.34044",
+      "candidate_qty": "6.35515"
+    },
+    {
+      "fill": 333,
+      "cycle": "78",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1785215940000000000",
+      "candidate_ns": "1785215940000000000",
+      "delay_ns": 0,
+      "reference_price": "63500.9",
+      "candidate_price": "63500.9",
+      "reference_qty": "15.13045",
+      "candidate_qty": "15.177"
+    },
+    {
+      "fill": 337,
+      "cycle": "79",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1785550980000000000",
+      "candidate_ns": "1785550980000000000",
+      "delay_ns": 0,
+      "reference_price": "63046.1",
+      "candidate_price": "63046.1",
+      "reference_qty": "7.57049",
+      "candidate_qty": "7.59379"
+    },
+    {
+      "fill": 341,
+      "cycle": "80",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1786111620000000000",
+      "candidate_ns": "1786111620000000000",
+      "delay_ns": 0,
+      "reference_price": "64854.6",
+      "candidate_price": "64854.6",
+      "reference_qty": "8.05288",
+      "candidate_qty": "8.07766"
+    },
+    {
+      "fill": 344,
+      "cycle": "81",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1786494180000000000",
+      "candidate_ns": "1786494180000000000",
+      "delay_ns": 0,
+      "reference_price": "63598.6",
+      "candidate_price": "63598.6",
+      "reference_qty": "3.15086",
+      "candidate_qty": "3.16055"
+    },
+    {
+      "fill": 348,
+      "cycle": "82",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1787070000000000000",
+      "candidate_ns": "1787070000000000000",
+      "delay_ns": 0,
+      "reference_price": "64719.4",
+      "candidate_price": "64719.4",
+      "reference_qty": "4.20775",
+      "candidate_qty": "4.22069"
+    },
+    {
+      "fill": 352,
+      "cycle": "83",
+      "class": "C1_RESIDUAL_CUT",
+      "reference_ns": "1788052740000000000",
+      "candidate_ns": "1788052740000000000",
+      "delay_ns": 0,
+      "reference_price": "77975.7",
+      "candidate_price": "77975.7",
+      "reference_qty": "3.58933",
+      "candidate_qty": "3.60038"
+    }
+  ]
+}

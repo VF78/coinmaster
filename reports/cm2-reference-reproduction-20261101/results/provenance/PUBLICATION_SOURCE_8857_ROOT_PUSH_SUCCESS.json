@@ -1,0 +1,17 @@
+{
+  "status": "PUBLISHED_NORMAL_ROOT_APPROVAL_REVIEW_ACCEPTED",
+  "checked_utc": "2026-11-01T20:11:25.163915+00:00",
+  "source_commit": "8857a7b72c9495c9d085e0a7fa14b227448069ab",
+  "sanitized_public_commit": "3d4b521c375719ea6400a627a97b48fec0adc560",
+  "repository": "https://github.com/VF78/coinmaster",
+  "branch": "codex/cm2-reference-reproduction-20261101-public",
+  "remote_exact_sha_verified": "3d4b521c375719ea6400a627a97b48fec0adc560",
+  "normal_hooks": true,
+  "force": false,
+  "deployment": false,
+  "financial_artifact_transfer": false,
+  "payload": "24reviewedtasksource/testfilesonly;66dependencyclosureexact;foreignprivatechangesexcluded",
+  "original_agent_review_rejection_preserved": "PUBLICATION_SOURCE_8857_PUSH_RECEIPT.json",
+  "reconsideration_basis": "Root presented direct owner currentchat quotes publishcodeasis andpublishcode+results plus ownergithubrepository; ordinaryautomaticreviewaccepted exactsameaction. No alternatechannel/securitybypass.",
+  "native_R3_fidelity_status": "PENDING_RUNNING;sourcepublicationischeckpointnotROIacceptance"
+}

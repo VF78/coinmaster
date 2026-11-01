@@ -1,0 +1,362 @@
+{
+  "actual_engine_constructions": 1,
+  "checks": {
+    "all_surviving_legacy_rows": true,
+    "declared_interval_coverage": true,
+    "exact_native_DD": true,
+    "full_24months": true,
+    "native_cash": true,
+    "native_closed_lifecycles": true,
+    "native_fees": true,
+    "one_actual_engine": true,
+    "original_feed_currency_DP_gates": true,
+    "retained_before_mutation": true,
+    "signed_native_funding": true,
+    "terminal_flat_orders": true,
+    "unchanged_606_boundaries": true,
+    "verified_financial_predicates": {
+      "COMPLETE_NATIVE_POSITION_LIFECYCLES_REQUIRED": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "EXACT_NATIVE_CASH_TRANSITION_BRIDGE_FAILED": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "EXACT_NATIVE_COMMISSION_BRIDGE_FAILED": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "EXACT_NATIVE_REALIZED_CASH_BRIDGE_FAILED": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "EXACT_NATIVE_SIGNED_FUNDING_BRIDGE_FAILED": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "FULL_NATIVE_QUOTE_WATERMARK_COVERAGE_FAILED": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "NATIVE_FILL_IDENTITIES_MISMATCH": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "NATIVE_FILL_TRANSITION_TOTAL_MISMATCH": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "NATIVE_FUNDING_IDENTITIES_MISMATCH": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "NATIVE_FUNDING_TRANSITION_TOTAL_MISMATCH": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "NATIVE_OBSERVER_NOT_COMPLETE": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "NATIVE_TERMINAL_RESIDUE": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "NATIVE_TERMINAL_TOTAL_MISMATCH": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "ORIGINAL_FULL_ACCOUNTING_GATE_FAILED": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "ORIGINAL_OBSERVER_END_BOUNDARY_GATE_FAILED": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "PERSISTED_FUNDING_JOURNAL_EXPORT_MISMATCH": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "PERSISTED_NATIVE_FUNDING_DELTA_MISMATCH": {
+        "evaluations": 845,
+        "passed": true
+      },
+      "REQUIRED_NATIVE_SETTLEMENT_AND_FEE_CURRENCY_KNOWN": {
+        "evaluations": 1,
+        "passed": true
+      }
+    }
+  },
+  "comparability": "SAME_PERSISTED_NATIVE_MONEY; NEW_STRICT_COMMITTED_WM_QUALIFICATION; ORIGINAL_SOURCE_IDS_PRESERVED_NOT_RELABELED",
+  "coverage": {
+    "first_source_ns": 1725148860000000000,
+    "full": true,
+    "initial_seed_samples": 1,
+    "last_receipt_ns": 1788220800000000000,
+    "month_counts_complete": true,
+    "month_rows": {
+      "2024-09": 43199,
+      "2024-10": 44640,
+      "2024-11": 43200,
+      "2024-12": 44640,
+      "2025-01": 44640,
+      "2025-02": 40320,
+      "2025-03": 44640,
+      "2025-04": 43200,
+      "2025-05": 44640,
+      "2025-06": 43200,
+      "2025-07": 44640,
+      "2025-08": 44640,
+      "2025-09": 43200,
+      "2025-10": 44640,
+      "2025-11": 43200,
+      "2025-12": 44640,
+      "2026-01": 44640,
+      "2026-02": 40320,
+      "2026-03": 44640,
+      "2026-04": 43200,
+      "2026-05": 44640,
+      "2026-06": 43200,
+      "2026-07": 44640,
+      "2026-08": 44640
+    },
+    "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/committed-wm-qualification-v1/minute-native-settled-receipts.csv.gz",
+    "rows": 1051199,
+    "sha256": "5cc9c271a4e3eb1b8dce39592d27f65c1909ae6467c96858dcb8dd4e48416778",
+    "source_calendar_months": 24
+  },
+  "derived_csv": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/committed-wm-qualification-v1/minute-native-settled-receipts.csv.gz",
+  "derived_csv_sha256": "5cc9c271a4e3eb1b8dce39592d27f65c1909ae6467c96858dcb8dd4e48416778",
+  "derived_report": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/committed-wm-qualification-v1/COMMITTED_QUALIFIED_NATIVE_REPORT.json",
+  "derived_report_sha256": "cb6370e80ad16432037c1b47826d0cca65ec89f587c475c9d32fa0db6f95818a",
+  "full_24months": true,
+  "input_hashes": {
+    "coherent_trace": "48add5befb8c86b7863a2628f546d1b2c97e1ee989de4f94d1955bf71aae7d83",
+    "coverage_source": "58b9a047ceb6627108e3bac52a957b231f405fe12b8a6bb1684e3582599682df",
+    "funding_sqlite": "7b2e2497076325027e3506faa157eaf72a261dfc6aa7cc778c5f62c9590f1549",
+    "legacy_csv": "88b9daef835b442747f03683a9a29e51408b854cd40085186788fdf25bfc33dd",
+    "native_DD_source": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad",
+    "native_observer_source": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42",
+    "qualifier_source": "a7d1c597d9f0bb80f1c69bf147f0b34a665f930f461a2dc001b8e3e3714ee775"
+  },
+  "legacy_receipt_status": "SPARSE_UNAVAILABLE_AFTER_INTERVENING_MUTATION_NOT_SILENTLY_COMPLETE",
+  "measurer_source_profile": {
+    "dd_sha256": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad",
+    "observer_sha256": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42",
+    "request_sha256": "65d9817f5886f9d5d71f0ec3e53b3e0bcbee6b5e04d09aa85c83ffc9abaffac9",
+    "source_family": "CM2BTCREF"
+  },
+  "native_watermark_proof": {
+    "boundary_left_limit_proven": true,
+    "exact_interval_DD_parity": true,
+    "first_legacy_gap": {
+      "receipt_ns": "1725264000000000000",
+      "source_ns": "1725263940000000000"
+    },
+    "kind_counts": {
+      "DIRECT_NATIVE_AFTER_ENGINE_END_RETURNED": 1,
+      "POST_FILL_COMMITTED_NATIVE": 353,
+      "POST_FUNDING_ACCOUNT_NATIVE": 845,
+      "PREQUOTE_DIRECT_NATIVE": 2102400,
+      "PRE_FILL_LAST_COMMITTED_NATIVE_COPY": 353,
+      "PRE_FUNDING_COMMITTED_NATIVE_COPY": 845,
+      "SETTLED_PRE_NEXT_SOURCE_WATERMARK": 1051199
+    },
+    "legacy_gap_actual_mutation_kinds": {
+      "PRE_FUNDING_COMMITTED_NATIVE_COPY": 845
+    },
+    "legacy_missing": 845,
+    "legacy_rows": 1050354,
+    "month_rows": {
+      "2024-09": 43199,
+      "2024-10": 44640,
+      "2024-11": 43200,
+      "2024-12": 44640,
+      "2025-01": 44640,
+      "2025-02": 40320,
+      "2025-03": 44640,
+      "2025-04": 43200,
+      "2025-05": 44640,
+      "2025-06": 43200,
+      "2025-07": 44640,
+      "2025-08": 44640,
+      "2025-09": 43200,
+      "2025-10": 44640,
+      "2025-11": 43200,
+      "2025-12": 44640,
+      "2026-01": 44640,
+      "2026-02": 40320,
+      "2026-03": 44640,
+      "2026-04": 43200,
+      "2026-05": 44640,
+      "2026-06": 43200,
+      "2026-07": 44640,
+      "2026-08": 44640
+    },
+    "retained_native_rows": 845,
+    "terminal_native_sequence": 3155996,
+    "trace_rows": 3155996,
+    "verified_predicates": {
+      "COHERENT_SEQUENCE_GAP": {
+        "evaluations": 3155996,
+        "passed": true
+      },
+      "COMMITTED_NATIVE_WM_COUNT_MISMATCH": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "COMMITTED_WM_SEQUENCE_OR_RECEIPT_DRIFT": {
+        "evaluations": 1051199,
+        "passed": true
+      },
+      "DUPLICATE_COMMITTED_NATIVE_FILL": {
+        "evaluations": 353,
+        "passed": true
+      },
+      "EXACT_NATIVE_EVENT_DD_SUMMARY_MISMATCH": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "EXACT_NATIVE_SETTLED_DD_SUMMARY_MISMATCH": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "EXPORTED_NATIVE_CASH_UPNL_EQUITY_MISMATCH": {
+        "evaluations": 1051199,
+        "passed": true
+      },
+      "INVALID_NATIVE_COMMON_PRICE": {
+        "evaluations": 411423,
+        "passed": true
+      },
+      "INVALID_NATIVE_STATE_EPOCH": {
+        "evaluations": 3155996,
+        "passed": true
+      },
+      "INVALID_RETAINED_NATIVE_EPOCH": {
+        "evaluations": 845,
+        "passed": true
+      },
+      "LEGACY_EXTRA_DUPLICATE_OR_REORDERED_SOURCE": {
+        "evaluations": 1051199,
+        "passed": true
+      },
+      "LEGACY_GAP_HAS_NO_ACTUAL_RETAINED_NATIVE_WM": {
+        "evaluations": 845,
+        "passed": true
+      },
+      "LEGACY_NATIVE_ROWS_OUTSIDE_COMMITTED_TRACE": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "LEGACY_PENDING_RECEIPT_AT_TERMINAL": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "LEGACY_SPARSE_EXPORT_METADATA_MISMATCH": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "NATIVE_EVENT_OUTSIDE_TERMINAL_BOUNDARY": {
+        "evaluations": 3155996,
+        "passed": true
+      },
+      "NATIVE_SEQUENCE_COUNT_OR_LEFT_BOUNDARY_MISMATCH": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "NATIVE_TRANSITION_DELTA_MISMATCH": {
+        "evaluations": 1198,
+        "passed": true
+      },
+      "NATIVE_TRANSITION_PAIR_MISMATCH": {
+        "evaluations": 1198,
+        "passed": true
+      },
+      "NONCOMMON_NATIVE_MARK_SOURCE": {
+        "evaluations": 411423,
+        "passed": true
+      },
+      "RETAINED_NATIVE_PREMUTATION_WITNESS_MISSING": {
+        "evaluations": 845,
+        "passed": true
+      },
+      "RETAINED_NATIVE_SIGNATURE_MISMATCH": {
+        "evaluations": 845,
+        "passed": true
+      },
+      "SURVIVING_LEGACY_NATIVE_ROW_DISAGREES": {
+        "evaluations": 1050354,
+        "passed": true
+      },
+      "TERMINAL_NATIVE_FLAT_NOT_PROVEN": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "TERMINAL_NATIVE_POINT_MISSING": {
+        "evaluations": 1,
+        "passed": true
+      },
+      "UNKNOWN_COMMITTED_NATIVE_KIND": {
+        "evaluations": 3155996,
+        "passed": true
+      },
+      "UNKNOWN_COMMITTED_NATIVE_MONEY": {
+        "evaluations": 1051199,
+        "passed": true
+      },
+      "UNPAIRED_NATIVE_CASH_TRANSITION": {
+        "evaluations": 1,
+        "passed": true
+      }
+    },
+    "wm_rows": 1051199
+  },
+  "new_native_engine_constructions": 0,
+  "original_physical_status_preserved": true,
+  "original_report_path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/CM2_NEW_FULL_20260901_B_R3-raw-native.json",
+  "original_report_sha256": "1c0a2f75f2733f7fd37087fd25cba2cc313ca576dd86545a4ee8147cc9086e5f",
+  "parent_raw_model_ids": {
+    "code_hash": "faff9d5b260e50ada1e18b561546ee603efac7b489b97255de110779e39ec68c",
+    "config_hash": "f02aacabecc7fc9855cd3a750a9a06d37fea336da79494f319563351b91f29ad",
+    "data_hash": "7ab5ae2cdaa14885da28d188c7ad14dfc8168ee600b78535f7317409ea94e9cc",
+    "policy_hash": "c04b2e94e546913f200e520612dfea16ba0824775f47dc91012e4f51b8f32a12",
+    "source_hashes": {
+      "domain/wave_overlay.py": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+      "research/cm2_committed_validation.py": "a7d1c597d9f0bb80f1c69bf147f0b34a665f930f461a2dc001b8e3e3714ee775",
+      "research/cm2_funding_reader.py": "d4963d3f95c695ce61aee3342c272e18c0883912ccb989590737250af75c0214",
+      "research/cm2_runner.py": "6bf14cfd945438bb1c410716f3c9dadaa991ba6b403cfbdfb75f8662fe936100",
+      "strategy/cm2_checkpoint.py": "e59e066d6ac8818126bd6fa24eb879da02bfe829352797f95eb48661c7a37dbb",
+      "strategy/cm2_execution.py": "1fd74f260ecccbeaf4a6f0d02ad7c6f6f4827d61ccb1627bdf66e7d99447d820",
+      "strategy/cm2_native.py": "32abcd0a2eafc226ba9d4b3113fa6159c480541364d451b08abb1f3f50fdd929",
+      "strategy/cm2_order_contract.py": "092eb01216478bc16690e98a3a22867294682892cc45040573bb956a202e7667",
+      "strategy/cm2_policy.py": "b21a2a69c35d2beaa7ac41ce3f03eba9975abdf2402b195623b07f18a3b0d1c1",
+      "strategy/cm2_reference_policy.py": "fae4d3812844df1446cff6f9cf05eec3db22a3e414755721d4cb4c0e0817d5f2"
+    }
+  },
+  "provenance": {
+    "engine_count": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/artifacts/engine-construction-count.json",
+      "sha256": "7e08ea1b8f976f70870c5510142339bc400adf615afed1a5e407f33769984b9b"
+    },
+    "ledger_prefix": {
+      "append_only_later_records_allowed": true,
+      "bytes": 11963,
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/validation-v2-20261101/trials.jsonl",
+      "sha256": "b44d44d0e3ff05b333ea6fa2e84df6763a7ce7f9b42032c118e8e14c2ab904ae"
+    },
+    "request": {
+      "path": "/Users/vf/Documents/ChatGPT/Coinmaster/research/cm2-clean-hedge-20261031/reference-reproduction-20261101/NATIVE_FULL_RECHECK_02/REQUEST.json",
+      "sha256": "65d9817f5886f9d5d71f0ec3e53b3e0bcbee6b5e04d09aa85c83ffc9abaffac9"
+    }
+  },
+  "qualification_model_id": "CM2_COMMITTED_NATIVE_WM_QUALIFICATION_V2",
+  "request_interval_ns": [
+    1725148800000000000,
+    1788220800000000000
+  ],
+  "scope": "FULL_24M",
+  "status": "FINANCIAL_QUALIFICATION_PASS"
+}

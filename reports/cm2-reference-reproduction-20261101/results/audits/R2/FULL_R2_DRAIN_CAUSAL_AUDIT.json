@@ -1,0 +1,308 @@
+[
+  {
+    "reason": "REGIME",
+    "fill_ns": "1726531200000000000",
+    "native_quote_ns": 1726531140000000000,
+    "drain_first_ns": 1726531200000000000,
+    "predecision_quote": true,
+    "qty": "1.22074",
+    "px": "58159.9"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1728086400000000000",
+    "native_quote_ns": 1728086340000000000,
+    "drain_first_ns": 1728086400000000000,
+    "predecision_quote": true,
+    "qty": "0.94281",
+    "px": "62050"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1728518400000000000",
+    "native_quote_ns": 1728518340000000000,
+    "drain_first_ns": 1728518400000000000,
+    "predecision_quote": true,
+    "qty": "0.58235",
+    "px": "60607.6"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1734912000000000000",
+    "native_quote_ns": 1734911940000000000,
+    "drain_first_ns": 1734912000000000000,
+    "predecision_quote": true,
+    "qty": "1.05247",
+    "px": "95166"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1735084800000000000",
+    "native_quote_ns": 1735084740000000000,
+    "drain_first_ns": 1735084800000000000,
+    "predecision_quote": true,
+    "qty": "1.45398",
+    "px": "98713.9"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1735257600000000000",
+    "native_quote_ns": 1735257540000000000,
+    "drain_first_ns": 1735257600000000000,
+    "predecision_quote": true,
+    "qty": "0.70996",
+    "px": "95765"
+  },
+  {
+    "reason": "TRAIL",
+    "fill_ns": "1736294400000000000",
+    "native_quote_ns": 1736294340000000000,
+    "drain_first_ns": 1736294400000000000,
+    "predecision_quote": true,
+    "qty": "0.72695",
+    "px": "96870"
+  },
+  {
+    "reason": "TRAIL",
+    "fill_ns": "1737936000000000000",
+    "native_quote_ns": 1737935940000000000,
+    "drain_first_ns": 1737936000000000000,
+    "predecision_quote": true,
+    "qty": "0.94956",
+    "px": "102654.9"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1738540800000000000",
+    "native_quote_ns": 1738540740000000000,
+    "drain_first_ns": 1738540800000000000,
+    "predecision_quote": true,
+    "qty": "1.00367",
+    "px": "97670"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1744502400000000000",
+    "native_quote_ns": 1744502340000000000,
+    "drain_first_ns": 1744502400000000000,
+    "predecision_quote": true,
+    "qty": "4.72622",
+    "px": "85262"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1749168000000000000",
+    "native_quote_ns": 1749167940000000000,
+    "drain_first_ns": 1749168000000000000,
+    "predecision_quote": true,
+    "qty": "1.38025",
+    "px": "101450.4"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1749254400000000000",
+    "native_quote_ns": 1749254340000000000,
+    "drain_first_ns": 1749254400000000000,
+    "predecision_quote": true,
+    "qty": "2.3352",
+    "px": "104231.4"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1750204800000000000",
+    "native_quote_ns": 1750204740000000000,
+    "drain_first_ns": 1750204800000000000,
+    "predecision_quote": true,
+    "qty": "1.07036",
+    "px": "104530.5"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1754352000000000000",
+    "native_quote_ns": 1754351940000000000,
+    "drain_first_ns": 1754352000000000000,
+    "predecision_quote": true,
+    "qty": "2.33103",
+    "px": "115020.2"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1755561600000000000",
+    "native_quote_ns": 1755561540000000000,
+    "drain_first_ns": 1755561600000000000,
+    "predecision_quote": true,
+    "qty": "1.74047",
+    "px": "116124.2"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1757548800000000000",
+    "native_quote_ns": 1757548740000000000,
+    "drain_first_ns": 1757548800000000000,
+    "predecision_quote": true,
+    "qty": "3.57824",
+    "px": "113898.1"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1758585600000000000",
+    "native_quote_ns": 1758585540000000000,
+    "drain_first_ns": 1758585600000000000,
+    "predecision_quote": true,
+    "qty": "2.12347",
+    "px": "112623.3"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1761523200000000000",
+    "native_quote_ns": 1761523140000000000,
+    "drain_first_ns": 1761523200000000000,
+    "predecision_quote": true,
+    "qty": "4.86726",
+    "px": "114476.3"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1761696000000000000",
+    "native_quote_ns": 1761695940000000000,
+    "drain_first_ns": 1761696000000000000,
+    "predecision_quote": true,
+    "qty": "2.45804",
+    "px": "112851.8"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1768953600000000000",
+    "native_quote_ns": 1768953540000000000,
+    "drain_first_ns": 1768953600000000000,
+    "predecision_quote": true,
+    "qty": "5.5376",
+    "px": "88390.2"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1773360000000000000",
+    "native_quote_ns": 1773359940000000000,
+    "drain_first_ns": 1773360000000000000,
+    "predecision_quote": true,
+    "qty": "34.85775",
+    "px": "70448.1"
+  },
+  {
+    "reason": "TRAIL",
+    "fill_ns": "1773878400000000000",
+    "native_quote_ns": 1773878340000000000,
+    "drain_first_ns": 1773878400000000000,
+    "predecision_quote": true,
+    "qty": "12.58794",
+    "px": "71214.4"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1779062400000000000",
+    "native_quote_ns": 1779062340000000000,
+    "drain_first_ns": 1779062400000000000,
+    "predecision_quote": true,
+    "qty": "54.17158",
+    "px": "77404.9"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1783728000000000000",
+    "native_quote_ns": 1783727940000000000,
+    "drain_first_ns": 1783728000000000000,
+    "predecision_quote": true,
+    "qty": "58.66427",
+    "px": "64143.1"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1784073600000000000",
+    "native_quote_ns": 1784073540000000000,
+    "drain_first_ns": 1784073600000000000,
+    "predecision_quote": true,
+    "qty": "52.66619",
+    "px": "64994.3"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1784246400000000000",
+    "native_quote_ns": 1784246340000000000,
+    "drain_first_ns": 1784246400000000000,
+    "predecision_quote": true,
+    "qty": "29.88797",
+    "px": "63807.8"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1784332800000000000",
+    "native_quote_ns": 1784332740000000000,
+    "drain_first_ns": 1784332800000000000,
+    "predecision_quote": true,
+    "qty": "41.77852",
+    "px": "63904.2"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1784937600000000000",
+    "native_quote_ns": 1784937540000000000,
+    "drain_first_ns": 1784937600000000000,
+    "predecision_quote": true,
+    "qty": "26.15563",
+    "px": "64122.2"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1785196800000000000",
+    "native_quote_ns": 1785196740000000000,
+    "drain_first_ns": 1785196800000000000,
+    "predecision_quote": true,
+    "qty": "18.94244",
+    "px": "63731.1"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1785456000000000000",
+    "native_quote_ns": 1785455940000000000,
+    "drain_first_ns": 1785456000000000000,
+    "predecision_quote": true,
+    "qty": "44.9203",
+    "px": "64746.5"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1785974400000000000",
+    "native_quote_ns": 1785974340000000000,
+    "drain_first_ns": 1785974400000000000,
+    "predecision_quote": true,
+    "qty": "22.20013",
+    "px": "64619.6"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1786406400000000000",
+    "native_quote_ns": 1786406340000000000,
+    "drain_first_ns": 1786406400000000000,
+    "predecision_quote": true,
+    "qty": "23.62555",
+    "px": "63946.8"
+  },
+  {
+    "reason": "REGIME",
+    "fill_ns": "1787011200000000000",
+    "native_quote_ns": 1787011140000000000,
+    "drain_first_ns": 1787011200000000000,
+    "predecision_quote": true,
+    "qty": "9.244",
+    "px": "64530.8"
+  },
+  {
+    "reason": "TERMINAL_BOUNDARY_SETTLEMENT",
+    "fill_ns": "1788220800000000000",
+    "native_quote_ns": 1788220800000000000,
+    "drain_first_ns": 1788220800000000000,
+    "predecision_quote": false,
+    "qty": "10.52097",
+    "px": "78541.8"
+  }
+]
