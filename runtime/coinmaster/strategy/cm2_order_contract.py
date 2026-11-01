@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from decimal import Decimal as D, ROUND_DOWN, ROUND_FLOOR, ROUND_CEILING
 from coinmaster.venues.production_preflight import _decimal_places, _significant_figures
 
-MODEL_ID="CM2_AUDITED_CHILD_REQUEST_V1"
+MODEL_ID="CM2_BTC_REFERENCE_NATIVE_REQUEST_V1"
 FRESH_NS=120_000_000_000  # OWN operational research choice, not a venue rule.
 DRAIN_NS=120_000_000_000 # OWN operational research choice, not a venue rule.
 REDUCE_FLOOR_POLICY="CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN"

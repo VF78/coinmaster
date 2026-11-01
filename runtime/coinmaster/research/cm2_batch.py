@@ -111,18 +111,26 @@ def validate_allocation(manifest, host, manifest_sha):
 
 
 def collect_child(pid, status, usage, record):
-    child, entry, output, started, identity, log, ledger = record
+    child, entry, output, started, identity, log, ledger, request = record
     code = os.waitstatus_to_exitcode(status)
     child.returncode = code
     log.close()
-    terminal = {**entry, "status": "COMPLETED" if code == 0 else "FAILED",
+    collection_code=code;validation_error=None
+    if code==0:
+        try:runner.postchild_validation(request)
+        except Exception as error:
+            collection_code=1
+            validation_error={'error_type':type(error).__name__,'error':str(error),
+                'failure_phase':'POST_CHILD_PERSISTED_QUALIFICATION'}
+    terminal = {**entry, "status": "COMPLETED" if collection_code == 0 else "FAILED",
                 "exit_code": code, "elapsed_seconds": time.monotonic() - started,
                 "true_child_peak_rss_bytes": int(usage.ru_maxrss) * (1 if sys.platform == "darwin" else 1024),
                 "rss_basis": "WAIT4_EXACT_NATIVE_CHILD_RUSAGE_MAXRSS"}
+    if validation_error is not None:terminal.update(validation_error,collection_exit_code=collection_code)
     with (output / "native-child-terminal.json").open("x") as stream:
         stream.write(json.dumps({**identity, **terminal}, sort_keys=True) + "\n")
     runner.append_ledger(ledger, terminal)
-    return code
+    return collection_code
 
 
 def dispatch(requests, receipt, own, manifest_sha):
@@ -165,10 +173,10 @@ def dispatch(requests, receipt, own, manifest_sha):
                         child = subprocess.Popen(command, env=env, cwd=cwd, stdout=log,
                                                  stderr=subprocess.STDOUT, pass_fds=(shared.fileno(),))
                         # Track immediately, even if identity serialization fails.
-                        record = (child, entry, output, started, {}, log, str(ledger))
+                        record = (child, entry, output, started, {}, log, str(ledger), {**request,"_request_path":case["request_path"]})
                         active[child.pid] = record
                         identity = runner.record_native_child(output, child.pid, request["run_id"], case["request_sha256"])
-                        active[child.pid] = (child, entry, output, started, identity, log, str(ledger))
+                        active[child.pid] = (child, entry, output, started, identity, log, str(ledger), {**request,"_request_path":case["request_path"]})
                     except BaseException as error:
                         if child is None:
                             if log is not None:
@@ -190,8 +198,8 @@ def dispatch(requests, receipt, own, manifest_sha):
                         if result_pid:
                             code = collect_child(pid, status, usage, active.pop(pid))
                             if code:
-                                failures[("WORKER_EXIT", code)] += 1
-                                if failures[("WORKER_EXIT", code)] >= 2:
+                                failures[("CASE_COLLECTION", code)] += 1
+                                if failures[("CASE_COLLECTION", code)] >= 2:
                                     stopped = True
                     if active:
                         time.sleep(0.05)
@@ -227,6 +235,10 @@ def main(argv=None):
         raise ValueError("CM2_RECEIPT_ALLOCATION_MISMATCH")
     if manifest["stage"] == "broad" and manifest["broad_block"] == "second" and receipt.get("second_broad_block_GO") is not True:
         raise ValueError("CM2_CONDITIONAL_BROAD_HOLD")
+    bindings=receipt.get('case_bindings')
+    if (len(requests)>1 or bindings is not None) and (type(bindings) is not dict
+            or set(bindings)!={request['run_id'] for _,request in requests}):
+        raise ValueError('CM2_EXACT_HOST_CASE_RECEIPT_MAP_REQUIRED')
     for _, request in requests:
         runner.preflight(request, receipt)
     if not args.run:
@@ -235,8 +247,6 @@ def main(argv=None):
     # Existing zero-engine public-data/API boundary before any budget claim.
     import uuid
     for case, request in requests:
-        if request["stage"] == "engineering":
-            continue
         probe = Path(own["api_probe_root"]) / str(uuid.uuid4())
         command, env, cwd = runner.worker_process_spec(
             {**request, "artifact_dir": str(probe), "_request_path": case["request_path"]},

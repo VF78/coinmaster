@@ -901,9 +901,10 @@ def run_native_diagnostic(
     if research_c1_restore_dd not in ("0.35","0.40") or (research_c1_restore_dd!="0.35" and not research_residual_recovery):raise ValueError("R_REQUIRES_C1_RESTORE_DD_35_OR_40")
     if research_c1_btc_cut_divisor not in (2,4) or (research_c1_btc_cut_divisor!=2 and not research_residual_recovery):raise ValueError("Q_REQUIRES_C1_DIVISOR_2_OR_4")
     if research_residual_recovery and (not observe_minute_risk or not research_wait_4h or research_regime_reentry_band!="0.5" or research_zero_retrace or research_sol_dominant or research_wait_persist or research_sol_risk_first or research_conditional_sol or research_alpha_cushion or research_chop_pair):raise ValueError("C1_REQUIRES_CLEAN_E4_SETTLED_OBSERVER")
-    next_enabled = research_wait_4h or research_wait_persist or research_zero_retrace or research_sol_dominant
+    next_enabled = research_cm2 is not None or research_wait_4h or research_wait_persist or research_zero_retrace or research_sol_dominant
     from coinmaster.strategy.next_band import next_bar_type, next_closed_bar
-    next_bar_types = tuple(next_bar_type(inst.id,hours) for inst,hours in ((btc_instrument,4),(sol_instrument,1),*((((sol_instrument,4),)) if research_residual_recovery else ()))) if next_enabled else ()
+    next_specs = ((btc_instrument,4),) if research_cm2 is not None else ((btc_instrument,4),(sol_instrument,1),*((((sol_instrument,4),)) if research_residual_recovery else ()))
+    next_bar_types = tuple(next_bar_type(inst.id,hours) for inst,hours in next_specs) if next_enabled else ()
     confirmation_bars = tuple(BarType.new_composite(
         instrument.id, BarSpecification(15 if minutes == 15 else 1, BarAggregation.MINUTE if minutes == 15 else BarAggregation.HOUR, PriceType.LAST),
         AggregationSource.INTERNAL, 1, BarAggregation.MINUTE, AggregationSource.EXTERNAL,
@@ -964,7 +965,11 @@ def run_native_diagnostic(
             start_ns=trading_start_ms*1_000_000,end_ns=trading_end_ms*1_000_000,
             mark_types=(venue_mark_data_type(btc_instrument.id),venue_mark_data_type(sol_instrument.id)),
             mark_client=mark_client,journal=journal,exit_fee_rate=taker*multiplier,
-            execution_hash=policy.hash,risk_recorder=risk_recorder,coherent_observer=coherent_observer)
+            execution_hash=policy.hash,risk_recorder=risk_recorder,coherent_observer=coherent_observer,
+            seed_days=seed_bars,
+            seed_ohlc=tuple(((t+DAY_MS)*1_000_000,float(r['high']),float(r['low'])) for t,r in sorted(daily['BTCUSDT'].items()) if warmup_start_ms<=t and t+DAY_MS<=trading_start_ms),
+            daily_types=(daily_signal_data_type(btc_instrument.id),daily_signal_data_type(sol_instrument.id)),
+            h4_type=next_bar_types[0],signal_client=signal_client,initial_seed=initial_active_seed)
     else:
         strategy = strategy_type(WaveOverlayStrategyConfig(
             btc_id=btc_instrument.id, sol_id=sol_instrument.id,
@@ -1040,14 +1045,15 @@ def run_native_diagnostic(
             marks, signals, quotes, source_bars, next_bars = [], [], [], [], []
             for minute in week:
                 available_ns = (minute.open_time_ms + MINUTE_MS) * 1_000_000
-                if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair or research_cm2 is not None:
+                if research_h4_ema is not None or research_h1_b1 or research_sol_cover or research_conditional_sol or research_sol_risk_first or research_immediate_sol or research_alpha_cushion or research_chop_pair:
                     for instrument, row in ((btc_instrument, minute.btc_execution), (sol_instrument, minute.sol_execution)):
                         source_bars.append(Bar(minute_bars[instrument.id],
                             instrument.make_price(row["open"]), instrument.make_price(row["high"]),
                             instrument.make_price(row["low"]), instrument.make_price(row["close"]),
                             instrument.make_qty(0), available_ns, available_ns))
                 if next_enabled:
-                    for instrument,row,hours,kind in ((btc_instrument,minute.btc_execution,4,next_bar_types[0]),(sol_instrument,minute.sol_execution,1,next_bar_types[1]),*((((sol_instrument,minute.sol_execution,4,next_bar_types[2]),)) if research_residual_recovery else ())):
+                    for (instrument,hours),kind in zip(next_specs,next_bar_types):
+                        row=minute.btc_execution if instrument.id==btc_instrument.id else minute.sol_execution
                         duration=hours*60*MINUTE_MS
                         key=(str(instrument.id),hours)
                         acc=next_accumulators.get(key)
@@ -1274,7 +1280,7 @@ def run_native_diagnostic(
             result["c1_audit"]=strategy.c1_audit
             result["c1_denial_counts"]=strategy.c1_denials
             result["c1_terminal_state"]=strategy._c1_export_terminal()
-        if next_enabled:
+        if next_enabled and research_cm2 is None:
             result["next_band_audit"] = strategy.next_band_audit
         result.update({
             "episodes": "UNKNOWN_NATIVE_DOMAIN_EPISODE_AUDIT_NOT_EXPORTED",

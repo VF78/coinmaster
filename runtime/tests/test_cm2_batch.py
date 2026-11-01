@@ -90,8 +90,9 @@ class BatchTests(unittest.TestCase):
         def spec(request,fd,digest):
             delay={"CASE0":.4,"CASE1":.02,"CASE2":.03}[request['run_id']]
             return [sys.executable,'-B','-c',f'import time;time.sleep({delay})'],{},str(self.root)
-        with patch.object(batch,'available_memory',return_value=10**12),patch.object(runner,'worker_process_spec',side_effect=spec):
+        with patch.object(batch,'available_memory',return_value=10**12),patch.object(runner,'worker_process_spec',side_effect=spec),patch.object(runner,'postchild_validation') as checker:
             result=batch.dispatch(requests,{},own,sha)
+        self.assertEqual(checker.call_count,3)  # wait4-only fixture; no financial qualification claim
         rows=[json.loads(x) for x in Path(own['attempt_ledger']).read_text().splitlines()]
         completed=[r for r in rows if r['status']=='COMPLETED']
         self.assertEqual([r['run_id'] for r in completed],['CASE1','CASE2','CASE0'])

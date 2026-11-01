@@ -1,7 +1,8 @@
 """Pure native-order planning. No matcher, balance, fee or funding engine."""
 from dataclasses import dataclass
 from decimal import Decimal, ROUND_DOWN, ROUND_CEILING
-from coinmaster.strategy.cm2_policy import Decision, Features, Snapshot, D, ZERO, Config, hedge_limits
+D = Decimal
+ZERO = D(0)
 
 REDUCE_MIN_NOTIONAL_REASON="CONSERVATIVE_RESEARCH_MIN_NOTIONAL_REDUCE_EXCEPTION_UNKNOWN"
 
@@ -10,12 +11,12 @@ class ExecutionLimits:
     # Explicit assumed capacity in quote currency; no fake historical volume.
     max_child_notional: D
     max_gross_notional: D | None = None
-    child_interval_ns: int = 60_000_000_000
+    child_interval_ns: int = 0
     def __post_init__(self):
         if not self.max_child_notional.is_finite() or self.max_child_notional <= 0 or (self.max_gross_notional is not None and (not self.max_gross_notional.is_finite() or self.max_gross_notional <= 0)):
             raise ValueError("explicit positive capacity assumptions required")
-        if self.child_interval_ns < 60_000_000_000:
-            raise ValueError("child cadence must be at least one source minute")
+        if self.child_interval_ns < 0:
+            raise ValueError("negative child cadence")
 
 @dataclass(frozen=True)
 class OrderPlan:
@@ -23,43 +24,31 @@ class OrderPlan:
     signed_quantity: D = ZERO
     reason: str = ""
 
-def stage_targets(decision: Decision, s: Snapshot, f: Features, *, sol_step=ZERO, sol_min_qty=ZERO, sol_min_notional=ZERO):
-    """Ordinary BTC reductions wait for confirmed safe SOL inventory.
-    Emergency exits proceed immediately and carry explicitly measured orphan risk.
-    """
-    btc, sol = decision.btc_target, decision.sol_target
-    if decision.state.draining:
-        return btc, sol, False
-    reducing = s.btc_qty*btc >= 0 and abs(btc) < abs(s.btc_qty)
-    if f.hedge_valid and s.btc_qty:
-        # Both proposed targets and all pending reductions can fill first.
-        pending_btc = s.btc_qty+(s.btc_reduction_pending or (s.btc_pending if s.btc_pending*s.btc_qty < 0 else ZERO))
-        future_btc = min(abs(s.btc_qty),abs(btc))
-        if pending_btc*s.btc_qty >= 0:
-            future_btc = min(future_btc,abs(pending_btc))
-        else:
-            future_btc = ZERO
-        _,future_cap = hedge_limits(Config(),f,s,future_btc)
-        sign = -1 if s.btc_qty > 0 else 1
-        sol = D(sign)*min(abs(sol),future_cap)
-        if sol_step > 0:
-            # Quantize the remaining target toward flat BEFORE delta rounding.
-            # Rounding a required reduction down can strand held SOL above cap.
-            amount=(abs(sol)/sol_step).to_integral_value(rounding=ROUND_DOWN)*sol_step
-            held=abs(s.sol_qty)
-            if held > amount and s.sol_qty*D(sign) > 0:
-                minimum=max(sol_step,sol_min_qty,sol_min_notional/s.sol_mark)
-                minimum=(minimum/sol_step).to_integral_value(rounding=ROUND_CEILING)*sol_step
-                # Conservative research floor for reductions; real dust exceptions UNKNOWN.
-                # Enlarge a necessary guard trim only toward flat, never risk up.
-                if held-amount < minimum:
-                    amount=max(ZERO,held-minimum)
-                    amount=(amount/sol_step).to_integral_value(rounding=ROUND_DOWN)*sol_step
-            sol=D(sign)*amount
-        worst_sol = abs(s.sol_qty)+(s.sol_increase_pending or (abs(s.sol_pending) if s.sol_pending*s.sol_qty >= 0 else ZERO))
-        if reducing and worst_sol > future_cap:
-            return s.btc_qty, sol, True
-    return btc, sol, False
+@dataclass(frozen=True)
+class NativeExposure:
+    equity: D
+    btc_qty: D
+    sol_qty: D
+    btc_mark: D
+    sol_mark: D
+    unknown_orders: bool
+    data_known: bool
+    price_known: dict
+    unknown_order_assets: frozenset = frozenset()
+
+
+@dataclass
+class SafetyState:
+    global_latched: bool = False
+    reason: str = ""
+    emergency_peak_equity: D = ZERO
+    emergency_latched: bool = False
+    emergency_valuation_known: bool = False
+    emergency_trigger_equity: D = ZERO
+    emergency_trigger_peak_equity: D = ZERO
+    emergency_trigger_ns: int = 0
+    emergency_trigger_fraction: D = ZERO
+
 
 def order_plan(*,actual,target,pending,unknown,price,step,min_qty,max_child,emergency=False,min_notional=ZERO,venue_max_child_notional=None,venue_reference_price=None):
     # min_notional on reductions is an explicit conservative research policy,
