@@ -43,7 +43,7 @@ class ResidualDustTest(unittest.TestCase):
     def test_preexisting_dust_and_price_collapse_stay_blocked(self):
         for price in (D(100),D(50)):
             p=self.plan(".08",0,price=price,emergency=True)
-            self.assertEqual((p.action,p.reason),("HOLD","VENUE_MIN_NOTIONAL_INCLUDING_REDUCE_ONLY"))
+            self.assertEqual((p.action,p.reason),("HOLD","CONSERVATIVE_RESEARCH_MIN_NOTIONAL_REDUCE_EXCEPTION_UNKNOWN"))
         self.assertEqual(self.plan(".15",0,price=D(100),emergency=True).action,"SUBMIT")
         self.assertEqual(self.plan(".15",0,price=D(50),emergency=True).action,"HOLD")
 
@@ -54,7 +54,7 @@ class ResidualDustTest(unittest.TestCase):
         self.assertEqual(self.plan(".15",".05",pending=D("-.10"),unknown=True).action,"CANCEL")
         self.assertEqual(self.plan(0,".15").signed_quantity,D(".15"))
         self.assertEqual(self.plan(".15",".30").signed_quantity,D(".15"))
-        self.assertEqual(self.plan(".15",".10").reason,"VENUE_MIN_NOTIONAL_INCLUDING_REDUCE_ONLY")
+        self.assertEqual(self.plan(".15",".10").reason,"CONSERVATIVE_RESEARCH_MIN_NOTIONAL_REDUCE_EXCEPTION_UNKNOWN")
 
     def test_factor_staging_cannot_release_btc_after_blocked_sol_child(self):
         s=Snapshot(D(10000),D(1),D("-.15"),D(1000),D(100))

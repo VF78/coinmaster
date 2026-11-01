@@ -195,7 +195,7 @@ def run_fixture(request):
         expected_fees=sum((Money(D(f["qty"])*D(f["px"])*D(".000432"),btc.settlement_currency).as_decimal() for f in fills),D(0))
         cash=engine.cache.account_for_venue(btc.id.venue).balance_total(btc.settlement_currency).as_decimal()
         gross=-sum(((D(1) if f["order_side"]=="BUY" else D(-1))*D(f["qty"])*D(f["px"]) for f in fills),D(0))
-        checks.update(preexisting_dust_HOLD_no_order=plans["PREEXISTING_DUST_HOLD"]["plan"]["reason"]=="VENUE_MIN_NOTIONAL_INCLUDING_REDUCE_ONLY"
+        checks.update(preexisting_dust_HOLD_no_order=plans["PREEXISTING_DUST_HOLD"]["plan"]["reason"] in ("VENUE_MIN_NOTIONAL_INCLUDING_REDUCE_ONLY","CONSERVATIVE_RESEARCH_MIN_NOTIONAL_REDUCE_EXCEPTION_UNKNOWN")
             and "PREEXISTING_DUST_HOLD" not in strategy.ids and quantity("PREEXISTING_DUST_HOLD")==D(".08"),
             recovered_dust_native_fullclose=quantity("RECOVERED_DUST_CLOSE")==0,
             all_fill_ids_unique=len({f["trade_id"] for f in fills})==len(fills),

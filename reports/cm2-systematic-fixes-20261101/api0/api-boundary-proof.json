@@ -1,0 +1,11 @@
+{
+  "status": "ACTUAL_API_ENGINE_BOUNDARY_PASS",
+  "kind": "ENGINEERING_FIXTURE",
+  "boundary_calls": 1,
+  "native_engine_constructions": 0,
+  "fixture_id": "cm2-current-child-native-v3",
+  "start_ns": 1725148800000000000,
+  "end_ns": 1725213600000000000,
+  "only_kwarg_substitution": "artifact_dir",
+  "fixture_source_sha256": "62ee5e52337a050c1d92233ec9e7bc7b62106bc99c8e1e22ffa6de750d1daeaf"
+}

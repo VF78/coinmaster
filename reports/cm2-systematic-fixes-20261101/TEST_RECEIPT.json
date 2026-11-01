@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "actual_engine_constructions": 0,
+  "forbidden_constructor_calls": 0,
+  "files": [
+    "fixture_e08",
+    "fixture_e04",
+    "fixture_e04_failure",
+    "fixture_boundary",
+    "public_probe_dispatch",
+    "order_contract",
+    "final_send_contract",
+    "residual_dust",
+    "policy",
+    "child_admission",
+    "checkpoint",
+    "boundary",
+    "harvest_execution",
+    "stop_purpose",
+    "fixture_dust"
+  ],
+  "pytest_exit_status": 0,
+  "scope": "CONSTRUCTOR_FREE_EXPLICIT_NATIVE_OBJECT_AND_CALLBACK_TESTS_NOT_CONNECTED_NATIVE_PROOF",
+  "prior_collection_failure": "PYTHONPATH omitted parent runtime namespace; no tests executed; fixed invocation only",
+  "tests_passed": 130,
+  "old_v2_byte_unchanged": true,
+  "old_v2_sha256": "7d70840e68750f5df57b859629a7bc94d9077a331f4847db3103d34ef9b9993d",
+  "new_v3_sha256": "62ee5e52337a050c1d92233ec9e7bc7b62106bc99c8e1e22ffa6de750d1daeaf"
+}

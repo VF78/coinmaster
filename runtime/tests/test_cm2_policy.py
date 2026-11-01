@@ -182,7 +182,7 @@ class PolicyTests(unittest.TestCase):
     def test_native_min_notional_applies_to_reduce_only_without_waiver(self):
         plan=order_plan(actual=D("-237.78"),target=D("-237.77"),pending=D(0),unknown=False,
             price=D(90),step=D(".01"),min_qty=D(".01"),max_child=D(100000),min_notional=D(10))
-        self.assertEqual((plan.action,plan.reason),("HOLD","VENUE_MIN_NOTIONAL_INCLUDING_REDUCE_ONLY"))
+        self.assertEqual((plan.action,plan.reason),("HOLD","CONSERVATIVE_RESEARCH_MIN_NOTIONAL_REDUCE_EXCEPTION_UNKNOWN"))
         dust=order_plan(actual=D("-.06"),target=D(0),pending=D(0),unknown=False,
             price=D(90),step=D(".01"),min_qty=D(".01"),max_child=D(100000),min_notional=D(10),emergency=True)
         self.assertEqual(dust.action,"HOLD")

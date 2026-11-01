@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from decimal import Decimal, ROUND_DOWN, ROUND_CEILING
 from coinmaster.strategy.cm2_policy import Decision, Features, Snapshot, D, ZERO
 
+REDUCE_MIN_NOTIONAL_REASON="CONSERVATIVE_RESEARCH_MIN_NOTIONAL_REDUCE_EXCEPTION_UNKNOWN"
+
 @dataclass(frozen=True)
 class ExecutionLimits:
     # Explicit assumed capacity in quote currency; no fake historical volume.
@@ -84,7 +86,7 @@ def order_plan(*,actual,target,pending,unknown,price,step,min_qty,max_child,emer
     if q < min_qty or q == 0:
         return OrderPlan("HOLD",reason="VENUE_MINIMUM")
     if q*price < min_notional:
-        return OrderPlan("HOLD",reason="VENUE_MIN_NOTIONAL_INCLUDING_REDUCE_ONLY")
+        return OrderPlan("HOLD",reason=REDUCE_MIN_NOTIONAL_REASON if actual*delta < 0 else "VENUE_MIN_NOTIONAL")
     if actual*delta < 0:
         minimum_remainder = max(step,min_qty,min_notional/price)
         minimum_remainder = (minimum_remainder/step).to_integral_value(rounding=ROUND_CEILING)*step

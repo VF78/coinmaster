@@ -133,6 +133,7 @@ def engineering_fixture_module(request):
     import importlib
     modules={"cm2-connected-native-v1":"coinmaster.research.cm2_fixture",
              "cm2-current-child-native-v2":"coinmaster.research.cm2_fixture_e04",
+             "cm2-current-child-native-v3":"coinmaster.research.cm2_fixture_e08",
              "cm2-residual-dust-native-v1":"coinmaster.research.cm2_fixture_dust"}
     name=modules.get(request.get("fixture_id"))
     if name is None: raise ValueError("CM2_UNKNOWN_ENGINEERING_FIXTURE")
@@ -430,7 +431,7 @@ def main(argv=None):
         raise SystemExit("CM2_NATIVE_HOLD_NO_RESOURCE_RECEIPT")
     receipt=json.loads(args.resource_receipt.read_text())
     preflight(request,receipt)
-    if request["stage"]!="engineering" or request.get("fixture_id") in ("cm2-current-child-native-v2","cm2-residual-dust-native-v1"):
+    if request["stage"]!="engineering" or request.get("fixture_id") in ("cm2-current-child-native-v2","cm2-current-child-native-v3","cm2-residual-dust-native-v1"):
         import uuid,subprocess
         probe=Path(request.get("api_probe_root",str(Path(request["artifact_dir"]).parent/"api-probes")))/str(uuid.uuid4())
         command,env,cwd=worker_process_spec(

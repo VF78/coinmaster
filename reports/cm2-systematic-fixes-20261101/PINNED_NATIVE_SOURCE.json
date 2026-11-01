@@ -1,0 +1,46 @@
+{
+  "native_version": "1.231.0",
+  "actual_engine_constructions": 0,
+  "scope": "PINNED_SOURCE_READ_ONLY_NO_VENUE_REQUEST",
+  "sources": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/risk/engine.pyx",
+      "sha256": "bf51d0d886d98c4e95c1ef1aa74e4dd24a236a9fc149fb646a1f038d7dfb8d84",
+      "line_start": 680,
+      "line_end": 696,
+      "excerpt": "680:\n681:        # Get account for risk checks\n682:        cdef Account account = self._cache.account_for_venue(instrument.id.venue, account_id)\n683:\n684:        if account is None:\n685:            self._log.debug(\n686:                f\"Cannot find account for venue {instrument.id.venue} \"\n687:                f\"(account_id={account_id.get_issuer() if account_id is not None else None})\"\n688:            )\n689:            return True  # TODO: Temporary early return until handling routing/multiple venues\n690:\n691:        if account.is_margin_account:\n692:            return True  # TODO: Determine risk controls for margin\n693:\n694:        cdef bint allow_borrowing = isinstance(account, CashAccount) and account.allow_borrowing\n695:\n696:        free = account.balance_free(instrument.quote_currency)"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/adapters/hyperliquid/execution.py",
+      "sha256": "64f94799a882f054b42b94f25cecc1ae9f16f578655c07dde72b79b5e7ea4c8b",
+      "line_start": 660,
+      "line_end": 707,
+      "excerpt": "660:            pyo3_client_order_id = nautilus_pyo3.ClientOrderId(order.client_order_id.value)\n661:            pyo3_order_side = order_side_to_pyo3(order.side)\n662:            pyo3_order_type = order_type_to_pyo3(order.order_type)\n663:            pyo3_quantity = nautilus_pyo3.Quantity.from_str(str(order.quantity))\n664:            pyo3_time_in_force = time_in_force_to_pyo3(order.time_in_force)\n665:\n666:            if order.has_price:\n667:                if self._config.normalize_prices:\n668:                    rounded = self._round_to_significant_figures(order.price.as_decimal())\n669:                    pyo3_price = nautilus_pyo3.Price.from_decimal(rounded)\n670:                else:\n671:                    pyo3_price = nautilus_pyo3.Price.from_str(str(order.price))\n672:            elif order.order_type in (\n673:                OrderType.MARKET,\n674:                OrderType.STOP_MARKET,\n675:                OrderType.MARKET_IF_TOUCHED,\n676:            ):\n677:                pyo3_price = await self._calculate_market_order_price(order)\n678:            else:\n679:                pyo3_price = None\n680:\n681:            if order.has_trigger_price:\n682:                if self._config.normalize_prices:\n683:                    rounded = self._round_to_significant_figures(order.trigger_price.as_decimal())\n684:                    pyo3_trigger_price = nautilus_pyo3.Price.from_decimal(rounded)\n685:                else:\n686:                    pyo3_trigger_price = nautilus_pyo3.Price.from_str(str(order.trigger_price))\n687:            else:\n688:                pyo3_trigger_price = None\n689:\n690:            # Cache cloid mapping for WebSocket order/fill resolution\n691:            cloid = nautilus_pyo3.hyperliquid_cloid_from_client_order_id(pyo3_client_order_id)\n692:            self._ws_client.cache_cloid_mapping(cloid, pyo3_client_order_id)\n693:\n694:            pyo3_report = await self._ws_client.submit_order(\n695:                self._client,\n696:                instrument_id=pyo3_instrument_id,\n697:                client_order_id=pyo3_client_order_id,\n698:                order_side=pyo3_order_side,\n699:                order_type=pyo3_order_type,\n700:                quantity=pyo3_quantity,\n701:                time_in_force=pyo3_time_in_force,\n702:                price=pyo3_price,\n703:                trigger_price=pyo3_trigger_price,\n704:                post_only=order.is_post_only,\n705:                reduce_only=order.is_reduce_only,\n706:            )\n707:        except Exception as e:"
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/backtest/engine.pyx",
+      "sha256": "eb404e3558cf00ab9a13e3a1c67b05aab1d1d02647ac67409faa8350d33a1fbb",
+      "line_start": 1723,
+      "line_end": 1734,
+      "excerpt": "1723:\n1724:                self._data_engine.process(data)\n1725:\n1726:                # Process all exchange messages\n1727:                self._process_and_settle_venues(data.ts_init)\n1728:\n1729:                data = self._data_iterator.next()\n1730:                if data is None or data.ts_init > self._last_ns:\n1731:                    self._process_raw_time_event_handlers(\n1732:                        raw_handlers,\n1733:                        self._last_ns,\n1734:                        only_now=True,"
+    }
+  ],
+  "public_tag_byte_parity": "UNKNOWN_NOT_COMPARED; installed layout differs from separately inspected public tag",
+  "distribution_metadata_version": "1.231.0",
+  "installed_file_record_checks": [
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/risk/engine.pyx",
+      "sha256": "bf51d0d886d98c4e95c1ef1aa74e4dd24a236a9fc149fb646a1f038d7dfb8d84",
+      "dist_record_hash_mode": "sha256",
+      "dist_record_hash": "v1HQ2IbZjE6Vwe8ap05N0kojap_BSftkah8DjX37jYQ",
+      "record_matches": true
+    },
+    {
+      "path": "/root/.openclaw/workspace/coinmaster/coinmaster/runtime/.venv/lib/python3.12/site-packages/nautilus_trader/risk/engine.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "21986e2218af278d4a05324b2fddc2c05d2944c823d781782c6a73d8da2b0663",
+      "dist_record_hash_mode": "sha256",
+      "dist_record_hash": "IZhuIhivJ41KBTJLL93CwF0pRMgj14F4LGpz2NorBmM",
+      "record_matches": true
+    }
+  ]
+}

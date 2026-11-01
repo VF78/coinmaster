@@ -13,6 +13,7 @@ class PublicFixtureProbeDispatchTest(unittest.TestCase):
     def test_public_no_run_probe_dispatch_and_unchanged_paths(self):
         cases=(("engineering","cm2-residual-dust-native-v1",1),
                ("engineering","cm2-current-child-native-v2",1),
+               ("engineering","cm2-current-child-native-v3",1),
                ("engineering","cm2-connected-native-v1",0),
                ("anchors",None,1))
         for stage,fixture_id,expected in cases:

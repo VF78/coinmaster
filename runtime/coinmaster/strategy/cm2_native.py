@@ -20,7 +20,7 @@ from nautilus_trader.trading.strategy import Strategy
 from coinmaster.strategy.cm2_policy import (
     Config, State, Snapshot, Features, Hour, PairedHourBuilder, features, decide, D, ZERO,
     reconcile_btc_intent, actual_harvest_geometry, btc_child_permission, HOUR_NS)
-from coinmaster.strategy.cm2_execution import ExecutionLimits, order_plan, stage_targets
+from coinmaster.strategy.cm2_execution import ExecutionLimits, order_plan, stage_targets, REDUCE_MIN_NOTIONAL_REASON
 from coinmaster.strategy.cm2_checkpoint import KEY, SCHEMA, canonical, decode
 from coinmaster.venues.margin_policy import MarginMark
 from coinmaster.venues.marks import VenueMark
@@ -347,7 +347,7 @@ class CM2Strategy(Strategy):
                 self.cancel_order(order)
             return
         if plan.action != "SUBMIT":
-            if plan.action=="HOLD" and actual!=target and plan.reason.startswith("VENUE_"):
+            if plan.action=="HOLD" and actual!=target and (plan.reason.startswith("VENUE_") or plan.reason==REDUCE_MIN_NOTIONAL_REASON):
                 key=str(tick.instrument_id)
                 previous=self.target_blockers.get(key,{})
                 self.target_blockers[key]={"reason":plan.reason,"actual":str(actual),"target":str(target),
