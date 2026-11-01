@@ -665,14 +665,37 @@ class CM2Strategy(Strategy):
                 self.cancel_order(order)
 
     def _admit(self, iid, q, price, s, now):
+        now = self.clock.timestamp_ns()
         CM2Strategy._check_emergency_drawdown(self,now)
-        account = self.cache.account_for_venue(iid.venue)
         try:
+            # Caller valuation can precede a native cash/fill change. Admission
+            # always samples current native cash/inventory and coherent marks.
+            s = self._snapshot(now)
+            marks = [self._latest_marks.get(i) for i in (self.config.btc_id,self.config.sol_id)]
+            if any(m is None or not 0 <= now-m.ts_event <= 120_000_000_000 for m in marks) or marks[0].ts_event != marks[1].ts_event:
+                raise ValueError("NATIVE_INCREASE_MARK_PAIR_UNKNOWN")
+            account = self.cache.account_for_venue(iid.venue)
+            currency = account.base_currency
+            if currency is None or any(i.venue != iid.venue or
+                    self.cache.instrument(i).settlement_currency != currency
+                    for i in (self.config.btc_id,self.config.sol_id)):
+                raise ValueError("NATIVE_COLLATERAL_CURRENCY_UNKNOWN")
             if self.policy_state.emergency_latched or (self.config.policy.emergency_drawdown_fraction is not None and not self.policy_state.emergency_valuation_known):
                 raise ValueError("EMERGENCY_DRAWDOWN_GROWTH_HOLD")
             if s.unknown_orders or not s.data_known:
                 raise ValueError("NATIVE_INCREASE_RISK_STATE_UNKNOWN")
-            free = account.balance_free(account.base_currency).as_decimal()
+            balances = (account.balance_free(currency),account.balance_locked(currency),account.balance_total(currency))
+            if any(value is None or value.currency != currency for value in balances):
+                raise ValueError("NATIVE_COLLATERAL_CURRENCY_UNKNOWN")
+            free,locked,total = (value.as_decimal() for value in balances)
+            fee_rate = self.config.exit_fee_rate
+            if not fee_rate.is_finite() or fee_rate < 0:
+                raise ValueError("NATIVE_FEE_RESERVE_UNKNOWN")
+            amounts = (s.equity,s.btc_qty,s.sol_qty,s.btc_mark,s.sol_mark,q,price,free,locked,total)
+            if any(not x.is_finite() for x in amounts) or min(free,locked,total) < 0 or total != free+locked:
+                raise ValueError("NATIVE_COLLATERAL_BALANCE_UNKNOWN")
+            if s.equity <= 0 or price <= 0 or min(s.btc_mark,s.sol_mark) <= 0:
+                raise ValueError("NATIVE_COLLATERAL_VALUATION_UNKNOWN")
             # Tier/selected-leverage validation must see aggregate projected
             # inventory, not a small child at an artificially lower tier.
             reserve=ZERO
@@ -680,6 +703,9 @@ class CM2Strategy(Strategy):
             pending_gross=ZERO
             native_owned_order_margin=ZERO
             native_growth_reserve=ZERO
+            projected_total=ZERO
+            native_held_reserve=ZERO
+            native_owned_position_margin=ZERO
             for other,held,mark in ((self.config.btc_id,s.btc_qty,s.btc_mark),(self.config.sol_id,s.sol_qty,s.sol_mark)):
                 live = self._orders(other)
                 _,growth = pending_effects(held,tuple(
@@ -687,30 +713,48 @@ class CM2Strategy(Strategy):
                     for o in live))
                 held_initial=self.config.margin_policy.margin_for(other,abs(held),now)[0]
                 native_initial=account.margin_init(other)
-                if native_initial is not None:
-                    native_owned_order_margin += native_initial.as_decimal()
+                native_maintenance = account.margin_maint(other)
+                if any(value is not None and value.currency != currency for value in (native_initial,native_maintenance)):
+                    raise ValueError("NATIVE_MARGIN_CURRENCY_UNKNOWN")
+                native_initial = native_initial.as_decimal() if native_initial is not None else ZERO
+                native_maintenance = native_maintenance.as_decimal() if native_maintenance is not None else ZERO
+                if any(not x.is_finite() or x < 0 for x in (held_initial,native_initial,native_maintenance)):
+                    raise ValueError("NATIVE_MARGIN_REQUIREMENT_UNKNOWN")
+                native_owned_order_margin += native_initial
+                native_owned_position_margin += native_maintenance
+                native_held_reserve += min(held_initial,native_maintenance)
                 projected=abs(held)+growth+(abs(q) if other==iid else ZERO)
                 projected_initial=self.config.margin_policy.margin_for(other,projected,now)[0]
                 before_child=self.config.margin_policy.margin_for(other,abs(held)+growth,now)[0]
+                if any(not x.is_finite() or x < 0 for x in (projected_initial,before_child)):
+                    raise ValueError("NATIVE_MARGIN_REQUIREMENT_UNKNOWN")
+                projected_total += projected_initial
                 instrument_reserve=max(ZERO,before_child-held_initial)
                 reserve += instrument_reserve
-                native_growth_reserve += min(instrument_reserve,native_initial.as_decimal() if native_initial is not None else ZERO)
+                native_growth_reserve += min(instrument_reserve,native_initial)
                 initial += max(ZERO,projected_initial-before_child)
                 pending_gross += growth*mark
             # Native locked cash already covers some growth IM. Never give RO credit.
-            locked=account.balance_locked(account.base_currency).as_decimal()
-            if locked < 0 or free < 0:
-                raise ValueError("NATIVE_FREE_LOCKED_UNKNOWN")
-            native_margin=account.total_margin_init(account.base_currency).as_decimal()
-            if native_margin < 0 or native_margin > locked:
-                raise ValueError("NATIVE_ORDER_MARGIN_LOCKED_EQUIVALENCE_UNKNOWN")
-            if native_owned_order_margin < 0 or native_owned_order_margin > native_margin:
-                raise ValueError("NATIVE_OWN_ORDER_MARGIN_UNKNOWN")
+            totals=(account.total_margin_init(currency),account.total_margin_maint(currency))
+            if any(value is None or value.currency != currency for value in totals):
+                raise ValueError("NATIVE_MARGIN_CURRENCY_UNKNOWN")
+            native_margin,native_maintenance=(value.as_decimal() for value in totals)
+            if any(not x.is_finite() or x < 0 for x in (native_margin,native_maintenance)) or native_margin+native_maintenance > locked:
+                raise ValueError("NATIVE_MARGIN_LOCKED_EQUIVALENCE_UNKNOWN")
+            if native_owned_order_margin > native_margin or native_owned_position_margin > native_maintenance:
+                raise ValueError("NATIVE_OWN_MARGIN_UNKNOWN")
             uncovered=max(ZERO,reserve-native_growth_reserve)
-            pending_fees=pending_gross*self.config.exit_fee_rate
+            pending_fees=pending_gross*fee_rate
             gross = abs(s.btc_qty*s.btc_mark)+abs(s.sol_qty*s.sol_mark)
-            if initial+(abs(q)*price)*self.config.exit_fee_rate+pending_fees > free-uncovered:
+            if initial+(abs(q)*price)*fee_rate+pending_fees > free-uncovered:
                 raise ValueError("NATIVE_FREE_MARGIN")
+            # Full tierIM includes held inventory and all reachable growth.
+            # Credit only matching native locks already in that requirement;
+            # opaque/other locks remain unavailable. RO never releases collateral.
+            unmatched_locked=max(ZERO,locked-native_growth_reserve-native_held_reserve)
+            fees=(pending_gross+abs(q)*price)*fee_rate
+            if projected_total+fees > s.equity-unmatched_locked:
+                raise ValueError("NATIVE_AGGREGATE_COLLATERAL")
             if self.config.limits.max_gross_notional is not None and gross+pending_gross+abs(q)*price > self.config.limits.max_gross_notional:
                 raise ValueError("EXPLICIT_CAPACITY_GROSS")
         except (ValueError,AttributeError) as error:

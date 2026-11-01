@@ -16,7 +16,7 @@ from coinmaster.research.cm2_runner import acquire_shared_lease,register_attempt
 class AdapterBoundaryTests(unittest.TestCase):
     def test_same_available_quote_is_not_executable(self):
         self_fake=N(_quotes={},_owned={},policy_state=State(),_restore_failed=False,
-                    config=N(trading_start_open_ns=0,terminal_close_at_ns=1000),
+                    config=N(policy=Config(),trading_start_open_ns=0,terminal_close_at_ns=1000),
                     current_features=Features(100,100,True))
         self_fake._snapshot=lambda now: (_ for _ in ()).throw(RuntimeError("EXECUTION_BOUNDARY_ENTERED"))
         native_now=[100]
@@ -38,14 +38,20 @@ class AdapterBoundaryTests(unittest.TestCase):
                 if iid=="BTC" and quantity>D(10):
                     raise ValueError("SELECTED_LEVERAGE_EXCEEDS_AGGREGATE_TIER")
                 return quantity*D(10),D(0),D(100)
-        account=N(base_currency="USDC",balance_free=lambda currency:N(as_decimal=lambda:D(10000)))
-        fake=N(config=N(btc_id="BTC",sol_id="SOL",margin_policy=Tier(),limits=ExecutionLimits(D(1000)),exit_fee_rate=D(".000432")),
-               cache=N(account_for_venue=lambda venue:account),_orders=lambda iid:[],pre_submit_gate_blocks=[])
+        account=N(base_currency="USDC",balance_free=lambda currency:N(currency="USDC",as_decimal=lambda:D(10000)),
+            balance_locked=lambda c:N(currency="USDC",as_decimal=lambda:D(0)),balance_total=lambda c:N(currency="USDC",as_decimal=lambda:D(10000)),
+            margin_init=lambda i:None,margin_maint=lambda i:None,
+            total_margin_init=lambda c:N(currency="USDC",as_decimal=lambda:D(0)),total_margin_maint=lambda c:N(currency="USDC",as_decimal=lambda:D(0)))
+        fake=N(clock=N(timestamp_ns=lambda:1),policy_state=State(),config=N(policy=Config(),btc_id="BTC",sol_id="SOL",margin_policy=Tier(),limits=ExecutionLimits(D(1000)),exit_fee_rate=D(".000432")),
+               cache=N(account_for_venue=lambda venue:account,instrument=lambda iid:N(settlement_currency="USDC")),_orders=lambda iid:[],pre_submit_gate_blocks=[])
         # IDs need venue for native boundary, while preserving deterministic keys.
         class ID(str):
             venue="SIM"
         btc=ID("BTC")
         s=Snapshot(D(10000),D(9),D(0),D(100),D(10))
+        fake.config.btc_id=btc;fake.config.sol_id=ID("SOL")
+        fake._latest_marks={i:N(ts_event=1) for i in (fake.config.btc_id,fake.config.sol_id)}
+        fake._snapshot=lambda now:s
         self.assertFalse(CM2Strategy._admit(fake,btc,D(2),D(100),s,1))
         self.assertIn("AGGREGATE_TIER",fake.pre_submit_gate_blocks[-1]["reason"])
 

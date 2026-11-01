@@ -524,7 +524,8 @@ def decide(cfg: Config, f: Features, s: Snapshot, st: State, *, terminal=False, 
                         initial_cash_risk=s.equity*D(str(cfg.parent_risk_fraction)),core_target_valid=True,release_armed_ns=0))
     if cfg.core_signal == "slow_d1_h4" and f.core_direction == -d:
         return Decision(ZERO,ZERO,"SLOW_REGIME_EXIT",arm_slow_release(replace(st,draining=True,
-            btc_target=ZERO,sol_target=ZERO,btc_intent="RISK_TRIM",core_target_valid=False),f,now_ns),True)
+            btc_target=ZERO,sol_target=ZERO,btc_intent="RISK_TRIM",intent_hour=0,
+            harvest_target=None,harvest_start_qty=None,core_target_valid=False),f,now_ns),True)
     previous_extreme = st.extreme
     extreme = max(st.extreme,f.close) if d > 0 else min(st.extreme,f.close)
     proposed = extreme-d*cfg.stop_atr*f.atr

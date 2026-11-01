@@ -167,39 +167,50 @@ class RepairV2Tests(unittest.TestCase):
         from nautilus_trader.model.identifiers import InstrumentId
         from nautilus_trader.model.enums import OrderSide
         account=MarginAccount(TestEventStubs.margin_account_state())
+        # SDK default stub contains unrelated AUD/USD IM10000/MM50000.
+        # Remove that foreign test inventory before publishing own coherent locks.
+        for iid in set(account.margins_init()) | set(account.margins_maint()):
+            account.clear_margin_init(iid);account.clear_margin_maint(iid)
         from nautilus_trader.model.objects import Money,AccountBalance
         from nautilus_trader.model.currencies import USD
-        account.update_margin_init(InstrumentId.from_str('BTCUSDC.HYPERLIQUID'),Money(100,USD))
-        account.update_balances([AccountBalance(Money(11100,USD),Money(10100,USD),Money(1000,USD))])
+        account.update_margin_maint(InstrumentId.from_str('BTCUSDC.HYPERLIQUID'),Money(500,USD))
+        # Coherent heldMM lock; RO contributes no orderIM or collateral credit.
+        account.update_balances([AccountBalance(Money(1500,USD),Money(500,USD),Money(1000,USD))])
         btc=InstrumentId.from_str('BTCUSDC.HYPERLIQUID');sol=InstrumentId.from_str('SOLUSDC.HYPERLIQUID')
         ro=N(side=OrderSide.SELL,leaves_qty=N(as_decimal=lambda:D(10)),is_reduce_only=True)
         projections=[]
         def margin(i,q,t):projections.append(q);return (q*D(1000)/40,ZERO)
-        fake=N(policy_state=State(),config=N(policy=Config(),btc_id=btc,sol_id=sol,exit_fee_rate=D('.000432'),limits=N(max_gross_notional=None),margin_policy=N(margin_for=margin)),
-            cache=N(account_for_venue=lambda venue:account),_orders=lambda iid:[ro] if iid==btc else [],pre_submit_gate_blocks=[])
+        fake=N(clock=N(timestamp_ns=lambda:1),policy_state=State(),config=N(policy=Config(),btc_id=btc,sol_id=sol,exit_fee_rate=D('.000432'),limits=N(max_gross_notional=None),margin_policy=N(margin_for=margin)),
+            cache=N(account_for_venue=lambda venue:account,instrument=lambda iid:N(settlement_currency=USD)),
+            _snapshot=lambda now:snap(equity=D(10000),btc_qty=D(40)),_latest_marks={i:N(ts_event=1) for i in (btc,sol)},
+            _orders=lambda iid:[ro] if iid==btc else [],pre_submit_gate_blocks=[])
         self.assertTrue(CM2Strategy._admit(fake,btc,D(4),D(1000),snap(btc_qty=D(40)),1))
         self.assertEqual(max(projections),D(44))
         inc=N(side=OrderSide.BUY,leaves_qty=N(as_decimal=lambda:D(4)),is_reduce_only=False)
         fake._orders=lambda iid:[ro,inc] if iid==btc else []
-        account.update_balances([AccountBalance(Money(10220,USD),Money(10100,USD),Money(120,USD))])
+        account.update_margin_init(btc,Money(100,USD))
+        account.update_balances([AccountBalance(Money(720,USD),Money(600,USD),Money(120,USD))])
         self.assertTrue(CM2Strategy._admit(fake,btc,D(4),D(1000),snap(btc_qty=D(40)),1))
-        account.update_balances([AccountBalance(Money(10200,USD),Money(10100,USD),Money(100,USD))])
+        account.update_balances([AccountBalance(Money(700,USD),Money(600,USD),Money(100,USD))])
         self.assertFalse(CM2Strategy._admit(fake,btc,D(4),D(1000),snap(btc_qty=D(40)),1))
         self.assertEqual(fake.pre_submit_gate_blocks[-1]['reason'],'NATIVE_FREE_MARGIN')
         # BTC order margin cannot fund a pending SOL increase (review counterexample).
         fake._orders=lambda iid:[ro] if iid==btc else [inc]
-        cross=snap(btc_qty=D(40),sol_qty=ZERO,sol_mark=D(1000))
-        account.update_balances([AccountBalance(Money(10220,USD),Money(10100,USD),Money(120,USD))])
+        cross=snap(equity=D(10000),btc_qty=D(40),sol_qty=ZERO,sol_mark=D(1000))
+        fake._snapshot=lambda now:cross
+        account.update_margin_init(btc,Money(100,USD))
+        account.update_balances([AccountBalance(Money(720,USD),Money(600,USD),Money(120,USD))])
         self.assertFalse(CM2Strategy._admit(fake,sol,D(4),D(1000),cross,1))
         self.assertEqual(fake.pre_submit_gate_blocks[-1]['reason'],'NATIVE_FREE_MARGIN')
         fake._orders=lambda iid:[ro,inc] if iid==btc else []
+        fake._snapshot=lambda now:snap(equity=D(10000),btc_qty=D(40))
         # Aggregate projected 52 crosses a test tier; pending and child fees still reserved.
         inc.leaves_qty=N(as_decimal=lambda:D(8))
         fake.config.margin_policy=N(margin_for=lambda i,q,t:(q*D(1000)/(20 if q>50 else 40),ZERO))
         account.update_margin_init(btc,Money(200,USD))
-        account.update_balances([AccountBalance(Money(11600,USD),Money(10200,USD),Money(1400,USD))])
+        account.update_balances([AccountBalance(Money(2100,USD),Money(700,USD),Money(1400,USD))])
         self.assertFalse(CM2Strategy._admit(fake,btc,D(4),D(1000),snap(btc_qty=D(40)),1))
-        account.update_balances([AccountBalance(Money(11700,USD),Money(10200,USD),Money(1500,USD))])
+        account.update_balances([AccountBalance(Money(2200,USD),Money(700,USD),Money(1500,USD))])
         self.assertTrue(CM2Strategy._admit(fake,btc,D(4),D(1000),snap(btc_qty=D(40)),1))
 
 class SeedAndCheckpointV2Tests(unittest.TestCase):
