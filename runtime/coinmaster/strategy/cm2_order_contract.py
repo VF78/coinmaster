@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from decimal import Decimal as D, ROUND_DOWN, ROUND_FLOOR, ROUND_CEILING
 from coinmaster.venues.production_preflight import _decimal_places, _significant_figures
 
-MODEL_ID="CM2_BTC_REFERENCE_NATIVE_REQUEST_V1"
+MODEL_ID="CM2_BTC_MARKET_NATIVE_REQUEST_V1"
 FRESH_NS=120_000_000_000  # OWN operational research choice, not a venue rule.
 DRAIN_NS=120_000_000_000 # OWN operational research choice, not a venue rule.
 REDUCE_FLOOR_POLICY="CONSERVATIVE_RESEARCH_MIN10_REDUCE_EXCEPTION_UNKNOWN"
@@ -30,8 +30,19 @@ def aggressive_price(spec,price,side):
         raise ValueError("PROTECTIVE_PRICE_FORMAT_OR_OWN_ONE_TICK_BAND")
     return result
 
+def outward_price(spec, price, up):
+    """Favourable limit / conservative BE threshold; always official price format."""
+    if not finite_positive(price) or type(up) is not bool:
+        raise ValueError("INVALID_OUTWARD_PRICE")
+    quantum=max(D(1).scaleb(-spec.max_price_decimals),
+        min(D(1),D(1).scaleb(price.adjusted()-spec.max_price_significant_figures+1)))
+    value=(price/quantum).to_integral_value(rounding=ROUND_CEILING if up else ROUND_FLOOR)*quantum
+    if not valid_price(spec,value):raise ValueError("OUTWARD_PRICE_FORMAT")
+    return value
+
+
 def request_cap(spec,intent,tif):
-    if intent=="MARKET":
+    if intent in ("MARKET","STOP_MARKET"):
         return spec.max_market_notional,"OFFICIAL_MARKET_INTENT_CAP_WIRE_CLASSIFICATION_UNKNOWN"
     if intent=="LIMIT" and tif=="IOC":
         return min(spec.max_market_notional,spec.max_limit_notional),"OWN_CONSERVATIVE_AMBIGUOUS_IOC_CAP_BACKEND_UNKNOWN"
@@ -60,7 +71,7 @@ def validate_request(spec,quantity,terms,intent,tif):
     if (not all(finite_positive(v) for v in (terms.cap_reference_price,terms.minimum_reference_price,terms.cap))
             or terms.minimum_reference_price>terms.cap_reference_price):
         return False,"REQUEST_REFERENCE_UNKNOWN"
-    if intent=="MARKET" and terms.limit_price is not None:return False,"MARKET_HAS_UNEXPECTED_LIMIT_PRICE"
+    if intent in ("MARKET","STOP_MARKET") and terms.limit_price is not None:return False,"MARKET_HAS_UNEXPECTED_LIMIT_PRICE"
     if quantity<spec.min_quantity or quantity%spec.quantity_increment:return False,"REQUEST_QUANTITY_FORMAT"
     if intent=="LIMIT" and not valid_price(spec,terms.limit_price):return False,"REQUEST_PRICE_FORMAT"
     if quantity*terms.minimum_reference_price<spec.min_notional:return False,"CONSERVATIVE_RESEARCH_MIN_NOTIONAL"

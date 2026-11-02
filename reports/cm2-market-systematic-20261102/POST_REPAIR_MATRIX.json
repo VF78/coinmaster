@@ -1,0 +1,288 @@
+{
+  "source_commit": "70fafcdd546966f0228bc3efac5d2277ce1a800a",
+  "economic_validation": false,
+  "rows": [
+    {
+      "points": [
+        "B02"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "β270 и его BTC-фильтр удалены из активного пути; K60 остаётся отдельным правилом будущего SOL."
+    },
+    {
+      "points": [
+        "B03",
+        "B05",
+        "B16"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "Волны, квантили, нулевые TP и сокращённые входы удалены; фиксированные TP."
+    },
+    {
+      "points": [
+        "B07"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "7,875× фактического общего native equity в обе стороны; реальные margin/tiers сохранены."
+    },
+    {
+      "points": [
+        "B08"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "Биржевой cap применяется к каждой заявке; общий BTC-план не обрезается до30млн."
+    },
+    {
+      "points": [
+        "B10"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "План50/50; нечётный lot округляется вниз; ordinary GTC0,5% от завершённого первого MARKET VWAP."
+    },
+    {
+      "points": [
+        "B11"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Частично",
+      "difference": "Временной/UTC market-fallback удалён. GUI Pause/Stop ещё не подключены к CM2."
+    },
+    {
+      "points": [
+        "B12"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "TP на фактические исполнения без ожидания всего входа; с первого TP1 все увеличения отменяются."
+    },
+    {
+      "points": [
+        "B18"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "Единые GTC безpost-only, native maker/taker по факту исполнения; специальный IOC-обход удалён."
+    },
+    {
+      "points": [
+        "B19",
+        "B20"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Частично",
+      "difference": "BTC1,25/2,5/3,75% и30/40/30 реализованы. SOL30/40/30 согласованы, но его расстояния и модель ещё не реализованы."
+    },
+    {
+      "points": [
+        "B21"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "База — cumulative actual entry, минус actual TP fills; поздние fills получают выходную защиту."
+    },
+    {
+      "points": [
+        "B20_BE",
+        "B12_BE"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Частично",
+      "difference": "BTC: BE с первого actual TP1, расходы остатка+ожидаемая exit fee. SOL ещё не реализован; MARK-паритет1.231 не проверен."
+    },
+    {
+      "points": [
+        "B22",
+        "S48.4"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Частично",
+      "difference": "BTC REGIME закрывает BTC; старый групповой SOL-выход удалён из активного владельца. SOL BE поREGIME требует новой SOL-модели."
+    },
+    {
+      "points": [
+        "B23",
+        "B24",
+        "S48.5"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "BTC trailing и связанное автоматическое закрытие SOL удалены."
+    },
+    {
+      "points": [
+        "B28",
+        "S48.6"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "C1 cut/restore/credit удалён; реальные ACK/fill/unknown guards сохранены."
+    },
+    {
+      "points": [
+        "B25_BTC"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "После BTC-flat и terminal BTC orders — следующий новый D1; H4 послеREGIME. Старый SOL не является блокировкой."
+    },
+    {
+      "points": [
+        "B25_SOL"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Не завершено",
+      "difference": "Новую SOL-модель со своими TP/SL/BE ещё требуется реализовать после проверки BTC."
+    },
+    {
+      "points": [
+        "B27"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Частично",
+      "difference": "Неизвестный ACK не разрешает дубль. Правило повтора после доказанного zero-fill отказа отдельно не согласовано и не изменено."
+    },
+    {
+      "points": [
+        "P18"
+      ],
+      "baseline_status": "Уже соответствует",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "EMA34+0,5 Wilder ATR14 по закрытым D1/H4 послеREGIME сохранены."
+    },
+    {
+      "points": [
+        "B17"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Не завершено",
+      "difference": "Новый причинный паттерн SOL не согласован. В новой BTC-версии SOL выключен, старый wave/z-вход не используется."
+    },
+    {
+      "points": [
+        "S48.1"
+      ],
+      "baseline_status": "Уже соответствует",
+      "source_status": "Соответствует удалению",
+      "difference": "Старый половинный z-выход не возвращён; новая SOL-модель выключена."
+    },
+    {
+      "points": [
+        "S48.2"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Частично",
+      "difference": "Старый z-выход отсутствует в новом активном владельце. Полный новый SOL жизненный цикл не реализован."
+    },
+    {
+      "points": [
+        "S48.3"
+      ],
+      "baseline_status": "Уже соответствует",
+      "source_status": "Соответствует удалению",
+      "difference": "14-дневного SOL-таймера нет; не восстановлен."
+    },
+    {
+      "points": [
+        "SOL_3TP"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Не завершено",
+      "difference": "Доли30/40/30 утверждены; расстояния SOL и реализация ожидают следующего этапа."
+    },
+    {
+      "points": [
+        "SOL_SL"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Не завершено",
+      "difference": "Цена/дистанция SOL SL не утверждены. Скрытого нового стопа нет."
+    },
+    {
+      "points": [
+        "§19_1000_SOL"
+      ],
+      "baseline_status": "Уже соответствует",
+      "source_status": "Уже соответствовало",
+      "difference": "В проверенном активном CM2 диагностическом fill-path потолка1000SOL не было; это не удалённая сейчас ошибка."
+    },
+    {
+      "points": [
+        "P11"
+      ],
+      "baseline_status": "Не соответствует",
+      "source_status": "Соответствует в BTC-коде",
+      "difference": "Резерв невыставленного parent/C1 удалён; held+pending+proposed child/native locks/tiers сохранены."
+    },
+    {
+      "points": [
+        "P12"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Частично",
+      "difference": "Общий50× cap не вводился. Реальные venue/account плечи и залог сохраняются; live-account семантика ещё не квалифицирована."
+    },
+    {
+      "points": [
+        "P30"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Частично",
+      "difference": "Существующий event-DD latch сохранён. Расширение на всю цепочку account/fill/funding, unknown/gap и GUI ещё не завершено."
+    },
+    {
+      "points": [
+        "S05",
+        "S06"
+      ],
+      "baseline_status": "Уже соответствует",
+      "source_status": "Не квалифицировано в новой SOL-модели",
+      "difference": "Базовый контракт actual opposite BTC и запрет SOL-роста послеBTC-flat сохранён в требованиях; новый SOL выключен."
+    },
+    {
+      "points": [
+        "P34",
+        "P35"
+      ],
+      "baseline_status": "Уже соответствует",
+      "source_status": "Уже соответствовало",
+      "difference": "Taker0,0432% / Maker0,0144%; actual fill fee один раз. Будущий exit reserve не является списанной комиссией."
+    },
+    {
+      "points": [
+        "S66_formula"
+      ],
+      "baseline_status": "Уже соответствует",
+      "source_status": "Формула сохранена; SOL не включён",
+      "difference": "K60=STD простых дневных доходностей SOL/BTC по60 закрытым парным UTC-дням; не β270."
+    },
+    {
+      "points": [
+        "S66_checks"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Не завершено",
+      "difference": "Единый успешный ежедневный расчёт K60/чтение для эпизода требуется подключить в новой SOL-модели."
+    },
+    {
+      "points": [
+        "B13"
+      ],
+      "baseline_status": "Частично",
+      "source_status": "Не завершено",
+      "difference": "GUI Pause/Protective Stop к текущему CM2 owner ещё не подключены."
+    },
+    {
+      "points": [
+        "S68"
+      ],
+      "baseline_status": "Уже соответствует",
+      "source_status": "Соответствует процессу",
+      "difference": "Изменённые численные правила согласованы; frozen эталон сохранён; новые параметры не подставлены."
+    }
+  ]
+}

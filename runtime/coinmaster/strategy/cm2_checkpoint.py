@@ -7,8 +7,8 @@ from decimal import Decimal
 from hashlib import sha256
 import json
 
-KEY="cm2-btc-reference-v1"
-SCHEMA="CM2_BTC_REFERENCE_NATIVE_CONTINUITY_V1"
+KEY="cm2-btc-market-v1"
+SCHEMA="CM2_BTC_MARKET_NATIVE_CONTINUITY_V1"
 
 def encode(value):
     if isinstance(value,Decimal): return {"decimal":str(value)}

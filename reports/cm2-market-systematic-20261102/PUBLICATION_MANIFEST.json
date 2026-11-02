@@ -1,0 +1,108 @@
+{
+  "status": "PREPARED_NOT_PUBLISHED",
+  "expected_remote_base": "8ea8611cec3f987a8737ad04b1020d4e1191f96a",
+  "branch": "codex/cm2-reference-reproduction-20261101-public",
+  "destination": "VF78/coinmaster",
+  "source": "70fafcdd546966f0228bc3efac5d2277ce1a800a",
+  "payload": [
+    {
+      "path": "reports/cm2-market-systematic-20261102/POST_REPAIR_MATRIX.json",
+      "sha256": "a19c9f036c51e399dc535e54d4099798995b94ffccd6ee2ddbb3b67f4a52b633",
+      "git_blob": "eecd8cf241638fde851600743aeb28725160afc1",
+      "size": 11875
+    },
+    {
+      "path": "reports/cm2-market-systematic-20261102/POST_REPAIR_MATRIX_RU.md",
+      "sha256": "1753691c1302f757c274babb557b4756a60909863b0927b0997c4a5f7d0a48c7",
+      "git_blob": "dc05bf1d6ee441a1aef3da2cc9742642e30c7a7f",
+      "size": 8247
+    },
+    {
+      "path": "reports/cm2-market-systematic-20261102/README.md",
+      "sha256": "4b598e68275fe4a87266987adb9d63d875e1cf39336555d8baf2dac2d89f0976",
+      "git_blob": "d19c4fd8a0e4a257b9c598862b2c3d8f684b3906",
+      "size": 10753
+    },
+    {
+      "path": "reports/cm2-market-systematic-20261102/REFERENCE_BTC_84_NATIVE_CYCLES.csv",
+      "sha256": "0d76505c11631acde06cc04c7609b07ef094701a30225454bc3bf11cb33f4f0a",
+      "git_blob": "b3437f80a56cc19d50569b341d30906f465324c3",
+      "size": 41536
+    },
+    {
+      "path": "reports/cm2-market-systematic-20261102/SOURCE_MANIFEST.json",
+      "sha256": "b2e1a007411869a29f3fd6f41d76439a395cbf34989f340b27c21ee12ed4894a",
+      "git_blob": "0b8286288251fe4a24041314b5be42c31ca59634",
+      "size": 19278
+    },
+    {
+      "path": "reports/cm2-market-systematic-20261102/TP_MEANS.csv",
+      "sha256": "de00c8a221241010dd1022324fa76e6e71dbaffbc1084a3958459e88aa809c5b",
+      "git_blob": "40c71d43b9d7b9d8dc85f1d8f9601c9e383d8029",
+      "size": 13477
+    },
+    {
+      "path": "reports/cm2-market-systematic-20261102/VALIDATION.json",
+      "sha256": "0d8d20f4f3256f86224d622695279ea20bde3f42dd740b0b67ff297a73936243",
+      "git_blob": "5ec81a309a34c829c5ac7b6bdcdf73ca7e551bbf",
+      "size": 1385
+    },
+    {
+      "path": "runtime/coinmaster/research/cm2_committed_validation.py",
+      "sha256": "8517d44b6a00c1996cc1aed963daeb0806179bd283df9ce11eb9f44a69bf0d4b",
+      "git_blob": "fec14dd497b0fb5eec36ac7c0c848ae42487b64f",
+      "size": 32181
+    },
+    {
+      "path": "runtime/coinmaster/research/cm2_runner.py",
+      "sha256": "d6721c4f1a6a0d291ecfe2b423b7137265fa36ea898a4336d629290497c92855",
+      "git_blob": "a1d5941e7fde9d42eb091a8e185638216a5172f3",
+      "size": 41269
+    },
+    {
+      "path": "runtime/coinmaster/research/native_baseline.py",
+      "sha256": "4dc906f61c2d5824414348630acdcce409497135421abf4ac4d8731ca51c9b59",
+      "git_blob": "7fc26b27294ac812598d43d75a38d153490933c9",
+      "size": 139348
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_btc_policy.py",
+      "sha256": "eb21e43554382cd3a78e2b0307825a72b69582996a37e8c9fa3cdf8b283e17e7",
+      "git_blob": "84068cf0d4a924f31473ca60edcd8759368df570",
+      "size": 13786
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_checkpoint.py",
+      "sha256": "82e1788a99d19fbad06ba1390678419aba37553a646da357b0e2d7dcc2498464",
+      "git_blob": "d3280e8707c18136516b532de901c7822a359bed",
+      "size": 3593
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_native.py",
+      "sha256": "0793336cd58a754db0889dc8fc80dc4f84ad6400c47638a14b95ad13197af307",
+      "git_blob": "49ee71287d4484d56a82ca4ddbe87ac06870dbb3",
+      "size": 60889
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_order_contract.py",
+      "sha256": "a1d7efe1e91d697abd78662dd0bac91229452e4546c1bd10a59c1bce85fe2720",
+      "git_blob": "a7d8f4ec297546236901e0bf5cc3d9b69c4ae7e6",
+      "size": 6349
+    },
+    {
+      "path": "runtime/tests/test_cm2_btc_market_code0.py",
+      "sha256": "19080ee5cda4db5f6a6bec8dbdff9ee5e79161b2a0fd2234a67c148fc21dc522",
+      "git_blob": "8e3c45220eef9b47c9eb3355ed8cbe30be39e78c",
+      "size": 24951
+    },
+    {
+      "path": "runtime/tests/test_cm2_market_continuity_guards.py",
+      "sha256": "8170481f76384bda994e3e54767cc66c0b94ae3d4005ce6ebe526c790f9d391a",
+      "git_blob": "7821a003c62234012a835ec3f282d80c94e15a8e",
+      "size": 1819
+    }
+  ],
+  "no_VPS_financial_staging": true,
+  "deployment": false,
+  "scope_correction": "Only CM2 research component;12 unrelated local live/API extra files excluded after firstpreflight. No product/source change."
+}

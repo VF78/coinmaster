@@ -1,0 +1,48 @@
+{
+  "status": "SOURCE_ONLY_NOT_MARK_QUALIFIED",
+  "source_commit": "70fafcdd546966f0228bc3efac5d2277ce1a800a",
+  "base_source": "7ca1964662fa5af4ef94396ff2002b7dbc52f811",
+  "engine": "NautilusTrader1.231.0/Python3.12",
+  "focused_checks": {
+    "passed": 48,
+    "deselected": 1,
+    "deselected_reason": "Historical breakout _sync_funding method expectation superseded; current NativeSignedFundingReader checks passed",
+    "all_historical_pytest_claimed_green": false,
+    "BacktestEngine": 0,
+    "CM2Strategy": 0,
+    "TradingNode": 0
+  },
+  "independent_reviews": {
+    "core_R1": {
+      "P0": 0,
+      "P1": 0
+    },
+    "source_profile_binding": {
+      "P0": 0,
+      "P1": 0
+    },
+    "final_readback": {
+      "P0": 0,
+      "P1": 0
+    }
+  },
+  "actual_config_probe": {
+    "BacktestEngine": 0,
+    "CM2Strategy": 0,
+    "PureSpy": 1,
+    "exit_code": 0,
+    "observer_wrapper_exercised": false
+  },
+  "economic_native_validation": false,
+  "mark_stops_qualified": false,
+  "ROI_and_DD_measured_for_new_source": false,
+  "SOL_enabled": false,
+  "source_closure": {
+    "file_count": 59,
+    "omitted_display_result_file": "runtime/coinmaster/research/current_comparison.json",
+    "full_tracked_commit_identity_claimed": false,
+    "local_source_freeze_file_count": 116,
+    "unrelated_live_API_files_excluded_from_publication_component": 12
+  },
+  "deployment": false
+}

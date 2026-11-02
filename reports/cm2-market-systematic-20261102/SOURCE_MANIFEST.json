@@ -1,0 +1,478 @@
+{
+  "source_commit": "70fafcdd546966f0228bc3efac5d2277ce1a800a",
+  "changed_source": [
+    {
+      "path": "runtime/coinmaster/research/cm2_committed_validation.py",
+      "sha256": "8517d44b6a00c1996cc1aed963daeb0806179bd283df9ce11eb9f44a69bf0d4b",
+      "git_blob": "fec14dd497b0fb5eec36ac7c0c848ae42487b64f",
+      "size": 32181
+    },
+    {
+      "path": "runtime/coinmaster/research/cm2_runner.py",
+      "sha256": "d6721c4f1a6a0d291ecfe2b423b7137265fa36ea898a4336d629290497c92855",
+      "git_blob": "a1d5941e7fde9d42eb091a8e185638216a5172f3",
+      "size": 41269
+    },
+    {
+      "path": "runtime/coinmaster/research/native_baseline.py",
+      "sha256": "4dc906f61c2d5824414348630acdcce409497135421abf4ac4d8731ca51c9b59",
+      "git_blob": "7fc26b27294ac812598d43d75a38d153490933c9",
+      "size": 139348
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_btc_policy.py",
+      "sha256": "eb21e43554382cd3a78e2b0307825a72b69582996a37e8c9fa3cdf8b283e17e7",
+      "git_blob": "84068cf0d4a924f31473ca60edcd8759368df570",
+      "size": 13786
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_checkpoint.py",
+      "sha256": "82e1788a99d19fbad06ba1390678419aba37553a646da357b0e2d7dcc2498464",
+      "git_blob": "d3280e8707c18136516b532de901c7822a359bed",
+      "size": 3593
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_native.py",
+      "sha256": "0793336cd58a754db0889dc8fc80dc4f84ad6400c47638a14b95ad13197af307",
+      "git_blob": "49ee71287d4484d56a82ca4ddbe87ac06870dbb3",
+      "size": 60889
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_order_contract.py",
+      "sha256": "a1d7efe1e91d697abd78662dd0bac91229452e4546c1bd10a59c1bce85fe2720",
+      "git_blob": "a7d8f4ec297546236901e0bf5cc3d9b69c4ae7e6",
+      "size": 6349
+    },
+    {
+      "path": "runtime/tests/test_cm2_btc_market_code0.py",
+      "sha256": "19080ee5cda4db5f6a6bec8dbdff9ee5e79161b2a0fd2234a67c148fc21dc522",
+      "git_blob": "8e3c45220eef9b47c9eb3355ed8cbe30be39e78c",
+      "size": 24951
+    },
+    {
+      "path": "runtime/tests/test_cm2_market_continuity_guards.py",
+      "sha256": "8170481f76384bda994e3e54767cc66c0b94ae3d4005ce6ebe526c790f9d391a",
+      "git_blob": "7821a003c62234012a835ec3f282d80c94e15a8e",
+      "size": 1819
+    }
+  ],
+  "selected_source_closure": [
+    {
+      "path": "runtime/coinmaster/__init__.py",
+      "sha256": "be565ccaf9ead97f5f542cf4cd13f0e492a9c3f88b0b3efccebfbe06531681b1",
+      "git_blob": "7b235c061bbd9b80fd91a407f6592f93abf1db84",
+      "size": 77
+    },
+    {
+      "path": "runtime/coinmaster/domain/__init__.py",
+      "sha256": "b1783d438e3e7c6836a8d621897d80da8e6557555df6237a2aed065776a325d8",
+      "git_blob": "f3165630003d0dbdeb551adc7b6cb43602e67ee6",
+      "size": 81
+    },
+    {
+      "path": "runtime/coinmaster/domain/deposit_protection.py",
+      "sha256": "21161559dc898ff404fb3422c5a46f0afceedba7ea0af0931cf2fa6962d8e974",
+      "git_blob": "fed8dba4dd81935a5c218c8abcd43aec0b156281",
+      "size": 8050
+    },
+    {
+      "path": "runtime/coinmaster/domain/wave_overlay.py",
+      "sha256": "797625eaed18a59ecc9a02ba8786ae915b63637a8091930392c84debbf303531",
+      "git_blob": "682016abdae8115a31ee3382af9c265efa34ff9b",
+      "size": 36608
+    },
+    {
+      "path": "runtime/coinmaster/ledger/__init__.py",
+      "sha256": "69fe7fe44e1a8d31eb36e1aa4687d376ed6c63a631e494f190d164c245767214",
+      "git_blob": "b35cea5926171a57888b827ea95bbdc42e626d5c",
+      "size": 66
+    },
+    {
+      "path": "runtime/coinmaster/ledger/journal.py",
+      "sha256": "6c161f28c37fedcb15841060320faa43233e6fc5de63dfc30683ba59556c2d4d",
+      "git_blob": "5d22e8d087ee08e1f674d6198ce4e518c39102a4",
+      "size": 7503
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_info_receipt.py",
+      "sha256": "abf87351f59e7fc8e3c513164e0c0e2b8867eff568af91455cc0f48a02fd5c96",
+      "git_blob": "fa0f7ef446667ef76564c21d9cc6d31532626af3",
+      "size": 21976
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_live_money.py",
+      "sha256": "bdf98b844af73260608208ee7090a004b37426e5b7ea92c3438163eeeb2a57a2",
+      "git_blob": "68c5aa08b2bdd9bce18d4a23edb232efdb90f48f",
+      "size": 28943
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_unified_account.py",
+      "sha256": "3269a7be6be45df0e7e7ba67bdb5c6fe6dff809b1fe93b0cd96c3ad7ac3378ad",
+      "git_blob": "02d68710aef6270e81056f1979473d922feaf97d",
+      "size": 5202
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_unified_instruments.py",
+      "sha256": "fbd1e4c9490a0f268d36099c6fbffaf551b5d6c84633676dbd023ad22685b5b9",
+      "git_blob": "5ccc00ff421dae3261ff563c062f3da0e14c4855",
+      "size": 4618
+    },
+    {
+      "path": "runtime/coinmaster/ops/stage_g_config.py",
+      "sha256": "483764644a250dc8068955c18ae3a73b1911fb9cfa94145e202c49599ff2ea38",
+      "git_blob": "96dd3dca123a8cfd19e8a116a4bb5d8f71b7b082",
+      "size": 8963
+    },
+    {
+      "path": "runtime/coinmaster/research/__init__.py",
+      "sha256": "4b89f0f2fa63b8c1e4c455ac5157d490e98ba3035c3bc4fbe629ecb5983d2530",
+      "git_blob": "08c42ed98d64455b710d05e398e3d75bebfd97ce",
+      "size": 68
+    },
+    {
+      "path": "runtime/coinmaster/research/cm2_committed_validation.py",
+      "sha256": "8517d44b6a00c1996cc1aed963daeb0806179bd283df9ce11eb9f44a69bf0d4b",
+      "git_blob": "fec14dd497b0fb5eec36ac7c0c848ae42487b64f",
+      "size": 32181
+    },
+    {
+      "path": "runtime/coinmaster/research/cm2_funding_reader.py",
+      "sha256": "d4963d3f95c695ce61aee3342c272e18c0883912ccb989590737250af75c0214",
+      "git_blob": "bea50a1ad274d63f8e9a16e8c49dc243b6819419",
+      "size": 2600
+    },
+    {
+      "path": "runtime/coinmaster/research/cm2_reference_control_worker.py",
+      "sha256": "fbcd30424ad5ed485f8016eb6ed68e9bbf98eb2168d350e4ed47a9d8a2b5ba50",
+      "git_blob": "81358047660ea5b31d3331a5de5141ad28f2f3e9",
+      "size": 14949
+    },
+    {
+      "path": "runtime/coinmaster/research/cm2_runner.py",
+      "sha256": "d6721c4f1a6a0d291ecfe2b423b7137265fa36ea898a4336d629290497c92855",
+      "git_blob": "a1d5941e7fde9d42eb091a8e185638216a5172f3",
+      "size": 41269
+    },
+    {
+      "path": "runtime/coinmaster/research/current_hl_profile.py",
+      "sha256": "b6b0fb4ad45060477bb1dfb62004087a6fb25b0bf126da1789e5fbffbbf058be",
+      "git_blob": "196890f1c28b2160acd915a1c1d65069e6e1f11e",
+      "size": 3706
+    },
+    {
+      "path": "runtime/coinmaster/research/effective_config.py",
+      "sha256": "08eaf974beac6bab5025f2c948e722503456a07ed6cf82beeb4aca8d5ce83450",
+      "git_blob": "1640188055931936f81ff7cf751c1527299766e4",
+      "size": 985
+    },
+    {
+      "path": "runtime/coinmaster/research/job_protocol.py",
+      "sha256": "76588a59ac140eea13726b9e6cec49ebe52dfc88186bcf958bab3ee87d998b8e",
+      "git_blob": "db72dba4c2e0f7bce3e7b6271f5c17a6051fb821",
+      "size": 2020
+    },
+    {
+      "path": "runtime/coinmaster/research/minute_risk.py",
+      "sha256": "fc7e52eb9fad58acb317c4dd7c004aa99b222cd89c53025f463973b353f9e2ad",
+      "git_blob": "2dcc7058bb7ed7236b09f970b91a0b7b88570df8",
+      "size": 22187
+    },
+    {
+      "path": "runtime/coinmaster/research/native_accounting.py",
+      "sha256": "a723525ca1be2b81635f716108d48a79b888f3704a7c5eb5ab54879f19cebfe1",
+      "git_blob": "47edf6984c8b91fe86acb9f77fcca275b344b81a",
+      "size": 2253
+    },
+    {
+      "path": "runtime/coinmaster/research/native_audit.py",
+      "sha256": "6f19d47653f4510fbcb312b642d7e61a585bb0bd3619503f14c30808d50464a3",
+      "git_blob": "77640daa93b48d6d547e420835a50f4baf4978d0",
+      "size": 14750
+    },
+    {
+      "path": "runtime/coinmaster/research/native_baseline.py",
+      "sha256": "4dc906f61c2d5824414348630acdcce409497135421abf4ac4d8731ca51c9b59",
+      "git_blob": "7fc26b27294ac812598d43d75a38d153490933c9",
+      "size": 139348
+    },
+    {
+      "path": "runtime/coinmaster/research/native_fixture.py",
+      "sha256": "f65a4505d5230cbd1dee421c6e61b47e757497beb3b2b08d9d9efa1bd609b8ab",
+      "git_blob": "bab35d9d5902820d19300027ad9d2ad1faa2872e",
+      "size": 25524
+    },
+    {
+      "path": "runtime/coinmaster/research/native_full_fill.py",
+      "sha256": "ecd23593316b55e428de909e1168a2cbe3f1cc121b3ca85f0e9ae21ac5147dd8",
+      "git_blob": "4af08a51a41debf70cdb5ea187a76db237178ba2",
+      "size": 2140
+    },
+    {
+      "path": "runtime/coinmaster/research/optimizer_job.py",
+      "sha256": "f3b913ee1abfe47061ae904ebb5ba1ee0375b3df36d8a7bca372b70ac078d9db",
+      "git_blob": "cc5ab86beefd524ce4a6910dd301a49f5a68abbc",
+      "size": 11135
+    },
+    {
+      "path": "runtime/coinmaster/research/paired_observer.py",
+      "sha256": "606a314485bd64cb10cc0558eccbc147e8ec24ae4220f488b619977c7aa12f42",
+      "git_blob": "5e02a6a628597d2d0ad04433085af0600f65609a",
+      "size": 15656
+    },
+    {
+      "path": "runtime/coinmaster/research/qualification_policy.py",
+      "sha256": "92925e82c37eb596f67e7f580b7313b8cbf32041e68b6bb655cedf70fd2af6aa",
+      "git_blob": "1ca291dd5fd629c86d87a958814c55a1e8616d18",
+      "size": 5963
+    },
+    {
+      "path": "runtime/coinmaster/strategy/__init__.py",
+      "sha256": "836a0e715d63cc164f8bd76b6685a016c6b8b5c42bb42d2c57b6ad2981fbde9a",
+      "git_blob": "e45c257cbce3fb3f953d94bc6c44e99a4af71af1",
+      "size": 56
+    },
+    {
+      "path": "runtime/coinmaster/strategy/alpha_cushion.py",
+      "sha256": "ef0fbf4664ca6e6382101dc885419cffc62f98e00c255c1de9c12d0949c7df4c",
+      "git_blob": "a0011e3888045a66364c860228f098157a6f4678",
+      "size": 17556
+    },
+    {
+      "path": "runtime/coinmaster/strategy/c1_inputs.py",
+      "sha256": "e69c50884cbf24884122d9163ee760db5b440f0832c35e9899802163e8b35c4d",
+      "git_blob": "836ea347bd9821d1c53a595e227e123d2be25c3e",
+      "size": 1820
+    },
+    {
+      "path": "runtime/coinmaster/strategy/carry_pair.py",
+      "sha256": "7b72df60028d8b87e55b1735a3612c35e2bd7f3bc4fbc03615fa645c50cbb216",
+      "git_blob": "976cb6db9abc8387d29a5465baf22ba34b0fef7a",
+      "size": 15700
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_btc_policy.py",
+      "sha256": "eb21e43554382cd3a78e2b0307825a72b69582996a37e8c9fa3cdf8b283e17e7",
+      "git_blob": "84068cf0d4a924f31473ca60edcd8759368df570",
+      "size": 13786
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_checkpoint.py",
+      "sha256": "82e1788a99d19fbad06ba1390678419aba37553a646da357b0e2d7dcc2498464",
+      "git_blob": "d3280e8707c18136516b532de901c7822a359bed",
+      "size": 3593
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_execution.py",
+      "sha256": "1fd74f260ecccbeaf4a6f0d02ad7c6f6f4827d61ccb1627bdf66e7d99447d820",
+      "git_blob": "d8dcc2fdcabfc94bd789db1dadd33e454ee8fe69",
+      "size": 3865
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_native.py",
+      "sha256": "0793336cd58a754db0889dc8fc80dc4f84ad6400c47638a14b95ad13197af307",
+      "git_blob": "49ee71287d4484d56a82ca4ddbe87ac06870dbb3",
+      "size": 60889
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_order_contract.py",
+      "sha256": "a1d7efe1e91d697abd78662dd0bac91229452e4546c1bd10a59c1bce85fe2720",
+      "git_blob": "a7d8f4ec297546236901e0bf5cc3d9b69c4ae7e6",
+      "size": 6349
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_policy.py",
+      "sha256": "b21a2a69c35d2beaa7ac41ce3f03eba9975abdf2402b195623b07f18a3b0d1c1",
+      "git_blob": "5bbbbbc381f7d0728a6f20d8e27a1ad5b6ec3f16",
+      "size": 42377
+    },
+    {
+      "path": "runtime/coinmaster/strategy/cm2_reference_policy.py",
+      "sha256": "fae4d3812844df1446cff6f9cf05eec3db22a3e414755721d4cb4c0e0817d5f2",
+      "git_blob": "061a3ead35e70962a767aa901983e7372b5db711",
+      "size": 44208
+    },
+    {
+      "path": "runtime/coinmaster/strategy/conditional_hedge.py",
+      "sha256": "60c7797ddc2924d18f57a7e93110e22e2891f5e213b723992d788649f9120acb",
+      "git_blob": "2879de9dfca9545b74bb0d47fc74cd1179e95d1f",
+      "size": 18812
+    },
+    {
+      "path": "runtime/coinmaster/strategy/execution_config.py",
+      "sha256": "ab5a9d219428872717b66bc2a11aa72ac85ed470ecd4f62e1dc25fca4c763b9e",
+      "git_blob": "46776f7529956d69e1dcac9813ff7fca0bc62c1b",
+      "size": 387
+    },
+    {
+      "path": "runtime/coinmaster/strategy/hedge_band.py",
+      "sha256": "3970f51ff8a140bf9324a20f89c181adcefb7880eb538cbe851bb825cedf74eb",
+      "git_blob": "959a9df997d4ef4123da3db14f8fe12fd66ee3b8",
+      "size": 13530
+    },
+    {
+      "path": "runtime/coinmaster/strategy/immediate_insurance.py",
+      "sha256": "fcb43bea1d233a9ce9557d1d992e964b2dad23654fa5bb011c68aa405e5daf75",
+      "git_blob": "04504028ec42b21581945ef3fee165d03e82cb7a",
+      "size": 13488
+    },
+    {
+      "path": "runtime/coinmaster/strategy/next_band.py",
+      "sha256": "ba01f1a0bf9a78197a469483c807a73a8089a4ccf2c0e35598b4ae6b9321cef7",
+      "git_blob": "1c011b27d8491d2b1ee9da75c23cf3789071e1ac",
+      "size": 18805
+    },
+    {
+      "path": "runtime/coinmaster/strategy/residual_recovery.py",
+      "sha256": "55b4db26540a297a8d53dfe45be446136c7c0df3956ba73005013be7a5112483",
+      "git_blob": "f07de66bd3bcdd3bf8a228185a10ca07888f75c9",
+      "size": 30754
+    },
+    {
+      "path": "runtime/coinmaster/strategy/risk_first_sol.py",
+      "sha256": "6475dd2df2987abfc8fc1e0c8200b9049bb9a15b6e4eba76a857f9c4aa4c1278",
+      "git_blob": "09038fd2546cfeba3fe15764248bb5926b764b83",
+      "size": 35382
+    },
+    {
+      "path": "runtime/coinmaster/strategy/sol_capital_staging.py",
+      "sha256": "a63fc3b02cd09549c552cb2a06f79e5e61ca9b332e4dc7f4e821988f63f192e0",
+      "git_blob": "61d04cd58b0f78429a583faa94142c21004431d4",
+      "size": 913
+    },
+    {
+      "path": "runtime/coinmaster/strategy/split_cover.py",
+      "sha256": "d4c154132e22da548cd3e573abe5713d14c493cee95d9b1ebf5af10b276094d2",
+      "git_blob": "c0bd25330c0b3c54ee4348b9aa3372036ae4c1f4",
+      "size": 22556
+    },
+    {
+      "path": "runtime/coinmaster/strategy/wave_overlay.py",
+      "sha256": "40178103b51f7a84bf396ce53c3211ed7cf60acf871b1a06eb06247aa0e7433d",
+      "git_blob": "200043d7eb3e29f50018475738ddf70cca04b17a",
+      "size": 208169
+    },
+    {
+      "path": "runtime/coinmaster/venues/__init__.py",
+      "sha256": "7ca0fa95024781562c10d94040f6d34f3e38be1327b79bac96b6ce7275709799",
+      "git_blob": "494ef1666d6ae41e12010cd55645a1e1a4991da3",
+      "size": 62
+    },
+    {
+      "path": "runtime/coinmaster/venues/bybit_profile.py",
+      "sha256": "9a26ffc79aa7f4e80d14fb1bb42a91846e153378e83d0b9a79695e46195088e7",
+      "git_blob": "e7a44859e9917158337f34f9e0cb8aee63771fb5",
+      "size": 2690
+    },
+    {
+      "path": "runtime/coinmaster/venues/effective_fees.py",
+      "sha256": "f0c54aab2781af7f575b986ddcfab55c8b9b0d5f9fef21c2adcd0f0403d4a2e0",
+      "git_blob": "461aef0160df96c13f63e20a218843e05675d6ee",
+      "size": 999
+    },
+    {
+      "path": "runtime/coinmaster/venues/hyperliquid_profile.py",
+      "sha256": "0d56401ba02de4ca7032c3480f1bdb2be2eac3ee36a6c7260786e496dd084bc1",
+      "git_blob": "fa9ccea5f8699d6e4c96b8a35dcccd6bab36266a",
+      "size": 8348
+    },
+    {
+      "path": "runtime/coinmaster/venues/margin_policy.py",
+      "sha256": "ca855858ff19791544bb17930721e591e35acb2d33adb257db85bf6b175c1e15",
+      "git_blob": "dd1b99d7ac8267bb11d5ce964adbc90dd3e4e3bd",
+      "size": 3217
+    },
+    {
+      "path": "runtime/coinmaster/venues/marks.py",
+      "sha256": "c783b323164b06dc22ee60d7c329364df7414135b7f1328131ef20fa54f42372",
+      "git_blob": "a36d0b94f02bcb7be60deef6fa06a25a397d0f46",
+      "size": 1669
+    },
+    {
+      "path": "runtime/coinmaster/venues/production_preflight.py",
+      "sha256": "a5c00a40fa109d2ec60fdd474591c6e255a914be4894b6dfb326f63e3f4cdfa1",
+      "git_blob": "90a3562127904939c5e63a9c500b0523fdce369a",
+      "size": 5504
+    },
+    {
+      "path": "runtime/coinmaster/venues/signals.py",
+      "sha256": "2548d380be312126bb35e02cc36a8d3654930b15953ff41ff4c450a1fb00b46c",
+      "git_blob": "4dc92ec0f4c156e220bba00c0932fc4963fb821d",
+      "size": 1417
+    },
+    {
+      "path": "runtime/tests/test_cm2_btc_market_code0.py",
+      "sha256": "19080ee5cda4db5f6a6bec8dbdff9ee5e79161b2a0fd2234a67c148fc21dc522",
+      "git_blob": "8e3c45220eef9b47c9eb3355ed8cbe30be39e78c",
+      "size": 24951
+    },
+    {
+      "path": "runtime/tests/test_cm2_market_continuity_guards.py",
+      "sha256": "8170481f76384bda994e3e54767cc66c0b94ae3d4005ce6ebe526c790f9d391a",
+      "git_blob": "7821a003c62234012a835ec3f282d80c94e15a8e",
+      "size": 1819
+    }
+  ],
+  "selected_source_closure_scope": "59 reachable selected CM2 research source/test files from9changed roots via static imports and explicit coinmaster module literals; unchanged blobs verified against publicbase. Not full tracked source identity.",
+  "local_freeze_extra_files_not_part_of_CM2_research_publication": [
+    {
+      "path": "runtime/coinmaster/api/hl_public_candle_budget.py",
+      "local_git_blob": "71599f53f534ba413fb8b935547150282c8cdda8",
+      "remote_git_blob": null
+    },
+    {
+      "path": "runtime/coinmaster/api/hl_public_candles.py",
+      "local_git_blob": "cdb2eef3479e51b928746759ae4dfa53ec89192a",
+      "remote_git_blob": "924c8cd7cc725a6d8e75975878750940ceb57992"
+    },
+    {
+      "path": "runtime/coinmaster/api/runtime_sidecar.py",
+      "local_git_blob": "430ac97f75ffc6ab20205c2eccf7318f4dc437eb",
+      "remote_git_blob": "352ef87e81d3501c6b5ea2d45735ad2299e8e87b"
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_live_credential_preflight.py",
+      "local_git_blob": "7d9e19b37b2c3feb18140c9f69bd3b9c7f11a5d9",
+      "remote_git_blob": "b70597f42ff8d8ba3f6c3b79c4c2dc852d52daa6"
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_live_epoch.py",
+      "local_git_blob": "9066809df83761a7f40c44bed573559109fe06be",
+      "remote_git_blob": "f7c1f3647b313954bdb9932a90d2c0f668ce3f1e"
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_live_execution.py",
+      "local_git_blob": "70063c2e3c1f661ac4e2f5924381432b8507590e",
+      "remote_git_blob": "9ddc6a331a953fc44d79cd29a1268c1d59b92780"
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_live_profile.py",
+      "local_git_blob": "3c52008d5ce791bc34327c70e1fb957e7905dce3",
+      "remote_git_blob": "4ebcbdc010d6b8e3d42a7633678cdac38aa60e2f"
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_live_worker.py",
+      "local_git_blob": "f98fe571781e6a3bc6e0f0eacd396a10ad020f20",
+      "remote_git_blob": "71781aa62b50c43baa505bbaf846bb7bb0eecacf"
+    },
+    {
+      "path": "runtime/coinmaster/ops/hl_qualified_reports.py",
+      "local_git_blob": "a758a76f2a7e75ec0ceb0205f2132961310347b5",
+      "remote_git_blob": "00b3958b6ad4b0b651a1d267476f17fe2e7b3b4c"
+    },
+    {
+      "path": "runtime/coinmaster/ops/live_recovery.py",
+      "local_git_blob": "58632ee2c4c1373e39ec054b19505cc7a6e1ff1f",
+      "remote_git_blob": "13c6584e9cab71068e4dc549995c45ab9b2f1f1a"
+    },
+    {
+      "path": "runtime/coinmaster/ops/paper.py",
+      "local_git_blob": "c8115c10d1eea231e871afd2c618e2e063fc50ca",
+      "remote_git_blob": "54084b092a1debbd14f89f86382c8db36be10ccf"
+    },
+    {
+      "path": "runtime/coinmaster/strategy/live_recovery.py",
+      "local_git_blob": "f8de7a79e2a5d39b8bfb900f15ac0f0285a9cf71",
+      "remote_git_blob": "10b3d429cbb4b29cf2210e2005d491e308c56431"
+    }
+  ]
+}

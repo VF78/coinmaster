@@ -1,31 +1,26 @@
-"""CM2 BTC-first native adapter. ONE economic owner, native money/orders only."""
+"""One CM2 native owner. BTC-only market policy; stock OMS/Portfolio/journal authority."""
 from __future__ import annotations
-from dataclasses import asdict,replace
-from datetime import datetime,timezone
-from decimal import Decimal as D,ROUND_FLOOR,ROUND_CEILING,ROUND_HALF_EVEN
+from dataclasses import asdict
+from decimal import Decimal as D, ROUND_FLOOR, ROUND_CEILING
 from hashlib import sha256
-from math import isfinite
 from pathlib import Path
 import json
 from nautilus_trader.config import StrategyConfig
 from nautilus_trader.core.data import Data
-from nautilus_trader.model.data import BarType,DataType
-from nautilus_trader.model.enums import OrderSide,TimeInForce
-from nautilus_trader.model.identifiers import InstrumentId,ClientId,ClientOrderId
+from nautilus_trader.model.data import BarType, DataType
+from nautilus_trader.model.enums import OrderSide, TimeInForce, TriggerType
+from nautilus_trader.model.identifiers import InstrumentId, ClientId, ClientOrderId
 from nautilus_trader.trading.strategy import Strategy
-from coinmaster.domain.wave_overlay import DailyBar
-from coinmaster.strategy.cm2_reference_policy import ReferenceConfig,ReferenceBtcPolicy,DAY,HOUR
+from coinmaster.strategy.cm2_btc_policy import BtcConfig, BtcPolicy, BtcDay, DAY, DISCOUNT, breakeven_price
 from coinmaster.strategy.cm2_policy import pending_effects
-from coinmaster.strategy.cm2_sol_policy import SolConfig,SolPolicy,policy_document
-from coinmaster.strategy.cm2_execution import ExecutionLimits,NativeExposure,SafetyState,order_plan
-from coinmaster.strategy.cm2_checkpoint import KEY,SCHEMA,canonical,decode
-from coinmaster.strategy.cm2_order_contract import (MODEL_ID,FRESH_NS,DRAIN_NS,REDUCE_FLOOR_POLICY,
-    request_terms,request_cap,RequestTerms,validate_request,bbo_status,drain_update,validate_drain)
+from coinmaster.strategy.cm2_execution import ExecutionLimits, NativeExposure, SafetyState, order_plan
+from coinmaster.strategy.cm2_checkpoint import KEY, SCHEMA, canonical, decode
+from coinmaster.strategy.cm2_order_contract import (MODEL_ID, FRESH_NS, DRAIN_NS, REDUCE_FLOOR_POLICY,
+    request_terms, request_cap, RequestTerms, validate_request, bbo_status, drain_update, validate_drain, outward_price)
 from coinmaster.venues.margin_policy import MarginMark
 from coinmaster.venues.marks import VenueMark
 from coinmaster.venues.signals import DailySignalBar
-ZERO=D(0)
-
+ZERO = D(0)
 
 class MinuteTurnover(Data):
     """Historical loader compatibility only; not capacity authority for this route."""
@@ -46,7 +41,7 @@ def minute_turnover(iid,turnover,ns):
     return CustomData(turnover_data_type(iid),MinuteTurnover(iid,turnover,ns))
 
 
-class CM2StrategyConfig(StrategyConfig,frozen=True):
+class CM2StrategyConfig(StrategyConfig, frozen=True):
     btc_id: InstrumentId
     sol_id: InstrumentId
     btc_bar_type: BarType
@@ -58,17 +53,14 @@ class CM2StrategyConfig(StrategyConfig,frozen=True):
     sol_signal_data_type: DataType
     h4_data_type: DataType
     signal_client_id: ClientId
-    policy: ReferenceConfig
+    policy: BtcConfig
     limits: ExecutionLimits
     margin_policy: object
     active_seed: D
     btc_step: D
     trading_start_open_ns: int
     terminal_close_at_ns: int
-    seed_days: tuple = ()
-    seed_ohlc: tuple = ()
-    sol_policy: object = None
-    seed_paired_closes: tuple = ()
+    seed_btc_days: tuple = ()
     exit_fee_rate: D = D('.000432')
     execution_policy_hash: str = ''
     funding_reader: object = None
@@ -77,191 +69,258 @@ class CM2StrategyConfig(StrategyConfig,frozen=True):
 
 
 class CM2Strategy(Strategy):
-    def __init__(self,config):
-        if not isinstance(config.policy,ReferenceConfig):raise ValueError("OLD_CM2_POLICY_VERSION_REJECTED")
+    def __init__(self, config):
+        if not isinstance(config.policy, BtcConfig):raise ValueError('OLD_CM2_POLICY_VERSION_REJECTED')
+        if config.exit_fee_rate!=D('.000432'):raise ValueError('APPROVED_TAKER_EXIT_FEE_REQUIRED')
         super().__init__(config)
-        self.reference=ReferenceBtcPolicy(config.policy.candidate,flags=config.policy.flags,
-            btc_step=config.btc_step,
-            trading_start_ns=config.trading_start_open_ns,terminal_ns=config.terminal_close_at_ns,
-            max_quote_age_ns=FRESH_NS,initial_btc_equity=config.active_seed)
-        ohlc={int(ns):(high,low) for ns,high,low in config.seed_ohlc}
-        for day in config.seed_days:
-            ns=int(day.close_time.timestamp()*1e9)
-            if ns not in ohlc:raise ValueError("GENUINE_D1_OHLC_SEED_REQUIRED")
-            self.reference.accept_closed_day(day,receipt_ns=config.trading_start_open_ns,
-                btc_high=float(ohlc[ns][0]),btc_low=float(ohlc[ns][1]))
-        if config.sol_policy is not None and not isinstance(config.sol_policy,SolConfig):raise ValueError('TYPED_SOL_CONFIG_REQUIRED')
-        self.sol=SolPolicy(config.sol_policy) if config.sol_policy is not None and config.sol_policy.enabled else None
-        if self.sol is not None:
-            if len(config.seed_paired_closes)!=61:raise ValueError('SOL_EXACT_61_SEED_REQUIRED')
-            for ns,b,s in config.seed_paired_closes:self.sol.accept_daily(ns,b,s,config.trading_start_open_ns)
-            if self.sol.daily[-1].close_ns!=(config.trading_start_open_ns//DAY)*DAY:raise ValueError('SOL_SEED_LATEST_BOUNDARY_REQUIRED')
+        self.btc=BtcPolicy(config.policy,step=config.btc_step,
+            start_ns=config.trading_start_open_ns,end_ns=config.terminal_close_at_ns)
+        for day in config.seed_btc_days:self.btc.accept_day(day,receipt_ns=config.trading_start_open_ns)
+        self.btc.complete_seed()
         self.safety=SafetyState(emergency_peak_equity=config.active_seed)
         self._latest_marks={};self._quotes={};self._owned={};self._order_audit={};self._seen_trade_ids=set()
-        self._days_pending={};self._queued_tp={};self._needs_daily=False;self._tp_ready_ns=0
+        self._needs_daily=False;self._entry_dispatching=False;self._protection_dispatching=False;self._protection_dirty=False
         self._drain={};self._drain_dispatching=set();self._risk_unknown=False;self._liquidating=False;self._restore_failed=False
-        self._btc_source_frame=None;self._capital_last=None;self._capital_unknown=None
         self.fill_audit=[];self.entry_sizing_audit=[];self.pre_submit_gate_blocks=[]
         self.cm2_audit=[];self.child_permission_audit=[];self.drain_audit=[]
         self.target_blockers={};self.orphan_started_ns=None;self.orphan_intervals=[]
         self.liquidation_audit=[];self._liquidation_checks=0;self._liquidation_unknown=0
         self._retained_audit_chain='0'*64;self._checkpoint_revision=0;self._checkpoint_loaded=False
-        self.terminal_lifecycle={"status":"NOT_REACHED","reason":""}
+        self.terminal_lifecycle={'status':'NOT_REACHED','reason':''}
         self._admission_sources={name:sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
-            for name in ('cm2_native.py','cm2_reference_policy.py','cm2_execution.py','cm2_checkpoint.py','cm2_order_contract.py','cm2_sol_policy.py','cm2_sol_volatility.py')}
+            for name in ('cm2_native.py','cm2_btc_policy.py','cm2_execution.py','cm2_checkpoint.py','cm2_order_contract.py')}
 
     def on_start(self):
         if self.cache.instrument(self.config.btc_id).size_increment.as_decimal()!=self.config.btc_step:
-            raise ValueError('CM2_NATIVE_REFERENCE_LOT_BINDING')
+            raise ValueError('NATIVE_BTC_LOT_BINDING')
         if not self._checkpoint_loaded and (self.cache.positions_open() or self.cache.orders_open() or self.cache.orders_inflight()):
-            raise ValueError("CM2_FRESH_START_REQUIRES_EMPTY_NATIVE_CACHE_NO_RECOVERY")
+            raise ValueError('CM2_FRESH_START_REQUIRES_EMPTY_NATIVE_CACHE_NO_RECOVERY')
         if self._checkpoint_loaded and (canonical(self._native_checkpoint_binding())!=self._loaded_native_binding
                 or canonical(self._feed_checkpoint_binding())!=self._loaded_feed_binding
                 or not callable(self.config.continuity_reader)
                 or canonical(self.config.continuity_reader())!=self._loaded_observer_binding):
-            self._restore_failed=True;raise ValueError("CM2_NATIVE_CONTINUITY_CHANGED_BEFORE_START")
+            self._restore_failed=True;raise ValueError('CM2_NATIVE_CONTINUITY_CHANGED_BEFORE_START')
         for iid,dt in ((self.config.btc_id,self.config.btc_mark_data_type),(self.config.sol_id,self.config.sol_mark_data_type)):
             self.subscribe_data(dt,client_id=self.config.mark_client_id);self.subscribe_quote_ticks(iid)
-        for dt in (self.config.btc_signal_data_type,self.config.sol_signal_data_type,self.config.h4_data_type):
+        for dt in (self.config.btc_signal_data_type,self.config.h4_data_type):
             self.subscribe_data(dt,client_id=self.config.signal_client_id)
 
     def on_data(self,data):
         item=getattr(data,'data',data);now=self.clock.timestamp_ns()
-        self._finalize_btc_receipt(now)
         if isinstance(item,VenueMark):
             old=self._latest_marks.get(item.instrument_id)
             if old is not None and item.ts_event<old.ts_event:return
             self._latest_marks[item.instrument_id]=item
             self.config.margin_policy.update_mark(MarginMark(item.instrument_id,D(str(item.price)),item.ts_event))
             self._check_liquidation(now);self._check_emergency_drawdown(now)
-        elif isinstance(item,DailySignalBar) and getattr(item,'hours',None) is None:
-            ns=item.ts_event
-            if item.instrument_id not in (self.config.btc_id,self.config.sol_id):return
-            if self.reference.signals and ns<=int(self.reference._features.bars[-1].close_time.timestamp()*1e9):return
-            group=self._days_pending.setdefault(ns,{})
-            if item.instrument_id in group:raise ValueError("DUPLICATE_DAILY_SOURCE")
-            group[item.instrument_id]=item
-            if all(i in group for i in (self.config.btc_id,self.config.sol_id)):
-                b,s=group[self.config.btc_id],group[self.config.sol_id]
-                available=max(ns,b.ts_init,s.ts_init)
-                bar=DailyBar(datetime.fromtimestamp((ns-DAY)/1e9,timezone.utc),
-                    datetime.fromtimestamp(ns/1e9,timezone.utc),datetime.fromtimestamp(available/1e9,timezone.utc),
-                    float(b.open),float(b.close),float(s.close))
-                self.reference.accept_closed_day(bar,receipt_ns=now,btc_high=float(b.high),btc_low=float(b.low))
-                if self.sol is not None:self.sol.accept_daily(ns,str(b.close),str(s.close),now)
-                del self._days_pending[ns];self._needs_daily=True;self._evaluate_daily(now)
+        elif isinstance(item,DailySignalBar) and getattr(item,'hours',None) is None and item.instrument_id==self.config.btc_id:
+            if self.btc.days and item.ts_event<=self.btc.days[-1].close_ns:return
+            self.btc.accept_day(BtcDay(item.ts_event-DAY,item.ts_event,item.ts_init,
+                float(item.open),float(item.high),float(item.low),float(item.close)),receipt_ns=now)
+            self._needs_daily=True;self._evaluate_daily(now)
         elif getattr(item,'hours',None)==4 and item.instrument_id==self.config.btc_id:
-            self.reference.accept_closed_btc_h4(open_ns=item.open_time_ns,close_ns=item.ts_event,
+            self.btc.accept_h4(open_ns=item.open_time_ns,close_ns=item.ts_event,
                 available_ns=item.ts_init,receipt_ns=now,close=D(str(item.close)))
+        self._persist_checkpoint()
 
-    def _native_btc_capital(self,now):
-        # Owner binding: the SAME actual shared native capital as reference A.
-        # Per-BTC attribution below is audit only; never a second account/book.
-        account=self.cache.account_for_venue(self.config.btc_id.venue);reader=self.config.funding_reader
+    def _funding(self):
+        reader=self.config.funding_reader
+        account=self.cache.account_for_venue(self.config.btc_id.venue)
         if account is None or account.base_currency is None or not callable(reader) or getattr(reader,'journal',None) is None:
-            raise ValueError("NATIVE_CAPITAL_OR_FUNDING_UNKNOWN")
-        currency=account.base_currency;cash=account.balance_total(currency)
-        if cash is None or cash.currency!=currency:raise ValueError("NATIVE_CASH_CURRENCY_UNKNOWN")
-        snapshot=self._snapshot(now)
-        if snapshot.unknown_orders or not snapshot.data_known or not snapshot.equity.is_finite():
-            raise ValueError("ACTUAL_NATIVE_EQUITY_UNKNOWN")
-        btc_funding=ZERO
+            raise ValueError('NATIVE_FUNDING_JOURNAL_UNKNOWN')
+        btc_total=None
         for iid in (self.config.btc_id,self.config.sol_id):
-            instrument=self.cache.instrument(iid)
-            if instrument.settlement_currency!=currency:raise ValueError("SETTLEMENT_CURRENCY_UNKNOWN")
-            funding=reader(iid)
-            if not isinstance(funding,D) or not funding.is_finite():raise ValueError("NATIVE_SIGNED_FUNDING_UNKNOWN")
-            if iid==self.config.btc_id:btc_funding=funding
-        position=self._position(self.config.btc_id)
-        open_pnl=ZERO
-        if position is not None:
-            mark=self._latest_marks.get(self.config.btc_id)
-            if mark is None or not 0<=now-mark.ts_event<=FRESH_NS:raise ValueError("BTC_CAPITAL_CAUSAL_MARK_UNKNOWN")
-            upnl=self.portfolio.unrealized_pnl(self.config.btc_id,
-                price=self.cache.instrument(self.config.btc_id).make_price(mark.price),account_id=account.id)
-            if upnl is None or upnl.currency!=currency:raise ValueError("NATIVE_BTC_UPNL_UNKNOWN")
-            open_pnl=upnl.as_decimal()
-        self.reference.note_btc_funding(str(btc_funding))
-        result=dict(equity=snapshot.equity,open_pnl=open_pnl,funding=btc_funding,
-            native_qty=(position.quantity.as_decimal()*(D(1) if position.is_long else D(-1))) if position else ZERO,
-            position_id=str(position.id) if position else '',position_open_ns=position.ts_opened if position else 0,
-            revision=self.reference.btc_revision,currency=str(currency),
-            basis='TOTAL_ACTUAL_NATIVE_CASH_PLUS_HELD_NATIVE_UPNL',
-            btc_attribution_audit={'status':'DEFERRED_TO_NATIVE_TERMINAL_RECONCILIATION',
-                'btc_realized':None,'btc_signed_funding':btc_funding,
-                'btc_upnl':open_pnl,'btc_derived_sizing_audit':None,
-                'unallocated_bridge':None,'trading_input':False,'fees':'ALREADY_INCLUDED_NATIVE_REALIZED'})
-        self._capital_last=result;self._capital_unknown=None
-        return result
-
-
-    def _capture_btc_source(self,now):
-        try:
-            capital=self._native_btc_capital(now)
-            self._btc_source_frame={**capital,'source_ns':now}
-        except (ValueError,AttributeError,TypeError) as error:
-            self._capital_unknown=str(error);self._btc_source_frame=None
-
-    def _finalize_btc_receipt(self,now):
-        frame=self._btc_source_frame
-        if frame is None or now<=frame['source_ns']:return
-        self._btc_source_frame=None
-        try:
-            current=self._native_btc_capital(now)
-            if (now-frame['source_ns']>FRESH_NS or current['revision']!=frame['revision']
-                    or any(current[k]!=frame[k] for k in ('equity','open_pnl','position_id','position_open_ns','native_qty','funding'))):return
-            self.reference.observe_committed_btc(source_ns=frame['source_ns'],receipt_ns=now,
-                revision=frame['revision'],equity=frame['equity'],open_pnl=frame['open_pnl'],
-                native_qty=frame['native_qty'],position_id=frame['position_id'],position_open_ns=frame['position_open_ns'],
-                btc_competing_owner=self._btc_competing_owner())
-        except (ValueError,AttributeError,TypeError) as error:self._capital_unknown=str(error)
+            if self.cache.instrument(iid).settlement_currency!=account.base_currency:raise ValueError('SETTLEMENT_CURRENCY_UNKNOWN')
+            value=reader(iid)
+            if not isinstance(value,D) or not value.is_finite():raise ValueError('NATIVE_SIGNED_FUNDING_UNKNOWN')
+            if iid==self.config.btc_id:btc_total=value
+        return btc_total
 
     def _evaluate_daily(self,now):
-        if not self._needs_daily or now>=self.config.terminal_close_at_ns or self.safety.global_latched:return
-        try:capital=self._native_btc_capital(now)['equity']
-        except (ValueError,AttributeError,TypeError) as error:
-            self._capital_unknown=str(error);capital=ZERO
-            if self.reference.parent is None:return
-        decision=self.reference.decide_on_day(native_btc_marked_equity=capital,decision_ns=now)
-        # Consume the input before native side effects: synchronous close/cancel
-        # reconciliation may re-arm the next causal decision.
-        self._needs_daily=False
-        if decision.action=='BTC_CLOSE':
-            sol=getattr(self,'sol',None)
-            sol_end=sol is not None and sol.market_end(decision.parent_id,decision.reason)
-            sol_reason=sol.episode.exit_reason if sol_end else None
-            self.reference.stop_entry_remainder(decision.parent_id,reason=decision.reason)
-            self.reference.revoke_c1(now,'MANDATORY_BTC_CLOSE');self._queued_tp.clear()
-            self._begin_drain(now,'BTC_ECONOMIC',[str(self.config.btc_id)],decision.reason)
-            if sol_end:self._sol_request_exit(now,sol_reason)
-        elif decision.action=='BTC_ENTRY':
-            self._audit(now,'BTC_ENTRY_INTENT')
-        parent=self.reference.parent
-        if parent is not None and parent.split_terminal and parent.filled_quantity>0 and not parent.close_reason:
-            live=frozenset(info['level'] for info in self._owned.values()
-                if info['instrument_id']==self.config.btc_id and info['purpose']=='TP_GTC' and info.get('level') is not None)
-            pending=frozenset(info['level'] for info in self._owned.values()
-                if info['instrument_id']==self.config.btc_id and info.get('level') is not None)|frozenset(self._queued_tp)
-            for plan in self.reference.ordinary_tp_permissions(parent.id,decision_ns=now,
-                    native_resting_levels=live,native_pending_levels=pending):self._queued_tp[plan.level]=plan
-        self._persist_checkpoint()
-        return decision.action=='BTC_CLOSE'
+        if not self._needs_daily:return False
+        self.btc.current(now);self._needs_daily=False
+        if self.btc.regime_close(now):
+            self._begin_drain(now,'BTC_ECONOMIC',[str(self.config.btc_id)],'REGIME')
+            return True
+        return False
 
-    def _btc_competing_owner(self):
-        quote=self._quotes.get(self.config.btc_id)
-        for plan in self._queued_tp.values():
-            if plan.conditional_ioc or quote is None:return True
-            parent=self.reference.parent
-            if parent is None or (quote.bid_price.as_decimal()>=plan.raw_limit_price if parent.side==1 else quote.ask_price.as_decimal()<=plan.raw_limit_price):return True
-        for info in self._owned.values():
-            if info['instrument_id']!=self.config.btc_id or info['purpose'].startswith('C1_'):continue
-            if info['purpose']!='TP_GTC' or quote is None:return True
-            threshold=info.get('raw_limit_price')
-            if threshold is None:return True
-            p=self.reference.parent
-            if p is None or (quote.bid_price.as_decimal()>=threshold if p.side==1 else quote.ask_price.as_decimal()<=threshold):return True
-        return any(o.instrument_id==self.config.btc_id and str(o.client_order_id) not in self._owned
-            for o in [*self.cache.orders_open(),*self.cache.orders_inflight()])
+    def _reconcile_btc(self,now):
+        p=self.btc.parent
+        if p is None or self._position(self.config.btc_id) is not None:return
+        if not (p.entry_filled or p.growth_stopped):return
+        p.growth_stopped=True
+        # Native-flat does not erase cancel-pending growth or alternative exits.
+        for order in self._orders(self.config.btc_id):
+            if not order.is_pending_cancel:self.cancel_order(order)
+            if self.btc.parent is not p:return
+        if not self._orders(self.config.btc_id) and not any(v['instrument_id']==self.config.btc_id for v in self._owned.values()):
+            self.btc.confirm_flat(now=now,native_flat=True,owners_terminal=True)
+            self._persist_checkpoint()
+
+    def _cancel_growth(self):
+        for order in self._orders(self.config.btc_id):
+            if not order.is_reduce_only and not order.is_pending_cancel:self.cancel_order(order)
+
+    def on_quote_tick(self,tick):
+        now=self.clock.timestamp_ns();fresh,why=bbo_status(tick,now)
+        old=self._quotes.get(tick.instrument_id)
+        if not fresh or old is not None and tick.ts_event<old.ts_event:
+            self.pre_submit_gate_blocks.append({'timestamp':str(now),'instrument':str(tick.instrument_id),'reason':why});return
+        self._quotes[tick.instrument_id]=tick
+        if now<self.config.trading_start_open_ns:return
+        self._check_emergency_drawdown(now)
+        if now>=self.config.terminal_close_at_ns and not self.safety.global_latched:
+            self.safety.global_latched=True;self.safety.reason='TERMINAL_BOUNDARY_SETTLEMENT'
+            self._begin_drain(now,'GLOBAL',[str(self.config.btc_id),str(self.config.sol_id)],self.safety.reason)
+        close_phase='BTC_ECONOMIC' in self._drain
+        self._reconcile_drains(now);scope=self._scope_for(tick.instrument_id)
+        if scope is not None:self._execute_drain(tick,now,scope)
+        elif tick.instrument_id==self.config.btc_id and not self.safety.global_latched and not self._restore_failed:
+            consumed=close_phase or self._evaluate_daily(now)
+            if self._scope_for(tick.instrument_id):self._execute_drain(tick,now,'BTC_ECONOMIC')
+            elif not consumed:
+                self._reconcile_btc(now)
+                self._sync_protection(now)
+                self._execute_entry(tick,now)
+                self._sync_protection(now)
+        # SOL has no approved market model. Carry is not an automatic BTC-flat exit.
+        self._reconcile_drains(now)
+        if not close_phase and 'BTC_ECONOMIC' not in self._drain and not self.safety.global_latched:
+            if self.btc.consume_h4(now):self._needs_daily=True
+        self._persist_checkpoint()
+
+    def _execute_entry(self,tick,now):
+        if self._entry_dispatching:return
+        self._entry_dispatching=True
+        try:
+            while not self.safety.global_latched and not self._restore_failed:
+                if self._scope_for(self.config.btc_id):break
+                if any(v['instrument_id']==self.config.btc_id and v['purpose'].startswith('ENTRY') for v in self._owned.values()):break
+                p=self.btc.parent
+                if p is None:
+                    if self._position(self.config.btc_id) is not None or self._orders(self.config.btc_id) or not self.btc.entry_signal(now):break
+                    s=self._snapshot(now)
+                    if s.unknown_orders or not s.data_known:break
+                    side=self.btc.current(now).side
+                    executable=tick.ask_price.as_decimal() if side==1 else tick.bid_price.as_decimal()
+                    p=self.btc.open_cycle(side=side,equity=s.equity,executable=executable,now=now,funding_total=self._funding())
+                    self.entry_sizing_audit.append({'episode_id':p.id,'decision_ns':str(now),'native_equity':str(s.equity),
+                        'multiplier':'7.875','planned_qty':str(p.quantity),'first_half':str(p.first_quantity),
+                        'split_lot_rule':'TOTAL_FLOOR_TO_EVEN_LOTS','confirmed_native_entry_qty':'0'})
+                if p.growth_stopped or p.close_reason:break
+                if self._position(self.config.btc_id) is not None and not self._protection_ready(now):break
+                before=p.entry_filled
+                if p.first_filled<p.first_quantity:
+                    q=p.first_quantity-p.first_filled;raw=None;purpose='ENTRY_MARKET'
+                elif p.first_terminal:
+                    q=p.quantity-p.entry_filled
+                    if q<=0:break
+                    raw=p.first_vwap*(1-D(p.side)*DISCOUNT);purpose='ENTRY_DISCOUNT'
+                else:break
+                if not self._send(self.config.btc_id,q,p.side,purpose,now,tick,raw_limit=raw,reason='BTC_MARKET_SPLIT'):
+                    p.growth_stopped=True;self._reconcile_btc(now);break
+                if self.btc.parent is not p or p.entry_filled<=before:break
+        except (ValueError,AttributeError,TypeError) as error:
+            self.target_blockers['BTC_ENTRY']={'reason':str(error),'clock_ns':str(now)}
+        finally:self._entry_dispatching=False
+
+    def _sync_protection(self,now):
+        if self._protection_dispatching:
+            self._protection_dirty=True;return
+        self._protection_dispatching=True
+        try:
+            while True:
+                self._protection_dirty=False
+                self._reconcile_protection(now)
+                if not self._protection_dirty:break
+        except (ValueError,AttributeError,TypeError) as error:
+            p=self.btc.parent
+            self.target_blockers['BTC_PROTECTION:'+(p.id if p else 'NONE')]={'reason':str(error),'clock_ns':str(now)}
+            if p is not None and not p.close_reason:
+                self.btc.stop_growth('REQUIRED_PROTECTION_FACTS_HOLD');self._cancel_growth()
+        finally:self._protection_dispatching=False
+
+    def _reconcile_protection(self,now):
+        p=self.btc.parent;position=self._position(self.config.btc_id);tick=self._quotes.get(self.config.btc_id)
+        if p is None or p.close_reason or position is None or self._scope_for(self.config.btc_id) is not None:return
+        if tick is None or not bbo_status(tick,now)[0]:raise ValueError('PROTECTION_FRESH_BBO_UNKNOWN')
+        self.btc.observe_funding(self._funding())
+        instrument=self.cache.instrument(self.config.btc_id);average=D(str(position.avg_px_open))
+        actual=position.quantity.as_decimal();desired={}
+        for level,lots in enumerate(self.btc.target_lots()):
+            if lots:desired[('TP_GTC',level)]=(D(lots)*self.config.btc_step,self.btc.target_price(level,average))
+        if p.be_armed:
+            self._cancel_growth()
+            desired[('BE_STOP',None)]=(actual,breakeven_price(side=p.side,native_average=average,
+                native_quantity=actual,remaining_cost=p.remaining_cost,exit_fee_rate=self.config.exit_fee_rate))
+        def working(key):
+            result=[]
+            for info in self._owned.values():
+                if info['instrument_id']==self.config.btc_id and (info['purpose'],info['level'])==key:
+                    order=self.cache.order(info['client_order_id'])
+                    if order is None:raise ValueError('PROTECTION_NATIVE_ORDER_UNKNOWN')
+                    result.append(order)
+            return result
+        keys=set(desired)|{(v['purpose'],v['level']) for v in self._owned.values()
+            if v['instrument_id']==self.config.btc_id and v['purpose'] in ('TP_GTC','BE_STOP')}
+        for key in keys:
+            orders=working(key);wanted=desired.get(key)
+            wire=self._format_price(instrument,wanted[1],p.side==1) if wanted else None
+            total=sum((o.leaves_qty.as_decimal() for o in orders),ZERO)
+            wrong_price=any((o.trigger_price if key[0]=='BE_STOP' else o.price)!=wire for o in orders)
+            if wanted is None or total>wanted[0] or wrong_price:
+                for order in orders:
+                    if not order.is_pending_cancel:self.cancel_order(order)
+                    if self._protection_dirty:return
+        for (purpose,level),(q,raw) in desired.items():
+            if 'NATIVE_PROTECTION_TERMINAL:'+p.id+':'+purpose+':'+str(level) in self.target_blockers:continue
+            while self.btc.parent is p and not p.close_reason:
+                orders=working((purpose,level))
+                wire=self._format_price(instrument,raw,p.side==1)
+                if any(o.is_pending_cancel or (o.trigger_price if purpose=='BE_STOP' else o.price)!=wire for o in orders):break
+                covered=sum((o.leaves_qty.as_decimal() for o in orders),ZERO)
+                if covered>=q:break
+                if not self._send(self.config.btc_id,q-covered,-p.side,purpose,now,tick,reduce_only=True,level=level,
+                        raw_limit=raw if purpose=='TP_GTC' else None,stop_trigger=raw if purpose=='BE_STOP' else None,
+                        reason='FIXED_TP' if purpose=='TP_GTC' else 'FEE_AWARE_BREAKEVEN'):
+                    self.btc.stop_growth('REQUIRED_PROTECTION_REQUEST_HOLD');self._cancel_growth();return
+                if self._protection_dirty:return
+                after=sum((o.leaves_qty.as_decimal() for o in working((purpose,level))),ZERO)
+                if after<=covered:break
+
+    def _protection_ready(self,now):
+        p=self.btc.parent;position=self._position(self.config.btc_id)
+        if position is None:return True
+        if p is None:return False
+        try:
+            if self._funding()!=p.funding_total:return False
+            average=D(str(position.avg_px_open));instrument=self.cache.instrument(self.config.btc_id)
+            desired={('TP_GTC',i):(D(lots)*self.config.btc_step,self.btc.target_price(i,average))
+                for i,lots in enumerate(self.btc.target_lots()) if lots}
+            if p.be_armed:
+                q=position.quantity.as_decimal()
+                desired[('BE_STOP',None)]=(q,breakeven_price(side=p.side,native_average=average,
+                    native_quantity=q,remaining_cost=p.remaining_cost,exit_fee_rate=self.config.exit_fee_rate))
+            for (purpose,level),(q,raw) in desired.items():
+                wire=self._format_price(instrument,raw,p.side==1);covered=ZERO
+                for info in self._owned.values():
+                    if (info['instrument_id']!=self.config.btc_id or info['parent_id']!=p.id
+                            or (info['purpose'],info['level'])!=(purpose,level)):continue
+                    order=self.cache.order(info['client_order_id'])
+                    if (order is None or not order.is_open or order.is_pending_cancel or not order.is_reduce_only
+                            or order.side!=(OrderSide.SELL if p.side==1 else OrderSide.BUY)):continue
+                    if (order.trigger_price if purpose=='BE_STOP' else order.price)!=wire:continue
+                    covered+=order.leaves_qty.as_decimal()
+                if covered<q:return False
+            return True
+        except (ValueError,AttributeError,TypeError):return False
+
+    def _format_price(self,instrument,raw,up):
+        spec=self._contract_spec(instrument.id,instrument)
+        value=outward_price(spec,raw,up)
+        result=instrument.make_price(value)
+        if result.as_decimal()!=value:raise ValueError('NATIVE_PRICE_FORMAT_MISMATCH')
+        return result
 
     def _orders(self, instrument_id):
         found = {}
@@ -305,23 +364,6 @@ class CM2Strategy(Strategy):
         return NativeExposure(equity,qty[self.config.btc_id],qty[self.config.sol_id],
             prices[self.config.btc_id],prices[self.config.sol_id],bool(unknown_assets),known,known_prices,frozenset(unknown_assets))
 
-    def _begin_drain(self,now,scope,ids,reason):
-        sol=getattr(self,'sol',None)
-        if scope=='GLOBAL' and sol is not None:sol.request_exit(reason)
-        previous=self._drain.get(scope)
-        state=drain_update(previous['state'] if previous else None,now,ids)
-        self._drain[scope]={'state':state,'reason':reason,
-            'parent_id':previous['parent_id'] if previous else (self.reference.parent.id if self.reference.parent else None)}
-        if previous is None:
-            self.drain_audit.append({'timestamp_ns':now,'scope':scope,'event':'START','state':state,'reason':reason})
-        for iid in (self.config.btc_id,self.config.sol_id):
-            if str(iid) in ids:
-                for order in self._orders(iid):self.cancel_order(order)
-        name='CM2_'+scope+'_'+str(self.id)
-        if name not in self.clock.timer_names and not state['reconcile_required']:
-            if now>=state['deadline_ns']:self._on_drain_deadline(None)
-            else:self.clock.set_time_alert_ns(name,state['deadline_ns'],callback=self._on_drain_deadline)
-
     def _on_drain_deadline(self,_event):
         now=self.clock.timestamp_ns()
         for scope,drain in self._drain.items():
@@ -330,28 +372,6 @@ class CM2Strategy(Strategy):
                 state['reconcile_required']=True
                 self.drain_audit.append({'timestamp_ns':now,'scope':scope,'event':'RECONCILE_REQUIRED','state':dict(state)})
         self._persist_checkpoint()
-
-    def _reconcile_drains(self,now):
-        for scope,drain in list(self._drain.items()):
-            ids=drain['state']['scoped_zero_ids']
-            complete=all(self._position(iid) is None and not self._orders(iid)
-                and not any(v['instrument_id']==iid for v in self._owned.values())
-                for iid in (self.config.btc_id,self.config.sol_id) if str(iid) in ids)
-            if not complete:continue
-            if scope=='BTC_ECONOMIC':
-                p=self.reference.parent
-                if p is not None and p.id==drain['parent_id']:
-                    self.reference.confirm_btc_close(p.id,receipt_ns=now,
-                        native_btc_flat=True,native_btc_owners_terminal=True)
-                    self._queued_tp.clear()
-                    self._needs_daily=drain['reason']=='REGIME'
-            name='CM2_'+scope+'_'+str(self.id)
-            if name in self.clock.timer_names:self.clock.cancel_timer(name)
-            self.drain_audit.append({'timestamp_ns':now,'scope':scope,'event':'NATIVE_SCOPED_FLAT'})
-            del self._drain[scope]
-            if scope=='SOL_SUBORDINATE' and getattr(self,'sol',None) is not None:self._sol_reconcile()
-            # GLOBAL safety stays latched independently; SOL drain never owns
-            # the BTC economic reset or a later BTC episode's target.
 
     def _scope_for(self,iid):
         for scope in ('GLOBAL','BTC_ECONOMIC','SOL_SUBORDINATE'):
@@ -374,7 +394,6 @@ class CM2Strategy(Strategy):
                 self.safety.emergency_trigger_equity=s.equity
                 self.safety.emergency_trigger_peak_equity=self.safety.emergency_peak_equity
                 self.safety.emergency_trigger_fraction=fraction;self.safety.emergency_trigger_ns=now
-                self.reference.revoke_c1(now,'GLOBAL_EMERGENCY')
                 self._begin_drain(now,'GLOBAL',[str(self.config.btc_id),str(self.config.sol_id)],self.safety.reason)
         except (ValueError,AttributeError):self.safety.emergency_valuation_known=False
 
@@ -390,187 +409,9 @@ class CM2Strategy(Strategy):
             self._liquidation_unknown+=1;self._risk_unknown=True;return
         if not self.cache.positions_open() or s.equity>maintenance:return
         self._liquidating=True;self.safety.global_latched=True;self.safety.reason='LIQUIDATION'
-        self.reference.revoke_c1(now,'GLOBAL_LIQUIDATION')
         self.liquidation_audit.append({'trigger_ts':str(now),'marked_equity':str(s.equity),
             'tier_maintenance_margin':str(maintenance),'close_fills':[],'close_value':'0','status':'ARMED'})
         self._begin_drain(now,'GLOBAL',[str(self.config.btc_id),str(self.config.sol_id)],'LIQUIDATION')
-
-    def on_quote_tick(self,tick):
-        now=self.clock.timestamp_ns()
-        fresh,reason=bbo_status(tick,now)
-        old=self._quotes.get(tick.instrument_id)
-        if not fresh or old is not None and tick.ts_event<old.ts_event:
-            self.pre_submit_gate_blocks.append({'timestamp':str(now),'instrument':str(tick.instrument_id),'reason':reason})
-            return
-        self._quotes[tick.instrument_id]=tick
-        if now<self.config.trading_start_open_ns:return
-        self._check_emergency_drawdown(now)
-        if now>=self.config.terminal_close_at_ns and not self.safety.global_latched:
-            self.safety.global_latched=True;self.safety.reason='TERMINAL_BOUNDARY_SETTLEMENT'
-            self.reference.revoke_c1(now,'TERMINAL_BOUNDARY')
-            self._begin_drain(now,'GLOBAL',[str(self.config.btc_id),str(self.config.sol_id)],self.safety.reason)
-        # A close already owned on arrival consumes this BTC callback even if
-        # reconciliation completes it now. The next callback may share its ns.
-        close_phase='BTC_ECONOMIC' in self._drain
-        btc_close_phase=tick.instrument_id==self.config.btc_id and close_phase
-        self._reconcile_drains(now)
-        scope=self._scope_for(tick.instrument_id)
-        if scope is not None:
-            self._execute_drain(tick,now,scope)
-        elif not self.safety.global_latched and not self._restore_failed and tick.instrument_id==self.config.btc_id:
-            if not btc_close_phase:btc_close_phase=self._evaluate_daily(now)
-            if self._scope_for(self.config.btc_id) is not None:self._execute_drain(tick,now,'BTC_ECONOMIC')
-            elif btc_close_phase:pass  # completing quote cannot also select q0
-            elif self.reference.c1 is not None and self.reference.c1.state!='RELEASED':
-                self._execute_c1(tick,now)
-                # A revoked/held token blocks increases, not harmless TP leaves.
-                if not any(v['purpose'].startswith('C1_') for v in self._owned.values()):self._execute_targets(tick,now)
-            else:
-                self._execute_entry(tick,now);self._execute_targets(tick,now)
-        elif tick.instrument_id==self.config.sol_id and getattr(self,'sol',None) is not None:
-            self._execute_sol(tick,now)
-        elif tick.instrument_id==self.config.sol_id and self._position(self.config.sol_id) is not None:
-            # No SOL alpha is active in this BTC-only stage. Known subordinate
-            # inventory drains without changing the BTC economic decision.
-            if self._scope_for(self.config.sol_id) is None:
-                self._begin_drain(now,'SOL_SUBORDINATE',[str(self.config.sol_id)],'SOL_COMPONENT_INACTIVE')
-            self._execute_drain(tick,now,'SOL_SUBORDINATE')
-        self._reconcile_drains(now)
-        if (not self.safety.global_latched and not self._restore_failed and not close_phase
-                and not btc_close_phase and 'BTC_ECONOMIC' not in self._drain
-                and self.reference.consume_h4_reentry_facts(now)):
-            self._needs_daily=True;self._evaluate_daily(now)
-        if tick.instrument_id==self.config.btc_id and getattr(self,'sol',None) is not None:self._sol_observe_btc(tick,now)
-        self._capture_btc_source(now)
-
-
-    def _sol_daily_feature(self,now):
-        if not self.reference.signals:return None
-        row=self.reference._features.bars[-1]
-        if _ns(row.close_time)!=(now//DAY)*DAY or _ns(row.available_at)>now:return None
-        return self.reference.signals[-1]
-
-    def _sol_pending_growth(self):
-        return sum((o.leaves_qty.as_decimal() for o in self._orders(self.config.sol_id) if not o.is_reduce_only),ZERO)
-
-    def _sol_reconcile(self):
-        sol=getattr(self,'sol',None)
-        if sol is not None:
-            before=sol.episode
-            sol.reconcile(native_flat=self._position(self.config.sol_id) is None,
-                owners_terminal=not self._orders(self.config.sol_id) and not any(
-                    v['instrument_id']==self.config.sol_id for v in self._owned.values()))
-            if before is not sol.episode:self._persist_checkpoint()
-
-    def _sol_request_exit(self,now,reason):
-        sol=getattr(self,'sol',None)
-        if sol is not None and sol.request_exit(reason):
-            self._begin_drain(now,'SOL_SUBORDINATE',[str(self.config.sol_id)],reason)
-            self._persist_checkpoint()
-
-    def _sol_refresh_opening(self,now):
-        sol=getattr(self,'sol',None)
-        if sol is None or sol.episode is None or not sol.episode.opening_live:return
-        ep=sol.episode;p=self.reference.parent;btc=self._position(self.config.btc_id)
-        if (p is None or p.id!=ep.sponsor or p.close_reason or btc is None
-                or (1 if btc.is_long else -1)!=ep.btc_side):
-            sol.retire_opening()
-        else:
-            try:
-                s=self._snapshot(now);tick=self._quotes.get(self.config.sol_id)
-                if (s.unknown_orders or not s.data_known or not all(s.price_known.values())
-                        or tick is None or not bbo_status(tick,now)[0]):
-                    raise ValueError('SOL_OPENING_FACTS_UNKNOWN')
-                price=tick.ask_price.as_decimal() if ep.side==1 else tick.bid_price.as_decimal()
-                cap=sol.remaining(native_btc_notional=abs(s.btc_qty*s.btc_mark),executable_price=price,
-                    lot=self.cache.instrument(self.config.sol_id).size_increment.as_decimal(),
-                    actual_sol=ZERO,pending_growth=ZERO)
-                if abs(s.sol_qty)+self._sol_pending_growth()<=cap:return
-                if abs(s.sol_qty)>=cap:sol.retire_opening()
-            except (ValueError,AttributeError,TypeError):
-                pass  # Unknown never rearms; cancel attainable unfilled growth.
-        for order in self._orders(self.config.sol_id):
-            if not order.is_reduce_only and not order.is_pending_cancel:self.cancel_order(order)
-        self._sol_reconcile()
-        if not ep.opening_live:self._persist_checkpoint()
-
-    def _sol_observe_btc(self,tick,now):
-        sol=getattr(self,'sol',None)
-        if sol is None:return
-        btc=self._position(self.config.btc_id)
-        native=btc.quantity.as_decimal()*(D(1) if btc.is_long else D(-1)) if btc else ZERO
-        before=(sol.gate_parent,sol.exhaustion)
-        sol.observe_wave(self.reference.parent,native_btc=native,
-            bid=tick.bid_price.as_decimal(),ask=tick.ask_price.as_decimal(),
-            source_ns=tick.ts_event,receipt_ns=now)
-        if before!=(sol.gate_parent,sol.exhaustion):self._persist_checkpoint()
-        self._sol_refresh_opening(now)
-
-    def _execute_sol(self,tick,now):
-        sol=self.sol
-        self._sol_reconcile()
-        f=self._sol_daily_feature(now)
-        if f is not None and sol.episode is not None:
-            sol.relative_exit(relative=f.relative,mu=f.mu,daily_ns=(now//DAY)*DAY,now=now)
-        if sol.episode is not None and sol.episode.exit_reason:
-            self._sol_request_exit(now,sol.episode.exit_reason)
-        if self._scope_for(self.config.sol_id) is not None:
-            self._execute_drain(tick,now,self._scope_for(self.config.sol_id));return
-        self._sol_refresh_opening(now);self._sol_reconcile()
-        p=self.reference.parent;btc=self._position(self.config.btc_id)
-        held=btc is not None and p is not None and (1 if btc.is_long else -1)==p.side
-        truth=False
-        if held and not p.close_reason and sol.exhaustion is not None and sol.exhaustion['parent_id']==p.id:
-            truth=None
-            if (f is not None and f.z is not None and f.sigma is not None
-                    and isfinite(f.z) and isfinite(f.sigma) and f.sigma>0):
-                try:
-                    s=self._snapshot(now)
-                    if s.data_known and not s.unknown_orders and all(s.price_known.values()):
-                        truth=p.side*f.z>=1.25
-                except (ValueError,AttributeError):pass
-        before_gate=(sol.gate_parent,sol.gate_truth,sol.gate_spent)
-        edge=sol.observe_gate(p.id if p else None,truth)
-        if before_gate!=(sol.gate_parent,sol.gate_truth,sol.gate_spent):self._persist_checkpoint()
-        owners=any(v['instrument_id']==self.config.sol_id for v in self._owned.values()) or bool(self._orders(self.config.sol_id))
-        position=self._position(self.config.sol_id)
-        if edge and (sol.episode is not None or owners or position is not None):
-            sol.commit_opportunity();self._persist_checkpoint()
-        if sol.episode is None and edge and position is None and not owners:
-            s=self._snapshot(now);side=-p.side
-            price=tick.ask_price.as_decimal() if side==1 else tick.bid_price.as_decimal()
-            ep=sol.opening_candidate(sponsor=p.id,btc_side=p.side,
-                native_btc_notional=abs(s.btc_qty*s.btc_mark),sigma=D(str(f.sigma)),
-                executable_price=price,lot=self.cache.instrument(self.config.sol_id).size_increment.as_decimal(),now=now)
-            if ep is not None and self._admit(self.config.sol_id,ep.quantity,price,s,now):
-                row=self.reference._features.bars[-1]
-                ep.permission={'exhaustion':dict(sol.exhaustion),'decision_ns':now,
-                    'daily_close_ns':_ns(row.close_time),'daily_available_ns':_ns(row.available_at),
-                    'relative':f.relative,'mu':f.mu,'sigma':f.sigma,'z':f.z,
-                    'actual_btc_qty':s.btc_qty,'coherent_btc_mark':s.btc_mark,
-                    'actual_btc_notional':abs(s.btc_qty*s.btc_mark)}
-                sol.episode=ep
-        ep=sol.episode
-        if ep is None or not ep.opening_live or ep.exit_reason or owners:return
-        if not held or p.id!=ep.sponsor or p.close_reason:
-            sol.retire_opening();self._sol_reconcile();return
-        try:
-            s=self._snapshot(now)
-            if not s.data_known or s.unknown_orders or not all(s.price_known.values()):return
-            price=tick.ask_price.as_decimal() if ep.side==1 else tick.bid_price.as_decimal()
-            q=sol.remaining(native_btc_notional=abs(s.btc_qty*s.btc_mark),executable_price=price,
-                lot=self.cache.instrument(self.config.sol_id).size_increment.as_decimal(),
-                actual_sol=abs(s.sol_qty),pending_growth=self._sol_pending_growth())
-            if not q:
-                sol.retire_opening();self._sol_reconcile();return
-            sent=self._send(self.config.sol_id,q,ep.side,'SOL_OPEN',now,tick,reason='SOL_V1_ACCEPTED_OPENING')
-            accepted=sent or ep.native_filled or any(v['instrument_id']==self.config.sol_id for v in self._owned.values())
-            if accepted and sol.gate_truth is True:
-                sol.commit_opportunity();self._persist_checkpoint()
-            if not accepted and not ep.native_filled:
-                sol.retire_opening();self._sol_reconcile()
-        except (ValueError,AttributeError,TypeError) as error:
-            self.target_blockers['SOL_OPEN']={'reason':str(error),'clock_ns':str(now)}
 
     def _execute_drain(self,tick,now,scope):
         if tick.ts_event<self._drain[scope]['state']['first_ns']:return
@@ -589,333 +430,6 @@ class CM2Strategy(Strategy):
                 if after.quantity.as_decimal()>=before:break
             self._reconcile_drains(now)
         finally:self._drain_dispatching.remove(iid)
-
-    def _execute_entry(self,tick,now):
-        p=self.reference.parent
-        if p is None or p.close_reason or p.split_terminal:return
-        owned=[v for v in self._owned.values() if v['instrument_id']==self.config.btc_id and v['purpose'].startswith('ENTRY')]
-        pending='UNKNOWN' if len(owned)>1 else ('DISCOUNT_GTC' if owned[0]['purpose']=='ENTRY_DISCOUNT' else 'IOC') if owned else 'NONE'
-        if p.q0_ns is None:
-            executable=tick.ask_price.as_decimal() if p.side==1 else tick.bid_price.as_decimal()
-            self.reference.observe_entry_q0(p.id,quote_ns=tick.ts_event,executable_price=executable,
-                canonical_wire_price=self._reference_limit(self.config.btc_id,executable).as_decimal())
-            self._persist_checkpoint();return
-        if p.selected_quantity is None:
-            if tick.ts_event<=p.q0_ns:return
-            try:
-                selected=self.reference.select_entry_q1(p.id,quote_ns=tick.ts_event,
-                    bid=tick.bid_price.as_decimal(),ask=tick.ask_price.as_decimal())
-                if selected<=0:raise ValueError('ZERO_NET_ENTRY')
-                self.reference.begin_split(p.id,now_ns=tick.ts_event)
-            except ValueError as error:
-                self.reference.stop_entry_remainder(p.id,reason=str(error))
-                if not owned and p.filled_quantity==0:self.reference.confirm_empty_entry_terminal(p.id,native_pending=False)
-                self._needs_daily=False;self._audit(now,'ENTRY_SELECTION_DENIED:'+str(error));return
-            current=self.reference.parent
-            self.entry_sizing_audit.append({'episode_id':p.id,'q0_ns':str(p.q0_ns),'q1_ns':str(tick.ts_event),
-                'reference_btc_qty':str(D(current.gross_lots)*self.config.btc_step),
-                'net_submitted_btc_qty':str(selected),'omitted_zero_levels':sorted(current.omitted_levels),
-                'branch':'PASSIVE_NET_ZERO_LEVELS' if current.passive_selection else 'MARKETABLE_FULL_ENTRY_FALLBACK',
-                'reference_target_lots':dict(enumerate(current.reference_targets)),
-                'confirmed_native_entry_qty':str(current.filled_quantity)})
-        plan=self.reference.entry_plan(p.id,now_ns=tick.ts_event,bid=tick.bid_price.as_decimal(),
-            ask=tick.ask_price.as_decimal(),pending_kind=pending)
-        if plan.action in ('CANCEL','CANCEL_RESTING_LIMIT'):
-            for order in self._orders(self.config.btc_id):
-                info=self._owned[str(order.client_order_id)]
-                if info['purpose']=='ENTRY_DISCOUNT' or plan.action=='CANCEL':self.cancel_order(order)
-        elif plan.action in ('IOC','DISCOUNT_GTC'):
-            submitted=self._send(self.config.btc_id,plan.quantity,p.side,
-                'ENTRY_DISCOUNT' if plan.action=='DISCOUNT_GTC' else 'ENTRY_IOC',now,tick,
-                raw_limit=plan.raw_limit_price,reason='BTC_SPLIT')
-            if not submitted and self.reference.parent is not None:
-                self.reference.stop_entry_remainder(p.id,reason='LOCAL_ENTRY_ADMISSION_DENIED')
-                if self.reference.parent.filled_quantity==0 and not self._orders(self.config.btc_id) and not self._owned:
-                    self.reference.confirm_empty_entry_terminal(p.id,native_pending=False)
-
-    def _queue_confirmed_targets(self,ready_ns):
-        p=self.reference.parent
-        if p is None or p.close_reason or not p.split_terminal or p.filled_quantity<=0:return
-        for target in self.reference.confirmed_targets(p.id):
-            if target.level in self._queued_tp or any(v['instrument_id']==self.config.btc_id and v.get('level')==target.level for v in self._owned.values()):continue
-            self._queued_tp[target.level]=replace(target,ready_ns=ready_ns)
-
-    def _execute_targets(self,tick,now):
-        p=self.reference.parent
-        if p is None or p.close_reason or not p.split_terminal or p.filled_quantity<=0 or now<self._tp_ready_ns:return
-        if self.reference.c1 is not None and self.reference.c1.state in ('CUT_RESOLVING','RESTORE_RESOLVING'):return
-        pending=frozenset(v['level'] for v in self._owned.values() if v['instrument_id']==self.config.btc_id and v.get('level') is not None)
-        for level,target in list(self._queued_tp.items()):
-            if level in pending or now<target.ready_ns:continue
-            if target.conditional_ioc:
-                quantity=self.reference.executable_tp_quantity(target,quote_ns=tick.ts_event,
-                    bid=tick.bid_price.as_decimal(),ask=tick.ask_price.as_decimal(),native_pending_levels=pending)
-                if quantity<=0:continue
-                sent=self._send(self.config.btc_id,quantity,-p.side,'TP_IOC',now,tick,
-                    reduce_only=True,level=level,reason='BTC_CONDITIONAL_TP',decision_index=target.decision_index)
-            else:
-                wire=self._reference_limit(self.config.btc_id,target.raw_limit_price)
-                crossed=(tick.bid_price.as_decimal()>=wire.as_decimal() if p.side==1 else tick.ask_price.as_decimal()<=wire.as_decimal())
-                if crossed and not target.positive_ioc_candidate:
-                    # A marketable zero/partial resting plan is terminally
-                    # suppressed. Ordinary D1 permission remains independent.
-                    del self._queued_tp[level];continue
-                sent=self._send(self.config.btc_id,target.quantity,-p.side,
-                    'TP_IOC' if crossed else 'TP_GTC',now,tick,reduce_only=True,level=level,
-                    raw_limit=None if crossed else target.raw_limit_price,
-                    reason='BTC_POSITIVE_TP_CATCHUP' if crossed else 'BTC_RESTING_TP',decision_index=target.decision_index)
-            # Synchronous native terminal callbacks may already have replaced
-            # this same level with a retry. Remove only the submitted instance.
-            if sent and self._queued_tp.get(level) is target:del self._queued_tp[level]
-
-    def _execute_c1(self,tick,now):
-        t=self.reference.c1;p=self.reference.parent
-        if t is None or p is None:return
-        own_c1=[v for v in self._owned.values() if v['purpose'].startswith('C1_')]
-        if t.revoked:
-            for order in self._orders(self.config.btc_id):
-                if self._owned[str(order.client_order_id)]['purpose'].startswith('C1_'):self.cancel_order(order)
-            return
-        if self._btc_competing_owner():
-            self.reference.revoke_c1(now,'ORDINARY_OR_UNKNOWN_COMPETING_BTC_OWNER');return
-        held=self._position(self.config.btc_id)
-        if held is None:return
-        executable=tick.bid_price.as_decimal() if t.state=='CUT_RESOLVING' and t.side==1 or t.state!='CUT_RESOLVING' and t.side==-1 else tick.ask_price.as_decimal()
-        plan=self.reference.c1_plan(now_ns=now,executable_price=executable,
-            native_held_quantity=held.quantity.as_decimal(),native_btc_owners_clear=not self._orders(self.config.btc_id) and not own_c1)
-        if plan is None:return
-        if plan.kind=='CANCEL':
-            self._queued_tp.clear()
-            for order in self._orders(self.config.btc_id):
-                if self._owned[str(order.client_order_id)]['purpose']=='TP_GTC':self.cancel_order(order)
-            return
-        self._queued_tp.clear()
-        self._send(self.config.btc_id,plan.quantity,plan.side,'C1_'+plan.kind,now,tick,
-            reduce_only=plan.kind=='CUT',reason='C1_RESIDUAL_'+plan.kind)
-
-    def _reference_limit(self,iid,raw):
-        instrument=self.cache.instrument(iid);value=instrument.make_price(raw).as_decimal()
-        if not value.is_finite() or value<=0:raise ValueError('INVALID_REFERENCE_LIMIT')
-        if iid.venue.value=='HYPERLIQUID':value=value.quantize(D(1).scaleb(value.adjusted()-4),rounding=ROUND_HALF_EVEN)
-        result=instrument.make_price(value)
-        if result.as_decimal()!=value:raise ValueError('NATIVE_REFERENCE_PRICE_PRECISION')
-        return result
-
-    def _send(self,iid,quantity,side,purpose,now,tick,*,reduce_only=False,
-              level=None,raw_limit=None,reason='',decision_index=None):
-        if quantity<=0 or side not in (-1,1):return False
-        instrument=self.cache.instrument(iid)
-        try:
-            snapshot=self._snapshot(now)
-            if snapshot.unknown_orders and (not reduce_only or not snapshot.unknown_order_assets or iid in snapshot.unknown_order_assets):
-                raise ValueError('UNKNOWN_NATIVE_OWNER')
-            if reduce_only:
-                fresh,why=bbo_status(tick,now)
-                if not fresh:raise ValueError(why)
-            spec=self._contract_spec(iid,instrument)
-            executable=tick.ask_price.as_decimal() if side==1 else tick.bid_price.as_decimal()
-            is_limit=raw_limit is not None
-            tif='GTC' if is_limit else 'IOC';intent='LIMIT' if is_limit else 'MARKET'
-            terms=None
-            limit=None
-            if is_limit:
-                raw=raw_limit
-                if purpose=='ENTRY_DISCOUNT':
-                    step=instrument.price_increment.as_decimal()
-                    raw=(raw/step).to_integral_value(rounding=ROUND_FLOOR if side==1 else ROUND_CEILING)*step
-                limit=self._reference_limit(iid,raw)
-                wire=limit.as_decimal()
-                if wire>=tick.ask_price.as_decimal() if side==1 else wire<=tick.bid_price.as_decimal():
-                    raise ValueError('POSTONLY_CURRENT_WIRE_MARKETABLE')
-                cap,classification=request_cap(spec,intent,tif)
-                terms=RequestTerms(wire,max(executable,wire),min(executable,wire),cap,classification)
-            else:
-                terms=request_terms(spec,executable,'BUY' if side==1 else 'SELL',intent,tif)
-            actual=snapshot.btc_qty if iid==self.config.btc_id else snapshot.sol_qty
-            if reduce_only:
-                if not actual or actual*side>=0:raise ValueError('REDUCE_ONLY_NATIVE_SIDE_UNKNOWN')
-                other_ro=sum((o.leaves_qty.as_decimal() for o in self._orders(iid) if o.is_reduce_only),ZERO)
-                quantity=min(quantity,max(ZERO,abs(actual)-other_ro))
-            signed_target=actual+D(side)*quantity
-            plan=order_plan(actual=actual,target=signed_target,pending=ZERO,unknown=False,
-                price=terms.minimum_reference_price,step=instrument.size_increment.as_decimal(),
-                min_qty=instrument.min_quantity.as_decimal() if instrument.min_quantity is not None else instrument.size_increment.as_decimal(),
-                max_child=self.config.limits.max_child_notional,min_notional=spec.min_notional,
-                emergency=purpose=='DRAIN',venue_max_child_notional=terms.cap,
-                venue_reference_price=terms.cap_reference_price)
-            if plan.action!='SUBMIT':
-                self.target_blockers[str(iid)+':'+purpose+':'+str(level)]={'reason':plan.reason,'quantity':str(quantity),'clock_ns':str(now)}
-                return False
-            q=abs(plan.signed_quantity)
-            if not reduce_only:
-                admitted=q
-                parent=self.reference.parent
-                if iid==self.config.btc_id and purpose.startswith('ENTRY') and parent is not None:
-                    admitted=max(q,parent.selected_quantity-parent.filled_quantity)
-                if purpose=='SOL_OPEN' and getattr(self,'sol',None) is not None:
-                    admitted=self.sol.remaining(native_btc_notional=abs(snapshot.btc_qty*snapshot.btc_mark),
-                        executable_price=executable,lot=instrument.size_increment.as_decimal(),
-                        actual_sol=abs(snapshot.sol_qty),pending_growth=self._sol_pending_growth())
-                    if admitted<q:raise ValueError('SOL_CURRENT_PARENT_CAP_SHRANK')
-                if not self._admit(iid,admitted,executable,snapshot,now):
-                    if purpose=='C1_RESTORE':self.reference.deny_c1_restore()
-                    return False
-            native_qty=instrument.make_qty(q)
-            if native_qty.as_decimal()!=q:raise ValueError('NATIVE_QTY_FORMAT_MISMATCH')
-            valid,why=validate_request(spec,q,terms,intent,tif)
-            if not valid:raise ValueError(why)
-            order=(self.order_factory.limit(instrument_id=iid,order_side=OrderSide.BUY if side==1 else OrderSide.SELL,
-                    quantity=native_qty,price=limit,time_in_force=TimeInForce.GTC,post_only=True,reduce_only=reduce_only)
-                if is_limit else self.order_factory.market(instrument_id=iid,order_side=OrderSide.BUY if side==1 else OrderSide.SELL,
-                    quantity=native_qty,time_in_force=TimeInForce.IOC,reduce_only=reduce_only))
-            actual_price=order.price.as_decimal() if getattr(order,'price',None) is not None else None
-            valid,why=validate_request(spec,order.quantity.as_decimal(),terms,intent,tif)
-            if (not valid or order.quantity.as_decimal()!=q or order.instrument_id!=iid
-                    or order.side!=(OrderSide.BUY if side==1 else OrderSide.SELL)
-                    or order.order_type.name!=intent or order.time_in_force.name!=tif
-                    or actual_price!=terms.limit_price or order.is_reduce_only!=reduce_only
-                    or bool(order.is_post_only)!=is_limit):
-                raise ValueError('FINAL_NATIVE_REQUEST_MISMATCH:'+why)
-            oid=str(order.client_order_id);parent=self.reference.parent
-            context={'client_order_id':order.client_order_id,'instrument_id':iid,'purpose':purpose,
-                'parent_id':parent.id if parent else None,'level':level,'submit_ns':now,'acked':False,
-                'side':side,'quantity':q,'limit_price':limit.as_decimal() if limit is not None else None,
-                'raw_limit_price':raw_limit,'decision_index':decision_index if decision_index is not None else (self.reference.signals[-1].index if self.reference.signals else -1),
-                'accepted_retry':bool(purpose=='TP_IOC' and parent is not None and (level in parent.suppressed_zero_levels or parent.filled_quantity==parent.selected_quantity and not parent.stop_reason)),
-                'reduce_only':reduce_only,'reason':reason}
-            if getattr(self,'sol',None) is not None and iid==self.config.sol_id and self.sol.episode is not None:
-                context['sol_episode']=asdict(self.sol.episode)
-            self._owned[oid]=context
-            self._order_audit[oid]=_report_value({**context,'client_order_id':oid,'instrument_id':str(iid),
-                'native_order_type':order.order_type.name,'native_time_in_force':order.time_in_force.name,
-                'request_model_id':MODEL_ID,'request_classification':terms.classification,
-                'admission':{'parent_id':context['parent_id'],'purpose':purpose,'intent':intent,
-                    'source_policy_version':self.config.policy.version,'native_quote_ns':tick.ts_event,
-                    'request_cap':str(terms.cap),'reduce_floor_policy':REDUCE_FLOOR_POLICY,
-                    'episode_entry_signal_index':parent.decision_index if parent else None,'reference_signal_index':context['decision_index'],'tp_level':level}})
-            if purpose.startswith('C1_'):self.reference.commit_c1_submission(purpose[3:],now_ns=now)
-            self._chain_audit('ORDER_ADMISSION',self._order_audit[oid]);self._persist_checkpoint()
-            self.submit_order(order)
-            return True
-        except (ValueError,AttributeError,TypeError,KeyError) as error:
-            self.pre_submit_gate_blocks.append({'timestamp':str(now),'instrument':str(iid),'reason':str(error),'purpose':purpose})
-            return False
-
-    def on_order_accepted(self,event):
-        info=self._owned.get(str(event.client_order_id))
-        if info is not None:info['acked']=True;self._persist_checkpoint()
-
-    def on_order_filled(self,event):
-        tid=str(event.trade_id)
-        if tid in self._seen_trade_ids:return
-        oid=str(event.client_order_id);context=self._order_audit.get(oid)
-        self._seen_trade_ids.add(tid)
-        fee=event.commission.as_decimal()
-        self.fill_audit.append({'client_order_id':oid,'trade_id':tid,'instrument':str(event.instrument_id),
-            'venue':str(event.instrument_id.venue),'qty':str(event.last_qty.as_decimal()),'px':str(event.last_px.as_decimal()),
-            'notional':str(event.last_qty.as_decimal()*event.last_px.as_decimal()),
-            'commission':str(fee),'commission_currency':str(event.commission.currency),'fill_ns':str(event.ts_event),
-            'native_liquidity_side':getattr(event.liquidity_side,'name',str(event.liquidity_side)),
-            'order_side':getattr(event.order_side,'name',str(event.order_side)),
-            'action':context['purpose'] if context else 'UNKNOWN','reason':context.get('reason') if context else 'UNKNOWN',
-            'level':context.get('level') if context else None,'parent_id':context.get('parent_id') if context else None,
-            'admission':context.get('admission') if context else None,'policy_hash':self.config.execution_policy_hash})
-        p=self.reference.parent
-        if event.instrument_id==self.config.btc_id:
-            purpose=context['purpose'] if context else ''
-            if purpose!='DRAIN' and (p is None or context is None or context['parent_id']!=p.id):
-                self._restore_failed=True;self.safety.global_latched=True;self.safety.reason='UNOWNED_OR_LATE_FOREIGN_BTC_FILL'
-                self._begin_drain(self.clock.timestamp_ns(),'GLOBAL',[str(self.config.btc_id),str(self.config.sol_id)],self.safety.reason)
-            elif purpose!='DRAIN':
-                kind='ENTRY' if purpose.startswith('ENTRY') else 'TP' if purpose.startswith('TP_') else purpose[3:]
-                try:
-                    self.reference.apply_fill(p.id,trade_id=tid,kind=kind,quantity=event.last_qty.as_decimal(),
-                        price=event.last_px.as_decimal(),event_ns=event.ts_event,level=context.get('level'))
-                except ValueError as error:
-                    self._restore_failed=True;self.safety.global_latched=True;self.safety.reason=str(error)
-                    self._begin_drain(self.clock.timestamp_ns(),'GLOBAL',[str(self.config.btc_id),str(self.config.sol_id)],self.safety.reason)
-                if kind=='ENTRY':
-                    self._tp_ready_ns=max(self._tp_ready_ns,event.ts_event+1)
-                    self._needs_daily=bool(self.reference.parent.omitted_levels)
-                    for audit in reversed(self.entry_sizing_audit):
-                        if audit['episode_id']==p.id:audit['confirmed_native_entry_qty']=str(self.reference.parent.filled_quantity);break
-                else:self._needs_daily=True
-        if self._liquidating and self.liquidation_audit:
-            row=self.liquidation_audit[-1]
-            row['close_fills'].append({'trade_id':tid,'quantity':str(event.last_qty),'price':str(event.last_px)})
-            row['close_value']=str(D(row['close_value'])+event.last_qty.as_decimal()*event.last_px.as_decimal())
-        sol=getattr(self,'sol',None)
-        if sol is not None and event.instrument_id==self.config.sol_id:
-            foreign=context is None
-            if context is not None and context['purpose']=='SOL_OPEN':
-                owner=context.get('sol_episode');ep=sol.episode
-                try:
-                    foreign=(owner is None or ep is None or owner['sponsor']!=ep.sponsor
-                        or owner['accepted_ns']!=ep.accepted_ns or owner['side']!=ep.side
-                        or D(owner['k'])!=ep.k)
-                except (KeyError,ValueError,TypeError,ArithmeticError):foreign=True
-                if not foreign:sol.native_fill()
-            if foreign and context is not None and context['purpose']=='SOL_OPEN':
-                sol.request_exit('SOL_FILL_EPISODE_IDENTITY_UNKNOWN')
-                self._begin_drain(self.clock.timestamp_ns(),'SOL_SUBORDINATE',
-                    [str(self.config.sol_id)],'SOL_FILL_EPISODE_IDENTITY_UNKNOWN')
-            elif foreign:
-                self._restore_failed=True;self.safety.global_latched=True;self.safety.reason='FOREIGN_OR_LATE_SOL_FILL'
-                self._begin_drain(self.clock.timestamp_ns(),'GLOBAL',[str(self.config.btc_id),str(self.config.sol_id)],self.safety.reason)
-        if event.instrument_id==self.config.btc_id and sol is not None:self._sol_refresh_opening(self.clock.timestamp_ns())
-        self._chain_audit('NATIVE_FILL',self.fill_audit[-1]);self._terminal_event(event,only_if_closed=True)
-        self._persist_checkpoint()
-
-    def _terminal_event(self,event,only_if_closed=False,failed=False):
-        oid=str(event.client_order_id);info=self._owned.get(oid)
-        if info is None:return
-        order=self.cache.order(event.client_order_id)
-        if only_if_closed and (order is None or not order.is_closed):return
-        del self._owned[oid];now=self.clock.timestamp_ns()
-        purpose=info['purpose'];p=self.reference.parent
-        if purpose.startswith('C1_') and p is not None and p.id==info['parent_id']:
-            self.reference.c1_terminal(purpose[3:],now_ns=event.ts_event)
-            self._queue_confirmed_targets(event.ts_event+1)
-        elif purpose.startswith('ENTRY') and p is not None and p.id==info['parent_id']:
-            if failed:
-                self.reference.stop_entry_remainder(p.id,reason='NATIVE_DENIED_REJECTED_EXPIRED')
-                p=self.reference.parent
-            # A child terminal never equals economic parent cancellation. The
-            # same parent may continue on its next real quote after a partial.
-            if p.stop_reason and p.filled_quantity==0:
-                self.reference.confirm_empty_entry_terminal(p.id,native_pending=False)
-            elif p.split_terminal:
-                self._queue_confirmed_targets(0 if failed else event.ts_event+1)
-        elif purpose.startswith('TP_') and p is not None and p.id==info['parent_id']:
-            level=info['level']
-            if not only_if_closed and not failed and p.tp_filled_lots.get(level,0)>0:
-                self._queue_confirmed_targets(event.ts_event+1)
-            # Resting replans and the accepted IOC remainder are independent,
-            # as in the reference terminal callback. A suppressed zero level
-            # cannot be recovered by confirmed_targets alone.
-            if (purpose=='TP_IOC' and info['accepted_retry'] and level not in self._queued_tp
-                    and not any(v['instrument_id']==self.config.btc_id and v.get('level')==level for v in self._owned.values())):
-                retry=self.reference.retry_native_tp_permission(p.id,level=level,
-                    decision_index=info['decision_index'],ready_ns=event.ts_event+60_000_000_000)
-                if retry is not None:self._queued_tp[level]=retry
-            self._needs_daily=True
-        self._reconcile_drains(now)
-        scope=self._scope_for(info['instrument_id'])
-        filled=getattr(order,'filled_qty',None) if order is not None else None
-        progressed=filled is not None and filled.as_decimal()>0
-        if scope is not None and (purpose!='DRAIN' or progressed):
-            tick=self._quotes.get(info['instrument_id'])
-            if tick is not None:
-                self.drain_audit.append({'timestamp_ns':now,'scope':scope,'event':'NATIVE_CALLBACK_PROGRESS',
-                    'retired_order_id':oid,'purpose':purpose})
-                self._execute_drain(tick,now,scope)
-        if getattr(self,'sol',None) is not None:self._sol_reconcile()
-        self._persist_checkpoint()
-
-    def on_order_canceled(self,event):self._terminal_event(event)
-    def on_order_denied(self,event):self._terminal_event(event,failed=True)
-    def on_order_rejected(self,event):self._terminal_event(event,failed=True)
-    def on_order_expired(self,event):self._terminal_event(event,failed=True)
 
     def _admit(self, iid, q, price, s, now):
         now = self.clock.timestamp_ns()
@@ -978,13 +492,6 @@ class CM2Strategy(Strategy):
                 native_owned_position_margin += native_maintenance
                 native_held_reserve += min(held_initial,native_maintenance)
                 projected=abs(held)+growth+(abs(q) if other==iid else ZERO)
-                if other==self.config.btc_id:
-                    parent=self.reference.parent
-                    logical=abs(held)+max(ZERO,parent.selected_quantity-parent.filled_quantity) if parent is not None and parent.selected_quantity is not None and not parent.split_terminal else ZERO
-                    cycle=self.reference.c1
-                    if cycle is not None and not cycle.revoked:logical=max(logical,abs(held)+D(cycle.credit)*self.config.btc_step)
-                    logical_fees+=max(ZERO,logical-projected)*mark*fee_rate
-                    projected=max(projected,logical)
                 if projected and not s.price_known.get(other,False):raise ValueError("REACHABLE_COLLATERAL_MARK_UNKNOWN")
                 projected_initial=self.config.margin_policy.margin_for(other,projected,now)[0] if projected else ZERO
                 before_child=self.config.margin_policy.margin_for(other,abs(held)+growth,now)[0] if abs(held)+growth else ZERO
@@ -1055,59 +562,10 @@ class CM2Strategy(Strategy):
     def _chain_audit(self,kind,row):
         self._retained_audit_chain=sha256(self._retained_audit_chain.encode()+canonical([kind,row])).hexdigest()
 
-    def _request_contract_identity(self):
-        profile=getattr(self.config.margin_policy,'_profile',None)
-        evidence=getattr(profile,'evidence',None)
-        return {'model_id':MODEL_ID,'policy_version':self.config.policy.version,
-            'implementation_sources':dict(self._admission_sources),
-            'sol_model':asdict(self.config.sol_policy) if getattr(self.config,'sol_policy',None) is not None else None,
-            'bbo_and_mark_max_age_ns':FRESH_NS,'drain_interval_ns':DRAIN_NS,
-            'operational_intervals_authority':'OWN_RESEARCH_CHOICES_NOT_HL_PARAMETERS',
-            'limit_GTC_rounding':'REFERENCE_NATIVE_MAKE_PRICE_THEN_5SIG_HALF_EVEN',
-            'conditional_TP_predicate':'UNNORMALIZED_OWNED_DECIMAL_PLANREF_WAVE_THRESHOLD',
-            'ambiguous_IOC_cap':'MIN_OFFICIAL_MARKET_LIMIT_OWN_CONSERVATIVE_MODEL_RULE_BACKEND_UNKNOWN',
-            'reduce_only_floor':REDUCE_FLOOR_POLICY,'opening_minimum_authority':'OFFICIAL_MINIMUM',
-            'capacity_model':'ZERO_IMPACT_ORDER_LEAVES_DIAGNOSTIC_NO_DISCRETIONARY_TURNOVER_CAP',
-            'market_factory':'NATIVE_MARKET_IOC_BACKEND_CLASSIFICATION_UNKNOWN',
-            'profile_evidence':asdict(evidence) if evidence is not None else None,
-            'instruments':{key:{'quantity_increment':str(spec.quantity_increment),'min_quantity':str(spec.min_quantity),
-                'min_notional':str(spec.min_notional),'max_market_notional':str(spec.max_market_notional),
-                'max_limit_notional':str(spec.max_limit_notional),'max_price_decimals':spec.max_price_decimals,
-                'max_price_significant_figures':spec.max_price_significant_figures}
-                for key,spec in sorted(getattr(profile,'instruments',{}).items())}}
-
-    def _checkpoint_identity(self):
-        return {'schema':SCHEMA,'sources':self._admission_sources,'policy':policy_document(self.config.policy,self.config.sol_policy),
-            'seed_paired_closes_sha256':sha256(canonical(self.config.seed_paired_closes)).hexdigest(),
-            'execution_policy_hash':self.config.execution_policy_hash,'strategy_id':str(self.id),
-            'request_model_id':MODEL_ID,'request_contract':self._request_contract_identity(),
-            'seed_days_sha256':sha256(canonical([[_ns(d.open_time),_ns(d.close_time),_ns(d.available_at),
-                d.btc_open,d.btc_close,d.sol_close] for d in self.config.seed_days])).hexdigest(),
-            'seed_ohlc_sha256':sha256(canonical(self.config.seed_ohlc)).hexdigest(),
-            'active_seed':self.config.active_seed,'exit_fee_rate':self.config.exit_fee_rate,
-            'execution_limits':asdict(self.config.limits),
-            'instruments':[str(self.config.btc_id),str(self.config.sol_id)],
-            'start_ns':self.config.trading_start_open_ns,'end_ns':self.config.terminal_close_at_ns}
-
     def _feed_checkpoint_binding(self):
         return {'clock_ns':self.clock.timestamp_ns(),
             'quotes':{str(i):[q.ts_event,q.ts_init,str(q.bid_price),str(q.ask_price),str(q.bid_size),str(q.ask_size)] for i,q in self._quotes.items()},
             'marks':{str(i):[m.ts_event,str(m.price)] for i,m in self._latest_marks.items()}}
-
-    def _checkpoint_document(self):
-        if not callable(self.config.continuity_reader):raise ValueError('CM2_NATIVE_OBSERVER_CONTINUITY_REQUIRED')
-        return {'identity':self._checkpoint_identity(),'native':self._native_checkpoint_binding(),
-            'observer':self.config.continuity_reader(),'feed_continuity':self._feed_checkpoint_binding(),
-            'audit_continuity':[len(self.fill_audit),len(self.cm2_audit),len(self._order_audit),self._retained_audit_chain],
-            'domain':{'reference':self.reference.snapshot_state(),'safety':asdict(self.safety),
-                'owned':{oid:{**v,'instrument_id':str(v['instrument_id']),'client_order_id':str(v['client_order_id'])} for oid,v in self._owned.items()},
-                'seen_trade_ids':sorted(self._seen_trade_ids),'queued_tp':{str(k):asdict(v) for k,v in self._queued_tp.items()},
-                'sol':self.sol.snapshot() if self.sol is not None else None,
-                'needs_daily':self._needs_daily,'tp_ready_ns':self._tp_ready_ns,
-                'drain':self._drain,'btc_source_frame':self._btc_source_frame,'restore_failed':self._restore_failed,
-                'risk_unknown':self._risk_unknown,'liquidating':self._liquidating,
-                'days_pending':{str(ns):{str(i):[str(x.open),str(x.high),str(x.low),str(x.close),x.ts_event,x.ts_init]
-                    for i,x in rows.items()} for ns,rows in self._days_pending.items()}}}
 
     def on_save(self):
         body=canonical(self._checkpoint_document());store=self.config.checkpoint_store
@@ -1119,6 +577,261 @@ class CM2Strategy(Strategy):
 
     def _persist_checkpoint(self):
         if self.config.checkpoint_store is not None:self.on_save()
+
+    def on_stop(self):self._persist_checkpoint()
+
+    def _begin_drain(self,now,scope,ids,reason):
+        previous=self._drain.get(scope)
+        state=drain_update(previous['state'] if previous else None,now,ids)
+        p=self.btc.parent
+        if p is not None and str(self.config.btc_id) in ids:
+            p.close_reason=p.close_reason or reason;p.growth_stopped=True
+        self._drain[scope]={'state':state,'reason':reason,
+            'parent_id':previous['parent_id'] if previous else (p.id if p else None)}
+        if previous is None:self.drain_audit.append({'timestamp_ns':now,'scope':scope,'event':'START','state':state,'reason':reason})
+        for iid in (self.config.btc_id,self.config.sol_id):
+            if str(iid) in ids:
+                for order in self._orders(iid):
+                    if not order.is_pending_cancel:self.cancel_order(order)
+        name='CM2_'+scope+'_'+str(self.id)
+        if name not in self.clock.timer_names and not state['reconcile_required']:
+            if now>=state['deadline_ns']:self._on_drain_deadline(None)
+            else:self.clock.set_time_alert_ns(name,state['deadline_ns'],callback=self._on_drain_deadline)
+
+    def _reconcile_drains(self,now):
+        for scope,drain in list(self._drain.items()):
+            ids=drain['state']['scoped_zero_ids']
+            if not all(self._position(iid) is None and not self._orders(iid)
+                    and not any(v['instrument_id']==iid for v in self._owned.values())
+                    for iid in (self.config.btc_id,self.config.sol_id) if str(iid) in ids):continue
+            if str(self.config.btc_id) in ids:self._reconcile_btc(now)
+            name='CM2_'+scope+'_'+str(self.id)
+            if name in self.clock.timer_names:self.clock.cancel_timer(name)
+            self.drain_audit.append({'timestamp_ns':now,'scope':scope,'event':'NATIVE_SCOPED_FLAT'})
+            del self._drain[scope]
+
+    def _send(self,iid,quantity,side,purpose,now,tick,*,reduce_only=False,
+              level=None,raw_limit=None,stop_trigger=None,reason=''):
+        if quantity<=0 or side not in (-1,1):return False
+        instrument=self.cache.instrument(iid)
+        try:
+            fresh,why=bbo_status(tick,now)
+            if not fresh:raise ValueError(why)
+            snapshot=self._snapshot(now)
+            if snapshot.unknown_orders and (not reduce_only or not snapshot.unknown_order_assets or iid in snapshot.unknown_order_assets):
+                raise ValueError('UNKNOWN_NATIVE_OWNER')
+            spec=self._contract_spec(iid,instrument)
+            executable=tick.ask_price.as_decimal() if side==1 else tick.bid_price.as_decimal()
+            intent='STOP_MARKET' if stop_trigger is not None else 'LIMIT' if raw_limit is not None else 'MARKET'
+            tif='GTC' if intent!='MARKET' else 'IOC'
+            limit=trigger=None
+            if intent=='LIMIT':
+                # Buy-discount rounds down; sell-discount up. TP sell up / buy down.
+                up=side==-1
+                limit=self._format_price(instrument,raw_limit,up)
+                cap,classification=request_cap(spec,intent,tif)
+                terms=RequestTerms(limit.as_decimal(),max(executable,limit.as_decimal()),min(executable,limit.as_decimal()),cap,classification)
+            elif intent=='STOP_MARKET':
+                trigger=self._format_price(instrument,stop_trigger,side==-1)
+                cap,classification=request_cap(spec,intent,tif)
+                terms=RequestTerms(None,max(executable,trigger.as_decimal()),min(executable,trigger.as_decimal()),cap,classification)
+            else:terms=request_terms(spec,executable,'BUY' if side==1 else 'SELL',intent,tif)
+            actual=snapshot.btc_qty if iid==self.config.btc_id else snapshot.sol_qty
+            if reduce_only:
+                if not actual or actual*side>=0:raise ValueError('REDUCE_ONLY_NATIVE_SIDE_UNKNOWN')
+                # Full-position BE and TP ladder are alternative native RO exits.
+                # Only concurrently attainable TP siblings reserve one another.
+                other_tp=sum((o.leaves_qty.as_decimal() for o in self._orders(iid)
+                    if o.is_reduce_only and self._owned[str(o.client_order_id)]['purpose']=='TP_GTC'),ZERO)
+                other_be=sum((o.leaves_qty.as_decimal() for o in self._orders(iid)
+                    if o.is_reduce_only and self._owned[str(o.client_order_id)]['purpose']=='BE_STOP'),ZERO)
+                quantity=min(quantity,max(ZERO,abs(actual)-(other_be if purpose=='BE_STOP' else other_tp)))
+            plan=order_plan(actual=actual,target=actual+D(side)*quantity,pending=ZERO,unknown=False,
+                price=terms.minimum_reference_price,step=instrument.size_increment.as_decimal(),
+                min_qty=instrument.min_quantity.as_decimal() if instrument.min_quantity is not None else instrument.size_increment.as_decimal(),
+                max_child=self.config.limits.max_child_notional,min_notional=spec.min_notional,
+                emergency=purpose=='DRAIN',venue_max_child_notional=terms.cap,venue_reference_price=terms.cap_reference_price)
+            if plan.action!='SUBMIT':raise ValueError(plan.reason)
+            q=abs(plan.signed_quantity)
+            if not reduce_only and not self._admit(iid,q,executable,snapshot,now):return False
+            native_qty=instrument.make_qty(q)
+            if native_qty.as_decimal()!=q:raise ValueError('NATIVE_QTY_FORMAT_MISMATCH')
+            valid,why=validate_request(spec,q,terms,intent,tif)
+            if not valid:raise ValueError(why)
+            common=dict(instrument_id=iid,order_side=OrderSide.BUY if side==1 else OrderSide.SELL,
+                quantity=native_qty,time_in_force=TimeInForce.GTC if tif=='GTC' else TimeInForce.IOC,reduce_only=reduce_only)
+            if intent=='LIMIT':order=self.order_factory.limit(**common,price=limit,post_only=False)
+            elif intent=='STOP_MARKET':order=self.order_factory.stop_market(**common,trigger_price=trigger,trigger_type=TriggerType.MARK_PRICE)
+            else:order=self.order_factory.market(**common)
+            if (order.quantity.as_decimal()!=q or order.instrument_id!=iid or order.side!=common['order_side']
+                    or order.order_type.name!=intent or order.time_in_force.name!=tif or order.is_reduce_only!=reduce_only
+                    or (intent=='LIMIT' and (order.price!=limit or order.is_post_only))
+                    or (intent=='STOP_MARKET' and (order.trigger_price!=trigger or order.trigger_type!=TriggerType.MARK_PRICE))):
+                raise ValueError('FINAL_NATIVE_REQUEST_MISMATCH')
+            p=self.btc.parent;oid=str(order.client_order_id)
+            info={'client_order_id':order.client_order_id,'instrument_id':iid,'purpose':purpose,
+                'parent_id':p.id if p else None,'level':level,'submit_ns':now,'acked':False,'triggered':False,
+                'side':side,'quantity':q,'limit_price':limit.as_decimal() if limit is not None else None,
+                'trigger_price':trigger.as_decimal() if trigger is not None else None,'reduce_only':reduce_only,'reason':reason}
+            self._owned[oid]=info
+            self._order_audit[oid]=_report_value({**info,'client_order_id':oid,'instrument_id':str(iid),
+                'native_order_type':order.order_type.name,'native_time_in_force':order.time_in_force.name,
+                'request_model_id':MODEL_ID,'request_classification':terms.classification,
+                'admission':{'parent_id':info['parent_id'],'purpose':purpose,'intent':intent,
+                    'source_policy_version':self.config.policy.version,'native_quote_ns':tick.ts_event,
+                    'request_cap':str(terms.cap),'reduce_floor_policy':REDUCE_FLOOR_POLICY,
+                    'episode_entry_signal_index':p.decision_index if p else None,'tp_level':level}})
+            self._chain_audit('ORDER_ADMISSION',self._order_audit[oid]);self._persist_checkpoint()
+            self.submit_order(order)
+            return True
+        except (ValueError,AttributeError,TypeError,KeyError) as error:
+            self.pre_submit_gate_blocks.append({'timestamp':str(now),'instrument':str(iid),'reason':str(error),'purpose':purpose})
+            return False
+
+    def on_order_accepted(self,event):
+        info=self._owned.get(str(event.client_order_id))
+        if info is not None:
+            info['acked']=True;now=self.clock.timestamp_ns();self._sync_protection(now)
+            p=self.btc.parent;tick=self._quotes.get(self.config.btc_id)
+            if p is not None and info['parent_id']==p.id and tick is not None and bbo_status(tick,now)[0]:self._execute_entry(tick,now)
+            self._persist_checkpoint()
+
+    def on_order_triggered(self,event):
+        info=self._owned.get(str(event.client_order_id))
+        if info is not None:info['triggered']=True;self._persist_checkpoint()
+
+    def _fill_owner(self,event,context):
+        order=self.cache.order(event.client_order_id)
+        if (context is None or order is None or str(order.client_order_id)!=str(event.client_order_id)
+                or order.instrument_id!=event.instrument_id or order.strategy_id!=event.strategy_id
+                or order.side!=event.order_side or event.strategy_id!=self.id
+                or context['instrument_id']!=str(event.instrument_id)
+                or context['side']!=(1 if event.order_side==OrderSide.BUY else -1)):
+            raise ValueError('NATIVE_FILL_IDENTITY_OR_SIDE_UNKNOWN')
+        index=self.cache.position_id(event.client_order_id)
+        if index is not None and index!=event.position_id:raise ValueError('CONTRADICTORY_NATIVE_POSITION_INDEX')
+        account=self.cache.account_for_venue(event.instrument_id.venue)
+        if account is None or event.commission.currency!=account.base_currency:raise ValueError('NATIVE_FILL_CURRENCY_UNKNOWN')
+        if event.last_qty.as_decimal()<=0 or event.last_px.as_decimal()<=0:raise ValueError('NATIVE_FILL_QUANTITY_UNKNOWN')
+        return order
+
+    def on_order_filled(self,event):
+        tid=str(event.trade_id)
+        if tid in self._seen_trade_ids:return
+        oid=str(event.client_order_id);context=self._order_audit.get(oid);now=self.clock.timestamp_ns()
+        try:order=self._fill_owner(event,context)
+        except (ValueError,AttributeError,TypeError) as error:
+            self._restore_failed=True;self.safety.global_latched=True;self.safety.reason=str(error)
+            self._begin_drain(now,'GLOBAL',[str(self.config.btc_id),str(self.config.sol_id)],str(error));return
+        self._seen_trade_ids.add(tid)
+        q=event.last_qty.as_decimal();price=event.last_px.as_decimal();fee=event.commission.as_decimal()
+        self.fill_audit.append({'client_order_id':oid,'trade_id':tid,'instrument':str(event.instrument_id),
+            'venue':str(event.instrument_id.venue),'qty':str(q),'px':str(price),'notional':str(q*price),
+            'commission':str(fee),'commission_currency':str(event.commission.currency),'fill_ns':str(event.ts_event),
+            'native_liquidity_side':getattr(event.liquidity_side,'name',str(event.liquidity_side)),
+            'order_side':getattr(event.order_side,'name',str(event.order_side)),
+            'action':context['purpose'],'reason':context['reason'],'level':context['level'],
+            'parent_id':context['parent_id'],'admission':context['admission'],'policy_hash':self.config.execution_policy_hash})
+        p=self.btc.parent
+        if event.instrument_id==self.config.btc_id:
+            if p is None or context['parent_id']!=p.id:
+                self._restore_failed=True;self._begin_drain(now,'BTC_ECONOMIC',[str(self.config.btc_id)],'LATE_BTC_CYCLE_IDENTITY_HOLD')
+            else:
+                try:
+                    self.btc.observe_funding(self._funding())
+                    purpose=context['purpose']
+                    if purpose.startswith('ENTRY'):
+                        self.btc.entry_fill(trade_id=tid,quantity=q,price=price,commission=fee,first_leg=purpose=='ENTRY_MARKET')
+                        for audit in reversed(self.entry_sizing_audit):
+                            if audit['episode_id']==p.id:audit['confirmed_native_entry_qty']=str(p.entry_filled);break
+                    else:
+                        position=self._position(self.config.btc_id)
+                        after=position.quantity.as_decimal() if position else ZERO
+                        self.btc.reduction_fill(trade_id=tid,quantity=q,before_quantity=after+q,
+                            level=context['level'] if purpose=='TP_GTC' else None)
+                        if purpose=='BE_STOP':
+                            self._begin_drain(now,'BTC_ECONOMIC',[str(self.config.btc_id)],'NATIVE_BREAKEVEN_TRIGGERED')
+                    if p.be_armed:self._cancel_growth()
+                except (ValueError,AttributeError,TypeError) as error:
+                    self._restore_failed=True;self._begin_drain(now,'BTC_ECONOMIC',[str(self.config.btc_id)],str(error))
+        if self._liquidating and self.liquidation_audit:
+            row=self.liquidation_audit[-1];row['close_fills'].append({'trade_id':tid,'quantity':str(q),'price':str(price)})
+            row['close_value']=str(D(row['close_value'])+q*price)
+        self._chain_audit('NATIVE_FILL',self.fill_audit[-1])
+        self._terminal_event(event,only_if_closed=True)
+        self._sync_protection(now);self._persist_checkpoint()
+
+    def _terminal_event(self,event,only_if_closed=False,failed=False):
+        oid=str(event.client_order_id);info=self._owned.get(oid)
+        if info is None:return
+        order=self.cache.order(event.client_order_id)
+        if only_if_closed and (order is None or not order.is_closed):return
+        del self._owned[oid];now=self.clock.timestamp_ns();p=self.btc.parent;purpose=info['purpose']
+        filled=order.filled_qty.as_decimal() if order is not None else ZERO
+        if p is not None and p.id==info['parent_id']:
+            if purpose.startswith('ENTRY'):
+                if filled<info['quantity'] or failed:
+                    self.btc.stop_growth('PARTIAL_OR_FAILED_ENTRY_TERMINAL_HOLD')
+                if purpose=='ENTRY_MARKET' and p.first_filled==p.first_quantity:p.first_terminal=True
+            elif purpose=='BE_STOP' and (info.get('triggered') or filled>0):
+                self._begin_drain(now,'BTC_ECONOMIC',[str(self.config.btc_id)],'NATIVE_BREAKEVEN_TRIGGERED')
+            elif purpose in ('BE_STOP','TP_GTC') and failed:
+                self.target_blockers['NATIVE_PROTECTION_TERMINAL:'+p.id+':'+purpose+':'+str(info['level'])]={'reason':'NATIVE_DENIED_REJECTED_EXPIRED_HOLD','clock_ns':str(now),'parent_id':p.id}
+                self.btc.stop_growth('NATIVE_REQUIRED_PROTECTION_HOLD');self._cancel_growth()
+        self._reconcile_drains(now);scope=self._scope_for(info['instrument_id'])
+        if scope is not None and (purpose!='DRAIN' or filled>0):
+            tick=self._quotes.get(info['instrument_id'])
+            if tick is not None:self._execute_drain(tick,now,scope)
+        self._reconcile_btc(now)
+        if scope is None and info['instrument_id']==self.config.btc_id:
+            self._sync_protection(now)
+            tick=self._quotes.get(self.config.btc_id);current=self.btc.parent
+            if (purpose.startswith('ENTRY') and current is not None and current.id==info['parent_id']
+                    and tick is not None and bbo_status(tick,now)[0]):self._execute_entry(tick,now)
+        self._persist_checkpoint()
+
+    def on_order_canceled(self,event):self._terminal_event(event)
+    def on_order_denied(self,event):self._terminal_event(event,failed=True)
+    def on_order_rejected(self,event):self._terminal_event(event,failed=True)
+    def on_order_expired(self,event):self._terminal_event(event,failed=True)
+
+    def _request_contract_identity(self):
+        profile=getattr(self.config.margin_policy,'_profile',None)
+        return {'model_id':MODEL_ID,'policy_version':self.config.policy.version,
+            'implementation_sources':dict(self._admission_sources),'sol_market_model':'UNAPPROVED_DISABLED',
+            'fixed_parameters':{'EMA':34,'WilderATR':14,'confirmation_ATR':'0.5','notional_multiplier':'7.875',
+                'discount':'0.005','TP_distances':['0.0125','0.025','0.0375'],'TP_weights':['0.30','0.40','0.30'],
+                'TP1_trigger':'FIRST_POSITIVE_ACTUAL_FILL','new_entry':'NEW_CLOSED_D1_OR_POST_REGIME_H4'},
+            'bbo_and_mark_max_age_ns':FRESH_NS,'drain_interval_ns':DRAIN_NS,
+            'limit_rounding':'OFFICIAL_OUTWARD_TICK_AND_SIGNIFICANT_FIGURES',
+            'stop_trigger':'NATIVE_MARK_PRICE','stop_market_slippage':'STOCK_ADAPTER_SETTING_NOT_UNBOUNDED_MARKET',
+            'backtest_stop_parity':'HOLD_NATIVE_1_231_MARK_TRIGGER_NOT_PROVEN',
+            'qualification_binding':'SOURCE_BOUND_ECONOMIC_QUALIFICATION_NOT_RUN',
+            'reduce_only_floor':REDUCE_FLOOR_POLICY,'RO_exit_geometry':'TP_SUM_ALTERNATIVE_TO_FULL_BE_NOT_ADDITIVE',
+            'profile_evidence':asdict(profile.evidence) if profile is not None else None,
+            'instruments':{k:{'quantity_increment':str(v.quantity_increment),'min_notional':str(v.min_notional),
+                'max_market_notional':str(v.max_market_notional),'max_limit_notional':str(v.max_limit_notional)}
+                for k,v in sorted(getattr(profile,'instruments',{}).items())}}
+
+    def _checkpoint_identity(self):
+        return {'schema':SCHEMA,'sources':self._admission_sources,'policy':asdict(self.config.policy),
+            'execution_policy_hash':self.config.execution_policy_hash,'strategy_id':str(self.id),
+            'request_model_id':MODEL_ID,'request_contract':self._request_contract_identity(),
+            'seed_btc_sha256':sha256(canonical(self.config.seed_btc_days)).hexdigest(),
+            'active_seed':self.config.active_seed,'exit_fee_rate':self.config.exit_fee_rate,
+            'execution_limits':asdict(self.config.limits),'instruments':[str(self.config.btc_id),str(self.config.sol_id)],
+            'start_ns':self.config.trading_start_open_ns,'end_ns':self.config.terminal_close_at_ns}
+
+    def _checkpoint_document(self):
+        if not callable(self.config.continuity_reader):raise ValueError('CM2_NATIVE_OBSERVER_CONTINUITY_REQUIRED')
+        return {'identity':self._checkpoint_identity(),'native':self._native_checkpoint_binding(),
+            'observer':self.config.continuity_reader(),'feed_continuity':self._feed_checkpoint_binding(),
+            'audit_continuity':[len(self.fill_audit),len(self.cm2_audit),len(self._order_audit),self._retained_audit_chain],
+            'domain':{'btc':self.btc.snapshot(),'safety':asdict(self.safety),
+                'owned':{oid:{**v,'instrument_id':str(v['instrument_id']),'client_order_id':str(v['client_order_id'])} for oid,v in self._owned.items()},
+                'seen_trade_ids':sorted(self._seen_trade_ids),'needs_daily':self._needs_daily,'drain':self._drain,
+                'restore_failed':self._restore_failed,'risk_unknown':self._risk_unknown,'liquidating':self._liquidating,
+                'protection_holds':{k:v for k,v in self.target_blockers.items() if k.startswith('NATIVE_PROTECTION_TERMINAL:')}}}
 
     def on_load(self,state):
         self._checkpoint_loaded=False;self._restore_failed=True
@@ -1135,34 +848,24 @@ class CM2Strategy(Strategy):
         store=self.config.checkpoint_store;latest=store.read() if store is not None else None
         if latest is None or latest[1]!=body:raise ValueError('CM2_CHECKPOINT_DURABLE_LATEST')
         domain=document['domain'];owned={}
-        for oid,v in domain['owned'].items():
-            owned[oid]={**v,'instrument_id':InstrumentId.from_str(v['instrument_id']),
-                'client_order_id':ClientOrderId(v['client_order_id'])}
+        for oid,v in domain['owned'].items():owned[oid]={**v,'instrument_id':InstrumentId.from_str(v['instrument_id']),'client_order_id':ClientOrderId(v['client_order_id'])}
         drains=domain['drain']
         if not set(drains).issubset({'GLOBAL','BTC_ECONOMIC','SOL_SUBORDINATE'}):raise ValueError('CM2_DRAIN_SCOPE_UNKNOWN')
         for drain in drains.values():validate_drain(drain['state'],(str(self.config.btc_id),str(self.config.sol_id)))
         safety=SafetyState(**domain['safety'])
         if safety.emergency_latched and not safety.global_latched:raise ValueError('CM2_EMERGENCY_LATCH_INCONSISTENT')
-        if (self.sol is None)!=(domain['sol'] is None):raise ValueError('SOL_CHECKPOINT_MODEL_MISMATCH')
-        if self.sol is not None:self.sol.restore(domain['sol'],self.clock.timestamp_ns())
-        self.reference.restore_state(domain['reference']);self.safety=safety;self._owned=owned
-        from coinmaster.strategy.cm2_reference_policy import TargetPlan
-        self._queued_tp={int(k):TargetPlan(**v) for k,v in domain['queued_tp'].items()}
-        self._seen_trade_ids=set(domain['seen_trade_ids']);self._needs_daily=domain['needs_daily'];self._tp_ready_ns=domain['tp_ready_ns']
-        self._drain=drains;self._btc_source_frame=domain['btc_source_frame'];self._restore_failed=domain['restore_failed']
-        self._risk_unknown=domain['risk_unknown'];self._liquidating=domain['liquidating'];self._days_pending={}
-        for ns,rows in domain['days_pending'].items():
-            self._days_pending[int(ns)]={InstrumentId.from_str(i):DailySignalBar(InstrumentId.from_str(i),*values[:4],values[4],values[5]) for i,values in rows.items()}
+        self.btc.restore(domain['btc']);self.safety=safety;self._owned=owned
+        self._seen_trade_ids=set(domain['seen_trade_ids']);self._needs_daily=domain['needs_daily'];self._drain=drains
+        self._restore_failed=domain['restore_failed'];self._risk_unknown=domain['risk_unknown'];self._liquidating=domain['liquidating']
+        self.target_blockers.update(domain['protection_holds'])
         self._checkpoint_revision=latest[0];self._checkpoint_loaded=True
-        self._loaded_native_binding=canonical(document['native'])
-        self._loaded_feed_binding=canonical(document['feed_continuity']);self._loaded_observer_binding=canonical(document['observer'])
-
-    def on_stop(self):self._persist_checkpoint()
+        self._loaded_native_binding=canonical(document['native']);self._loaded_feed_binding=canonical(document['feed_continuity'])
+        self._loaded_observer_binding=canonical(document['observer'])
 
     def _audit(self,now,reason):
-        parent=self.reference.parent
-        row={'ts_ns':str(now),'reason':reason,'parent_id':parent.id if parent else None,
-             'policy_version':self.config.policy.version,'global_latch':self.safety.global_latched}
+        p=self.btc.parent
+        row={'ts_ns':str(now),'reason':reason,'parent_id':p.id if p else None,'policy_version':self.config.policy.version,
+            'global_latch':self.safety.global_latched}
         self.cm2_audit.append(row);self._chain_audit('DOMAIN_AUDIT',row)
 
     def reporting_state(self):
@@ -1177,29 +880,16 @@ class CM2Strategy(Strategy):
             'fill_audit':self.fill_audit,'entry_sizing_audit':self.entry_sizing_audit,
             'emergency_drawdown_control':{'status':'LATCHED' if self.safety.emergency_latched else 'DISABLED_RESEARCH' if self.config.policy.emergency_drawdown_fraction is None else 'ARMED',
                 'configured_fraction':self.config.policy.emergency_drawdown_fraction,'state':asdict(self.safety)},
-            'cm2':{'policy':policy_document(self.config.policy,self.config.sol_policy),'request_execution_model_id':MODEL_ID,
-                'request_contract':request,'request_contract_sha256':sha256(canonical(request)).hexdigest(),
-                'execution_comparability':'BTC_FIRST_REFERENCE_COMPONENT_WITH_EXPLICIT_NATIVE_GUARD_DEVIATIONS',
-                'reduce_only_minimum_policy':REDUCE_FLOOR_POLICY,'market_wire_price_and_IOC_backend_classification':'UNKNOWN',
-                'btc_reference':self.reference.snapshot_state(),'c1_audit':self.reference.c1_audit,
-                'capital_last':self._capital_last,'capital_unknown':self._capital_unknown,
-                'drain_state':self._drain,'drain_lifecycle':self.drain_audit,'audit':self.cm2_audit,
-                'child_permission_audit':self.child_permission_audit,'order_admission_audit':list(self._order_audit.values()),
-                'target_blockers':self.target_blockers,'orphan_intervals':self.orphan_intervals,
-                'open_orphan_since_ns':self.orphan_started_ns,'checkpoint_revision':self._checkpoint_revision,
-                'ordinary_harvest_actual_geometry':{'status':'NOT_APPLICABLE_BTC_REFERENCE_POLICY'},
-                'sol_staging_harvest_context':{'status':'FIXED_SOL_V1_ACTIVE' if self.sol is not None else 'SOL_DEFAULT_OFF',
-                    'state':self.sol.snapshot() if self.sol is not None else None},
-                'capacity_model':{'model':'ZERO_IMPACT_ORDER_LEAVES_DIAGNOSTIC','participation':None,
-                    'official_venue_caps':'ENFORCED','discretionary_turnover_cap':'DISABLED_MATCHED_REFERENCE_PROFILE'},
-                'restart_recovery':'SAME_CLOCK_NATIVE_CACHE_JOURNAL_BINDING_ONLY_OS_COLD_RECOVERY_UNKNOWN',
-                'structural_diagnostics':'NATIVE_QUALIFICATION_PENDING',
-                'liquidation_measurement':{'contract':'NATIVE_MARK_FIRST_PUBLIC_TIER_MAINTENANCE',
-                    'checks':self._liquidation_checks,'unknown_checks':self._liquidation_unknown}}})
-
-
-def _ns(when):return int(when.timestamp()*1_000_000_000)
-
+            'cm2':{'policy':asdict(self.config.policy),'request_execution_model_id':MODEL_ID,'request_contract':request,
+                'request_contract_sha256':sha256(canonical(request)).hexdigest(),'btc_market':self.btc.snapshot(),
+                'execution_comparability':'NEW_UNQUALIFIED_BTC_MARKET_MODEL','drain_state':self._drain,
+                'drain_lifecycle':self.drain_audit,'audit':self.cm2_audit,'child_permission_audit':self.child_permission_audit,
+                'order_admission_audit':list(self._order_audit.values()),'target_blockers':self.target_blockers,
+                'orphan_intervals':self.orphan_intervals,'open_orphan_since_ns':self.orphan_started_ns,
+                'checkpoint_revision':self._checkpoint_revision,'sol_market_model':'UNAPPROVED_DISABLED',
+                'capacity_model':{'model':'ZERO_IMPACT_ORDER_LEAVES_DIAGNOSTIC','participation':None,'official_venue_caps':'PER_REQUEST'},
+                'structural_diagnostics':'CODE0_ONLY_NOT_NATIVE_QUALIFIED',
+                'liquidation_measurement':{'contract':'NATIVE_MARK_FIRST_PUBLIC_TIER_MAINTENANCE','checks':self._liquidation_checks,'unknown_checks':self._liquidation_unknown}}})
 
 def _report_value(value):
     if isinstance(value,D):return str(value)

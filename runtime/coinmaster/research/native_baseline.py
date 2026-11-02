@@ -669,6 +669,20 @@ def _load_daily_seed(data_root: Path, warmup_start_ms: int, trading_start_ms: in
     return seed, tables
 
 
+def _load_btc_daily_seed(data_root, warmup_start_ms, trading_start_ms, trading_end_ms):
+    """BTC-only closed OHLC; retain the same feature seed start and float math."""
+    import pyarrow.parquet as pq
+    from coinmaster.strategy.cm2_btc_policy import BtcDay
+    path=data_root/"normalized"/"bybit-BTCUSDT-daily.parquet"
+    rows={int(r["open_time_ms"]):r for r in pq.read_table(path).to_pylist()}
+    if any(t not in rows for t in range(warmup_start_ms,trading_end_ms,DAY_MS)):
+        raise ValueError("MISSING_BTC_DAILY_SIGNAL_OR_WARMUP_ROW")
+    seed=tuple(BtcDay(t*1_000_000,(t+DAY_MS)*1_000_000,(t+DAY_MS)*1_000_000,
+        float(rows[t]['open']),float(rows[t]['high']),float(rows[t]['low']),float(rows[t]['close']))
+        for t in range(warmup_start_ms,trading_start_ms,DAY_MS))
+    return seed,{'BTCUSDT':rows}
+
+
 def _funding_attempt_path(canonical_path: Path) -> Path:
     """Return a same-directory DB that can never be execution input later."""
     return canonical_path.with_name(f".{canonical_path.name}.attempt-{uuid4().hex}")
@@ -809,8 +823,8 @@ def run_native_diagnostic(
     from coinmaster.research.effective_config import effective_research_candidate
     if research_sol_capital_staging_a and current_hl_execution_inputs is None:
         raise ValueError("STAGING_A_REQUIRES_EXPLICIT_CURRENT_HL_PROFILE")
-    candidate = effective_research_candidate(candidate, selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs,
-        capital_staging_seed=initial_active_seed if research_sol_capital_staging_a else None)
+    candidate = (effective_research_candidate(candidate, selective_lifecycle_repairs=research_v0_selective_lifecycle_repairs,
+        capital_staging_seed=initial_active_seed if research_sol_capital_staging_a else None) if research_cm2 is None else None)
     if research_h1_b1 == "h1" or research_sol_cover or research_immediate_sol:
         candidate = replace(candidate, sol_overlay_enabled=False)
     if research_c1_btc_postcut_d1 and not research_c1_first_fresh_h4:raise ValueError("BTC_POSTCUT_D1_REQUIRES_FIRST_FRESH_COMBO")
@@ -851,11 +865,8 @@ def run_native_diagnostic(
     expected_rows = (trading_end_ms - trading_start_ms) // MINUTE_MS
     if (trading_start_ms, trading_end_ms) == (TRADING_START_MS, TRADING_END_MS) and expected_rows != 1_051_200:
         raise ValueError("CANONICAL_1M_ROW_COUNT_MISMATCH")
-    seed_bars, daily = _load_daily_seed(data_root, warmup_start_ms, trading_start_ms, trading_end_ms)
-    cm2_paired_seed=()
-    if research_cm2 is not None and research_cm2.sol_policy is not None and research_cm2.sol_policy.enabled:
-        from coinmaster.research.cm2_runner import exact_paired_seed
-        cm2_paired_seed=exact_paired_seed(daily,trading_start_ms)
+    seed_bars, daily = (_load_btc_daily_seed if research_cm2 is not None else _load_daily_seed)(
+        data_root,warmup_start_ms,trading_start_ms,trading_end_ms)
     start_at = datetime.fromtimestamp(trading_start_ms / 1000, tz=timezone.utc)
     end_at = datetime.fromtimestamp(trading_end_ms / 1000, tz=timezone.utc)
     selected_leverage = ((BTC_PERP.id, Decimal("40")), (SOL_PERP.id, Decimal("20")))
@@ -970,9 +981,7 @@ def run_native_diagnostic(
             mark_types=(venue_mark_data_type(btc_instrument.id),venue_mark_data_type(sol_instrument.id)),
             mark_client=mark_client,journal=journal,exit_fee_rate=taker*multiplier,
             execution_hash=policy.hash,risk_recorder=risk_recorder,coherent_observer=coherent_observer,
-            seed_days=seed_bars,
-            seed_paired_closes=cm2_paired_seed,
-            seed_ohlc=tuple(((t+DAY_MS)*1_000_000,float(r['high']),float(r['low'])) for t,r in sorted(daily['BTCUSDT'].items()) if warmup_start_ms<=t and t+DAY_MS<=trading_start_ms),
+            seed_btc_days=seed_bars,
             daily_types=(daily_signal_data_type(btc_instrument.id),daily_signal_data_type(sol_instrument.id)),
             h4_type=next_bar_types[0],signal_client=signal_client,initial_seed=initial_active_seed)
     else:
@@ -1079,8 +1088,11 @@ def run_native_diagnostic(
                 marks.extend((venue_mark(btc_instrument.id, Decimal(str(minute.btc_mark["close"])), available_ns), venue_mark(sol_instrument.id, Decimal(str(minute.sol_mark["close"])), available_ns)))
                 if include_daily_signals and (minute.open_time_ms + MINUTE_MS) % DAY_MS == 0:
                     daily_open = minute.open_time_ms + MINUTE_MS - DAY_MS
-                    btc_daily, sol_daily = daily["BTCUSDT"][daily_open], daily["SOLUSDT"][daily_open]
-                    signals.extend((daily_signal(btc_instrument.id, Decimal(str(btc_daily["open"])), Decimal(str(btc_daily["high"])), Decimal(str(btc_daily["low"])), Decimal(str(btc_daily["close"])), available_ns), daily_signal(sol_instrument.id, Decimal(str(sol_daily["open"])), Decimal(str(sol_daily["high"])), Decimal(str(sol_daily["low"])), Decimal(str(sol_daily["close"])), available_ns)))
+                    btc_daily=daily["BTCUSDT"][daily_open]
+                    signals.append(daily_signal(btc_instrument.id,Decimal(str(btc_daily['open'])),Decimal(str(btc_daily['high'])),Decimal(str(btc_daily['low'])),Decimal(str(btc_daily['close'])),available_ns))
+                    if research_cm2 is None:
+                        sol_daily=daily["SOLUSDT"][daily_open]
+                        signals.append(daily_signal(sol_instrument.id,Decimal(str(sol_daily['open'])),Decimal(str(sol_daily['high'])),Decimal(str(sol_daily['low'])),Decimal(str(sol_daily['close'])),available_ns))
                 quotes.extend((native_quote(btc_instrument, minute.btc_execution["close"], 1, available_ns), native_quote(sol_instrument, minute.sol_execution["close"], 2, available_ns)))
             if source_bars:
                 engine.add_data(source_bars, sort=False)
@@ -1188,7 +1200,7 @@ def run_native_diagnostic(
         fee_attribution = native_fee_attribution(adapter["fill_audit"], fees)
         audit = journal.funding_audit() if journal else []
         manifest = data_root / "bybit-1m" / "manifest.json"
-        full_config = {**BASELINE_CONFIG, "initial_total_usdt": str(initial_active_seed), "account": (BASELINE_CONFIG["account"] if initial_active_seed==Decimal("10000") else "SIM_MARGIN_USDT_DYNAMIC_SEED") if qualification_mode=="legacy_reference" else "SIM_MARGIN_USDT_DP55_QUALIFICATION", "candidate": asdict(candidate), "execution_policy": asdict(policy), "fixed_base_fee_policy": asdict(fee_policy), "fee_policy_hash": fee_policy.hash, "tp_fee_floor_v1": tp_fee_floor_v1, "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH" if qualification_mode=="legacy_reference" else "GLOBAL_DP55_NATIVE_USDT_M1", "qualification_mode": qualification_mode, "quantity_model": qualification_quantity_model, "lot_constraints": lot_constraints, "run_interval": {"start": start_at.isoformat(), "end_exclusive": end_at.isoformat(), "initial_active_seed": str(initial_active_seed)}}
+        full_config = {**BASELINE_CONFIG, "initial_total_usdt": str(initial_active_seed), "account": (BASELINE_CONFIG["account"] if initial_active_seed==Decimal("10000") else "SIM_MARGIN_USDT_DYNAMIC_SEED") if qualification_mode=="legacy_reference" else "SIM_MARGIN_USDT_DP55_QUALIFICATION", "candidate": asdict(candidate) if candidate is not None else None, "execution_policy": asdict(policy), "fixed_base_fee_policy": asdict(fee_policy), "fee_policy_hash": fee_policy.hash, "tp_fee_floor_v1": tp_fee_floor_v1, "deposit_protection": "DISABLED_IDENTICALLY_IN_RESEARCH" if qualification_mode=="legacy_reference" else "GLOBAL_DP55_NATIVE_USDT_M1", "qualification_mode": qualification_mode, "quantity_model": qualification_quantity_model, "lot_constraints": lot_constraints, "run_interval": {"start": start_at.isoformat(), "end_exclusive": end_at.isoformat(), "initial_active_seed": str(initial_active_seed)}}
         if research_v0_execution_repairs:
             full_config["research_v0_execution_repairs"] = True
             if not research_v0_zero_tp_netting:

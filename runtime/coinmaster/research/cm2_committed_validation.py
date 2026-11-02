@@ -248,10 +248,45 @@ def measurer_profile(dd_source,raw,provenance):
     request_path=Path(request_pin['path'])
     fail(sha(request_path)==request_pin['sha256'],'MEASURER_REQUEST_HASH_MISMATCH')
     request=json.loads(request_path.read_text());family=request.get('source_family')
-    fail(family in ('CM2BTCREF','REFERENCE_BTC_ONLY'),'MEASURER_EXPLICIT_SOURCE_FAMILY_REQUIRED')
+    fail(family in ('CM2BTCREF','REFERENCE_BTC_ONLY','CM2BTCMARKET'),'MEASURER_EXPLICIT_SOURCE_FAMILY_REQUIRED')
     source=Path(dd_source).resolve();observer=source.with_name('paired_observer.py');baseline=source.with_name('native_baseline.py')
     root=Path(request['execution_source_root']).resolve()
     fail(source==root/'runtime/coinmaster/research/minute_risk.py','MEASURER_EXECUTION_SOURCE_ROOT_MISMATCH')
+    if family=='CM2BTCMARKET':
+        policy=request.get('policy');cm2=raw.get('cm2')
+        fail(type(policy) is dict and set(policy)=={'version','emergency_drawdown_fraction'}
+            and type(policy['version']) is str and policy['version']=='cm2-btc-market-v1'
+            and policy['emergency_drawdown_fraction'] is None,'MEASURER_MARKET_POLICY_SCHEMA_MISMATCH')
+        fail(type(cm2) is dict and type(cm2.get('policy')) is dict and cm2['policy']==policy,
+            'MEASURER_MARKET_RAW_POLICY_MISMATCH')
+        model='CM2_BTC_MARKET_NATIVE_REQUEST_V1'
+        fail(request.get('request_execution_model_id')==model and raw.get('request_execution_model_id')==model
+            and cm2.get('request_execution_model_id')==model,'MEASURER_MARKET_REQUEST_MODEL_MISMATCH')
+        contract=cm2.get('request_contract')
+        fail(type(contract) is dict and contract.get('model_id')==model
+            and contract.get('policy_version')==policy['version'] and contract.get('stop_trigger')=='NATIVE_MARK_PRICE'
+            and contract.get('backtest_stop_parity')=='HOLD_NATIVE_1_231_MARK_TRIGGER_NOT_PROVEN',
+            'MEASURER_MARKET_STOP_PROVENANCE_MISMATCH')
+        required={'research/cm2_runner.py','strategy/cm2_btc_policy.py','strategy/cm2_policy.py',
+            'strategy/cm2_execution.py','strategy/cm2_native.py','strategy/cm2_order_contract.py',
+            'strategy/cm2_checkpoint.py','research/cm2_funding_reader.py','research/cm2_committed_validation.py'}
+        sources=raw.get('source_hashes')
+        fail(type(sources) is dict and set(sources)==required
+            and all(sources[name]==sha(root/'runtime/coinmaster'/name) for name in required),
+            'MEASURER_MARKET_RAW_SOURCE_MISMATCH')
+        rows=request.get('freeze_files')
+        fail(type(rows) is list and all(type(row) is dict and type(row.get('path')) is str
+            and type(row.get('sha256')) is str for row in rows),'MEASURER_MARKET_FREEZE_SCHEMA')
+        frozen={str(Path(row['path']).resolve()):row['sha256'] for row in rows}
+        fail(len(frozen)==len(rows),'MEASURER_MARKET_DUPLICATE_FREEZE_PATH')
+        required_paths={root/'runtime/coinmaster'/name for name in required}|{source,observer,baseline}
+        fail(all(frozen.get(str(p))==sha(p) for p in required_paths),'MEASURER_MARKET_FROZEN_SOURCE_MISMATCH')
+        commit=request.get('execution_source_commit')
+        fail(type(commit) is str and len(commit)==40 and all(c in '0123456789abcdef' for c in commit),
+            'MEASURER_MARKET_COMMIT_REQUIRED')
+        return dict(source_family=family,execution_source_commit=commit,dd_sha256=DD_SHA,
+            observer_sha256=OBSERVER_SHA,request_sha256=request_pin['sha256'],
+            mark_stop_parity='NOT_PROVEN_NATIVE_1_231')
     if family=='CM2BTCREF':
         fail(type(raw.get('cm2')) is dict and raw['cm2']['policy']==request['policy']
             and request['policy']['version']=='cm2-btc-reference-v1','MEASURER_CM2_POLICY_FAMILY_MISMATCH')
